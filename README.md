@@ -22,6 +22,8 @@ Start the daemon:
 
 ``` rest-ftp-daemon start ```
 
+For now, daemon logs to APP_LOGTO defined in lib/config.rb
+
 
 ## Basic usage ##
 
