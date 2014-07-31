@@ -15,6 +15,7 @@ argv = ARGV
 argv << ["-R", rackup_file] unless ARGV.include?("-R")
 argv << ["-p", APP_DEFAULT_PORT.to_s] unless ARGV.include?("-p")
 argv << ["-e", "production"] unless ARGV.include?("-e")
+argv << ["-d"] unless ARGV.include?("-d")
 
 # Start thin
 Thin::Runner.new(argv.flatten).run!
