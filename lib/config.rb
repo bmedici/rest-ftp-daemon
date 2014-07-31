@@ -1,6 +1,5 @@
 # App configuration
 APP_NAME = 'rest-ftp-daemon'
-APP_PORT = 3000
 APP_LOGTO = "/tmp/#{APP_NAME}.log"
 
 # Transfer configuration

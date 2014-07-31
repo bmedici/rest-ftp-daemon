@@ -7,12 +7,13 @@ require 'thin'
 APP_ROOT = File.dirname(__FILE__) + '/../'
 APP_VER = File.read "#{APP_ROOT}/VERSION"
 APP_STARTED = Time.now
+APP_DEFAULT_PORT = 3000
 
 # Prepare thin
 rackup_file = File.expand_path "#{APP_ROOT}/lib/config.ru"
 argv = ARGV
 argv << ["-R", rackup_file] unless ARGV.include?("-R")
-argv << ["-p", APP_PORT.to_s] unless ARGV.include?("-p")
+argv << ["-p", APP_DEFAULT_PORT.to_s] unless ARGV.include?("-p")
 argv << ["-e", "production"] unless ARGV.include?("-e")
 
 # Start thin
