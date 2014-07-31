@@ -17,9 +17,9 @@ Jeweler::Tasks.new do |gem|
   gem.name = "rest-ftp-daemon"
   gem.homepage = "http://github.com/bmedici/rest-ftp-daemon"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "bmgit@bmconseil.com"
+  gem.summary = "RESTful FTP client daemon"
+  gem.description = "A fairly basic FTP client daemon, driven by RESTful webservice calls"
+  gem.email = "rest-ftp-daemon@bmconseil.com"
   gem.authors = ["Bruno"]
   # dependencies defined in Gemfile
 end
