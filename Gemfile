@@ -1,5 +1,8 @@
 source "http://rubygems.org"
 
+gem "sinatra"
+gem "json"
+
 group :development do
   gem "shoulda", ">= 0"
   gem "rdoc", "~> 3.12"
