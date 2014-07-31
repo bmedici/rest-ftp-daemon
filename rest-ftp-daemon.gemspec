@@ -5,9 +5,10 @@
 
 Gem::Specification.new do |s|
   s.name = "rest-ftp-daemon"
-  s.version = "0.2.0"
+  s.version = "0.4.0"
+
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Bruno Medici Consultant"]
+  s.authors = ["Bruno"]
   s.date = "2014-07-31"
   s.description = "A fairly basic FTP client daemon, driven by RESTful webservice calls"
   s.email = "rest-ftp-daemon@bmconseil.com"
@@ -25,9 +26,10 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/rest-ftp-daemon",
     "lib/config.rb",
+    "lib/config.ru",
     "lib/errors.rb",
     "lib/rest-ftp-daemon.rb",
-    "lib/rest-ftp-daemon/config.ru",
+    "rest-ftp-daemon.gemspec",
     "test/helper.rb",
     "test/test_rest-ftp-daemon.rb"
   ]
@@ -44,27 +46,21 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<sinatra>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
-      s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 2.0.1"])
-      s.add_development_dependency(%q<simplecov>, [">= 0"])
     else
       s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
-      s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<bundler>, ["~> 1.0"])
       s.add_dependency(%q<jeweler>, ["~> 2.0.1"])
-      s.add_dependency(%q<simplecov>, [">= 0"])
     end
   else
     s.add_dependency(%q<sinatra>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
-    s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<bundler>, ["~> 1.0"])
     s.add_dependency(%q<jeweler>, ["~> 2.0.1"])
-    s.add_dependency(%q<simplecov>, [">= 0"])
   end
 end
 
