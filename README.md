@@ -37,6 +37,11 @@ Starting a job transferring file named "dmg"
   '{"source":"~/file.dmg","target":"ftp://anonymous@localhost/incoming/dest4.dmg"}' "http://localhost:3000/jobs"
 
 
+Delete a specific job
+
+  curl -H "Content-Type: application/json" -X DELETE -D /dev/stdout "http://localhost:3000/jobs/bob-45320-1"
+
+
 
 ## Getting status ##
 
