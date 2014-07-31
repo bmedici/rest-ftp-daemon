@@ -28,14 +28,14 @@ class RestFtpDaemon < Sinatra::Base
   # Server global status
   get "/" do
     content_type :json
-    json get_status
+    JSON.pretty_generate get_status
   end
 
   # List jobs
   get "/jobs" do
     # Build response
     content_type :json
-    json get_jobs
+    JSON.pretty_generate get_jobs
     #@@threads.count
   end
 
@@ -49,7 +49,7 @@ class RestFtpDaemon < Sinatra::Base
 
     # Build response
     content_type :json
-    json nil
+    JSON.pretty_generate nil
   end
 
   # Spawn a new thread for this new job
@@ -64,7 +64,7 @@ class RestFtpDaemon < Sinatra::Base
 
     # Build response
     content_type :json
-    json result
+    JSON.pretty_generate result
   end
 
   protected

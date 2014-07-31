@@ -1,8 +1,6 @@
 # Main libs
 require 'sinatra'
 require 'sinatra/base'
-require "sinatra/json"
-require "sinatra/config_file"
 require 'net/ftp'
 require 'json'
 
