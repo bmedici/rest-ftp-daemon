@@ -1,13 +1,16 @@
 #!/usr/bin/env ruby
 
-
-require File.dirname(__FILE__) + '/../lib/rest-ftp-daemon'
+# Libs and init
 require 'thin'
+APP_ROOT = File.dirname(__FILE__) + '/../'
+DEFAULT_PORT = 2004
 
-rackup_file = "#{File.dirname(__FILE__)}/../lib/rest-ftp-daemon/config.ru"
-
+# Prepare thin
+rackup_file = File.expand_path "#{APP_ROOT}/lib/rest-ftp-daemon/config.ru"
 argv = ARGV
 argv << ["-R", rackup_file] unless ARGV.include?("-R")
-argv << ["-p", "2003"] unless ARGV.include?("-p")
+argv << ["-p", DEFAULT_PORT.to_s] unless ARGV.include?("-p")
 argv << ["-e", "production"] unless ARGV.include?("-e")
+
+# Start thin
 Thin::Runner.new(argv.flatten).run!
