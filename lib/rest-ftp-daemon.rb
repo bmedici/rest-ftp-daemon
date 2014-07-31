@@ -140,7 +140,11 @@ class RestFtpDaemon < Sinatra::Base
 
   def get_status
     {
-    greeting: "REST FTP daemon: up and running",
+    app_name: APP_NAME,
+    hostname: @@hostname,
+    version: APP_VER,
+    started: APP_STARTED,
+    uptime: (Time.now - APP_STARTED).round(1),
     jobs_count: @@threads.list.count,
     }
   end

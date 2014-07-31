@@ -3,10 +3,13 @@
 # Libs and init
 require 'thin'
 APP_ROOT = File.dirname(__FILE__) + '/../'
+APP_NAME = 'rest-ftp-daemon'
+APP_VER = File.read "#{APP_ROOT}/VERSION"
+APP_STARTED = Time.now
 DEFAULT_PORT = 3000
 
 # Prepare thin
-rackup_file = File.expand_path "#{APP_ROOT}/lib/rest-ftp-daemon/config.ru"
+rackup_file = File.expand_path "#{APP_ROOT}/lib/#{APP_NAME}/config.ru"
 argv = ARGV
 argv << ["-R", rackup_file] unless ARGV.include?("-R")
 argv << ["-p", DEFAULT_PORT.to_s] unless ARGV.include?("-p")
