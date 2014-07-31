@@ -3,7 +3,7 @@
 # Libs and init
 require 'thin'
 APP_ROOT = File.dirname(__FILE__) + '/../'
-DEFAULT_PORT = 2004
+DEFAULT_PORT = 3000
 
 # Prepare thin
 rackup_file = File.expand_path "#{APP_ROOT}/lib/rest-ftp-daemon/config.ru"
