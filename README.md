@@ -14,13 +14,13 @@ As of today, its main features are :
 
 This project requires ruby >= 1.9 and rubygems installed.
 
-Furthermore, gems are required to run it:
+Quickly install the gem from rubygems.org:
 
- ``` gem install sinatra ```
+ ``` gem install rest-ftp-daemon ```
 
-Starting the daemon:
+Start the daemon:
 
-``` thin start ```
+``` rest-ftp-daemon start ```
 
 
 ## Basic usage ##
