@@ -5,16 +5,16 @@ class RestFtpDaemon < Sinatra::Base
 
     # Create new thread group
     @@threads = ThreadGroup.new
-    #set :dummy, true
+
+    # Some other configuration
     set :sessions, false
     # set :logging, true
-    # set :root, APP_ROOT + '/lib/'
   end
 
   # Server initialization
   def initialize
     # Setup logger
-    @logger = Logger.new(APP_ROOT + '/main.log','daily')
+    @logger = Logger.new(APP_LOGTO, 'daily')
     @logger.level = Logger::INFO
 
     # Other stuff
@@ -26,12 +26,19 @@ class RestFtpDaemon < Sinatra::Base
 
   # Server global status
   get "/" do
+    # Debug query
+    info "GET /"
+
+    # Build response
     content_type :json
     JSON.pretty_generate get_status
   end
 
   # List jobs
   get "/jobs" do
+    # Debug query
+    info "GET /jobs"
+
     # Build response
     content_type :json
     JSON.pretty_generate get_jobs
@@ -40,6 +47,9 @@ class RestFtpDaemon < Sinatra::Base
 
   # List jobs
   delete "/jobs/:name" do
+    # Debug query
+    info "DELETE /jobs/#{params[:name]}"
+
     # Kill this job
     ret = delete_job params[:name]
 
@@ -53,12 +63,14 @@ class RestFtpDaemon < Sinatra::Base
 
   # Spawn a new thread for this new job
   post '/jobs' do
+    # Extract payload
     request.body.rewind
     payload = JSON.parse request.body.read
-    info "POST / with #{payload.to_json}"
 
-    # Spawn a thread
-    #config = {}
+    # Debug query
+    info "POST /jobs: #{payload.to_json}"
+
+    # Spawn a thread for this job
     result = new_job payload
 
     # Build response
@@ -138,6 +150,8 @@ class RestFtpDaemon < Sinatra::Base
   end
 
   def get_status
+    info "> get_status"
+
     {
     app_name: APP_NAME,
     hostname: @@hostname,
@@ -149,6 +163,8 @@ class RestFtpDaemon < Sinatra::Base
   end
 
   def get_jobs
+    info "> get_jobs"
+
     output = []
     @@threads.list.each do |thread|
       output << {
@@ -163,6 +179,8 @@ class RestFtpDaemon < Sinatra::Base
 
 
   def delete_job name
+    info "> delete_job(#{name})"
+
     count = 0
     @@threads.list.collect do |thread|
       next unless thread[:name] == name
@@ -173,7 +191,7 @@ class RestFtpDaemon < Sinatra::Base
   end
 
   def new_job context = {}
-    info "new_job: creating thread"
+    info "new_job"
 
     # Generate name
     @@last_worker_id +=1
@@ -222,12 +240,8 @@ class RestFtpDaemon < Sinatra::Base
     return { code: 0, errmsg: 'success', name: name, context: context }
   end
 
-  def log level, msg=""
-    @logger.send(level.to_s, msg)
-  end
-
   def info msg=""
-    log :info, msg
+    @logger.send :info, msg
   end
 
   def job_status code, errmsg
