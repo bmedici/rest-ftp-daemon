@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+
+require File.dirname(__FILE__) + '/../lib/rest-ftp-daemon'
+require 'thin'
+
+rackup_file = "#{File.dirname(__FILE__)}/../lib/rest-ftp-daemon/config.ru"
+
+argv = ARGV
+argv << ["-R", rackup_file] unless ARGV.include?("-R")
+argv << ["-p", "2003"] unless ARGV.include?("-p")
+argv << ["-e", "production"] unless ARGV.include?("-e")
+Thin::Runner.new(argv.flatten).run!
