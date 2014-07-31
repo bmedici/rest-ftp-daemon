@@ -1,5 +1,4 @@
 class RestFtpDaemon < Sinatra::Base
-  helpers Sinatra::JSON
 
   # General config
   configure :development, :production do
@@ -7,7 +6,7 @@ class RestFtpDaemon < Sinatra::Base
     # Create new thread group
     @@threads = ThreadGroup.new
     #set :dummy, true
-    # set :sessions, false
+    set :sessions, false
     # set :logging, true
     # set :root, APP_ROOT + '/lib/'
   end
