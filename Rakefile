@@ -20,7 +20,7 @@ Jeweler::Tasks.new do |gem|
   gem.summary = "RESTful FTP client daemon"
   gem.description = "This is a pretty simple FTP client daemon, controlled through a RESTfull API"
   gem.email = "rest-ftp-daemon@bmconseil.com"
-  gem.authors = ["Bruno"]
+  gem.authors = ["Bruno MEDICI"]
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
