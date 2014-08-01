@@ -4,7 +4,7 @@ class RestFtpDaemon < Sinatra::Base
   configure :development, :production do
 
     # Create new thread group
-    @@threads = ThreadGroup.new
+    @@workers = ThreadGroup.new
 
     # Some other configuration
     set :sessions, false
@@ -42,23 +42,34 @@ class RestFtpDaemon < Sinatra::Base
     # Build response
     content_type :json
     JSON.pretty_generate get_jobs
-    #@@threads.count
   end
 
-  # List jobs
-  delete "/jobs/:name" do
+  # Get job info
+  get "/jobs/:id" do
+    # Debug query
+    info "GET /jobs/#{params[:id]}"
+
+    # Find this process by name
+    found = find_job params[:id]
+
+    # Build response
+    error 404 and return if found.nil?
+    content_type :json
+    JSON.pretty_generate found
+  end
+
+  # Delete jobs
+  delete "/jobs/:id" do
     # Debug query
     info "DELETE /jobs/#{params[:name]}"
 
-    # Kill this job
-    ret = delete_job params[:name]
-
-    # Fail if no process has been killed
-    error 404 if ret<1
+    # Find and kill this job
+    found = delete_job params[:id]
 
     # Build response
+    error 404 and return if found.nil?
     content_type :json
-    JSON.pretty_generate nil
+    JSON.pretty_generate found
   end
 
   # Spawn a new thread for this new job
@@ -83,23 +94,25 @@ class RestFtpDaemon < Sinatra::Base
   def process_job
     # Init
     info "process_job: starting"
-    context = Thread.current[:context]
+    job = Thread.current.job
+    job_status :started
     transferred = 0
 
     # Check source
-    job_source = File.expand_path(context["source"])
+    job_source = File.expand_path(job["source"])
     if !(File.exists? job_source)
-      job_status ERR_JOB_SOURCE_NOTFOUND, :ERR_JOB_SOURCE_NOTFOUND
+      job_error ERR_JOB_SOURCE_NOTFOUND, :ERR_JOB_SOURCE_NOTFOUND
       return
     end
     info "process_job: job_source: #{job_source}"
     source_size = File.size job_source
+    job_set :source_size, source_size
 
     # Check target
-    job_target = context["target"]
+    job_target = job["target"]
     target = URI(job_target) rescue nil
     if job_target.nil? || target.nil?
-      job_status ERR_JOB_TARGET_UNPARSEABLE, :ERR_JOB_TARGET_UNPARSEABLE
+      job_error ERR_JOB_TARGET_UNPARSEABLE, :ERR_JOB_TARGET_UNPARSEABLE
       return
     end
     info "process_job: job_target: #{job_target}"
@@ -119,30 +132,30 @@ class RestFtpDaemon < Sinatra::Base
 
      # Do transfer
     info "source: starting stransfer"
-    Thread.current[:status] = :transferring
-    job_status ERR_BUSY, :running
-    job_set :source_size, source_size
+    #Thread.current[:status] = :transferring
+    job_status :uploading
+    job_error ERR_BUSY, :uploading
 
     begin
       ftp.putbinaryfile(job_source, target_name, TRANSFER_CHUNK_SIZE) do |block|
         # Update thread info
         percent = (100.0 * transferred / source_size).round(1)
-        info "transferring [#{percent} %] of [#{target_name}]"
         job_set :progress, percent
         job_set :transferred, transferred
+        info "transferring [#{percent} %] of [#{target_name}]"
 
         # Update counters
         transferred += TRANSFER_CHUNK_SIZE
       end
 
     rescue Net::FTPPermError
-      Thread.current[:status] = :failed
-      job_status ERR_JOB_PERMISSION, :ERR_JOB_PERMISSION
+      #job_status :failed
+      job_error ERR_JOB_PERMISSION, :ERR_JOB_PERMISSION
       info "source: FAILED: PERMISSIONS ERROR"
 
     else
-      Thread.current[:status] = :finished
-      job_status ERR_OK, :finished
+      #job_status :finished
+      job_error ERR_OK, :finished
       info "source: finished stransfer"
     end
 
@@ -151,43 +164,51 @@ class RestFtpDaemon < Sinatra::Base
 
   def get_status
     info "> get_status"
-
     {
     app_name: APP_NAME,
     hostname: @@hostname,
     version: APP_VER,
     started: APP_STARTED,
     uptime: (Time.now - APP_STARTED).round(1),
-    jobs_count: @@threads.list.count,
+    jobs_count: @@workers.list.count,
     }
   end
 
   def get_jobs
     info "> get_jobs"
 
-    output = []
-    @@threads.list.each do |thread|
-      output << {
-      :id => thread[:name],
-      :process => thread.status,
-      :status =>  thread[:status],
-      :context => thread[:context],
-      }
-    end
-    output
+    # Collect info's
+    @@workers.list.map { |thread| thread.job }
   end
 
+  def delete_job id
+    info "> delete_job(#{id})"
 
-  def delete_job name
-    info "> delete_job(#{name})"
+    # Find jobs with this id
+    jobs = jobs_with_id id
 
-    count = 0
-    @@threads.list.collect do |thread|
-      next unless thread[:name] == name
-      Thread.kill(thread)
-      count += 1
-    end
-    count
+    # Kill them
+    jobs.each{ |thread| Thread.kill(thread) }
+
+    # Return the first one
+    return nil if jobs.empty?
+    jobs.first.job
+  end
+
+  def find_job id
+    info "> find_job(#{id})"
+
+    # Find jobs with this id
+    jobs = jobs_with_id id
+
+    # Return the first one
+    return nil if jobs.empty?
+    jobs.first.job
+  end
+
+  def jobs_with_id id
+    info "> find_jobs_by_id(#{id})"
+    @@workers.list.select{ |thread| thread[:id].to_s == id.to_s }
   end
 
   def new_job context = {}
@@ -196,15 +217,15 @@ class RestFtpDaemon < Sinatra::Base
     # Generate name
     @@last_worker_id +=1
     host = @@hostname.split('.')[0]
-    name = "#{host}-#{Process.pid.to_s}-#{@@last_worker_id}"
-    info "new_job: creating thread [#{name}]"
+    worker_id = @@last_worker_id
+    worker_name = "#{host}-#{Process.pid.to_s}-#{worker_id}"
+    info "new_job: creating thread [#{worker_name}]"
 
     # Parse parameters
     job_source = context["source"]
     job_target = context["target"]
     return { code: ERR_REQ_SOURCE_MISSING, errmsg: :ERR_REQ_SOURCE_MISSING} if job_source.nil?
     return { code: ERR_REQ_TARGET_MISSING, errmsg: :ERR_REQ_TARGET_MISSING} if job_target.nil?
-    #return { code: ERR_TRX_SOURCE_FILE_NOT_FOUND, errmsg: "ERR_TRX_SOURCE_FILE_NOT_FOUND [#{job_source}]"} unless File.exists? job_source
 
     # Parse dest URI
     target = URI(job_target)
@@ -212,47 +233,51 @@ class RestFtpDaemon < Sinatra::Base
     return { code: ERR_REQ_TARGET_SCHEME, errmsg: :ERR_REQ_TARGET_SCHEME} unless target.scheme == "ftp"
 
     # Create thread
-    job = Thread.new(name, job) do
-      # Initialize context
-      Thread.current[:name] = name
-      Thread.current[:created] = Time.now.to_f;
-      Thread.current[:status] = :thread_initializing
-
-      # Store job info
-      Thread.current[:context] = context
-      job_status ERR_BUSY, :thread_initializing
+    job = Thread.new(worker_id, worker_name, job) do
+      # Tnitialize thread
       Thread.abort_on_exception = true
+      job_status :initializing
+      job_error ERR_OK
+
+      # Initialize job info
+      Thread.current[:job] = {}
+      Thread.current[:job].merge! context if context.is_a? Enumerable
+      Thread.current[:id] = worker_id
+      job_set :worker_name, worker_name
+      job_set :created, Time.now
 
       # Do the job
       info "new_job: thread running"
       process_job
 
       # Sleep a few seconds before dying
-      Thread.current[:status] = :thread_ending
+      job_status :graceful_ending
       sleep THREAD_SLEEP_BEFORE_DIE
+      job_status :ended
       info "new_job: thread finished"
     end
 
     # Keep thread in thread group
-    info "new_job: attaching thread [#{name}] to group"
-    @@threads.add job
+    info "new_job: attaching thread [#{worker_name}] to group"
+    @@workers.add job
 
-    return { code: 0, errmsg: 'success', name: name, context: context }
+    return { code: 0, errmsg: 'success', worker_id: worker_id, context: context }
   end
 
   def info msg=""
     @logger.send :info, msg
   end
 
-  def job_status code, errmsg
-    Thread.current[:context] ||= {}
-    Thread.current[:context][:code] = code
-    Thread.current[:context][:errmsg] = errmsg
+  def job_error error, errmsg = nil
+    job_set :error, error
+    job_set :errmsg, errmsg
+  end
+  def job_status status
+    job_set :status, status
   end
 
-  def job_set attribute, value
-    Thread.current[:context] ||= {}
-    Thread.current[:context][attribute] = value
+  def job_set attribute, value, thread = Thread.current
+    thread[:job][attribute] = value if thread[:job].is_a? Enumerable
   end
 
 
