@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bruno"]
   s.date = "2014-07-31"
-  s.description = "A fairly basic FTP client daemon, driven by RESTful webservice calls"
+  s.description = "This is a pretty simple FTP client daemon, controlled through a RESTfull API"
   s.email = "rest-ftp-daemon@bmconseil.com"
   s.executables = ["rest-ftp-daemon"]
   s.extra_rdoc_files = [
