@@ -134,6 +134,22 @@ class RestFtpDaemon < Sinatra::Base
     ftp.login
     ftp.chdir(target_path)
 
+
+    # Check if target file is found
+    info "source: checking target file"
+    job_status :checking_target
+    job_error ERR_BUSY, :checking_target
+
+    results = ftp.list(target_name)
+    info "ftp.list: #{results}"
+    unless results.count.zero?
+      job_error ERR_JOB_TARGET_PRESENT, :ERR_JOB_TARGET_PRESENT
+      info "target: existing: ERR_JOB_TARGET_PRESENT"
+      ftp.close
+      return
+    end
+
+
      # Do transfer
     info "source: starting stransfer"
     #Thread.current[:status] = :transferring
@@ -163,6 +179,7 @@ class RestFtpDaemon < Sinatra::Base
       info "source: finished stransfer"
     end
 
+    # Close FTP connexion
     ftp.close
   end
 

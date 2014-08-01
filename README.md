@@ -28,7 +28,13 @@ Start the daemon:
 rest-ftp-daemon start
 ```
 
-For now, daemon logs to APP_LOGTO defined in lib/config.rb
+Check that the daemon is running and giving status info
+
+```
+http://localhost:3000/
+```
+
+For now, daemon logs to ```APP_LOGTO``` defined in ```lib/config.rb```
 
 
 Usage examples
@@ -64,41 +70,46 @@ curl -H "Content-Type: application/json" -X DELETE -D /dev/stdout "http://localh
 Getting status
 ------------------------------------------------------------------------------------
 
-  GET /jobs
+The server exposes jobs list on ``` GET /jobs ```
 
-Would return:
+```
+http://localhost:3000/jobs
+```
 
-  [
-    {
-      "id": "bob-49126-8",
-      "process": "sleep",
-      "status": "transferring",
-      "context": {
-        "source": "~\/file.ova",
-        "target": "ftp:\/\/anonymous@localhost\/incoming\/dest2.ova",
-        "code": -1,
-        "errmsg": "running",
-        "source_size": 1849036800,
-        "progress": 1.9,
-        "transferred": 34800000
-      }
-    },
-    {
-      "id": "bob-49126-9",
-      "process": "sleep",
-      "status": "transferring",
-      "context": {
-        "source": "~\/file.dmg",
-        "target": "ftp:\/\/anonymous@localhost\/incoming\/dest4.dmg",
-        "code": -1,
-        "errmsg": "running",
-        "source_size": 37109074,
-        "progress": 32.9,
-        "transferred": 12200000
-      }
-    }
-  ]
+This query will return a job list :
 
+```
+[
+  {
+    "source": "~/file.dmg",
+    "target": "ftp://anonymous@localhost/incoming/dest2.dmg",
+    "worker_name": "bob-92439-1",
+    "created": "2014-08-01 16:53:08 +0200",
+    "id": 16,
+    "runtime": 17.4,
+    "status": "graceful_ending",
+    "source_size": 37109074,
+    "error": 0,
+    "errmsg": "finished",
+    "progress": 100.0,
+    "transferred": 37100000
+  },
+  {
+    "source": "~/file.ova",
+    "target": "ftp://anonymous@localhost/incoming/dest2.ova",
+    "worker_name": "bob-92439-2",
+    "created": "2014-08-01 16:53:12 +0200",
+    "id": 17,
+    "runtime": 13.8,
+    "status": "uploading",
+    "source_size": 1849036800,
+    "error": -1,
+    "errmsg": "uploading",
+    "progress": 36.1,
+    "transferred": 668300000
+  }
+]
+```
 
 
 About
