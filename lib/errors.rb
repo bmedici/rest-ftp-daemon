@@ -1,8 +1,3 @@
-# Error codes
-# O: all ok
-# 1x: request body errors
-# 2x: transfer errors
-
 ERR_OK                            = 0
 ERR_BUSY                          = -1
 

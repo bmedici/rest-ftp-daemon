@@ -3,7 +3,7 @@ rest-ftp-daemon
 
 This is a pretty simple FTP client daemon, controlled through a RESTfull API.
 
-Main features :
+As of today, its main features are :
 
 * Delegate a transfer job, ```PUT```'ing posting simple JSON structure
 * Spawn a dedicated thread to handle this job in its own context
@@ -100,16 +100,10 @@ Would return:
   ]
 
 
-Configuration options
-------------------------------------------------------------------------------------
-
-Bruno MEDICI
-
-http://bmconseil.com/
 
 About
 ------------------------------------------------------------------------------------
 
-Bruno MEDICI
+Bruno MEDICI Consultant
 
 http://bmconseil.com/

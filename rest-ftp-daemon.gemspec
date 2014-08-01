@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rest-ftp-daemon"
-  s.version = "0.5.0"
+  s.version = "0.7.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bruno"]
-  s.date = "2014-07-31"
+  s.date = "2014-08-01"
   s.description = "This is a pretty simple FTP client daemon, controlled through a RESTfull API"
   s.email = "rest-ftp-daemon@bmconseil.com"
   s.executables = ["rest-ftp-daemon"]
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
     "lib/config.rb",
     "lib/config.ru",
     "lib/errors.rb",
+    "lib/extend_threads.rb",
     "lib/rest-ftp-daemon.rb",
     "rest-ftp-daemon.gemspec",
     "test/helper.rb",

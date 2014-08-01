@@ -13,7 +13,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
-    git (1.2.7)
+    git (1.2.8)
     github_api (0.12.0)
       addressable (~> 2.3)
       descendants_tracker (~> 0.0.4)
@@ -53,7 +53,7 @@ GEM
     rack-protection (1.5.3)
       rack
     rake (10.3.2)
-    rdoc (3.12.2)
+    rdoc (4.1.1)
       json (~> 1.4)
     shoulda (3.5.0)
       shoulda-context (~> 1.0, >= 1.0.1)
