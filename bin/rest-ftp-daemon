@@ -5,9 +5,11 @@ require 'thin'
 
 # Initialize some local constants
 APP_ROOT = File.dirname(__FILE__) + '/../'
+APP_NAME = 'rest-ftp-daemon'
 APP_VER = File.read "#{APP_ROOT}/VERSION"
 APP_STARTED = Time.now
 APP_DEFAULT_PORT = 3000
+APP_LOGTO = "/tmp/#{APP_NAME}.log"
 
 # Prepare thin
 rackup_file = File.expand_path "#{APP_ROOT}/lib/config.ru"
@@ -15,7 +17,6 @@ argv = ARGV
 argv << ["-R", rackup_file] unless ARGV.include?("-R")
 argv << ["-p", APP_DEFAULT_PORT.to_s] unless ARGV.include?("-p")
 argv << ["-e", "production"] unless ARGV.include?("-e")
-argv << ["-d"] unless ARGV.include?("-d")
+argv << ["--stats", "/stats"] unless ARGV.include?("--stats")
 
-# Start thin
 Thin::Runner.new(argv.flatten).run!

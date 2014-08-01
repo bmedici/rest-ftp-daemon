@@ -6,16 +6,20 @@ class RestFtpDaemon < Sinatra::Base
     # Create new thread group
     @@workers = ThreadGroup.new
 
+    # Logging configuration
+    #use Rack::CommonLogger, logger
+
     # Some other configuration
-    set :sessions, false
-    # set :logging, true
+    disable :sessions
+    disable :logging
   end
 
   # Server initialization
   def initialize
     # Setup logger
     @logger = Logger.new(APP_LOGTO, 'daily')
-    @logger.level = Logger::INFO
+    #@logger = Logger.new
+    #@logger.level = Logger::INFO
 
     # Other stuff
     @@last_worker_id = 0
@@ -265,7 +269,7 @@ class RestFtpDaemon < Sinatra::Base
   end
 
   def info msg=""
-    @logger.send :info, msg
+    @logger.info msg
   end
 
   def job_error error, errmsg = nil
