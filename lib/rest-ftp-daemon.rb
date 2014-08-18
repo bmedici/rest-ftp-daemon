@@ -1,6 +1,4 @@
-require 'rest-ftp-daemon/version'
-
-module RestFtpDaemon
+# module RestFtpDaemon
 
   class RestFtpDaemon < Sinatra::Base
 
@@ -308,4 +306,4 @@ module RestFtpDaemon
 
   end
 
-end
+# end
