@@ -189,7 +189,7 @@ class RestFtpDaemonServer < Sinatra::Base
     {
     app_name: APP_NAME,
     hostname: @@hostname,
-    version: APP_VER,
+    version: RestFtpDaemon::VERSION,
     started: APP_STARTED,
     uptime: (Time.now - APP_STARTED).round(1),
     jobs_count: @@workers.list.count,

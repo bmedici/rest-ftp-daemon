@@ -1,7 +1,4 @@
 # Main libs
-require 'sinatra/base'
-require 'net/ftp'
-require 'json'
 
 # Set LOAD_PATH
 # Dir[APP_ROOT+"/lib/*.rb"].each {|file| require File.expand_path file }
