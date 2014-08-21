@@ -89,33 +89,37 @@ module RestFtpDaemon
 
     # Delete jobs
     delete "/jobs/:id" do
-      # Debug query
-      info "DELETE /jobs/#{params[:name]}"
-
-      # Find and kill this job
-      found = delete_job params[:id]
-
-      # Build response
-      error 404 and return if found.nil?
-      content_type :json
-      JSON.pretty_generate found
+     info "DELETE /jobs/#{params[:name]}"
+      begin
+        found = delete_job params[:id]
+      rescue RestFtpDaemon::JobNotFound => exception
+        return api_error 404, exception
+      rescue RestFtpDaemonException => exception
+        return api_error 500, exception
+      else
+        return api_success 200, found
+      end
     end
 
     # Spawn a new thread for this new job
     post '/jobs' do
-      # Extract payload
-      request.body.rewind
-      payload = JSON.parse request.body.read
+      info "POST /jobs: #{request.body.read}"
+      begin
+        # Extract payload
+        request.body.rewind
+        payload = JSON.parse request.body.read
+        info "json payload: #{payload.to_json}"
 
-      # Debug query
-      info "POST /jobs: #{payload.to_json}"
+        # Spawn a thread for this job
+        result = enqueue_job payload
 
-      # Spawn a thread for this job
-      result = new_job payload
-
-      # Build response
-      content_type :json
-      JSON.pretty_generate result
+      rescue JSON::ParserError => exception
+        return api_error 406, exception
+      rescue RestFtpDaemonException => exception
+        return api_error 412, exception
+      else
+        return api_success 201, result
+      end
     end
 
     protected

@@ -6,4 +6,7 @@ module RestFtpDaemon
   class DummyException < RestFtpDaemonException
   end
 
+  class RequestSourceMissing < RestFtpDaemonException
+  end
+
 end
