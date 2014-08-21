@@ -17,6 +17,7 @@ class RestFtpDaemonServer < Sinatra::Base
     disable :logging
   end
 
+
   # Server initialization
   def initialize
     # Setup logger
@@ -30,6 +31,20 @@ class RestFtpDaemonServer < Sinatra::Base
 
     super
   end
+
+
+  # Test URLs
+  # Server test
+    get "/test" do
+      begin
+        raise RestFtpDaemon::DummyException
+      rescue RestFtpDaemon::RestFtpDaemonException => exception
+        return api_error 501, exception
+      else
+        return api_success 200, ({success: true, reason: :dont_know_why})
+      end
+    end
+
 
   # Server global status
   get "/" do
