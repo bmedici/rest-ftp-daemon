@@ -11,7 +11,11 @@ module RestFtpDaemon
       @@workers = ThreadGroup.new
 
       # Logging configuration
+      #set :dump_errors, false
       #use Rack::CommonLogger, logger
+
+      # Don't capture any errors. Throw them up the stack
+      set :raise_errors, true
 
       # Some other configuration
       disable :sessions
@@ -29,7 +33,6 @@ module RestFtpDaemon
       # Other stuff
       @@last_worker_id = 0
       @@hostname = `hostname`.chomp
-
       super
     end
 
