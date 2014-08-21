@@ -34,7 +34,6 @@ module RestFtpDaemon
     end
 
 
-    # Test URLs
     # Server test
       get "/test" do
         begin
@@ -49,38 +48,44 @@ module RestFtpDaemon
 
     # Server global status
     get "/" do
-      # Debug query
       info "GET /"
-
-      # Build response
-      content_type :json
-      JSON.pretty_generate get_status
+      begin
+        response = get_status
+      rescue RestFtpDaemonException => exception
+        return api_error 501, exception
+      else
+        return api_success 200, response
+      end
     end
+
 
     # List jobs
     get "/jobs" do
-      # Debug query
       info "GET /jobs"
-
-      # Build response
-      content_type :json
-      JSON.pretty_generate get_jobs
+      begin
+        response = get_jobs
+      rescue RestFtpDaemonException => exception
+        return api_error 501, exception
+      else
+        return api_success 200, response
+      end
     end
+
 
     # Get job info
     get "/jobs/:id" do
-      # Debug query
       info "GET /jobs/#{params[:id]}"
-
-      # Find this process by name
-      found = find_job params[:id]
-
-      # Build response
-      error 404 and return if found.nil?
-
-      content_type :json
-      JSON.pretty_generate found
+      begin
+        response = find_job params[:id]
+      rescue RestFtpDaemon::JobNotFound => exception
+        return api_error 404, exception
+      rescue RestFtpDaemonException => exception
+        return api_error 500, exception
+      else
+        return api_success 200, response
+      end
     end
+
 
     # Delete jobs
     delete "/jobs/:id" do
