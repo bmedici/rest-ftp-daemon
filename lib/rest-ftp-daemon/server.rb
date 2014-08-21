@@ -1,5 +1,8 @@
 class RestFtpDaemonServer < Sinatra::Base
 
+  helpers Sinatra::RestFtpDaemon::Helpers
+
+
   # General config
   configure :development, :production do
 
