@@ -1,7 +1,8 @@
 module RestFtpDaemon
-  class Server < Sinatra::Base
 
-    helpers Sinatra::RestFtpDaemon::Helpers
+  class API < Grape::API
+    version 'v1', using: :header, vendor: 'ftven'
+    format :json
 
 
     # General config
