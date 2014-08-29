@@ -5,92 +5,183 @@ module RestFtpDaemon
     format :json
 
 
-    # General config
-    configure :development, :production do
-
-      # Create new thread group
-
-
-
-    end
-
-
-    # Server initialization
+    ######################################################################
+    ####### INIT
+    ######################################################################
     def initialize
       # Setup logger
-      @logger = Logger.new(APP_LOGTO, 'daily')
+      @@logger = Logger.new(APP_LOGTO, 'daily')
+      # @@queue = Queue.new
+
+      # Create new thread group
+      @@threads = ThreadGroup.new
 
       # Other stuff
       @@last_worker_id = 0
-      @@hostname = `hostname`.chomp
       super
     end
 
+    ######################################################################
+    ####### HELPERS
+    ######################################################################
+    helpers do
+      def api_error exception
+        {
+        :error => exception.class,
+        :errmsg => exception.message,
+        :backtrace => exception.backtrace.first,
+        #:backtrace => exception.backtrace,
+        }
+      end
 
-    # Server test
-      get "/test" do
-        begin
-          raise RestFtpDaemon::DummyException
-        rescue RestFtpDaemon::RestFtpDaemonException => exception
-          return api_error 501, exception
-        else
-          return api_success 200, ({success: true, reason: :dont_know_why})
+      def info msg=""
+        @@logger.info msg
+      end
+
+      def threads_with_id job_id
+        @@threads.list.select do |thread|
+          next unless thread[:job].is_a? Job
+          thread[:job].id == job_id
         end
       end
 
+      def job_describe job_id
+        # Find threads with tihs id
+        threads = threads_with_id job_id
+        raise RestFtpDaemon::JobNotFound if threads.empty?
 
-    # Server global status
-    get "/" do
-      info "GET /"
-      begin
-        response = get_status
-      rescue RestFtpDaemonException => exception
-        return api_error 501, exception
-      else
-        return api_success 200, response
+        # Find first job with tihs id
+        job = threads.first[:job]
+        raise RestFtpDaemon::JobNotFound unless job.is_a? Job
+        description = job.describe
+
+        # Return job description
+        description
       end
+
+      def job_delete job_id
+        # Find threads with tihs id
+        threads = threads_with_id job_id
+        raise RestFtpDaemon::JobNotFound if threads.empty?
+
+        # Get description just before terminating the job
+        job = threads.first[:job]
+        raise RestFtpDaemon::JobNotFound unless job.is_a? Job
+        description = job.describe
+
+        # Kill those threads
+        threads.each do |t|
+          Thread.kill(t)
+        end
+
+        # Return job description
+        description
+      end
+
+      def job_list
+        @@threads.list.map do |thread|
+          next unless thread[:job].is_a? Job
+          thread[:job].describe
+        end
+      end
+
     end
 
+
+    ######################################################################
+    ####### API DEFINITION
+    ######################################################################
+
+    # Spawn a new thread for this new job
+    # post '/push' do
+    #   @@queue << rand(999)
+    # end
+
+    # Server global status
+    get '/' do
+      info "GET /"
+
+      status 200
+      {
+        app_name: APP_NAME,
+        hostname: `hostname`.chomp,
+        version: RestFtpDaemon::VERSION,
+        started: APP_STARTED,
+        uptime: (Time.now - APP_STARTED).round(1),
+      }
+    end
+
+    # Server test
+    get '/test' do
+      info "GET /tests"
+      begin
+        raise RestFtpDaemon::DummyException
+      rescue RestFtpDaemon::RestFtpDaemonException => exception
+        status 501
+        api_error exception
+      rescue Exception => exception
+        status 501
+        api_error exception
+      else
+        status 200
+        {}
+      end
+    end
 
     # List jobs
     get "/jobs" do
       info "GET /jobs"
       begin
-        response = get_jobs
+        response = job_list
       rescue RestFtpDaemonException => exception
-        return api_error 501, exception
+        status 501
+        api_error exception
+      rescue Exception => exception
+        status 501
+        api_error exception
       else
-        return api_success 200, response
+        status 200
+        response
       end
     end
-
 
     # Get job info
     get "/jobs/:id" do
       info "GET /jobs/#{params[:id]}"
       begin
-        response = find_job params[:id]
+        response = job_describe params[:id].to_i
       rescue RestFtpDaemon::JobNotFound => exception
-        return api_error 404, exception
+        status 404
+        api_error exception
       rescue RestFtpDaemonException => exception
-        return api_error 500, exception
+        status 500
+        api_error exception
+      rescue Exception => exception
+        status 501
+        api_error exception
       else
-        return api_success 200, response
+        status 200
+        response
       end
     end
-
 
     # Delete jobs
     delete "/jobs/:id" do
      info "DELETE /jobs/#{params[:name]}"
       begin
-        found = delete_job params[:id]
+        response = job_delete params[:id].to_i
       rescue RestFtpDaemon::JobNotFound => exception
-        return api_error 404, exception
+        status 404
+        api_error exception
       rescue RestFtpDaemonException => exception
-        return api_error 500, exception
+        status 500
+        api_error exception
+      rescue Exception => exception
+        status 501
+        api_error exception
       else
-        return api_success 200, found
+        status 200
+        response
       end
     end
 
@@ -98,156 +189,49 @@ module RestFtpDaemon
     post '/jobs' do
       info "POST /jobs: #{request.body.read}"
       begin
-        # Extract payload
+        # Extract params
         request.body.rewind
-        payload = JSON.parse request.body.read
-        info "json payload: #{payload.to_json}"
+        params = JSON.parse request.body.read
 
-        # Spawn a thread for this job
-        result = enqueue_job payload
+        # Create a new job
+        job_id = @@last_worker_id += 1
+        job = Job.new(job_id, params)
 
-      rescue JSON::ParserError => exception
-        return api_error 406, exception
-      rescue RestFtpDaemonException => exception
-        return api_error 412, exception
-      else
-        return api_success 201, result
-      end
-    end
+        # Put it inside a thread
+        th = Thread.new(job) do |thread|
+          # Tnitialize thread
+          Thread.abort_on_exception = true
+          Thread.current[:job] = job
 
-    protected
+          # Do the job
+          job.process
 
-
-
-       # Do transfer
-      info "source: starting stransfer"
-      #Thread.current[:status] = :transferring
-      job_status :uploading
-      job_error ERR_BUSY, :uploading
-
-      begin
-        ftp.putbinaryfile(job_source, target_name, TRANSFER_CHUNK_SIZE) do |block|
-          # Update thread info
-          percent = (100.0 * transferred / source_size).round(1)
-          job_set :progress, percent
-          job_set :transferred, transferred
-          info "transferring [#{percent} %] of [#{target_name}]"
-
-          # Update counters
-          transferred += TRANSFER_CHUNK_SIZE
+          # Wait for a few seconds before cleaning up the job
+          job.wander RestFtpDaemon::THREAD_SLEEP_BEFORE_DIE
         end
 
-      rescue Net::FTPPermError
-        #job_status :failed
-        job_error ERR_JOB_PERMISSION, :ERR_JOB_PERMISSION
-        info "source: FAILED: PERMISSIONS ERROR"
+        # Stack it to the pool
+        #@@queue << job
+        @@threads.add th
 
+        # And start it asynchronously
+        #job.future.process
+
+      rescue JSON::ParserError => exception
+        status 406
+        api_error exception
+      rescue RestFtpDaemonException => exception
+        status 412
+        api_error exception
+      rescue Exception => exception
+        status 501
+        api_error exception
       else
-        #job_status :finished
-        job_error ERR_OK, :finished
-        info "source: finished stransfer"
-      end
-
-      # Close FTP connexion
-      ftp.close
-    end
-
-    def get_status
-      info "> get_status"
-      {
-      app_name: APP_NAME,
-      hostname: @@hostname,
-      version: RestFtpDaemon::VERSION,
-      started: APP_STARTED,
-      uptime: (Time.now - APP_STARTED).round(1),
-      jobs_count: @@workers.list.count,
-      }
-    end
-
-    def get_jobs
-      info "> get_jobs"
-
-      # Collect info's
-      @@workers.list.map { |thread| thread.job }
-    end
-
-    def delete_job id
-      info "> delete_job(#{id})"
-
-      # Find jobs with this id
-      jobs = jobs_with_id id
-
-      # Kill them
-      jobs.each{ |thread| Thread.kill(thread) }
-
-      # Return the first one
-      return nil if jobs.empty?
-      jobs.first.job
-    end
-
-    def find_job id
-      info "> find_job(#{id})"
-
-      # Find jobs with this id
-      jobs = jobs_with_id id
-
-      # Return the first one
-      return nil if jobs.empty?
-      jobs.first.job
-    end
-
-    def jobs_with_id id
-      info "> find_jobs_by_id(#{id})"
-      @@workers.list.select{ |thread| thread[:id].to_s == id.to_s }
-    end
-
-    def new_job context = {}
-      info "new_job"
-
-      # Generate name
-      @@last_worker_id +=1
-      host = @@hostname.split('.')[0]
-      worker_id = @@last_worker_id
-      worker_name = "#{host}-#{Process.pid.to_s}-#{worker_id}"
-      info "new_job: creating thread [#{worker_name}]"
-
-      # Parse parameters
-      job_source = context["source"]
-      job_target = context["target"]
-      return { code: ERR_REQ_SOURCE_MISSING, errmsg: :ERR_REQ_SOURCE_MISSING} if job_source.nil?
-      return { code: ERR_REQ_TARGET_MISSING, errmsg: :ERR_REQ_TARGET_MISSING} if job_target.nil?
-
-      # Parse dest URI
-      target = URI(job_target)
-      info target.scheme
-      return { code: ERR_REQ_TARGET_SCHEME, errmsg: :ERR_REQ_TARGET_SCHEME} unless target.scheme == "ftp"
-
-      # Create thread
-      job = Thread.new(worker_id, worker_name, job) do
-        # Tnitialize thread
-        Thread.abort_on_exception = true
-        job_status :initializing
-        job_error ERR_OK
-
-        # Initialize job info
-        Thread.current[:job] = {}
-        Thread.current[:job].merge! context if context.is_a? Enumerable
-        Thread.current[:id] = worker_id
-        job_set :worker_name, worker_name
-        job_set :created, Time.now
-
-        # Do the job
-        info "new_job: thread running"
-        process_job
-
-        # Sleep a few seconds before dying
-        job_status :graceful_ending
-        sleep THREAD_SLEEP_BEFORE_DIE
-        job_status :ended
-        info "new_job: thread finished"
+        status 201
+        job.describe
       end
     end
-
 
   end
+
 end
