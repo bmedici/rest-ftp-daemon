@@ -5,7 +5,7 @@ require 'rest-ftp-daemon/config'
 
 Gem::Specification.new do |spec|
   spec.name = "rest-ftp-daemon"
-  spec.date = "2014-08-14"
+  spec.date = Time.now.strftime("%Y-%m-%d")
   spec.authors = ["Bruno MEDICI"]
   spec.email = "rest-ftp-daemon@bmconseil.com"
   spec.description = "This is a pretty simple FTP client daemon, controlled through a RESTfull API"
@@ -27,4 +27,3 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "json"
 
 end
-
