@@ -11,5 +11,6 @@ require 'rest-ftp-daemon/threads'
 #require 'rest-ftp-daemon/server_jobs'
 #require 'rest-ftp-daemon/server_process'
 #require 'rest-ftp-daemon/server_queue'
+require 'rest-ftp-daemon/job'
 require 'rest-ftp-daemon/server'
 
