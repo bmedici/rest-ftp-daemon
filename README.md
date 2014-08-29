@@ -14,12 +14,13 @@ As of today, its main features are :
 Installation
 ------------------------------------------------------------------------------------
 
-This project is available as a rubygem, requires on ruby >= 1.9 and rubygems installed.
+This project is available as a rubygem, requires on ruby >= 1.9.3 and rubygems installed.
 
 Get and install the gem from rubygems.org:
 
 ```
-gem install rest-ftp-daemon
+# apt-get install ruby2.1 rubygems
+gem install rest-ftp-daemon --no-ri --no-rdoc
 ```
 
 Start the daemon:
