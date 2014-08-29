@@ -40,11 +40,11 @@ For now, daemon logs to ```APP_LOGTO``` defined in ```lib/config.rb```
 Usage examples
 ------------------------------------------------------------------------------------
 
-Start a job to transfer a file named "file.ova" to a local FTP server
+Start a job to transfer a file named "file.iso" to a local FTP server
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
-'{"source":"~/file.ova","target":"ftp://anonymous@localhost/incoming/dest2.ova"}' "http://localhost:3000/jobs"
+'{"source":"~/file.iso","target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
 ```
 
 Start a job to transfer a file named "file.dmg" to a local FTP server

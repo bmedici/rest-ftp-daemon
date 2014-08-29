@@ -9,18 +9,9 @@ module RestFtpDaemon
     configure :development, :production do
 
       # Create new thread group
-      @@workers = ThreadGroup.new
 
-      # Logging configuration
-      #set :dump_errors, false
-      #use Rack::CommonLogger, logger
 
-      # Don't capture any errors. Throw them up the stack
-      set :raise_errors, true
 
-      # Some other configuration
-      disable :sessions
-      disable :logging
     end
 
 
@@ -28,8 +19,6 @@ module RestFtpDaemon
     def initialize
       # Setup logger
       @logger = Logger.new(APP_LOGTO, 'daily')
-      #@logger = Logger.new
-      #@logger.level = Logger::INFO
 
       # Other stuff
       @@last_worker_id = 0
@@ -128,59 +117,6 @@ module RestFtpDaemon
 
     protected
 
-    def process_job
-      # Init
-      info "process_job: starting"
-      job = Thread.current.job
-      job_status :started
-      transferred = 0
-
-      # Check source
-      job_source = File.expand_path(job["source"])
-      if !(File.exists? job_source)
-        job_error ERR_JOB_SOURCE_NOTFOUND, :ERR_JOB_SOURCE_NOTFOUND
-        return
-      end
-      info "process_job: job_source: #{job_source}"
-      source_size = File.size job_source
-      job_set :source_size, source_size
-
-      # Check target
-      job_target = job["target"]
-      target = URI(job_target) rescue nil
-      if job_target.nil? || target.nil?
-        job_error ERR_JOB_TARGET_UNPARSEABLE, :ERR_JOB_TARGET_UNPARSEABLE
-        return
-      end
-      info "process_job: job_target: #{job_target}"
-
-      # Split URI
-      target_path = File.dirname target.path
-      target_name = File.basename target.path
-      info "ftp_transfer: job_target.host [#{target.host}]"
-      info "ftp_transfer: target_path [#{target_path}]"
-      info "ftp_transfer: target_name [#{target_name}]"
-
-      # Prepare FTP transfer
-      ftp = Net::FTP.new(target.host)
-      ftp.passive = true
-      ftp.login
-      ftp.chdir(target_path)
-
-
-      # Check if target file is found
-      info "source: checking target file"
-      job_status :checking_target
-      job_error ERR_BUSY, :checking_target
-
-      results = ftp.list(target_name)
-      info "ftp.list: #{results}"
-      unless results.count.zero?
-        job_error ERR_JOB_TARGET_PRESENT, :ERR_JOB_TARGET_PRESENT
-        info "target: existing: ERR_JOB_TARGET_PRESENT"
-        ftp.close
-        return
-      end
 
 
        # Do transfer
@@ -310,28 +246,6 @@ module RestFtpDaemon
         job_status :ended
         info "new_job: thread finished"
       end
-
-      # Keep thread in thread group
-      info "new_job: attaching thread [#{worker_name}] to group"
-      @@workers.add job
-
-      return { code: 0, errmsg: 'success', worker_id: worker_id, context: context }
-    end
-
-    def info msg=""
-      @logger.info msg
-    end
-
-    def job_error error, errmsg = nil
-      job_set :error, error
-      job_set :errmsg, errmsg
-    end
-    def job_status status
-      job_set :status, status
-    end
-
-    def job_set attribute, value, thread = Thread.current
-      thread[:job][attribute] = value if thread[:job].is_a? Enumerable
     end
 
 
