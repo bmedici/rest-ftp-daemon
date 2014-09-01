@@ -92,11 +92,6 @@ module RestFtpDaemon
     ####### API DEFINITION
     ######################################################################
 
-    # Spawn a new thread for this new job
-    # post '/push' do
-    #   @@queue << rand(999)
-    # end
-
     # Server global status
     get '/' do
       info "GET /"

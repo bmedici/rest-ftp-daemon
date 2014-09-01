@@ -1,9 +1,10 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.22)
+    rest-ftp-daemon (0.30.1)
       grape
       json
+      thin (~> 1.6)
 
 GEM
   remote: http://rubygems.org/
@@ -21,9 +22,11 @@ GEM
     builder (3.2.2)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
+    daemons (1.1.9)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     equalizer (0.0.9)
+    eventmachine (1.0.3)
     grape (0.8.0)
       activesupport
       builder
@@ -47,6 +50,10 @@ GEM
     rack-mount (0.8.3)
       rack (>= 1.0.0)
     rake (10.3.2)
+    thin (1.6.2)
+      daemons (>= 1.0.9)
+      eventmachine (>= 1.0.0)
+      rack (>= 1.0.0)
     thread_safe (0.3.4)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
