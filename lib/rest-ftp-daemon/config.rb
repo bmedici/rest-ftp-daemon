@@ -1,6 +1,6 @@
 module RestFtpDaemon
   # Global config
-  VERSION = "0.32"
+  VERSION = "0.33"
 
   # Transfer config
   TRANSFER_CHUNK_SIZE = 100000

@@ -11,6 +11,9 @@ module RestFtpDaemon
       set :id, id
       set :started_at, Time.now
       set :status, :initialized
+
+      # Send first notification
+      notify "rftpd.queued"
     end
 
     def id
@@ -92,7 +95,12 @@ module RestFtpDaemon
     def set attribute, value
       return unless @params.is_a? Enumerable
       @params[:updated_at] = Time.now
-      @params[attribute] = value
+      @params[attribute.to_s] = value
+    end
+
+    def get attribute
+      return unless @params.is_a? Enumerable
+      @params[attribute.to_s]
     end
 
     def prepare
@@ -126,6 +134,7 @@ module RestFtpDaemon
     def transfer
       # Init
       transferred = 0
+      notify "rftpd.started"
 
       # Ensure @source and @target are there
       set :status, :checking_source
@@ -147,6 +156,7 @@ module RestFtpDaemon
 
       # Check for target file presence
       results = ftp.list(target_name)
+
       #info "ftp.list: #{results}"
       unless results.count.zero?
         ftp.close
@@ -166,7 +176,35 @@ module RestFtpDaemon
       end
 
       # Close FTP connexion
+      notify "rftpd.ended"
       ftp.close
+    end
+
+  protected
+
+    def notify signal, status = {}
+      puts "RestFtpDaemon::Job.notify [#{get :notify}] [#{signal}] #{status.inspect}"
+
+      # Skip is not callback URL defined
+      url = get :notify
+      if url.nil?
+        puts "RestFtpDaemon::Job.notify [#{get :notify}] [#{signal}] skipping"
+        return
+      end
+
+      # Prepare notif body
+      n = RestFtpDaemon::Notification.new
+      n.id = get(:id)
+      n.url = url
+      n.signal = signal
+      #n.status ={dummy: true}
+
+      # Now, send the notification
+      Thread.new(n) do |thread|
+        n.notify!
+        puts "RestFtpDaemon::Job.notify [#{get :notify}] [#{signal}] sent"
+      end
+
     end
 
   end

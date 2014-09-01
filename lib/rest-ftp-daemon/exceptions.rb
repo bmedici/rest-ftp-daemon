@@ -18,4 +18,7 @@ module RestFtpDaemon
   class JobTargetUnparseable     < RestFtpDaemonException; end
   class JobTargetPermission      < RestFtpDaemonException; end
 
+  class NotifImpossible          < RestFtpDaemonException; end
+
+
 end
