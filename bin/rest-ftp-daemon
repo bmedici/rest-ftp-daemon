@@ -18,4 +18,12 @@ argv << ["-e", "production"] unless ARGV.include?("-e")
 argv << ["-p", APP_PORT.to_s] unless ARGV.include?("-p")
 #argv << ["--stats", "/stats"] unless ARGV.include?("--stats")
 
-Thin::Runner.new(argv.flatten).run!
+# Start Thin with this rackup configuration
+puts "#{APP_NAME}: using [#{argv.join (' ')}]"
+begin
+  Thin::Runner.new(argv.flatten).run!
+rescue Thin::PidFileNotFound
+  puts "#{APP_NAME}: not running (Thin::PidFileNotFound)"
+end
+
+
