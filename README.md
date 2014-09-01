@@ -5,10 +5,20 @@ This is a pretty simple FTP client daemon, controlled through a RESTfull API.
 
 As of today, its main features are :
 
-* Delegate a transfer job, ```PUT```'ing posting simple JSON structure
+* Delegate a transfer job by ``POST```'ing a simple JSON structure
 * Spawn a dedicated thread to handle this job in its own context
-* Report transfer status, progress and errors for each delegated job
+* Report transfer status, progress and errors for each job in realtime
 * Expose JSON status of workers on ```GET /jobs/``` for automated monitoring
+* Parralelize jobs as soon as they arrive
+
+Expected features in a short-time range :
+
+* Handle job queues
+* Handle job priorities
+* Allow change of priorities or other attributes after a job has been started
+* Provide RESTful notifications to the requesting client
+* Offer a basic dashboard directly within the daemon HTTP interface
+
 
 
 Installation
@@ -19,7 +29,7 @@ This project is available as a rubygem, requires on ruby >= 1.9.3 and rubygems i
 Get and install the gem from rubygems.org:
 
 ```
-# apt-get install ruby2.1 rubygems
+# apt-get install ruby2.1 ruby-dev rubygems gcc g++
 gem install rest-ftp-daemon --no-ri --no-rdoc
 ```
 
