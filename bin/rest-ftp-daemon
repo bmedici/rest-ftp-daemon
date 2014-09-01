@@ -1,23 +1,21 @@
 #!/usr/bin/env ruby
 
 # Libs and init
-require 'thin'
+require "thin"
 
 # Initialize some local constants
 APP_ROOT = File.dirname(__FILE__) + '/../'
 APP_NAME = 'rest-ftp-daemon'
-
-APP_STARTED = Time.now
-APP_DEFAULT_PORT = 3000
-APP_LOGTO = "/tmp/#{APP_NAME}.log"
+APP_PORT = 3000
+rackup_file = File.expand_path "#{APP_ROOT}/config.ru"
 
 # Prepare thin
-rackup_file = File.expand_path "#{APP_ROOT}/config.ru"
 argv = ARGV
 argv << ["-R", rackup_file] unless ARGV.include?("-R")
-argv << ["-p", APP_DEFAULT_PORT.to_s] unless ARGV.include?("-p")
+argv << ["-l", "/tmp/thin.log"] unless ARGV.include?("-l")
+argv << ["--daemonize"] unless ARGV.include?("--daemonize")
 argv << ["-e", "production"] unless ARGV.include?("-e")
-argv << ["--daemonize"] unless ARGV.include?("-R")
+argv << ["-p", APP_PORT.to_s] unless ARGV.include?("-p")
 #argv << ["--stats", "/stats"] unless ARGV.include?("--stats")
 
 Thin::Runner.new(argv.flatten).run!
