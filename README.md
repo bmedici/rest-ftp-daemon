@@ -18,7 +18,11 @@ Expected features in a short-time range :
 * Allow change of priorities or other attributes after a job has been started
 * Provide RESTful notifications to the requesting client
 * Offer a basic dashboard directly within the daemon HTTP interface
-
+* Periodically send an update-notification with transfer status and progress
+* Allow fallback file source when first file path is unavailable (failover)
+* Some refactoring may be needed after thos steps
+* Provide swagger-style API documentation
+* Authenticate API clients
 
 
 Installation
@@ -29,7 +33,7 @@ This project is available as a rubygem, requires on ruby >= 1.9.3 and rubygems i
 Get and install the gem from rubygems.org:
 
 ```
-# apt-get install ruby2.1 ruby-dev rubygems gcc g++
+# apt-get install ruby1.9.3 ruby-dev rubygems gcc g++
 gem install rest-ftp-daemon --no-ri --no-rdoc
 ```
 
@@ -70,7 +74,7 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 Get status of a specific job based on its name
 
 ```
-curl -H "Content-Type: application/json" -X DELETE -D /dev/stdout "http://localhost:3000/jobs/bob-45320-1"
+curl -H "Content-Type: application/json" -X GET -D /dev/stdout "http://localhost:3000/jobs/bob-45320-1"
 ```
 
 Delete a specific job based on its name

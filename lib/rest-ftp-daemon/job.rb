@@ -20,10 +20,15 @@ module RestFtpDaemon
 
       # Send first notification
       notify "rftpd.queued"
+
+    end
+
+    def job_id
+      get :id
     end
 
     def id
-      @params[:id]
+      get :id
     end
 
     def process
