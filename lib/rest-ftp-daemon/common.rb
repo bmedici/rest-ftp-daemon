@@ -9,14 +9,14 @@ module RestFtpDaemon
       @logger = ActiveSupport::Logger.new APP_LOGTO, 'daily'
     end
 
+    def id
+    end
+
     def info message, level = 0
-      id = job_id
       progname = "Job [#{id}]" unless id.nil?
       @logger.add(Logger::INFO, "#{'  '*(level+1)} #{message}", progname)
     end
 
-    def job_id
-    end
 
     def notify signal, error = 0, status = {}
       # Check if we have to notify or not
@@ -30,7 +30,7 @@ module RestFtpDaemon
 
       # Prepare notif body
       n = RestFtpDaemon::Notification.new
-      n.job_id = job_id
+      n.job_id = id
       n.url = url
       n.signal = signal
       n.error = error.inspect

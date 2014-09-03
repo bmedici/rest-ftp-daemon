@@ -23,9 +23,9 @@ module RestFtpDaemon
 
     end
 
-    def job_id
-      get :id
-    end
+    # def job_id
+    #   get :id
+    # end
 
     def id
       get :id

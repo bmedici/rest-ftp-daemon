@@ -28,7 +28,7 @@ module RestFtpDaemon
         def threads_with_id job_id
           $threads.list.select do |thread|
             next unless thread[:job].is_a? Job
-            thread[:job].get(:id) == job_id
+            thread[:job].id == job_id
           end
         end
 
