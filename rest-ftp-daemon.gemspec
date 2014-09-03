@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'rest-ftp-daemon/config'
 
 Gem::Specification.new do |spec|
-  spec.name = "rest-ftp-daemon"
+  spec.name = RestFtpDaemon::APP_NAME
   spec.date = Time.now.strftime("%Y-%m-%d")
   spec.authors = ["Bruno MEDICI"]
   spec.email = "rest-ftp-daemon@bmconseil.com"

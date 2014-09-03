@@ -5,25 +5,26 @@ require "thin"
 
 # Initialize some local constants
 APP_ROOT = File.dirname(__FILE__) + '/../'
-APP_NAME = 'rest-ftp-daemon'
-APP_PORT = 3000
 rackup_file = File.expand_path "#{APP_ROOT}/config.ru"
+
+# Include config file
+require File.expand_path "#{APP_ROOT}/lib/rest-ftp-daemon/config.rb"
 
 # Prepare thin
 argv = ARGV
 argv << ["-R", rackup_file] unless ARGV.include?("-R")
 argv << ["-l", "/tmp/thin.log"] unless ARGV.include?("-l")
-argv << ["--daemonize"] unless ARGV.include?("--daemonize")
+# argv << ["--daemonize"] unless ARGV.include?("--daemonize")
 argv << ["-e", "production"] unless ARGV.include?("-e")
-argv << ["-p", APP_PORT.to_s] unless ARGV.include?("-p")
+argv << ["-p", (RestFtpDaemon::PORT).to_s] unless ARGV.include?("-p")
 #argv << ["--stats", "/stats"] unless ARGV.include?("--stats")
 
 # Start Thin with this rackup configuration
-puts "#{APP_NAME}: using [#{argv.join (' ')}]"
+puts "#{RestFtpDaemon::NAME}: using [#{argv.join (' ')}]"
 begin
   Thin::Runner.new(argv.flatten).run!
 rescue Thin::PidFileNotFound
-  puts "#{APP_NAME}: not running (Thin::PidFileNotFound)"
+  puts "#{RestFtpDaemon::NAME}: not running (Thin::PidFileNotFound)"
 end
 
 
