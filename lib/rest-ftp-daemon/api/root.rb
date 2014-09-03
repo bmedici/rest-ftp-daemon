@@ -50,7 +50,7 @@ module RestFtpDaemon
 
         status 200
         {
-          app_name: APP_NAME,
+          name: RestFtpDaemon::NAME,
           hostname: `hostname`.chomp,
           version: RestFtpDaemon::VERSION,
           started: APP_STARTED,
