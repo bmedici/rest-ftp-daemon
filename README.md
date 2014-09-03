@@ -51,6 +51,8 @@ For now, daemon logs to ```APP_LOGTO``` defined in ```lib/config.rb```
 Usage examples
 ------------------------------------------------------------------------------------
 
+Requesting notifications is achieved by passing a "notify" key in the request, with a callback URL. This URL will be called at some points, ``POST```'ing a generic JSON structure with progress information.
+
 Start a job to transfer a file named "file.iso" to a local FTP server
 
 ```
@@ -58,11 +60,11 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"source":"~/file.iso","target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
 ```
 
-Start a job to transfer a file named "file.dmg" to a local FTP server
+Start a job to transfer a file, and request notifications ``POST```'ed on "http://requestb.in/1321axg1"
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
-'{"source":"~/file.dmg","target":"ftp://anonymous@localhost/incoming/dest4.dmg"}' "http://localhost:3000/jobs"
+'{"source":"~/file.dmg","target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
 
 Get status of a specific job based on its name

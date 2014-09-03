@@ -1,10 +1,9 @@
-require 'net/http'
-
 module RestFtpDaemon
-  class Notification
-    attr_accessor :id
+  class Notification < RestFtpDaemon::Common
+    attr_accessor :job_id
     attr_accessor :signal
     attr_accessor :error
+    attr_accessor :message
     attr_accessor :status
     attr_accessor :url
     attr_accessor :job
@@ -17,27 +16,39 @@ module RestFtpDaemon
       # @error = error
       # @status = status
       @status = {}
+      @error = 0
+      @message = nil
+
+      # Generate a random key
+      @key = SecureRandom.hex(2)
+
+      # Call super
+      super
+
     end
 
-    def status key, val
-      @status[key.to_s] = val
-    end
+    # def status key, val
+    #   @status[key.to_s] = val
+    # end
 
-    def notify!
-      raise NotifImpossible unless @url
-      raise NotifImpossible unless @signal
-      raise NotifImpossible unless @signal
-      raise NotifImpossible unless @status
+    def send
+      # Check context
+      raise NotificationMissingUrl unless @url
+      raise NotificationMissingSignal unless @signal
+      #sraise NotifImpossible unless @status
 
       # Params
       params = {
-        id: @id,
+        id: @job_id,
         host: get_hostname,
         signal: @signal,
-      }
+        error: @error,
+        }
 
       # Add status only if present
       params["status"] = @status unless @status.empty?
+      params["message"] = @message unless @message.to_s.blank?
+
       # Log this notification
       info "send [#{@key}] #{params.inspect}", 1
 

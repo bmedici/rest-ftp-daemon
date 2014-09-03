@@ -169,7 +169,8 @@ module RestFtpDaemon
       #info "ftp.list: #{results}"
       unless results.count.zero?
         ftp.close
-        raise JobTargetPermission
+        notify "rftpd.ended", RestFtpDaemon::JobTargetPermission
+        raise RestFtpDaemon::JobTargetPermission
       end
 
       # Do transfer
@@ -187,33 +188,6 @@ module RestFtpDaemon
       # Close FTP connexion
       notify "rftpd.ended"
       ftp.close
-    end
-
-  protected
-
-    def notify signal, status = {}
-      puts "RestFtpDaemon::Job.notify [#{get :notify}] [#{signal}] #{status.inspect}"
-
-      # Skip is not callback URL defined
-      url = get :notify
-      if url.nil?
-        puts "RestFtpDaemon::Job.notify [#{get :notify}] [#{signal}] skipping"
-        return
-      end
-
-      # Prepare notif body
-      n = RestFtpDaemon::Notification.new
-      n.id = get(:id)
-      n.url = url
-      n.signal = signal
-      #n.status ={dummy: true}
-
-      # Now, send the notification
-      Thread.new(n) do |thread|
-        n.notify!
-        puts "RestFtpDaemon::Job.notify [#{get :notify}] [#{signal}] sent"
-      end
-
     end
 
   end

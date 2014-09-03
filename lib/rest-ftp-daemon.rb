@@ -2,6 +2,8 @@
 require 'json'
 require 'grape'
 require 'net/ftp'
+require 'net/http'
+require 'securerandom'
 
 # My libs
 require 'rest-ftp-daemon/config'
