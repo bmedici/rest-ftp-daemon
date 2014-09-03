@@ -10,6 +10,9 @@ module RestFtpDaemon
       @target = nil
       @source = nil
 
+      # Logger
+      #@logger = ActiveSupport::Logger.new APP_LOGTO, 'daily'
+
       # Init context
       set :id, id
       set :started_at, Time.now
@@ -25,7 +28,7 @@ module RestFtpDaemon
 
     def process
       # Init
-      "process [#{@id}] starting"
+      info "Job.process starting"
       set :status, :starting
       set :error, 0
 
@@ -37,10 +40,12 @@ module RestFtpDaemon
         transfer
 
       rescue Net::FTPPermError
+        info "Job.process failed [Net::FTPPermError]"
         set :status, :failed
         set :error, exception.class
 
       rescue RestFtpDaemonException => exception
+        info "Job.process failed [RestFtpDaemonException::#{exception.class}]"
         set :status, :failed
         set :error, exception.class
 
@@ -49,6 +54,7 @@ module RestFtpDaemon
       #   set :error, exception.class
 
       else
+        info "Job.process finished"
         set :status, :finished
         set :error, 0
       end

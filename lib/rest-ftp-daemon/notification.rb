@@ -38,6 +38,8 @@ module RestFtpDaemon
 
       # Add status only if present
       params["status"] = @status unless @status.empty?
+      # Log this notification
+      info "send [#{@key}] #{params.inspect}", 1
 
       # Prepare query
       uri = URI(@url)
@@ -48,7 +50,7 @@ module RestFtpDaemon
       http = Net::HTTP.new(uri.host, uri.port)
       response = http.post(uri.path, params.to_json, headers)
 
-      #puts response.body
+      info "send [#{@key}] #{response.body.strip}", 1
     end
 
   protected
