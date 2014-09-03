@@ -31,6 +31,10 @@ module RestFtpDaemon
       get :id
     end
 
+    def get_status
+      get :status
+    end
+
     def process
       # Init
       info "Job.process starting"

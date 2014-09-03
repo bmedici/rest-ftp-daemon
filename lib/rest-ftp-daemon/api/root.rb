@@ -19,6 +19,18 @@ module RestFtpDaemon
         def info message, level = 0
           Root.logger.add(Logger::INFO, "#{'  '*level} #{message}", "API::Root")
         end
+
+        def job_list_by_status
+          statuses = {}
+          alljobs = $threads.list.map do |thread|
+            job = thread[:job]
+            next unless job.is_a? Job
+            statuses[job.get_status] ||= 0
+            statuses[job.get_status] +=1
+          end
+
+          statuses
+        end
       end
 
       ######################################################################
@@ -55,7 +67,7 @@ module RestFtpDaemon
           version: RestFtpDaemon::VERSION,
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),
-          jobs_count: $threads.list.size,
+          status: job_list_by_status,
           routes: RestFtpDaemon::API::Root::routes
         }
       end
