@@ -1,7 +1,10 @@
 module RestFtpDaemon
-  class Job
+  class Job < RestFtpDaemon::Common
 
     def initialize(id, params={})
+      # Call super
+      super()
+
       # Grab params
       @params = params
       @target = nil

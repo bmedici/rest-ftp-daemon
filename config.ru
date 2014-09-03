@@ -4,7 +4,7 @@ require 'rest-ftp-daemon'
 
 # Some extra constants
 APP_STARTED = Time.now
-APP_LOGTO = "/tmp/#{APP_NAME}.log"
 
 # Start REST FTP Daemon
-run RestFtpDaemon::API
+#run Rack::Cascade.new [Rack::File.new("/public"), RestFtpDaemon::API::Root]
+run Rack::Cascade.new [RestFtpDaemon::API::Root]
