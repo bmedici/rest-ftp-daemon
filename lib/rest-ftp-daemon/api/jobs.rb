@@ -7,7 +7,7 @@ module RestFtpDaemon
 
       params do
         # requires :id, type: Integer
-        requires :id, type: Integer, desc: "job id"
+        #requires :id, type: Integer, desc: "job id"
         optional :overwrite, type: Integer, default: false
         # requires :status, type: Symbol, values: [:not_started, :processing, :done]
         # optional :text, type: String, regexp: /^[a-z]+$/
@@ -93,9 +93,12 @@ module RestFtpDaemon
       #   requires :id, type: Integer, desc: "job id"
       # end
 
-      desc "Get information about a specific job"
-      get ':id' do
 
+      desc "Get information about a specific job"
+      params do
+        requires :id, type: Integer, desc: "job id"
+      end
+      get ':id' do
         info "GET /jobs/#{params[:id]}"
         begin
           response = job_describe params[:id].to_i

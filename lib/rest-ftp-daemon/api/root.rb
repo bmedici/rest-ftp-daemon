@@ -6,14 +6,9 @@ module RestFtpDaemon
       logger ActiveSupport::Logger.new APP_LOGTO, 'daily'
       #add_swagger_documentation
 
-      # add_swagger_documentation base_path: "/api",
-      #                           api_version: 'v1',
-      #                           hide_documentation_path: false
-
-
       mount RestFtpDaemon::API::Jobs => '/jobs'
-      # mount RestFtpDaemon::API::Debug => '/debug'
-      #group( :debug ) { mount RestFtpDaemon::API::Debug }
+
+
 
       helpers do
         def info message, level = 0
