@@ -23,6 +23,7 @@ Expected features in a short-time range :
 * Allow fallback file source when first file path is unavailable (failover)
 * Provide swagger-style API documentation
 * Authenticate API clients
+* Allow configuration-based path templates to abstract local machine mount points and authentication information
 
 overwrite: any non empty value allows overwriting of target FTP file
 
