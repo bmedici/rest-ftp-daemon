@@ -10,27 +10,21 @@ As of today, its main features are :
 * Report transfer status, progress and errors for each job in realtime
 * Expose JSON status of workers on ```GET /jobs/``` for automated monitoring
 * Parralelize jobs as soon as they arrive
+* Handle job queues and priority as an attribute of the job
+* Allow dynamic evaluation of priorities, and change of any attribute until the job is picked
+* Provide RESTful notifications to the requesting client
+* Allow authentication in FTP target in a standard URI-format
 
 Expected features in a short-time range :
 
-* Handle job queues
-* Handle job priorities
 * Allow change of priorities or other attributes after a job has been started
-* Provide RESTful notifications to the requesting client
 * Offer a basic dashboard directly within the daemon HTTP interface
 * Periodically send an update-notification with transfer status and progress
 * Allow fallback file source when first file path is unavailable (failover)
-* Some refactoring may be needed after thos steps
 * Provide swagger-style API documentation
 * Authenticate API clients
 
-
-
-Documentation TODO
-------------------------------------------------------------------------------------
-overwrite: any non empty value allows overwriting
-todo: queues
-
+overwrite: any non empty value allows overwriting of target FTP file
 
 
 Installation
@@ -51,6 +45,12 @@ Start the daemon:
 rest-ftp-daemon start
 ```
 
+Start the daemon on a specific port :
+
+```
+rest-ftp-daemon -p4000 start
+```
+
 Check that the daemon is running and giving status info
 
 ```
@@ -63,14 +63,15 @@ For now, daemon logs to ```APP_LOGTO``` defined in ```lib/config.rb```
 Usage examples
 ------------------------------------------------------------------------------------
 
-Requesting notifications is achieved by passing a "notify" key in the request, with a callback URL. This URL will be called at some points, ``POST```'ing a generic JSON structure with progress information.
-
 Start a job to transfer a file named "file.iso" to a local FTP server
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"source":"~/file.iso","target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
 ```
+
+Requesting notifications is achieved by passing a "notify" key in the request, with a callback URL.
+This URL will be called at some points, ``POST```'ing a generic JSON structure with progress information.
 
 Start a job to transfer a file, and request notifications ``POST```'ed on "http://requestb.in/1321axg1"
 
@@ -79,16 +80,23 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"source":"~/file.dmg","target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
 
-Get status of a specific job based on its name
+Start a job with all the above plus a priority
 
 ```
-curl -H "Content-Type: application/json" -X GET -D /dev/stdout "http://localhost:3000/jobs/bob-45320-1"
+curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
+'{"source":"~/file.dmg","priority":"3", target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
 
-Delete a specific job based on its name
+Get status of a specific job based on its ID
 
 ```
-curl -H "Content-Type: application/json" -X DELETE -D /dev/stdout "http://localhost:3000/jobs/bob-45320-1"
+curl -H "Content-Type: application/json" -X GET -D /dev/stdout "http://localhost:3000/jobs/3"
+```
+
+Delete a specific job based on its ID
+
+```
+curl -H "Content-Type: application/json" -X DELETE -D /dev/stdout "http://localhost:3000/jobs/3"
 ```
 
 
