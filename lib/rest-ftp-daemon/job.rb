@@ -31,6 +31,9 @@ module RestFtpDaemon
       get :id
     end
 
+    def priority
+      get :priority
+    end
     def get_status
       get :status
     end
@@ -64,8 +67,13 @@ module RestFtpDaemon
 
       else
         info "Job.process finished"
+# set :error, 0
+        #set :status, :wandering
+
+        # Wait for a few seconds before marking the job as finished
+        # info "#{prefix} wander for #{RestFtpDaemon::THREAD_SLEEP_BEFORE_DIE} sec"
+        # wander RestFtpDaemon::THREAD_SLEEP_BEFORE_DIE
         set :status, :finished
-        set :error, 0
       end
 
     end
@@ -83,12 +91,6 @@ module RestFtpDaemon
       @params
     end
 
-    def wander time
-      @wander_for = time
-      @wander_started = Time.now
-      sleep time
-    end
-
     def status text
       @status = text
     end
@@ -100,15 +102,23 @@ module RestFtpDaemon
       Time.now - @params[:started_at]
     end
 
+    def wander time
+      info "Job.wander #{time}"
+      @wander_for = time
+      @wander_started = Time.now
+      sleep time
+      info "Job.wandered ok"
+    end
+
     def wandering_time
       return if @wander_started.nil? || @wander_for.nil?
       @wander_for.to_f - (Time.now - @wander_started)
     end
 
-    def exception_handler(actor, reason)
-      set :status, :crashed
-      set :error, reason
-    end
+    # def exception_handler(actor, reason)
+    #   set :status, :crashed
+    #   set :error, reason
+    # end
 
     def set attribute, value
       return unless @params.is_a? Enumerable
