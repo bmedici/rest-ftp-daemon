@@ -183,13 +183,15 @@ module RestFtpDaemon
       ftp.chdir(target_path)
 
       # Check for target file presence
-      results = ftp.list(target_name)
+      if get(:overwrite).nil?
+        results = ftp.list(target_name)
+        #results = ftp.list()
 
-      #info "ftp.list: #{results}"
-      unless results.count.zero?
-        ftp.close
-        notify "rftpd.ended", RestFtpDaemon::JobTargetPermission
-        raise RestFtpDaemon::JobTargetPermission
+        unless results.count.zero?
+          ftp.close
+          notify "rftpd.ended", RestFtpDaemon::JobTargetFileExists
+          raise RestFtpDaemon::JobTargetFileExists
+        end
       end
 
       # Do transfer
