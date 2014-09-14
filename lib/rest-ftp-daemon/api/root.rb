@@ -17,11 +17,10 @@ module RestFtpDaemon
 
         def job_list_by_status
           statuses = {}
-          alljobs = $threads.list.map do |thread|
-            job = thread[:job]
-            next unless job.is_a? Job
-            statuses[job.get_status] ||= 0
-            statuses[job.get_status] +=1
+          alljobs = $queue.all.map do |item|
+            next unless item.is_a? Job
+            statuses[item.get_status] ||= 0
+            statuses[item.get_status] +=1
           end
 
           statuses

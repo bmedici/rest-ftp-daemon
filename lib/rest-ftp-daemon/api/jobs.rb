@@ -30,66 +30,28 @@ module RestFtpDaemon
         end
 
         def job_describe job_id
-          # Find threads with tihs id
-          threads = threads_with_id job_id
-          raise RestFtpDaemon::JobNotFound if threads.empty?
+          raise RestFtpDaemon::JobNotFound if ($queue.queued_size==0 && $queue.popped_size==0)
 
-          # Find first job with tihs id
-          job = threads.first[:job]
-          raise RestFtpDaemon::JobNotFound unless job.is_a? Job
-          description = job.describe
+          # Find job with this id
+          found = $queue.all.select { |job| job.id == job_id }.first
+          raise RestFtpDaemon::JobNotFound if found.nil?
+          raise RestFtpDaemon::JobNotFound unless found.is_a? Job
 
           # Return job description
-          description
+          found.describe
         end
 
-        def job_delete job_id
-          # Find threads with tihs id
-          threads = threads_with_id job_id
-          raise RestFtpDaemon::JobNotFound if threads.empty?
-
-          # Get description just before terminating the job
-          job = threads.first[:job]
-          raise RestFtpDaemon::JobNotFound unless job.is_a? Job
-          description = job.describe
-
-          # Kill those threads
-          threads.each do |t|
-            Thread.kill(t)
-          end
-
-          # Return job description
-          description
-        end
+        # def job_delete job_id
+        # end
 
         def job_list
-          $threads.list.map do |thread|
-            next unless thread[:job].is_a? Job
-            thread[:job].describe
+          $queue.all.map do |item|
+            next unless item.is_a? Job
+            item.describe
           end
         end
 
       end
-
-      # def initialize
-      #   # Setup logger
-      #   #@@logger = Logger.new(APP_LOGTO, 'daily')
-      #   # @@queue = Queue.new
-
-      #   # Create new thread group
-      #   $threads = ThreadGroup.new
-
-      #   # Other stuff
-      #   $last_worker_id = 0
-      #   #info "initialized"
-      #   super
-      # end
-
-      # Get job info
-      # params do
-      #   requires :id, type: Integer, desc: "job id"
-      # end
-
 
       desc "Get information about a specific job"
       params do
@@ -167,27 +129,10 @@ module RestFtpDaemon
           job_id = $last_worker_id += 1
           job = Job.new(job_id, params)
 
-          # Put it inside a thread
-          th = Thread.new(job, job_id) do |thread|
-            # Tnitialize thread
-            Thread.abort_on_exception = true
-            Thread.current[:job] = job
-            info "[job #{job_id}] thread created ", 1
+          # And psuh it to the queue
+          $queue.push job
 
-            # Do the job
-            job.process
-
-            # Wait for a few seconds before cleaning up the job
-            info "[job #{job_id}] thread wandering for #{RestFtpDaemon::THREAD_SLEEP_BEFORE_DIE} seconds", 1
-            job.wander RestFtpDaemon::THREAD_SLEEP_BEFORE_DIE
-            info "[job #{job_id}] thread ending", 1
-          end
-
-          # Stack it to the pool
-          #@@queue << job
-          $threads.add th
-
-          # And start it asynchronously
+          # Later: start it asynchronously
           #job.future.process
 
         rescue JSON::ParserError => exception
