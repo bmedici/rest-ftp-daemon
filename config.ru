@@ -7,7 +7,7 @@ APP_STARTED = Time.now
 
 # Create worker pool
 $queue = RestFtpDaemon::JobQueue.new
-$pool = RestFtpDaemon::WorkerPool.new(1)
+$pool = RestFtpDaemon::WorkerPool.new(2)
 
 # Start REST FTP Daemon
 #run Rack::Cascade.new [Rack::File.new("/public"), RestFtpDaemon::API::Root]
