@@ -1,7 +1,7 @@
 module RestFtpDaemon
   # Global config
   NAME = 'rest-ftp-daemon'
-  VERSION = "0.37"
+  VERSION = "0.40"
   PORT = 3000
 
   # Transfer config
