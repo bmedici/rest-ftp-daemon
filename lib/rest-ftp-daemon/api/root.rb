@@ -31,16 +31,7 @@ module RestFtpDaemon
       ####### INIT
       ######################################################################
       def initialize
-        # Setup logger
-        #@@logger = Logger.new(APP_LOGTO, 'daily')
-        # @@queue = Queue.new
-
-        # Create new thread group
-        $threads = ThreadGroup.new
-
-        # Other stuff
         $last_worker_id = 0
-        #info "initialized"
         super
       end
 
@@ -51,9 +42,7 @@ module RestFtpDaemon
 
       # Server global status
       get '/' do
-        #info "GET /"
         info "GET /"
-
         status 200
         {
           name: RestFtpDaemon::NAME,
@@ -82,8 +71,6 @@ module RestFtpDaemon
           {}
         end
       end
-
-
 
     end
   end

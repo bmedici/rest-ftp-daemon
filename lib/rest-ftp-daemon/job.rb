@@ -131,7 +131,7 @@ module RestFtpDaemon
     end
 
     def get attribute
-      return unless @params.is_a? Enumerable
+      return nil unless @params.is_a? Enumerable
       @params[attribute.to_s]
     end
 
@@ -164,7 +164,7 @@ module RestFtpDaemon
     end
 
     def transfer
-      # Init
+      # Send first notification
       transferred = 0
       notify "rftpd.started"
 

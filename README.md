@@ -25,6 +25,14 @@ Expected features in a short-time range :
 * Authenticate API clients
 
 
+
+Documentation TODO
+------------------------------------------------------------------------------------
+overwrite: any non empty value allows overwriting
+todo: queues
+
+
+
 Installation
 ------------------------------------------------------------------------------------
 

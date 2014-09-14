@@ -6,7 +6,7 @@ module RestFtpDaemon
 
   # Transfer config
   TRANSFER_CHUNK_SIZE = 100000
-  THREAD_SLEEP_BEFORE_DIE = 600
+  THREAD_SLEEP_BEFORE_DIE = 10
 
   # Logging
   APP_LOGTO = "/tmp/#{NAME}.log"

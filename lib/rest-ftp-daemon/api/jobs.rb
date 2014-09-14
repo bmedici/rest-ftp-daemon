@@ -6,18 +6,7 @@ module RestFtpDaemon
       logger ActiveSupport::Logger.new APP_LOGTO, 'daily'
 
       params do
-        # requires :id, type: Integer
-        #requires :id, type: Integer, desc: "job id"
         optional :overwrite, type: Integer, default: false
-        # requires :status, type: Symbol, values: [:not_started, :processing, :done]
-        # optional :text, type: String, regexp: /^[a-z]+$/
-        # group :media do
-        #   requires :url
-        # end
-        # optional :audio do
-        #   requires :format, type: Symbol, values: [:mp3, :wav, :aac, :ogg], default: :mp3
-        # end
-        # mutually_exclusive :media, :audio
       end
 
       helpers do
