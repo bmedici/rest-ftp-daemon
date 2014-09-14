@@ -27,6 +27,11 @@ module RestFtpDaemon
     #   get :id
     # end
 
+    def progname
+      job_id = get(:id)
+      "JOB #{job_id}"
+    end
+
     def id
       get :id
     end

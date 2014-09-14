@@ -21,9 +21,6 @@ module RestFtpDaemon
       end
 
       helpers do
-        def info message, level = 0
-          Jobs.logger.add(Logger::INFO, "#{'  '*level} #{message}", "API::Jobs")
-        end
 
         def threads_with_id job_id
           $threads.list.select do |thread|
@@ -207,6 +204,12 @@ module RestFtpDaemon
           job.describe
         end
       end
+
+    protected
+
+    def progname
+      "API::Jobs"
+    end
 
     end
   end

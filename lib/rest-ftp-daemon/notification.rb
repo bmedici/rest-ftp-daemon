@@ -27,6 +27,11 @@ module RestFtpDaemon
 
     end
 
+    def progname
+      "NOTIF #{@key}"
+    end
+
+
     # def status key, val
     #   @status[key.to_s] = val
     # end
