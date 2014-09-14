@@ -183,7 +183,7 @@ module RestFtpDaemon
       set :status, :checking_target
       ftp = Net::FTP.new(@target.host)
       ftp.passive = true
-      ftp.login
+      ftp.login @target.user, @target.password
       ftp.chdir(target_path)
 
       # Check for target file presence
