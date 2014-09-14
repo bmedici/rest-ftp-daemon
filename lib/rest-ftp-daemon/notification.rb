@@ -7,6 +7,7 @@ module RestFtpDaemon
     attr_accessor :status
     attr_accessor :url
     attr_accessor :job
+    attr_accessor :key
 
     def initialize
     #def initialize(job, signal, error, status)
@@ -36,7 +37,7 @@ module RestFtpDaemon
     #   @status[key.to_s] = val
     # end
 
-    def send
+    def notify
       # Check context
       raise NotificationMissingUrl unless @url
       raise NotificationMissingSignal unless @signal
@@ -55,7 +56,7 @@ module RestFtpDaemon
       params["message"] = @message unless @message.to_s.blank?
 
       # Log this notification
-      info "send [#{@key}] #{params.inspect}", 1
+      info "notify params: #{params.inspect}"
 
       # Prepare query
       uri = URI(@url)
@@ -66,7 +67,7 @@ module RestFtpDaemon
       http = Net::HTTP.new(uri.host, uri.port)
       response = http.post(uri.path, params.to_json, headers)
 
-      info "send [#{@key}] #{response.body.strip}", 1
+      info "notify reply: #{response.body.strip}"
     end
 
   protected

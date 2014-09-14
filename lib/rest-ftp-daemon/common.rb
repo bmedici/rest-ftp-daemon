@@ -21,18 +21,15 @@ module RestFtpDaemon
       @logger.add(Logger::INFO, "#{'  '*(level+1)} #{message}", progname)
     end
 
-
     def notify signal, error = 0, status = {}
-      # Check if we have to notify or not
-      url = get :notify
-      info "Common.notify s[#{signal}] url[#{url}] e[#{error}] s#{status.inspect}"
-
       # Skip is not callback URL defined
+      url = get :notify
       if url.nil?
+        info "Skipping notification (no valid url provided) sig[#{signal}] e[#{error}] s#{status.inspect}"
         return
       end
 
-      # Prepare notif body
+      # Build notification
       n = RestFtpDaemon::Notification.new
       n.job_id = id
       n.url = url
@@ -41,8 +38,9 @@ module RestFtpDaemon
       n.status = status
 
       # Now, send the notification
+      info "Queuing notification key[#{n.key}] sig[#{signal}] url[#{url}]"
       Thread.new(n) do |thread|
-        n.send
+        n.notify
       end
 
     end
