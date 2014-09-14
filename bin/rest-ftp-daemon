@@ -14,7 +14,7 @@ require File.expand_path "#{APP_ROOT}/lib/rest-ftp-daemon/config.rb"
 argv = ARGV
 argv << ["-R", rackup_file] unless ARGV.include?("-R")
 argv << ["-l", "/tmp/thin.log"] unless ARGV.include?("-l")
-# argv << ["--daemonize"] unless ARGV.include?("--daemonize")
+argv << ["--daemonize"] unless ARGV.include?("--daemonize")
 argv << ["-e", "production"] unless ARGV.include?("-e")
 argv << ["-p", (RestFtpDaemon::PORT).to_s] unless ARGV.include?("-p")
 #argv << ["--stats", "/stats"] unless ARGV.include?("--stats")
