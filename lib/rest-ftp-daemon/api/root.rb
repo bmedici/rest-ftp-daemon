@@ -7,8 +7,7 @@ module RestFtpDaemon
       #add_swagger_documentation
 
       mount RestFtpDaemon::API::Jobs => '/jobs'
-
-
+      # mount RestFtpDaemon::API::Workers => '/workers'
 
       helpers do
         def info message, level = 0
@@ -44,15 +43,18 @@ module RestFtpDaemon
       get '/' do
         info "GET /"
         status 200
-        {
+        return  {
           name: RestFtpDaemon::NAME,
           hostname: `hostname`.chomp,
           version: RestFtpDaemon::VERSION,
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),
           status: job_list_by_status,
-          routes: RestFtpDaemon::API::Root::routes
-        }
+          queue_size: $queue.all_size,
+          jobs_queued: $queue.queued.collect(&:id),
+          jobs_popped: $queue.popped.collect(&:id),
+          routes: RestFtpDaemon::API::Root::routes,
+          }
       end
 
       # Server test
