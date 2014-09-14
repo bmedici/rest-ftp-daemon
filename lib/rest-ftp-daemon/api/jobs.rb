@@ -69,21 +69,22 @@ module RestFtpDaemon
       desc "Kill and remove a specific job"
       delete ':id' do
        info "DELETE /jobs/#{params[:name]}"
-        begin
-          response = job_delete params[:id].to_i
-        rescue RestFtpDaemon::JobNotFound => exception
-          status 404
-          api_error exception
-        rescue RestFtpDaemonException => exception
-          status 500
-          api_error exception
-        rescue Exception => exception
-          status 501
-          api_error exception
-        else
-          status 200
-          response
-        end
+       status 501
+        # begin
+        #   response = job_delete params[:id].to_i
+        # rescue RestFtpDaemon::JobNotFound => exception
+        #   status 404
+        #   api_error exception
+        # rescue RestFtpDaemonException => exception
+        #   status 500
+        #   api_error exception
+        # rescue Exception => exception
+        #   status 501
+        #   api_error exception
+        # else
+        #   status 200
+        #   response
+        # end
       end
 
       # List jobs
