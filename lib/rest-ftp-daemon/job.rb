@@ -20,7 +20,6 @@ module RestFtpDaemon
 
       # Send first notification
       notify "rftpd.queued"
-
     end
 
     # def job_id
@@ -56,7 +55,7 @@ module RestFtpDaemon
         # Process
         transfer
 
-      rescue Net::FTPPermError
+      rescue Net::FTPPermError => exception
         info "Job.process failed [Net::FTPPermError]"
         set :status, :failed
         set :error, exception.class
