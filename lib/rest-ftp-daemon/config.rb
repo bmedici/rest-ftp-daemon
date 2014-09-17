@@ -14,7 +14,7 @@ Settings.source "/etc/rest-ftp-daemon.yml"
 
 # Forced shared settings
 Settings[:name] = "rest-ftp-daemon"
-Settings[:version] = 0.45
+Settings[:version] = 0.50
 
 # Forced fixed settings
 Settings[:default_trim_progname] = "18"

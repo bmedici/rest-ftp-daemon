@@ -23,9 +23,8 @@ Expected features in a short-time range :
 * Allow fallback file source when first file path is unavailable (failover)
 * Provide swagger-style API documentation
 * Authenticate API clients
-* Allow configuration-based path templates to abstract local machine mount points and authentication information
+* Allow configuration-based path templates to abstract local mounts or remote FTPs (endpoints)
 
-overwrite: any non empty value allows overwriting of target FTP file
 
 
 Installation
@@ -59,6 +58,7 @@ http://localhost:3000/
 ```
 
 For now, daemon logs to ```APP_LOGTO``` defined in ```lib/config.rb```
+
 
 
 Usage examples

@@ -13,9 +13,6 @@ module RestFtpDaemon
       @target = nil
       @source = nil
 
-      # Logger
-      #@logger = ActiveSupport::Logger.new APP_LOGTO, 'daily'
-
       # Init context
       set :id, id
       set :started_at, Time.now
@@ -24,10 +21,6 @@ module RestFtpDaemon
       # Send first notification
       notify "rftpd.queued"
     end
-
-    # def job_id
-    #   get :id
-    # end
 
     def progname
       job_id = get(:id)

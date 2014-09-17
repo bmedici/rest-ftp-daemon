@@ -1,9 +1,10 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.30.1)
+    rest-ftp-daemon (0.45)
       grape
       json
+      settingslogic
       thin (~> 1.6)
 
 GEM
@@ -50,6 +51,7 @@ GEM
     rack-mount (0.8.3)
       rack (>= 1.0.0)
     rake (10.3.2)
+    settingslogic (2.0.9)
     thin (1.6.2)
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
