@@ -2,22 +2,27 @@
 
 # Libs and init
 require "thin"
-
-# Initialize some local constants
 APP_ROOT = File.dirname(__FILE__) + '/../'
-rackup_file = File.expand_path "#{APP_ROOT}/config.ru"
+DEVELOPMENT = ARGV.include?("development")
 
-# Include config file
+# Include config file and build rack commandline
 require File.expand_path "#{APP_ROOT}/lib/rest-ftp-daemon/config.rb"
-
-# Prepare thin
 argv = ARGV
+argv << ["-p", Settings.port.to_s] unless ARGV.include?("-p") || Settings.port.nil?
+argv << ["-e", Settings.namespace] unless ARGV.include?("-e") || Settings.namespace.nil?
+argv << ["-l", Settings.logs.thin] unless ARGV.include?("-l") unless Settings.logs.thin.nil? unless Settings.logs.nil?
+argv << ["--daemonize"] if (Settings.daemonize==1 || Settings.daemonize.nil?) unless ARGV.include?("-d")
+
+# Rackup file
+rackup_file = File.expand_path "#{APP_ROOT}/config.ru"
 argv << ["-R", rackup_file] unless ARGV.include?("-R")
-argv << ["-l", "/tmp/thin.log"] unless ARGV.include?("-l")
-argv << ["--daemonize"] unless ARGV.include?("--daemonize")
-argv << ["-e", "production"] unless ARGV.include?("-e")
-argv << ["-p", (RestFtpDaemon::PORT).to_s] unless ARGV.include?("-p")
-#argv << ["--stats", "/stats"] unless ARGV.include?("--stats")
+
+# Display compiled configuration
+#puts "#{RestFtpDaemon::NAME} [#{Settings.namespace}]"
+puts "#{Settings.name} [#{Settings.namespace}]"
+puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
+puts "---"
+puts "parameters: #{argv.flatten}"
 
 # Start Thin with this rackup configuration
 puts

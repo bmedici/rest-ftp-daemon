@@ -1,15 +1,22 @@
-module RestFtpDaemon
-  # Global config
-  NAME = 'rest-ftp-daemon'
-  VERSION = "0.41"
-  PORT = 3000
+require 'settingslogic'
+DEVELOPMENT = false unless defined? DEVELOPMENT
 
-  # Transfer config
-  TRANSFER_CHUNK_SIZE = 100000
-  THREAD_SLEEP_BEFORE_DIE = 10
-
-  # Logging
-  APP_LOGTO = "/tmp/#{NAME}.log"
-  LOG_TRIM_PROGNAME = 18
-
+class Settings < Settingslogic
+  # source "/etc/#{RestFtpDaemon::NAME}.yml"
+  namespace DEVELOPMENT ? "development" : "production"
+  #suppress_errors namespace=="development"
+  suppress_errors true
+  # !DEVELOPMENT
 end
+
+# Fix application defaults
+Settings.source "/etc/rest-ftp-daemon.yml"
+
+# Forced shared settings
+Settings[:name] = "rest-ftp-daemon"
+Settings[:version] = 0.45
+
+# Forced fixed settings
+Settings[:default_trim_progname] = "18"
+Settings[:default_chunk_size] = "1000000"
+
