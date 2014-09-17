@@ -20,11 +20,13 @@ argv << ["-p", (RestFtpDaemon::PORT).to_s] unless ARGV.include?("-p")
 #argv << ["--stats", "/stats"] unless ARGV.include?("--stats")
 
 # Start Thin with this rackup configuration
-puts "#{RestFtpDaemon::NAME}: using [#{argv.join (' ')}]"
+puts
 begin
   Thin::Runner.new(argv.flatten).run!
+rescue Thin::PidFileExist
+  puts "EXITING: daemon was already running (Thin::PidFileExist)"
 rescue Thin::PidFileNotFound
-  puts "#{RestFtpDaemon::NAME}: not running (Thin::PidFileNotFound)"
+  puts "EXITING: daemon was not running (Thin::PidFileNotFound)"
 end
 
 
