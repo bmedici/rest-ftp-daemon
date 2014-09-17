@@ -16,7 +16,7 @@ end
 
 # Forced shared settings
 Settings[:name] = "rest-ftp-daemon"
-Settings[:version] = 0.52
+Settings[:version] = 0.53
 
 # Forced fixed settings
 Settings[:default_trim_progname] = "18"
