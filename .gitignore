@@ -1,8 +1,6 @@
 pkg
-NOTES.txt
 .bundle
 .DS_Store
 *.log
 tmp/
-
-
+work/
