@@ -1,0 +1,15 @@
+defaults: &defaults
+  daemonize: 1
+  port: 3000
+  workers: 1
+
+  transfer:
+    chunk_size: 100000
+
+  logs:
+    thin:
+    api:
+    workers:
+
+production:
+  <<: *defaults
