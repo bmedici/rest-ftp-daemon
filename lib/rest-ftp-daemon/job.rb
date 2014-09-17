@@ -131,21 +131,44 @@ module RestFtpDaemon
       @params[attribute.to_s]
     end
 
+    def expand_path_from path
+      File.expand_path replace_token_in_path(path)
+    end
+
+    def expand_url_from path
+      URI replace_token_in_path(path) rescue nil
+    end
+
+    def replace_token_in_path path
+      # Ensure endpoints are not a nil value
+      return path unless Settings.endpoints.is_a? Enumerable
+      newpath = path.clone
+
+      Settings.endpoints.each do |from, to|
+        newpath.gsub! "[#{from}]", to
+      end
+
+      return newpath
+    end
+
     def prepare
       # Init
       set :status, :preparing
 
       # Check source
       raise JobSourceMissing unless @params["source"]
-      @source = File.expand_path(@params["source"])
+      @source = expand_path_from @params["source"]
       set :debug_source, @source
-      raise JobSourceNotFound unless File.exists? @source
 
       # Check target
       raise JobTargetMissing unless @params["target"]
-      @target = URI(@params["target"]) rescue nil
+      @target = expand_url_from @params["target"]
       set :debug_target, @target.inspect
+
+      # Check compliance
       raise JobTargetUnparseable if @target.nil?
+      raise JobSourceNotFound unless File.exists? @source
+
     end
 
     def transfer_fake
@@ -196,7 +219,8 @@ module RestFtpDaemon
 
       # Do transfer
       set :status, :uploading
-      ftp.putbinaryfile(@source, target_name, TRANSFER_CHUNK_SIZE) do |block|
+      chunk_size = Settings.transfer.chunk_size || Settings[:default_chunk_size]
+      ftp.putbinaryfile(@source, target_name, chunk_size) do |block|
         # Update counters
         transferred += block.bytesize
 
@@ -210,6 +234,8 @@ module RestFtpDaemon
       notify "rftpd.ended"
       ftp.close
     end
+
+  private
 
   end
 end

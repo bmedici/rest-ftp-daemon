@@ -109,7 +109,30 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"source":"~/file.dmg","priority":"3", target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
 
-Get status of a specific job based on its ID
+* Start a job using endpoint tokens
+
+First define ``nas`` ans ``ftp1`` in the configuration file :
+
+``` 
+defaults: &defaults
+
+development:
+  <<: *defaults
+
+  endpoints:
+    nas: "~/"
+    ftp1: "ftp://anonymous@localhost/incoming/"
+```
+
+Thos tokens will be expanded when the job is ran :
+
+```
+curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
+'{"source":"~/file.dmg","priority":"3", target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
+```
+
+ 
+* Get status of a specific job based on its ID
 
 ```
 curl -H "Content-Type: application/json" -X GET -D /dev/stdout "http://localhost:3000/jobs/3"
