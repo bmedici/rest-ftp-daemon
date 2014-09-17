@@ -5,6 +5,7 @@ This is a pretty simple FTP client daemon, controlled through a RESTfull API.
 
 As of today, its main features are :
 
+* Allow environment-specific configuration in a YAML file
 * Delegate a transfer job by ``POST```'ing a simple JSON structure
 * Spawn a dedicated thread to handle this job in its own context
 * Report transfer status, progress and errors for each job in realtime
@@ -14,6 +15,8 @@ As of today, its main features are :
 * Allow dynamic evaluation of priorities, and change of any attribute until the job is picked
 * Provide RESTful notifications to the requesting client
 * Allow authentication in FTP target in a standard URI-format
+* Allow configuration-based path templates to abstract local mounts or remote FTPs (endpoint tokens)
+
 
 Expected features in a short-time range :
 
@@ -23,7 +26,6 @@ Expected features in a short-time range :
 * Allow fallback file source when first file path is unavailable (failover)
 * Provide swagger-style API documentation
 * Authenticate API clients
-* Allow configuration-based path templates to abstract local mounts or remote FTPs (endpoints)
 
 
 
@@ -85,7 +87,7 @@ Otherwise separate logging paths can be provided for the Thin webserver, API rel
 Usage examples
 ------------------------------------------------------------------------------------
 
-Start a job to transfer a file named "file.iso" to a local FTP server
+* Start a job to transfer a file named "file.iso" to a local FTP server
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
@@ -95,14 +97,15 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 Requesting notifications is achieved by passing a "notify" key in the request, with a callback URL.
 This URL will be called at some points, ``POST```'ing a generic JSON structure with progress information.
 
-Start a job to transfer a file, and request notifications ``POST```'ed on "http://requestb.in/1321axg1"
+
+* Start a job requesting notifications ``POST```'ed on "http://requestb.in/1321axg1"
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"source":"~/file.dmg","target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
 
-Start a job with all the above plus a priority
+* Start a job with all the above plus a priority
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
@@ -138,7 +141,8 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 curl -H "Content-Type: application/json" -X GET -D /dev/stdout "http://localhost:3000/jobs/3"
 ```
 
-Delete a specific job based on its ID
+
+* Delete a specific job based on its ID
 
 ```
 curl -H "Content-Type: application/json" -X DELETE -D /dev/stdout "http://localhost:3000/jobs/3"
