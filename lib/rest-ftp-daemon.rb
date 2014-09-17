@@ -1,8 +1,5 @@
 # Global libs
 require 'json'
-require 'grape'
-require 'net/ftp'
-require 'net/http'
 require 'securerandom'
 # require 'celluloid/autostart'
 

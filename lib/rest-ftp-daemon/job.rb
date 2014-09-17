@@ -1,3 +1,6 @@
+require 'net/ftp'
+
+
 module RestFtpDaemon
   class Job < RestFtpDaemon::Common
 

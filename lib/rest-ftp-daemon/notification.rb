@@ -1,3 +1,5 @@
+require 'net/http'
+
 module RestFtpDaemon
   class Notification < RestFtpDaemon::Common
     attr_accessor :job_id
