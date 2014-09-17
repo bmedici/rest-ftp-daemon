@@ -3,7 +3,7 @@ module RestFtpDaemon
 
     class Jobs < Grape::API
       include RestFtpDaemon::API::Defaults
-      logger ActiveSupport::Logger.new APP_LOGTO, 'daily'
+      logger ActiveSupport::Logger.new Settings.logs.api, 'daily' unless Settings.logs.api.nil?
 
       params do
         optional :overwrite, type: Integer, default: false

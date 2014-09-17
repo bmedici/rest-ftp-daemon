@@ -6,7 +6,7 @@ module RestFtpDaemon
 
     def initialize
       # Logger
-      @logger = ActiveSupport::Logger.new APP_LOGTO, 'daily'
+      @logger = ActiveSupport::Logger.new Settings.logs.workers, 'daily' unless Settings.logs.workers.nil?
     end
 
     def id

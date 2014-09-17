@@ -3,7 +3,7 @@ module RestFtpDaemon
 
     class Root < Grape::API
       include RestFtpDaemon::API::Defaults
-      logger ActiveSupport::Logger.new APP_LOGTO, 'daily'
+      logger ActiveSupport::Logger.new Settings.logs.api, 'daily' unless Settings.logs.api.nil?
       #add_swagger_documentation
 
       mount RestFtpDaemon::API::Jobs => '/jobs'
@@ -44,9 +44,9 @@ module RestFtpDaemon
         info "GET /"
         status 200
         return  {
-          name: RestFtpDaemon::NAME,
           hostname: `hostname`.chomp,
-          version: RestFtpDaemon::VERSION,
+          version: Settings.version,
+          config: Settings.to_hash,
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),
           status: job_list_by_status,
