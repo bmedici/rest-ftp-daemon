@@ -1,5 +1,6 @@
 require 'settingslogic'
 DEVELOPMENT = false unless defined? DEVELOPMENT
+CONFIG_FILE = "/etc/rest-ftp-daemon.yml"
 
 class Settings < Settingslogic
   # source "/etc/#{RestFtpDaemon::NAME}.yml"
@@ -9,8 +10,12 @@ class Settings < Settingslogic
   # !DEVELOPMENT
 end
 
-# Fix application defaults
-Settings.source "/etc/rest-ftp-daemon.yml"
+# Fix application defaults and load config file if found
+if File.exists? CONFIG_FILE
+  Settings.source CONFIG_FILE
+else
+  Settings.source Hash.new
+end
 
 # Forced shared settings
 Settings[:name] = "rest-ftp-daemon"
