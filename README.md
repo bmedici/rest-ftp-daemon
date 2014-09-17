@@ -116,7 +116,7 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 
 First define ``nas`` ans ``ftp1`` in the configuration file :
 
-``` 
+```
 defaults: &defaults
 
 development:
@@ -134,7 +134,8 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"source":"~/file.dmg","priority":"3", target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
 
- 
+NB: a special token [RANDOM] helps to generate a random filename when needed
+
 * Get status of a specific job based on its ID
 
 ```

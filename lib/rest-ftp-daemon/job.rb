@@ -144,9 +144,13 @@ module RestFtpDaemon
       return path unless Settings.endpoints.is_a? Enumerable
       newpath = path.clone
 
+      # Replace endpoints defined in config
       Settings.endpoints.each do |from, to|
         newpath.gsub! "[#{from}]", to
       end
+
+      # Replace with the special RAND token
+      newpath.gsub! "[RANDOM]", SecureRandom.hex(8)
 
       return newpath
     end
