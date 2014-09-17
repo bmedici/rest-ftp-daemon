@@ -57,8 +57,29 @@ Check that the daemon is running and giving status info
 http://localhost:3000/
 ```
 
-For now, daemon logs to ```APP_LOGTO``` defined in ```lib/config.rb```
+Configuration
+------------------------------------------------------------------------------------
+Most of the configuration options live in a YAML configuration file, containing two main sections:
 
+* the ``defaults`` section should be left as-is and will be used is no other environment-specific value is provided.
+* the ``production`` section can receive personnalized settings according to your environment-specific setup and paths.
+
+Configuration priority is defined as follows (from most important to last resort):
+
+* command-line parameters
+* config file defaults section
+* config file environment section
+* application internal defaults
+
+
+As a starting point, ``rest-ftp-daemon.yml.sample`` is an exemple config file that can be  copied into the expected location ``/etc/rest-ftp-daemon.yml``.
+
+
+Logging
+------------------------------------------------------------------------------------
+
+The application will not log to any file by default, if not specified in its configuration.
+Otherwise separate logging paths can be provided for the Thin webserver, API related messages, and workers related messages. Providing and empty value will simply activate logging to ``STDOUT``.
 
 
 Usage examples
