@@ -1,6 +1,8 @@
 rest-ftp-daemon
 ====================================================================================
 
+
+
 This is a pretty simple FTP client daemon, controlled through a RESTfull API.
 
 As of today, its main features are :
@@ -178,18 +180,19 @@ This query will return a job list :
     "transferred": 37100000
   },
   {
-    "source": "~/file.ova",
-    "target": "ftp://anonymous@localhost/incoming/dest2.ova",
-    "worker_name": "bob-92439-2",
-    "created": "2014-08-01 16:53:12 +0200",
-    "id": 17,
-    "runtime": 13.8,
-    "status": "uploading",
-    "source_size": 1849036800,
-    "error": -1,
-    "errmsg": "uploading",
-    "progress": 36.1,
-    "transferred": 668300000
+    source: "[nas]/file.dmg",
+    target: "[ftp2]/dest4.dmg",
+    notify: "http://requestb.in/1321axg1",
+    updated_at: "2014-09-17 22:56:14 +0200",
+    id: 2,
+    started_at: "2014-09-17 22:56:01 +0200",
+    status: "uploading",
+    error: 0,
+    debug_source: "/Users/bruno/file.dmg",
+    debug_target: "#<URI::FTP:0x007ffa9289e650 URL:ftp://uuuuuuuu:yyyyyyyyy@ftp.xxxxxx.fr/subdir/dest4.dmg>",
+    file_size: 32093208,
+    file_progress: 5.6,
+    file_sent: 1800000
   }
 ]
 ```
