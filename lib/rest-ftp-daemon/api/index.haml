@@ -33,24 +33,28 @@
         .btn.btn-default= @info_procs
 
       .btn-group.btn-group-sm
-        .btn.btn-default.btn-warning Load average
+        .btn.btn-default.btn-warning Load
         .btn.btn-default= @info_load.round(1)
 
       .btn-group.btn-group-sm
-        .btn.btn-default.btn-warning Normalized load
+        .btn.btn-default.btn-warning CPU
         .btn.btn-default= "#{@info_norm} %"
 
       .btn-group.btn-group-sm
-        .btn.btn-default.btn-success IP Address
-        .btn.btn-default= @info_ipaddr
-
-      .btn-group.btn-group-sm
-        .btn.btn-default.btn-success Memory free
+        .btn.btn-default.btn-warning Free
         .btn.btn-default= @info_memfree
 
       .btn-group.btn-group-sm
-        .btn.btn-default.btn-info Settings.workers
+        .btn.btn-default.btn-success IP
+        .btn.btn-default= @info_ipaddr
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-success Workers
         .btn.btn-default= Settings.workers
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-info Transferred
+        .btn.btn-default= format_nice_bytes(@info_total_transferred)
 
 
       %h2
@@ -64,13 +68,16 @@
           %th= "priority"
           %th= "source"
           %th= "target"
+          %th= "size"
           %th= "status"
           %th= "error"
           %th= "progress"
+          %th
 
         - @jobs.each do |job|
           - error = job.get :error
           - status = job.get :status
+          - size = job.get :file_size
           - progress = job.get :progress
 
           - if error!=0 && !error.nil?
@@ -88,13 +95,17 @@
             %td= job.get :priority
             %td= job.get :source
             %td= job.get :target
+            %td= format_nice_bytes(size)
             %td= status
             %td= error
             %td
               - unless progress.nil?
                 .progress
                   .progress-bar{style:"width: #{progress}%;"}
-                    = "#{progress} %"
+                    = format_nice_bytes job.get(:file_sent)
+            %td
+              - unless progress.nil?
+                = "#{progress} %"
 
 
       %h2 Endpoint tokens

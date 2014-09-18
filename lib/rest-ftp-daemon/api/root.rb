@@ -66,6 +66,14 @@ module RestFtpDaemon
           @info_norm = (100 * @info_load / @info_procs).round(1)
         end
 
+        # Compute total transferred
+        @info_total_transferred = 0
+        @jobs.each do |job|
+          sent = job.get(:file_sent)
+          @info_total_transferred += sent unless sent.nil?
+        end
+
+
         # Compile haml template
         @name = "Test"
         template = File.read("#{File.dirname(__FILE__)}/index.haml")

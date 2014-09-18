@@ -1,4 +1,7 @@
+# encoding: UTF-8
 require 'grape'
+SIZE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB" ]
+
 
 module RestFtpDaemon
   module API
@@ -42,6 +45,12 @@ module RestFtpDaemon
         # end
 
         helpers do
+          def format_nice_bytes( number )
+            return "Ø" if number.nil? || number.zero?
+            index = ( Math.log( number ) / Math.log( 2 ) ).to_i / 10
+            converted = number.to_i / ( 1024 ** index )
+            "#{converted} #{SIZE_UNITS[index]}"
+          end
           def api_error exception
             {
             :error => exception.class,
