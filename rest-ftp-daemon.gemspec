@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "grape"
   spec.add_runtime_dependency "facter"
   spec.add_runtime_dependency "settingslogic"
+  spec.add_runtime_dependency "haml"
   spec.add_runtime_dependency "json"
 
 end
