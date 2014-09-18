@@ -26,8 +26,10 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "thin", "~> 1.6"
   spec.add_runtime_dependency "grape"
-  spec.add_runtime_dependency "facter"
   spec.add_runtime_dependency "settingslogic"
+  spec.add_runtime_dependency "haml"
   spec.add_runtime_dependency "json"
+  spec.add_runtime_dependency "facter"
+  spec.add_runtime_dependency "sys-cpu"
 
 end

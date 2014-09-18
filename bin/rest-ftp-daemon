@@ -33,6 +33,8 @@ rescue Thin::PidFileExist
   puts "EXITING: daemon was already running (Thin::PidFileExist)"
 rescue Thin::PidFileNotFound
   puts "EXITING: daemon was not running (Thin::PidFileNotFound)"
+else
+  puts "PROCESS ENDING"
 end
 
 
