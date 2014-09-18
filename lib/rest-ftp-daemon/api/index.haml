@@ -1,0 +1,105 @@
+!!! 5
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %link{ href:"//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" , rel: "stylesheet"}
+
+    %title="#{Settings.name} dashboard"
+
+    :css
+
+      #footer {
+        padding: 15px 0;
+        _border-top: 1px solid silver;
+        }
+
+      .progress {
+        margin-bottom: 0;
+        }
+
+  %body
+
+    .container
+      %h1
+        = Settings.name
+        %small
+          = "v#{Settings.version}"
+          = "[#{Settings.namespace}]"
+
+
+      %h2 System status
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-warning Processors
+        .btn.btn-default= @info_procs
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-warning Load average
+        .btn.btn-default= @info_load.round(1)
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-warning Normalized load
+        .btn.btn-default= "#{@info_norm} %"
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-success IP Address
+        .btn.btn-default= @info_ipaddr
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-success Memory free
+        .btn.btn-default= @info_memfree
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-info Settings.workers
+        .btn.btn-default= Settings.workers
+
+
+      %h2
+        Jobs on this system (#{@jobs_all})
+        %small
+          queued (#{@jobs_queued}) /  popped (#{@jobs_popped})
+
+      %table.table.table-striped.table-hover.table-condensed
+        %tr
+          %th= "ID"
+          %th= "priority"
+          %th= "source"
+          %th= "target"
+          %th= "status"
+          %th= "error"
+          %th= "progress"
+
+        - @jobs.each do |job|
+          - error = job.get :error
+          - status = job.get :status
+          - progress = job.get :progress
+
+          - if error!=0 && !error.nil?
+            - trclass = "danger"
+          - elsif status == :uploading
+            - trclass = "info"
+          - elsif status == :finished
+            - trclass = "success"
+          - else
+            - trclass = "warning"
+
+          %tr{class: trclass}
+
+            %td= job.id
+            %td= job.get :priority
+            %td= job.get :source
+            %td= job.get :target
+            %td= status
+            %td= error
+            %td
+              - unless progress.nil?
+                .progress
+                  .progress-bar{style:"width: #{progress}%;"}
+                    = "#{progress} %"
+
+
+      %h2 Endpoint tokens
+      - endpoints = Settings.endpoints || {}
+      - endpoints.each do |token, value|
+        .btn-group.btn-group-sm
+          .btn.btn-default.btn-danger= token
+          .btn.btn-default= value

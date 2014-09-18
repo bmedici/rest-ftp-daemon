@@ -1,4 +1,5 @@
 # Global libs
+require 'rubygems'
 require 'json'
 require 'securerandom'
 # require 'celluloid/autostart'
@@ -15,6 +16,4 @@ require 'rest-ftp-daemon/notification'
 require 'rest-ftp-daemon/api/defaults'
 require 'rest-ftp-daemon/api/jobs'
 require 'rest-ftp-daemon/api/root'
-# require 'rest-ftp-daemon/api/workers'
-require 'rest-ftp-daemon/www'
 

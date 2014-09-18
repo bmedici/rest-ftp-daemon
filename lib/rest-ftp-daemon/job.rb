@@ -16,7 +16,7 @@ module RestFtpDaemon
       # Init context
       set :id, id
       set :started_at, Time.now
-      set :status, :initialized
+      set :status, :created
 
       # Send first notification
       notify "rftpd.queued"
@@ -95,6 +95,11 @@ module RestFtpDaemon
       @status = text
     end
 
+    def get attribute
+      return nil unless @params.is_a? Enumerable
+      @params[attribute.to_s]
+    end
+
   protected
 
     def up_time
@@ -124,11 +129,6 @@ module RestFtpDaemon
       return unless @params.is_a? Enumerable
       @params[:updated_at] = Time.now
       @params[attribute.to_s] = value
-    end
-
-    def get attribute
-      return nil unless @params.is_a? Enumerable
-      @params[attribute.to_s]
     end
 
     def expand_path_from path
@@ -230,12 +230,13 @@ module RestFtpDaemon
 
         # Update job info
         percent = (100.0 * transferred / source_size).round(1)
-        set :file_progress, percent
+        set :progress, percent
         set :file_sent, transferred
       end
 
       # Close FTP connexion
       notify "rftpd.ended"
+      set :progress, nil
       ftp.close
     end
 

@@ -155,7 +155,11 @@ curl -H "Content-Type: application/json" -X DELETE -D /dev/stdout "http://localh
 Getting status
 ------------------------------------------------------------------------------------
 
-The server exposes jobs list on ``` GET /jobs ```
+* A global JSON status is provided on ``` GET /index.json ```
+
+* A nice dashboard gives a global view of the daemon, jobs in queue, and system status, exposed on ``` GET /```
+
+* The server exposes its jobs list on ``` GET /jobs ```
 
 ```
 http://localhost:3000/jobs

@@ -11,4 +11,5 @@ $pool = RestFtpDaemon::WorkerPool.new(Settings.workers.to_i)
 
 # Start REST FTP Daemon
 #run Rack::Cascade.new [Rack::File.new("/public"), RestFtpDaemon::API::Root]
+#run Rack::URLMap.new("/" => Frontend.new, "/api" => Api.new)
 run Rack::Cascade.new [RestFtpDaemon::API::Root]
