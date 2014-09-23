@@ -1,0 +1,75 @@
+- grouped = jobs.group_by { |job| job.get(:status) }
+- counts = {}
+- grouped.each do |status, jobs|
+  - counts[status] = jobs.size
+
+:ruby
+  if !params["only"].blank? && (grouped.keys.include? params["only"].to_sym)
+    jobs_to_display = grouped[params["only"].to_sym] || []
+  else
+    jobs_to_display = jobs
+  end
+
+  label = "All jobs (#{jobs.size})"
+
+
+
+%h2
+  Jobs (#{jobs.size})
+  = "&nbsp;"
+
+  .btn-group.btn-group-xs
+    - klass = (params['only'].blank?) ? "btn-info" : ""
+    %a.btn.btn-default{href: "?only=", class: klass}
+      ALL
+
+    - counts.each do |status, count|
+      - klass = (status.to_s == params['only']) ? "btn-info" : ""
+      %a.btn.btn-default{href: "?only=#{status}", class: klass}
+        #{status} (#{count})
+
+%table.table.table-striped.table-hover.table-condensed
+
+  %tr
+    %th= "ID"
+    %th= "priority"
+    %th= "source"
+    %th= "target"
+    %th= "size"
+    %th= "status"
+    %th= "error"
+    %th= "progress"
+    %th
+
+  - jobs_to_display.each do |job|
+    - error = job.get :error
+    - status = job.get :status
+    - size = job.get :file_size
+    - progress = job.get :progress
+
+    - if error!=0 && !error.nil?
+      - trclass = "danger"
+    - elsif status == :uploading
+      - trclass = "info"
+    - elsif status == :finished
+      - trclass = "success"
+    - else
+      - trclass = "warning"
+
+    %tr{class: trclass}
+
+      %td= job.id
+      %td= job.get :priority
+      %td= job.get :source
+      %td= job.get :target
+      %td= format_nice_bytes(size)
+      %td= status
+      %td= error
+      %td
+        - unless progress.nil?
+          .progress
+            .progress-bar{style:"width: #{progress}%;"}
+              = format_nice_bytes job.get(:file_sent)
+      %td
+        - unless progress.nil?
+          = "#{progress} %"

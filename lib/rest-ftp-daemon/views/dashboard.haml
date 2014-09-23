@@ -1,0 +1,86 @@
+!!! 5
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %link{ href:"/css/bootstrap.min.css" , rel: "stylesheet"}
+
+    %title="#{Settings.name} dashboard"
+
+    :css
+
+      h2 {
+        font-size: 1.5em;
+        margin-top: 2em;
+      }
+
+      #header {
+        padding: 20px auto;
+        border-bottom: 1px solid silver;
+        background-color: #eee;
+        }
+
+      .progress {
+        margin-bottom: 0;
+        }
+
+  %body
+
+    .navbar.navbar-default.navbar-fixed
+      .container
+
+        .navbar-header
+          %h1
+            = Settings.name
+            %small
+              = "v#{Settings.version}"
+              = "[#{Settings.namespace}]"
+
+
+    .container
+
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-success Processors
+        .btn.btn-default= @info_procs
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-success Workers
+        .btn.btn-default= Settings.workers
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-success IP
+        .btn.btn-default= @info_ipaddr
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-warning Load
+        .btn.btn-default= @info_load.round(1)
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-warning CPU
+        .btn.btn-default= "#{@info_norm} %"
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-warning Free
+        .btn.btn-default= @info_memfree
+
+      .btn-group.btn-group-sm
+        .btn.btn-default.btn-info Transferred
+        .btn.btn-default= format_nice_bytes(@total_transferred)
+
+
+      = render :dashboard_jobs, {jobs: @jobs_all}
+
+      =# render :dashboard_jobs, {kind: "queued", jobs: @jobs_queued}
+
+
+      %h2 Endpoint tokens
+      - endpoints = Settings.endpoints || {}
+      - endpoints.each do |token, value|
+        .btn-group.btn-group-sm
+          .btn.btn-default.btn-danger= token
+          .btn.btn-default= value
+
+
+
+      %br
+      %br

@@ -47,19 +47,20 @@ module RestFtpDaemon
       # Server global status
       get '/' do
         # Prepare data
-        @jobs = $queue.all
-        @jobs_all = $queue.all_size
-        @jobs_queued = $queue.queued_size
-        @jobs_popped = $queue.popped_size
+        @jobs_all = $queue.all
+        #@jobs_all_size = $queue.all_size
+        #@jobs_all = $queue.all_size
 
         # Initialize UsageWatch
         Facter.loadfacts
         @info_load = Sys::CPU.load_avg.first.to_f
         @info_procs = (Facter.value :processorcount).to_i
-        @info_ipaddr = Facter.value :ipaddress
-        @info_memfree = Facter.value :memoryfree
+        @info_ipaddr = Facter.value(:ipaddress)
+        @info_memfree = Facter.value(:memoryfree)
+
 
         # Compute normalized load
+        # puts "info_procs: #{info_procs}"
         if @info_procs.zero?
           @info_norm = "N/A"
         else
@@ -67,12 +68,11 @@ module RestFtpDaemon
         end
 
         # Compute total transferred
-        @info_total_transferred = 0
-        @jobs.each do |job|
+        @total_transferred = 0
+        @jobs_all.each do |job|
           sent = job.get(:file_sent)
-          @info_total_transferred += sent unless sent.nil?
+          @total_transferred += sent unless sent.nil?
         end
-
 
         # Compile haml template
         @name = "Test"
