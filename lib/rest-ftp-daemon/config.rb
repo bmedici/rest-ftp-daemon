@@ -1,5 +1,6 @@
 require 'settingslogic'
 DEVELOPMENT = false unless defined? DEVELOPMENT
+APP_NAME="rest-ftp-daemon"
 
 class Settings < Settingslogic
   namespace DEVELOPMENT ? "development" : "production"
