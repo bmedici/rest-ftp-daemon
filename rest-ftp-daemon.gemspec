@@ -1,12 +1,14 @@
 # coding: utf-8
+
+# Config
+APP_NAME="rest-ftp-daemon"
+
+# Libs
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-
-APP_NAME = "rest-ftp-daemon"
 require 'rest-ftp-daemon/config'
 
 Gem::Specification.new do |spec|
-  #spec.name = RestFtpDaemon::NAME
   spec.name = Settings[:name]
   spec.date = Time.now.strftime("%Y-%m-%d")
   spec.authors = ["Bruno MEDICI"]

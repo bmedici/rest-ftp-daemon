@@ -2,9 +2,9 @@
 
 # Libs and init
 require "thin"
-DEVELOPMENT = ARGV.include?("development")
-APP_ROOT = File.expand_path(File.dirname(__FILE__) + '/../')
-APP_NAME = "rest-ftp-daemon"
+DEVELOPMENT=ARGV.include?("development")
+APP_ROOT=File.expand_path(File.dirname(__FILE__) + '/../')
+APP_NAME="rest-ftp-daemon"
 
 # Include config file and build rack commandline
 require File.expand_path("#{APP_ROOT}/lib/#{APP_NAME}/config.rb")

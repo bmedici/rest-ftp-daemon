@@ -16,7 +16,7 @@ end
 
 # Forced shared settings
 Settings[:name] = APP_NAME
-Settings[:version] = 0.58
+Settings[:version] = 0.60
 
 # Forced fixed settings
 Settings[:default_trim_progname] = "18"
