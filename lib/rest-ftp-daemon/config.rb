@@ -1,6 +1,5 @@
 require 'settingslogic'
 DEVELOPMENT = false unless defined? DEVELOPMENT
-CONFIG_FILE = "/etc/rest-ftp-daemon.yml"
 
 class Settings < Settingslogic
   namespace DEVELOPMENT ? "development" : "production"
@@ -8,17 +7,17 @@ class Settings < Settingslogic
 end
 
 # Fix application defaults and load config file if found
-if File.exists? CONFIG_FILE
-  Settings.source CONFIG_FILE
+app_config_file = "/etc/#{APP_NAME}.yml"
+if File.exists? app_config_file
+  Settings.source app_config_file
 else
   Settings.source Hash.new
 end
 
 # Forced shared settings
-Settings[:name] = "rest-ftp-daemon"
+Settings[:name] = APP_NAME
 Settings[:version] = 0.58
 
 # Forced fixed settings
 Settings[:default_trim_progname] = "18"
 Settings[:default_chunk_size] = "1000000"
-

@@ -2,11 +2,12 @@
 
 # Libs and init
 require "thin"
-APP_ROOT = File.dirname(__FILE__) + '/../'
 DEVELOPMENT = ARGV.include?("development")
+APP_ROOT = File.expand_path(File.dirname(__FILE__) + '/../')
+APP_NAME = "rest-ftp-daemon"
 
 # Include config file and build rack commandline
-require File.expand_path("#{APP_ROOT}/lib/rest-ftp-daemon/config.rb")
+require File.expand_path("#{APP_ROOT}/lib/#{APP_NAME}/config.rb")
 argv = ARGV
 argv << ["-p", Settings.port.to_s] unless ARGV.include?("-p") || Settings.port.nil?
 argv << ["-e", Settings.namespace] unless ARGV.include?("-e") || Settings.namespace.nil?

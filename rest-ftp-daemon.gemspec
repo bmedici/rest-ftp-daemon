@@ -1,6 +1,8 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+APP_NAME = "rest-ftp-daemon"
 require 'rest-ftp-daemon/config'
 
 Gem::Specification.new do |spec|

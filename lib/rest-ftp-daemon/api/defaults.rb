@@ -45,12 +45,14 @@ module RestFtpDaemon
         # end
 
         helpers do
+
           def format_nice_bytes( number )
             return "Ø" if number.nil? || number.zero?
             index = ( Math.log( number ) / Math.log( 2 ) ).to_i / 10
             converted = number.to_i / ( 1024 ** index )
             "#{converted} #{SIZE_UNITS[index]}"
           end
+
           def api_error exception
             {
             :error => exception.class,
@@ -59,16 +61,16 @@ module RestFtpDaemon
             #:backtrace => exception.backtrace,
             }
           end
-        end
 
-      end
           def render name, values={}
             template = File.read("#{APP_ROOT}/lib/#{APP_NAME}/views/#{name.to_s}.haml")
             haml_engine = Haml::Engine.new(template)
             haml_engine.render(binding, values)
           end
 
+        end
 
+      end
     end
   end
 end
