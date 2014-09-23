@@ -3,11 +3,10 @@
 # Libs and init
 require "thin"
 DEVELOPMENT=ARGV.include?("development")
-HERE=File.expand_path(File.dirname(__FILE__) + '/../')
-#APP_NAME2="rest-ftp-daemon"
+APP_ROOT=File.expand_path(File.dirname(__FILE__) + '/../')
 
 # Include config file and build rack commandline
-require File.expand_path("#{HERE}/lib/rest-ftp-daemon/config.rb")
+require File.expand_path("#{APP_ROOT}/lib/rest-ftp-daemon/config.rb")
 
 argv = ARGV
 argv << ["-p", Settings.port.to_s] unless ARGV.include?("-p") || Settings.port.nil?
@@ -16,12 +15,12 @@ argv << ["-l", Settings.logs.thin] unless ARGV.include?("-l") unless Settings.lo
 argv << ["--daemonize"] if (Settings.daemonize==1 || Settings.daemonize.nil?) unless ARGV.include?("-d")
 
 # Rackup file
-argv << ["-R", File.expand_path("#{HERE}/config.ru")] unless ARGV.include?("-R")
+argv << ["-R", File.expand_path("#{APP_ROOT}/config.ru")] unless ARGV.include?("-R")
 
 # Display compiled configuration
 puts
-puts "Daemon name \t #{Settings.name}"
-puts "Version     \t #{Settings.version}"
+puts "Daemon name \t #{Settings.app_name}"
+puts "Version     \t #{Settings.app_ver}"
 puts "Environment \t #{Settings.namespace}"
 puts "Config file \t #{Settings.source}"
 puts "Parameters  \t #{argv.flatten}"

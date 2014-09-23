@@ -10,5 +10,5 @@ $queue = RestFtpDaemon::JobQueue.new
 $pool = RestFtpDaemon::WorkerPool.new(Settings.workers.to_i)
 
 # Start REST FTP Daemon
-use Rack::Static, :urls => ["/css", "/images"], :root => "lib/rest-ftp-daemon/static/"
+use Rack::Static, :urls => ["/css", "/images"], :root => "#{APP_ROOT}/lib/rest-ftp-daemon/static/"
 run Rack::Cascade.new [RestFtpDaemon::API::Root]

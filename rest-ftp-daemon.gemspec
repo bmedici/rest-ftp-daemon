@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'rest-ftp-daemon/config'
 
 Gem::Specification.new do |spec|
-  spec.name = Settings[:name]
+  spec.name = Settings[:app_name]
   spec.date = Time.now.strftime("%Y-%m-%d")
   spec.authors = ["Bruno MEDICI"]
   spec.email = "rest-ftp-daemon@bmconseil.com"
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-  spec.version       = Settings[:version]
+  spec.version       = Settings[:app_ver]
 
   spec.required_ruby_version = '>= 1.9.3'
 
