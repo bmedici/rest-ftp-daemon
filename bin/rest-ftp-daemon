@@ -3,11 +3,12 @@
 # Libs and init
 require "thin"
 DEVELOPMENT=ARGV.include?("development")
-APP_ROOT=File.expand_path(File.dirname(__FILE__) + '/../')
-APP_NAME="rest-ftp-daemon"
+HERE=File.expand_path(File.dirname(__FILE__) + '/../')
+#APP_NAME2="rest-ftp-daemon"
 
 # Include config file and build rack commandline
-require File.expand_path("#{APP_ROOT}/lib/#{APP_NAME}/config.rb")
+require File.expand_path("#{HERE}/lib/rest-ftp-daemon/config.rb")
+
 argv = ARGV
 argv << ["-p", Settings.port.to_s] unless ARGV.include?("-p") || Settings.port.nil?
 argv << ["-e", Settings.namespace] unless ARGV.include?("-e") || Settings.namespace.nil?
@@ -15,7 +16,7 @@ argv << ["-l", Settings.logs.thin] unless ARGV.include?("-l") unless Settings.lo
 argv << ["--daemonize"] if (Settings.daemonize==1 || Settings.daemonize.nil?) unless ARGV.include?("-d")
 
 # Rackup file
-argv << ["-R", File.expand_path("#{APP_ROOT}/config.ru")] unless ARGV.include?("-R")
+argv << ["-R", File.expand_path("#{HERE}/config.ru")] unless ARGV.include?("-R")
 
 # Display compiled configuration
 puts

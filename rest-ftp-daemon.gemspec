@@ -1,8 +1,5 @@
 # coding: utf-8
 
-# Config
-APP_NAME="rest-ftp-daemon"
-
 # Libs
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
