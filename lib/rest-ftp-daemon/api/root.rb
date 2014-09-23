@@ -76,14 +76,7 @@ module RestFtpDaemon
 
         # Compile haml template
         @name = "Test"
-        template = File.read("#{File.dirname(__FILE__)}/index.haml")
-        haml_engine = Haml::Engine.new(template)
-        output = haml_engine.render(binding)
-        #[200, {'Content-Type' => 'text/html'}, [output]]
-
-        # Generate output
-        # env['api.format'] = :binary
-        # env['api.format'] = :txt
+        output = render :dashboard
 
         # Send response
         env['api.format'] = :html
