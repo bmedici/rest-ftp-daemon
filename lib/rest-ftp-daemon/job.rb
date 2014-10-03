@@ -214,11 +214,18 @@ module RestFtpDaemon
 
       # Check for target file presence
       if get(:overwrite).nil?
-        set :status, :target_checking
-        results = ftp.list(target_name)
-        #results = ftp.list()
+        info "Job.transfer target_presence (#{target_name})"
+        set :status, :target_presence
 
-        unless results.count.zero?
+        # Get file list, sometimes the response can be an empty value
+        results = ftp.list(target_name) rescue nil
+
+        # Result can be nil or a list of files
+        if results.nil? || results.count.zero?
+          info "Job.transfer target_not_existing"
+          set :status, :target_available
+        else
+          info "Job.transfer target_existing"
           set :status, :target_found
           ftp.close
           notify "rftpd.ended", RestFtpDaemon::JobTargetFileExists
