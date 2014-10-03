@@ -203,22 +203,29 @@ module RestFtpDaemon
       set :file_size, source_size
 
       # Prepare FTP transfer
-      set :status, :checking_target
+      set :status, :connecting
       ftp = Net::FTP.new(@target.host)
       ftp.passive = true
       ftp.login @target.user, @target.password
+
+      # Changind directory
+      set :status, :chdir
       ftp.chdir(target_path)
 
       # Check for target file presence
       if get(:overwrite).nil?
+        set :status, :target_checking
         results = ftp.list(target_name)
         #results = ftp.list()
 
         unless results.count.zero?
+          set :status, :target_found
           ftp.close
           notify "rftpd.ended", RestFtpDaemon::JobTargetFileExists
           raise RestFtpDaemon::JobTargetFileExists
         end
+
+        set :status, :target_available
       end
 
       # Do transfer
