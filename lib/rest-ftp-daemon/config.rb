@@ -18,8 +18,8 @@ end
 # Forced shared settings
 Settings[:app_name] = APP_NAME
 Settings[:app_root] = APP_ROOT if defined? APP_ROOT
-Settings[:app_ver] = "0.62"
+Settings[:app_ver] = "0.63"
 
 # Forced fixed settings
-Settings[:default_trim_progname] = "18"
-Settings[:default_chunk_size] = "1000000"
+Settings[:app_trim_progname] = "18"
+Settings[:app_chunk_size] = "1000000"

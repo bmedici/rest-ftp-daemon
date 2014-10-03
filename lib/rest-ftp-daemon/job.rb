@@ -230,7 +230,7 @@ module RestFtpDaemon
 
       # Do transfer
       set :status, :uploading
-      chunk_size = Settings.transfer.chunk_size || Settings[:default_chunk_size]
+      chunk_size = Settings.transfer.chunk_size || Settings[:app_chunk_size]
       ftp.putbinaryfile(@source, target_name, chunk_size) do |block|
         # Update counters
         transferred += block.bytesize

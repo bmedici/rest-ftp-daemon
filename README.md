@@ -28,7 +28,8 @@ Expected features in a short-time range :
 * Allow fallback file source when first file path is unavailable (failover)
 * Provide swagger-style API documentation
 * Authenticate API clients
-
+* Allow to specify random remote/local source/target
+* Allow more remote protocols: sFTP, FTPs, HTTP POST, etc
 
 
 Installation
