@@ -57,22 +57,17 @@ module RestFtpDaemon
         set :error, exception.class
 
       rescue RestFtpDaemonException => exception
-        info "Job.process failed [RestFtpDaemonException::#{exception.class}]"
+        info "Job.process failed [::#{exception.class}]"
         set :status, :failed
         set :error, exception.class
 
-      # rescue Exception => exception
-      #   set :status, :crashed
-      #   set :error, exception.class
+      rescue Exception => exception
+        info "Job.process exception [#{exception.class}]"
+        set :status, :crashed
+        set :error, exception.class
 
       else
         info "Job.process finished"
-# set :error, 0
-        #set :status, :wandering
-
-        # Wait for a few seconds before marking the job as finished
-        # info "#{prefix} wander for #{RestFtpDaemon::THREAD_SLEEP_BEFORE_DIE} sec"
-        # wander RestFtpDaemon::THREAD_SLEEP_BEFORE_DIE
         set :status, :finished
       end
 
@@ -157,6 +152,7 @@ module RestFtpDaemon
 
     def prepare
       # Init
+      info "Job.prepare"
       set :status, :preparing
 
       # Check source
@@ -187,14 +183,18 @@ module RestFtpDaemon
     end
 
     def transfer
+      # Init
+      info "Job.transfer"
+
       # Send first notification
       transferred = 0
       notify "rftpd.started"
 
       # Ensure @source and @target are there
+      info "Job.transfer checking_source"
       set :status, :checking_source
-      raise JobPrerequisitesNotMet unless @source
-      raise JobPrerequisitesNotMet unless @source
+      raise RestFtpDaemon::JobPrerequisitesNotMet unless @source
+      raise RestFtpDaemon::JobPrerequisitesNotMet unless @target
       target_path = File.dirname @target.path
       target_name = File.basename @target.path
 
@@ -203,12 +203,14 @@ module RestFtpDaemon
       set :file_size, source_size
 
       # Prepare FTP transfer
+      info "Job.transfer connecting"
       set :status, :connecting
       ftp = Net::FTP.new(@target.host)
       ftp.passive = true
       ftp.login @target.user, @target.password
 
       # Changind directory
+      info "Job.transfer chdir"
       set :status, :chdir
       ftp.chdir(target_path)
 
@@ -232,10 +234,10 @@ module RestFtpDaemon
           raise RestFtpDaemon::JobTargetFileExists
         end
 
-        set :status, :target_available
       end
 
       # Do transfer
+      info "Job.transfer uploading"
       set :status, :uploading
       chunk_size = Settings.transfer.chunk_size || Settings[:app_chunk_size]
       ftp.putbinaryfile(@source, target_name, chunk_size) do |block|
@@ -249,6 +251,8 @@ module RestFtpDaemon
       end
 
       # Close FTP connexion
+      info "Job.transfer closing"
+      set :status, :disconnecting
       notify "rftpd.ended"
       set :progress, nil
       ftp.close
