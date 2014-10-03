@@ -18,7 +18,7 @@ As of today, its main features are :
 * Provide RESTful notifications to the requesting client
 * Allow authentication in FTP target in a standard URI-format
 * Allow configuration-based path templates to abstract local mounts or remote FTPs (endpoint tokens)
-
+* Remote supported protocols: FTP and FTPs
 
 Expected features in a short-time range :
 

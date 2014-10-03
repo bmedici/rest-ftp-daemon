@@ -1,5 +1,8 @@
-require 'net/ftp'
+#require 'net/ftptls'
 
+require 'uri'
+require 'net/ftp'
+require 'double_bag_ftps'
 
 module RestFtpDaemon
   class Job < RestFtpDaemon::Common
@@ -62,7 +65,7 @@ module RestFtpDaemon
         set :error, exception.class
 
       rescue Exception => exception
-        info "Job.process exception [#{exception.class}]"
+        info "Job.process exception [#{exception.class}] #{exception.backtrace.inspect}"
         set :status, :crashed
         set :error, exception.class
 
@@ -131,7 +134,7 @@ module RestFtpDaemon
     end
 
     def expand_url_from path
-      URI replace_token_in_path(path) rescue nil
+      URI::parse replace_token_in_path(path) rescue nil
     end
 
     def replace_token_in_path path
@@ -163,7 +166,11 @@ module RestFtpDaemon
       # Check target
       raise JobTargetMissing unless @params["target"]
       @target = expand_url_from @params["target"]
+      set :debug_target_expanded, expand_url_from(@params["target"])
       set :debug_target, @target.inspect
+
+      # Check protocols
+      raise JobTargetUnsupported unless @target.kind_of?(URI::FTP) || @target.kind_of?(URI::FTPS)
 
       # Check compliance
       raise JobTargetUnparseable if @target.nil?
@@ -203,32 +210,57 @@ module RestFtpDaemon
       set :file_size, source_size
 
       # Prepare FTP transfer
+      info "Job.transfer preparing"
+
+      # Scheme-aware config
+      if @target.kind_of? URI::FTP
+        info "Job.transfer scheme FTP"
+        ftp = Net::FTP.new
+      elsif @target.kind_of? URI::FTPS
+        info "Job.transfer scheme FTPS"
+        ftp = DoubleBagFTPS.new
+        ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
+        ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
+      else
+        info "Job.transfer scheme other: [#{@target.scheme}]"
+      end
+
+      # Connect remote server
       info "Job.transfer connecting"
       set :status, :connecting
-      ftp = Net::FTP.new(@target.host)
-      ftp.passive = true
-      ftp.login @target.user, @target.password
+      ftp.connect(@target.host)
+      ftp.passive = false
 
-      # Changind directory
+      # Logging in
+      info "Job.transfer login"
+      begin
+        u = ftp.login @target.user, @target.password
+      rescue Exception => exception
+        info "Job.process login failed [#{exception.class}] #{u.inspect}"
+        set :status, :login_failed
+        set :error, exception.class
+      end
+
+      # Changing to directory
       info "Job.transfer chdir"
       set :status, :chdir
       ftp.chdir(target_path)
 
       # Check for target file presence
       if get(:overwrite).nil?
-        info "Job.transfer target_presence (#{target_name})"
-        set :status, :target_presence
+        info "Job.transfer remote_check (#{target_name})"
+        set :status, :remote_check
 
         # Get file list, sometimes the response can be an empty value
         results = ftp.list(target_name) rescue nil
 
         # Result can be nil or a list of files
         if results.nil? || results.count.zero?
-          info "Job.transfer target_not_existing"
-          set :status, :target_available
+          info "Job.transfer remote_absent"
+          set :status, :remote_absent
         else
-          info "Job.transfer target_existing"
-          set :status, :target_found
+          info "Job.transfer remote_present"
+          set :status, :remote_present
           ftp.close
           notify "rftpd.ended", RestFtpDaemon::JobTargetFileExists
           raise RestFtpDaemon::JobTargetFileExists

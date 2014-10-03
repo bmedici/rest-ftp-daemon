@@ -1,11 +1,14 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.55)
+    rest-ftp-daemon (0.63)
+      double-bag-ftps
       facter
       grape
+      haml
       json
       settingslogic
+      sys-cpu
       thin (~> 1.6)
 
 GEM
@@ -28,10 +31,12 @@ GEM
     daemons (1.1.9)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    double-bag-ftps (0.1.2)
     equalizer (0.0.9)
     eventmachine (1.0.3)
     facter (2.2.0)
       CFPropertyList (~> 2.2.6)
+    ffi (1.9.5)
     grape (0.9.0)
       activesupport
       builder
@@ -42,11 +47,13 @@ GEM
       rack-accept
       rack-mount
       virtus (>= 1.0.0)
+    haml (4.0.5)
+      tilt
     hashie (3.3.1)
     i18n (0.6.11)
     ice_nine (0.11.0)
     json (1.8.1)
-    minitest (5.4.1)
+    minitest (5.4.2)
     multi_json (1.10.1)
     multi_xml (0.5.5)
     rack (1.5.2)
@@ -56,11 +63,14 @@ GEM
       rack (>= 1.0.0)
     rake (10.3.2)
     settingslogic (2.0.9)
-    thin (1.6.2)
-      daemons (>= 1.0.9)
-      eventmachine (>= 1.0.0)
-      rack (>= 1.0.0)
+    sys-cpu (0.7.1)
+      ffi (>= 1.0.0)
+    thin (1.6.3)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0)
+      rack (~> 1.0)
     thread_safe (0.3.4)
+    tilt (2.0.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     virtus (1.0.3)

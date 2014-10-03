@@ -18,7 +18,7 @@ end
 # Forced shared settings
 Settings[:app_name] = APP_NAME
 Settings[:app_root] = APP_ROOT if defined? APP_ROOT
-Settings[:app_ver] = "0.63"
+Settings[:app_ver] = "0.64"
 
 # Forced fixed settings
 Settings[:app_trim_progname] = "18"

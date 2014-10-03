@@ -15,6 +15,7 @@ module RestFtpDaemon
   class JobSourceMissing         < RestFtpDaemonException; end
   class JobSourceNotFound        < RestFtpDaemonException; end
   class JobTargetMissing         < RestFtpDaemonException; end
+  class JobTargetUnsupported     < RestFtpDaemonException; end
   class JobTargetUnparseable     < RestFtpDaemonException; end
   #class JobTargetPermission      < RestFtpDaemonException; end
   class JobTargetFileExists      < RestFtpDaemonException; end
