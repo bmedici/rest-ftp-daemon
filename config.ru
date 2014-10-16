@@ -10,10 +10,11 @@ $pool = RestFtpDaemon::WorkerPool.new(Settings.workers.to_i)
 # Rack middleware
 # use Rack::Etag           # Add an ETag
 # use Rack::Reloader,   0
-# Rack::Auth::Basic
-# use Rack::Auth::Basic, "Restricted Area" do |username, password|
-#   [username, password] == ['admin', 'admin']
-# end
+unless Settings.adminpwd.nil?
+  use Rack::Auth::Basic, "Restricted Area" do |username, password|
+    [username, password] == ['admin', Settings.adminpwd]
+  end
+end
 #use Rack::Deflator      # Compress
 
 # Serve static assets

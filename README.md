@@ -76,9 +76,9 @@ Configuration priority is defined as follows (from most important to last resort
 * config file environment section
 * application internal defaults
 
-
 As a starting point, ``rest-ftp-daemon.yml.sample`` is an exemple config file that can be  copied into the expected location ``/etc/rest-ftp-daemon.yml``.
 
+Default administrator credentials are admin/admin. Please change the password in this configuration file before starting any kind of production.
 
 Logging
 ------------------------------------------------------------------------------------

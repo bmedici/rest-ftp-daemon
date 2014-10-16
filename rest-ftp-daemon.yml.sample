@@ -2,6 +2,7 @@ defaults: &defaults
   daemonize: 1
   port: 3200
   workers: 1
+  adminpwd: "admin"
 
   transfer:
     chunk_size: 100000
