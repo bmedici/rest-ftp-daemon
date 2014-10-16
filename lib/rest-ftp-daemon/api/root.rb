@@ -98,7 +98,7 @@ module RestFtpDaemon
       end
 
       # Server global status
-      get '/index.json' do
+      get '/status' do
         info "GET /"
         status 200
         return  {
