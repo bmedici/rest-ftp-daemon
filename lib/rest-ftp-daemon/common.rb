@@ -18,7 +18,7 @@ module RestFtpDaemon
     def info message, level = 0
       # progname = "Job [#{id}]" unless id.nil?
       # progname = "Worker [#{id}]" unless worker_id.nil?
-      @logger.add(Logger::INFO, "#{'  '*(level+1)} #{message}", progname)
+      @logger.add(Logger::INFO, "#{'  '*(level+1)} #{message}", progname) unless @logger.nil?
     end
 
     def notify signal, error = 0, status = {}

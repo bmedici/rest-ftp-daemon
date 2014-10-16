@@ -8,7 +8,7 @@ module RestFtpDaemon
 
     class Root < Grape::API
       include RestFtpDaemon::API::Defaults
-      logger ActiveSupport::Logger.new Settings.logs.api, 'daily' unless Settings.logs.api.nil?
+      logger ActiveSupport::Logger.new(Settings.logs.api, 'daily') unless Settings.logs.api.nil?
       #add_swagger_documentation
 
       mount RestFtpDaemon::API::Jobs => '/jobs'
