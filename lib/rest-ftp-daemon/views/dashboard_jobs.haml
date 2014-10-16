@@ -35,6 +35,7 @@
     %th= "priority"
     %th= "source"
     %th= "target"
+    %th= "mode"
     %th= "size"
     %th= "status"
     %th= "error"
@@ -60,8 +61,13 @@
 
       %td= job.id
       %td= job.get :priority
-      %td= job.get :source
-      %td= job.get :target
+      %td{title: job.get(:source_path)}
+        = job.get :source
+      %td{title: job.get(:target_url)}
+        = job.get :target
+      %td
+        .label.label-info= job.get :source_method
+        .label.label-primary= job.get :target_method
       %td= format_nice_bytes(size)
       %td= status
       %td= error

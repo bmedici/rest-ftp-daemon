@@ -13,8 +13,6 @@ module RestFtpDaemon
 
       # Grab params
       @params = params
-      @target = nil
-      @source = nil
 
       # Init context
       set :id, id
@@ -78,8 +76,8 @@ module RestFtpDaemon
 
     def describe
       # Update realtime info
-      w = wandering_time
-      set :wandering, w.round(2) unless w.nil?
+      #w = wandering_time
+      #set :wandering, w.round(2) unless w.nil?
 
       # Update realtime info
       u = up_time
@@ -129,15 +127,15 @@ module RestFtpDaemon
       @params[attribute.to_s] = value
     end
 
-    def expand_path_from path
-      File.expand_path replace_token_in_path(path)
+    def expand_path path
+      File.expand_path replace_token(path)
     end
 
-    def expand_url_from path
-      URI::parse replace_token_in_path(path) rescue nil
+    def expand_url path
+      URI::parse replace_token(path) rescue nil
     end
 
-    def replace_token_in_path path
+    def replace_token path
       # Ensure endpoints are not a nil value
       return path unless Settings.endpoints.is_a? Enumerable
       newpath = path.clone
@@ -157,24 +155,34 @@ module RestFtpDaemon
       # Init
       info "Job.prepare"
       set :status, :preparing
+      @source_method = :file
+      @target_method = nil
+      @source_path = nil
+      @target_url = nil
 
       # Check source
       raise JobSourceMissing unless @params["source"]
-      @source = expand_path_from @params["source"]
-      set :debug_source, @source
+      #@source = expand_path @params["source"]
+      @source_path = expand_path @params["source"]
+      set :source_path, @source_path
+      set :source_method, :file
 
       # Check target
       raise JobTargetMissing unless @params["target"]
-      @target = expand_url_from @params["target"]
-      set :debug_target_expanded, expand_url_from(@params["target"])
-      set :debug_target, @target.inspect
+      @target_url = expand_url @params["target"]
+      set :target_url, @target_url.inspect
 
-      # Check protocols
-      raise JobTargetUnsupported unless @target.kind_of?(URI::FTP) || @target.kind_of?(URI::FTPS)
+      if @target_url.kind_of? URI::FTP
+        @target_method = :ftp
+      elsif @target_url.kind_of? URI::FTPS
+        @target_method = :ftps
+      end
+      set :target_method, @target_method
 
       # Check compliance
-      raise JobTargetUnparseable if @target.nil?
-      raise JobSourceNotFound unless File.exists? @source
+      raise JobTargetUnparseable if @target_url.nil?
+      raise JobTargetUnsupported if @target_method.nil?
+      raise JobSourceNotFound unless File.exists? @source_path
 
     end
 
@@ -200,41 +208,42 @@ module RestFtpDaemon
       # Ensure @source and @target are there
       info "Job.transfer checking_source"
       set :status, :checking_source
-      raise RestFtpDaemon::JobPrerequisitesNotMet unless @source
-      raise RestFtpDaemon::JobPrerequisitesNotMet unless @target
-      target_path = File.dirname @target.path
-      target_name = File.basename @target.path
+      raise RestFtpDaemon::JobPrerequisitesNotMet unless @source_path
+      raise RestFtpDaemon::JobPrerequisitesNotMet unless @target_url
+      target_path = File.dirname @target_url.path
+      target_name = File.basename @target_url.path
 
       # Read source file size
-      source_size = File.size @source
+      source_size = File.size @source_path
       set :file_size, source_size
 
       # Prepare FTP transfer
       info "Job.transfer preparing"
 
       # Scheme-aware config
-      if @target.kind_of? URI::FTP
+      case @target_method
+      when :ftp
         info "Job.transfer scheme FTP"
         ftp = Net::FTP.new
-      elsif @target.kind_of? URI::FTPS
+      when :ftps
         info "Job.transfer scheme FTPS"
         ftp = DoubleBagFTPS.new
         ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
         ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
       else
-        info "Job.transfer scheme other: [#{@target.scheme}]"
+        info "Job.transfer scheme other: [#{@target_url.scheme}]"
       end
 
       # Connect remote server
       info "Job.transfer connecting"
       set :status, :connecting
-      ftp.connect(@target.host)
-      ftp.passive = false
+      ftp.connect(@target_url.host)
+      ftp.passive = true
 
       # Logging in
       info "Job.transfer login"
       begin
-        u = ftp.login @target.user, @target.password
+        u = ftp.login @target_url.user, @target_url.password
       rescue Exception => exception
         info "Job.process login failed [#{exception.class}] #{u.inspect}"
         set :status, :login_failed
@@ -272,7 +281,7 @@ module RestFtpDaemon
       info "Job.transfer uploading"
       set :status, :uploading
       chunk_size = Settings.transfer.chunk_size || Settings[:app_chunk_size]
-      ftp.putbinaryfile(@source, target_name, chunk_size) do |block|
+      ftp.putbinaryfile(@source_path, target_name, chunk_size) do |block|
         # Update counters
         transferred += block.bytesize
 

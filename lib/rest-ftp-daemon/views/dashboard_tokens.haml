@@ -1,0 +1,9 @@
+%h2 Endpoint tokens
+
+%table.table.table-striped.table-hover.table-condensed
+  - tokens.each do |token, value|
+    %tr
+      %td
+        %b= token
+      %td
+        = value

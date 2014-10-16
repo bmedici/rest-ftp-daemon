@@ -70,17 +70,7 @@
 
       = render :dashboard_jobs, {jobs: @jobs_all}
 
-      =# render :dashboard_jobs, {kind: "queued", jobs: @jobs_queued}
-
-
-      %h2 Endpoint tokens
-      - endpoints = Settings.endpoints || {}
-      - endpoints.each do |token, value|
-        .btn-group.btn-group-sm
-          .btn.btn-default.btn-danger= token
-          .btn.btn-default= value
-
-
+      = render :dashboard_tokens, {tokens: Settings.endpoints || {}}
 
       %br
       %br
