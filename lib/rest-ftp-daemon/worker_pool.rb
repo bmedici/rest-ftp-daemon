@@ -12,9 +12,11 @@ module RestFtpDaemon
       super()
 
       # Create worker threads
+      info "WorkerPool initializing with #{number_threads} workers"
       number_threads.times do
         Thread.new { run }
       end
+
     end
 
     def wait
@@ -35,7 +37,7 @@ module RestFtpDaemon
 
       begin
         loop do
-          info "worker [#{@wid}] waiting for a job... "
+          info "worker [#{@wid}] ready, waiting for a job"
 
           # Wait for a job to come into the queue
           job = $queue.pop

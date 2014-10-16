@@ -2,12 +2,23 @@ module RestFtpDaemon
   module API
 
     class Jobs < Grape::API
-      include RestFtpDaemon::API::Defaults
-      logger ActiveSupport::Logger.new Settings.logs.api, 'daily' unless Settings.logs.api.nil?
+
+
+####### CLASS CONFIG
+
+      #include RestFtpDaemon::API::Defaults
+      #logger ActiveSupport::Logger.new Settings.logs.api, 'daily' unless Settings.logs.api.nil?
 
       params do
         optional :overwrite, type: Integer, default: false
       end
+
+
+####### INITIALIZATION
+
+
+
+####### HELPERS
 
       helpers do
 
@@ -41,6 +52,9 @@ module RestFtpDaemon
         end
 
       end
+
+
+####### API DEFINITION
 
       desc "Get information about a specific job"
       params do

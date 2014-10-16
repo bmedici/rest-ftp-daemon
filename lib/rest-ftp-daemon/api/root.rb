@@ -7,12 +7,18 @@ module RestFtpDaemon
   module API
 
     class Root < Grape::API
+
+
+####### CLASS CONFIG
       include RestFtpDaemon::API::Defaults
       logger ActiveSupport::Logger.new(Settings.logs.api, 'daily') unless Settings.logs.api.nil?
       #add_swagger_documentation
 
       mount RestFtpDaemon::API::Jobs => '/jobs'
       # mount RestFtpDaemon::API::Workers => '/workers'
+
+
+####### HELPERS
 
       helpers do
         def info message, level = 0
@@ -32,19 +38,16 @@ module RestFtpDaemon
 
       end
 
-      ######################################################################
-      ####### INIT
-      ######################################################################
+
+####### INITIALIZATION
+
       def initialize
         $last_worker_id = 0
         super
       end
 
 
-
-      ######################################################################
-      ####### API DEFINITION
-      ######################################################################
+####### API DEFINITION
 
       # Server global status
       get '/' do
