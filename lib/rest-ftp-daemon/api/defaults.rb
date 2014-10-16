@@ -45,7 +45,6 @@ module RestFtpDaemon
         # end
 
         helpers do
-
           def format_nice_bytes( number )
             return "Ø" if number.nil? || number.zero?
             index = ( Math.log( number ) / Math.log( 2 ) ).to_i / 10
@@ -63,7 +62,7 @@ module RestFtpDaemon
           end
 
           def render name, values={}
-            template = File.read("#{APP_ROOT}/lib/#{APP_NAME}/views/#{name.to_s}.haml")
+            template = File.read("lib/#{Settings.app_name}/views/#{name.to_s}.haml")
             haml_engine = Haml::Engine.new(template)
             haml_engine.render(binding, values)
           end

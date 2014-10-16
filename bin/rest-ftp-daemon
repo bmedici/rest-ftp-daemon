@@ -2,20 +2,19 @@
 
 # Libs and init
 require "thin"
-DEVELOPMENT=ARGV.include?("development")
-APP_ROOT=File.expand_path(File.dirname(__FILE__) + '/../')
 
 # Include config file and build rack commandline
-require File.expand_path("#{APP_ROOT}/lib/rest-ftp-daemon/config.rb")
+app_root = File.expand_path(File.dirname(__FILE__) + '/../')
+require File.expand_path("lib/rest-ftp-daemon/config.rb")
 
+# Build rackup context
+settings_daemonize = [nil, true, 1, "1"].include?(Settings.daemonize)
 argv = ARGV
-argv << ["-p", Settings.port.to_s] unless ARGV.include?("-p") || Settings.port.nil?
-argv << ["-e", Settings.namespace] unless ARGV.include?("-e") || Settings.namespace.nil?
-argv << ["-l", Settings.logs.thin] unless ARGV.include?("-l") unless Settings.logs.thin.nil? unless Settings.logs.nil?
-argv << ["--daemonize"] if (Settings.daemonize==1 || Settings.daemonize.nil?) unless ARGV.include?("-d")
-
-# Rackup file
-argv << ["-R", File.expand_path("#{APP_ROOT}/config.ru")] unless ARGV.include?("-R")
+argv << ["-e", "development"] unless ARGV.include?("-e")
+argv << ["-p", Settings[:port].to_s] unless ARGV.include?("-p") || Settings[:port].nil?
+argv << ["-l", Settings[:logs][:thin]] unless ARGV.include?("-l") unless Settings[:logs][:thin].nil? unless Settings[:logs].nil?
+argv << ["--daemonize"] if settings_daemonize unless (ARGV.include?("-d") || ARGV.include?("--daemonize"))
+argv << ["-R", File.expand_path("config.ru")] unless ARGV.include?("-R")
 
 # Display compiled configuration
 puts

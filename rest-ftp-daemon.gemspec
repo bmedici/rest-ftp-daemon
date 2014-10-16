@@ -1,8 +1,9 @@
 # coding: utf-8
 
 # Libs
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+# APP_ROOT = File.expand_path(File.dirname(__FILE__) + '/../')
+APP_LIBS = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(APP_LIBS) unless $LOAD_PATH.include?(APP_LIBS)
 require 'rest-ftp-daemon/config'
 
 Gem::Specification.new do |spec|

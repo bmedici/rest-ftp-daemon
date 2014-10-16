@@ -1,14 +1,12 @@
 # Load gem files
-$LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
+APP_LIBS = File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
+$LOAD_PATH.unshift(APP_LIBS) unless $LOAD_PATH.include?(APP_LIBS)
 require 'rest-ftp-daemon'
 
-# Some extra constants
-APP_STARTED = Time.now
-
-# Create worker pool
+# Create queue and worker pool
 $queue = RestFtpDaemon::JobQueue.new
 $pool = RestFtpDaemon::WorkerPool.new(Settings.workers.to_i)
 
-# Start REST FTP Daemon
-use Rack::Static, :urls => ["/css", "/images"], :root => "#{APP_ROOT}/lib/rest-ftp-daemon/static/"
+# Serve static assets
+use Rack::Static, :urls => ["/css", "/images"], :root => "lib/#{Settings.app_name}/static/"
 run Rack::Cascade.new [RestFtpDaemon::API::Root]

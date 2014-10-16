@@ -1,25 +1,24 @@
 require 'settingslogic'
-DEVELOPMENT = false unless defined? DEVELOPMENT
-APP_NAME="rest-ftp-daemon"
+
+# Terrific assertions
+#raise "config.rb: APP_ROOT is not defined" unless defined? APP_ROOT
+APP_NAME = "rest-ftp-daemon"
+APP_CONF = "/etc/#{APP_NAME}.yml"
+APP_DEV = ARGV.include?("development") ? true : false
 
 class Settings < Settingslogic
-  namespace DEVELOPMENT ? "development" : "production"
-  suppress_errors namespace!="development"
+  # Read configuration
+  source (File.exists? APP_CONF) ? APP_CONF : Hash.new
+  namespace (APP_DEV ? "development" : "production")
+  suppress_errors true
+
+  # Some constants
+  self[:dev] = APP_DEV
+  self[:app_name] = APP_NAME
+  self[:app_ver] = "0.70"
+  self[:app_started] = Time.now
+
+  # Some defaults
+  self[:app_trim_progname] = "18"
+  self[:app_chunk_size] = "1000000"
 end
-
-# Fix application defaults and load config file if found
-app_config_file = "/etc/#{APP_NAME}.yml"
-if File.exists? app_config_file
-  Settings.source app_config_file
-else
-  Settings.source Hash.new
-end
-
-# Forced shared settings
-Settings[:app_name] = APP_NAME
-Settings[:app_root] = APP_ROOT if defined? APP_ROOT
-Settings[:app_ver] = "0.64"
-
-# Forced fixed settings
-Settings[:app_trim_progname] = "18"
-Settings[:app_chunk_size] = "1000000"
