@@ -20,6 +20,6 @@ class Settings < Settingslogic
   self[:app_started] = Time.now
 
   # Some defaults
-  self[:app_trim_progname] = "18"
-  self[:app_chunk_size] = "1000000"
+  self[:default_chunk_size] = "1000000"
+  self[:default_notify_size] = "10000000"
 end
