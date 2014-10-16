@@ -17,7 +17,7 @@ $pool = RestFtpDaemon::WorkerPool.new(Settings.workers.to_i)
 #use Rack::Deflator      # Compress
 
 # Serve static assets
-use Rack::Static, :urls => ["/css", "/images"], :root => "lib/#{Settings.app_name}/static/"
+use Rack::Static, :urls => ["/css", "/images"], :root => "#{Settings.app_lib}/static/"
 
 # Launch the main daemon
 run Rack::Cascade.new [RestFtpDaemon::API::Root]

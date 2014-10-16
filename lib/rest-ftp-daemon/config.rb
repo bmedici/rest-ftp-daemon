@@ -15,7 +15,8 @@ class Settings < Settingslogic
   # Some constants
   self[:dev] = APP_DEV
   self[:app_name] = APP_NAME
-  self[:app_ver] = "0.70"
+  self[:app_lib] = File.expand_path File.dirname(__FILE__)
+  self[:app_ver] = "0.71"
   self[:app_started] = Time.now
 
   # Some defaults

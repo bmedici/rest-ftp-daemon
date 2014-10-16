@@ -1,11 +1,9 @@
 #!/usr/bin/env ruby
 
-# Libs and init
+# Include libs and config file
 require "thin"
-
-# Include config file and build rack commandline
 app_root = File.expand_path(File.dirname(__FILE__) + '/../')
-require File.expand_path("lib/rest-ftp-daemon/config.rb")
+require File.expand_path("#{app_root}/lib/rest-ftp-daemon/config.rb")
 
 # Build rackup context
 settings_daemonize = [nil, true, 1, "1"].include?(Settings.daemonize)
@@ -14,7 +12,7 @@ argv << ["-e", "development"] unless ARGV.include?("-e")
 argv << ["-p", Settings[:port].to_s] unless ARGV.include?("-p") || Settings[:port].nil?
 argv << ["-l", Settings[:logs][:thin]] unless ARGV.include?("-l") unless Settings[:logs][:thin].nil? unless Settings[:logs].nil?
 argv << ["--daemonize"] if settings_daemonize unless (ARGV.include?("-d") || ARGV.include?("--daemonize"))
-argv << ["-R", File.expand_path("config.ru")] unless ARGV.include?("-R")
+argv << ["-R", File.expand_path("#{app_root}/config.ru")] unless ARGV.include?("-R")
 
 # Display compiled configuration
 puts "---"

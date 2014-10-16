@@ -62,7 +62,7 @@ module RestFtpDaemon
           end
 
           def render name, values={}
-            template = File.read("lib/#{Settings.app_name}/views/#{name.to_s}.haml")
+            template = File.read("#{Settings.app_lib}/views/#{name.to_s}.haml")
             haml_engine = Haml::Engine.new(template)
             haml_engine.render(binding, values)
           end
