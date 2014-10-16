@@ -7,9 +7,12 @@ require File.expand_path("#{app_root}/lib/rest-ftp-daemon/config.rb")
 
 # Build rackup context
 settings_daemonize = [nil, true, 1, "1"].include?(Settings.daemonize)
+pid_file = Settings.pidfile
+
 argv = ARGV
 argv << ["-e", "development"] unless ARGV.include?("-e")
 argv << ["-p", Settings[:port].to_s] unless ARGV.include?("-p") || Settings[:port].nil?
+argv << ["--pid", Settings.pidfile] unless Settings.pidfile.nil? || ARGV.include?("-P") || ARGV.include?("-pid")
 argv << ["-l", Settings[:logs][:thin]] unless ARGV.include?("-l") unless Settings[:logs][:thin].nil? unless Settings[:logs].nil?
 argv << ["--daemonize"] if settings_daemonize unless (ARGV.include?("-d") || ARGV.include?("--daemonize"))
 argv << ["-R", File.expand_path("#{app_root}/config.ru")] unless ARGV.include?("-R")
@@ -19,6 +22,7 @@ puts "---"
 puts "Version     \t #{Settings.app_ver}"
 puts "Environment \t #{Settings.namespace}"
 puts "Config file \t #{Settings.source}"
+puts "PID file    \t #{Settings.pidfile}"
 puts "Parameters  \t #{argv.flatten}"
 puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
 

@@ -3,6 +3,7 @@ defaults: &defaults
   port: 3200
   workers: 1
   adminpwd: "admin"
+  pidfile: /tmp/rftpd.pid
 
   transfer:
     chunk_size: 100000
