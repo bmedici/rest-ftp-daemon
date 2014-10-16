@@ -40,7 +40,7 @@ This project is available as a rubygem, requires on ruby >= 1.9.3 and rubygems i
 Get and install the gem from rubygems.org:
 
 ```
-# apt-get install ruby1.9.3 ruby-dev rubygems gcc g++
+# apt-get install ruby1.9.3 ruby1.9.1-dev ruby-dev rubygems gcc g++
 gem install rest-ftp-daemon --no-ri --no-rdoc
 ```
 
@@ -56,10 +56,10 @@ Start the daemon on a specific port :
 rest-ftp-daemon -p4000 start
 ```
 
-Check that the daemon is running and giving status info
+Check that the daemon is running and providing its status info
 
 ```
-http://localhost:3000/
+http://localhost:3200/
 ```
 
 Configuration
