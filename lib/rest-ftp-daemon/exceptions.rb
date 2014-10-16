@@ -4,6 +4,10 @@ module RestFtpDaemon
 
   class DummyException < RestFtpDaemonException; end
 
+  class MissingQueue   < RestFtpDaemonException; end
+  class MissingPool   < RestFtpDaemonException; end
+
+
   class RequestSourceMissing     < RestFtpDaemonException; end
   class RequestSourceNotFound    < RestFtpDaemonException; end
   class RequestTargetMissing     < RestFtpDaemonException; end

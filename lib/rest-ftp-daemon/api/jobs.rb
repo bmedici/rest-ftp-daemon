@@ -16,6 +16,15 @@ module RestFtpDaemon
 
 ####### INITIALIZATION
 
+      def initialize
+        $last_worker_id = 0
+
+        # Check that Queue and Pool are available
+        raise RestFtpDaemon::MissingQueue unless defined? $queue
+        raise RestFtpDaemon::MissingQueue unless defined? $pool
+
+        super
+      end
 
 
 ####### HELPERS
