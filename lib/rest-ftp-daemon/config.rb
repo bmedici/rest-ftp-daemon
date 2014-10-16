@@ -1,4 +1,9 @@
-require 'settingslogic'
+# Try to load Settingslogic
+begin
+  require "settingslogic"
+rescue LoadError
+  raise "config.rb warning: Settingslogic is needed to provide configuration values to the Gemspec file"
+end
 
 # Terrific assertions
 #raise "config.rb: APP_ROOT is not defined" unless defined? APP_ROOT
@@ -6,6 +11,7 @@ APP_NAME = "rest-ftp-daemon"
 APP_CONF = "/etc/#{APP_NAME}.yml"
 APP_DEV = ARGV.include?("development") ? true : false
 
+# Configuration class
 class Settings < Settingslogic
   # Read configuration
   source (File.exists? APP_CONF) ? APP_CONF : Hash.new
