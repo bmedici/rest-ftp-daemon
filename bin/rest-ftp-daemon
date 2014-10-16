@@ -17,7 +17,7 @@ argv << ["--daemonize"] if settings_daemonize unless (ARGV.include?("-d") || ARG
 argv << ["-R", File.expand_path("config.ru")] unless ARGV.include?("-R")
 
 # Display compiled configuration
-puts
+puts "---"
 puts "Daemon name \t #{Settings.app_name}"
 puts "Version     \t #{Settings.app_ver}"
 puts "Environment \t #{Settings.namespace}"
@@ -26,17 +26,16 @@ puts "Parameters  \t #{argv.flatten}"
 puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
 
 # Start Thin with this rackup configuration
+puts "---"
 puts
 begin
   Thin::Runner.new(argv.flatten).run!
-rescue Thin::PidFileExist
-  puts "EXITING: daemon was already running (Thin::PidFileExist)"
-rescue Thin::PidFileNotFound
-  puts "EXITING: daemon was not running (Thin::PidFileNotFound)"
-rescue Exception => e
-  puts "EXITING: #{e.message}"
-else
-  puts "PROCESS ENDING"
+  rescue Thin::PidFileExist
+    puts "ERROR: daemon was already running (Thin::PidFileExist)"
+  rescue Thin::PidFileNotFound
+    puts "ERROR: daemon was not running (Thin::PidFileNotFound)"
+  rescue SystemExit
+    puts "EXITING: daemon in the background (SystemExit)"
+  else
+    puts "EXITING: process ending"
 end
-
-
