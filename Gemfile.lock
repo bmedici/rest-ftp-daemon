@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.63)
+    rest-ftp-daemon (0.72.1)
       double-bag-ftps
       facter
       grape
@@ -36,7 +36,7 @@ GEM
     eventmachine (1.0.3)
     facter (2.2.0)
       CFPropertyList (~> 2.2.6)
-    ffi (1.9.5)
+    ffi (1.9.6)
     grape (0.9.0)
       activesupport
       builder

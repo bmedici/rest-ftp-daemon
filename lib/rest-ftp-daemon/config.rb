@@ -22,7 +22,7 @@ class Settings < Settingslogic
   self[:dev] = APP_DEV
   self[:app_name] = APP_NAME
   self[:app_lib] = File.expand_path File.dirname(__FILE__)
-  self[:app_ver] = "0.72.1"
+  self[:app_ver] = "0.73"
   self[:app_started] = Time.now
   self[:default_trim_progname] = "18"
 
