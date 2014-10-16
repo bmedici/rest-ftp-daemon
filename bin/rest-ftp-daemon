@@ -16,7 +16,6 @@ argv << ["-R", File.expand_path("#{app_root}/config.ru")] unless ARGV.include?("
 
 # Display compiled configuration
 puts "---"
-puts "Daemon name \t #{Settings.app_name}"
 puts "Version     \t #{Settings.app_ver}"
 puts "Environment \t #{Settings.namespace}"
 puts "Config file \t #{Settings.source}"
