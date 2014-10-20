@@ -2,8 +2,14 @@ rest-ftp-daemon
 ====================================================================================
 
 
-
 This is a pretty simple FTP client daemon, controlled through a RESTfull API.
+
+API documentation is [maintained on Apiary](http://docs.restftpdaemon.apiary.io/)
+
+
+
+Features
+------------------------------------------------------------------------------------
 
 As of today, its main features are :
 
@@ -86,6 +92,7 @@ http://localhost:3200/
 
 Configuration
 ------------------------------------------------------------------------------------
+
 Most of the configuration options live in a YAML configuration file, containing two main sections:
 
 * the ``defaults`` section should be left as-is and will be used is no other environment-specific value is provided.
@@ -102,6 +109,7 @@ As a starting point, ``rest-ftp-daemon.yml.sample`` is an exemple config file th
 
 Default administrator credentials are admin/admin. Please change the password in this configuration file before starting any kind of production.
 
+
 Logging
 ------------------------------------------------------------------------------------
 
@@ -109,37 +117,25 @@ The application will not log to any file by default, if not specified in its con
 Otherwise separate logging paths can be provided for the Thin webserver, API related messages, and workers related messages. Providing and empty value will simply activate logging to ``STDOUT``.
 
 
-Usage examples
 Job cleanup
 ------------------------------------------------------------------------------------
 
-* Start a job to transfer a file named "file.iso" to a local FTP server
 Job can be cleanup up after a certain amount of time, when they reach on of these status:
 
-```
-curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
-'{"source":"~/file.iso","target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
-```
-
-Requesting notifications is achieved by passing a "notify" key in the request, with a callback URL.
-This URL will be called at some points, ``POST```'ing a generic JSON structure with progress information.
 - failed, after conchita.clean_failed seconds
 - finished, after conchita.clean_finished seconds
 
 Cleanup is done on a regular basis, every few seconds (conchita.timer)
 
-* Start a job requesting notifications ``POST```'ed on "http://requestb.in/1321axg1"
+
+Usage examples
+------------------------------------------------------------------------------------
+
+* Start a job to transfer a file named "file.iso" to a local FTP server
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
-'{"source":"~/file.dmg","target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
-```
-
-* Start a job with all the above plus a priority
-
-```
-curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
-'{"source":"~/file.dmg","priority":"3", target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
+'{"source":"~/file.iso","target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
 ```
 
 * Start a job using endpoint tokens
@@ -163,72 +159,6 @@ Thos tokens will be expanded when the job is ran :
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"source":"~/file.dmg","priority":"3", target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
-
-NB: a special token [RANDOM] helps to generate a random filename when needed
-
-* Get status of a specific job based on its ID
-
-```
-curl -H "Content-Type: application/json" -X GET -D /dev/stdout "http://localhost:3000/jobs/3"
-```
-
-
-* Delete a specific job based on its ID
-
-```
-curl -H "Content-Type: application/json" -X DELETE -D /dev/stdout "http://localhost:3000/jobs/3"
-```
-
-
-Getting status
-------------------------------------------------------------------------------------
-
-* A global JSON status is provided on ``` GET /status ```
-
-* A nice dashboard gives a global view of the daemon, jobs in queue, and system status, exposed on ``` GET /```
-
-* The server exposes its jobs list on ``` GET /jobs ```
-
-```
-http://localhost:3000/jobs
-```
-
-This query will return a job list :
-
-```
-[
-  {
-    "source": "~/file.dmg",
-    "target": "ftp://anonymous@localhost/incoming/dest2.dmg",
-    "worker_name": "bob-92439-1",
-    "created": "2014-08-01 16:53:08 +0200",
-    "id": 16,
-    "runtime": 17.4,
-    "status": "graceful_ending",
-    "source_size": 37109074,
-    "error": 0,
-    "errmsg": "finished",
-    "progress": 100.0,
-    "transferred": 37100000
-  },
-  {
-    source: "[nas]/file.dmg",
-    target: "[ftp2]/dest4.dmg",
-    notify: "http://requestb.in/1321axg1",
-    updated_at: "2014-09-17 22:56:14 +0200",
-    id: 2,
-    started_at: "2014-09-17 22:56:01 +0200",
-    status: "uploading",
-    error: 0,
-    debug_source: "/Users/bruno/file.dmg",
-    debug_target: "#<URI::FTP:0x007ffa9289e650 URL:ftp://uuuuuuuu:yyyyyyyyy@ftp.xxxxxx.fr/subdir/dest4.dmg>",
-    file_size: 32093208,
-    file_progress: 5.6,
-    file_sent: 1800000
-  }
-]
-```
-
 
 About
 ------------------------------------------------------------------------------------
