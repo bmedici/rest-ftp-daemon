@@ -92,7 +92,11 @@ module RestFtpDaemon
     end
 
     def get attribute
-      @params[attribute.to_s]
+      @params || {}
+      @params[attribute]
+    end
+
+      def params
       @params || {}
     end
 
@@ -123,8 +127,9 @@ module RestFtpDaemon
 
     def set attribute, value
       @params || {}
+      # return unless @params.is_a? Enumerable
       @params[:updated_at] = Time.now
-      @params[attribute.to_s] = value
+      @params[attribute] = value
     end
 
     def expand_path path
