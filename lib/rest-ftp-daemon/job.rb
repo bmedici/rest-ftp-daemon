@@ -174,6 +174,8 @@ module RestFtpDaemon
 
       if @target_url.kind_of? URI::FTP
         @target_method = :ftp
+      elsif @target_url.kind_of? URI::FTPES
+        @target_method = :ftps
       elsif @target_url.kind_of? URI::FTPS
         @target_method = :ftps
       end

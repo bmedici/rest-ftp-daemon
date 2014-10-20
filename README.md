@@ -19,6 +19,7 @@ As of today, its main features are :
 * Allow authentication in FTP target in a standard URI-format
 * Allow configuration-based path templates to abstract local mounts or remote FTPs (endpoint tokens)
 * Remote supported protocols: FTP and FTPs
+* Allow main file transfer protocols: sFTP, FTPs / FTPes
 * Automatically clean-up jobs after a configurable amount of time (failed, finished)
 
 Expected features in a short-time range :
@@ -30,7 +31,8 @@ Expected features in a short-time range :
 * Provide swagger-style API documentation
 * Authenticate API clients
 * Allow to specify random remote/local source/target
-* Allow more remote protocols: sFTP, FTPs, HTTP POST, etc
+* Allow more transfer protocols (sFTP, HTTP POST etc)
+
 
 
 Installation
