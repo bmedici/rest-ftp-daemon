@@ -22,9 +22,9 @@ class Settings < Settingslogic
   self[:dev] = APP_DEV
   self[:app_name] = APP_NAME
   self[:app_lib] = File.expand_path File.dirname(__FILE__)
-  self[:app_ver] = "0.73"
+  self[:app_ver] = "0.80"
   self[:app_started] = Time.now
-  self[:default_trim_progname] = "13"
+  self[:default_trim_progname] = "12"
 
   # Some defaults
   self[:default_chunk_size] = "1000000"
