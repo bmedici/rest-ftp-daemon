@@ -38,28 +38,47 @@ Expected features in a short-time range :
 Installation
 ------------------------------------------------------------------------------------
 
-This project is available as a rubygem, requires on ruby >= 1.9.3 and rubygems installed.
+This project is available as a rubygem, requires Ruby 2.1 and rubygems installed.
 
-Get and install the gem from rubygems.org:
 
-```
-# apt-get install ruby1.9.3 ruby1.9.1-dev ruby-dev rubygems gcc g++
-gem install rest-ftp-daemon --no-ri --no-rdoc
-```
-
-Start the daemon:
+You may use ```rbenv``` and ```ruby-build``` to get the right Ruby version
 
 ```
-rest-ftp-daemon start
-```
-
-Start the daemon on a specific port :
+# apt-get install ruby-build rbenv
 
 ```
-rest-ftp-daemon -p4000 start
+
+Use a dedicated user for the daemon
+
+```
+# useradd rftpd
+# su rftpd -l
 ```
 
-Check that the daemon is running and providing its status info
+Install the right ruby version, update rubygems
+
+```
+# rbenv install 2.1.0
+# rbenv local 2.1.0
+# rbenv rehash
+# gem update --system
+```
+
+Get and install the gem from rubygems.org
+
+```
+# gem install rest-ftp-daemon --no-ri --no-rdoc
+# rest-ftp-daemon start
+```
+
+Finally start the daemon on the standart port, or on a specific port using ```-p```
+
+```
+# rest-ftp-daemon -p 4000 start
+```
+
+Check that the daemon is running and providing its status info.
+If the daemon seems to exit as soon as it's launched, this may be due to logfiles that cannot be written on (check permissions or owner).
 
 ```
 http://localhost:3200/
