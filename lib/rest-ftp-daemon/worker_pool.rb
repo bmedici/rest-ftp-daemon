@@ -4,12 +4,13 @@ module RestFtpDaemon
     attr_reader :requested, :processed
 
     def initialize(number_threads)
+      # Call super
+      super()
+
       # Check parameters
       raise "A thread count of #{number_threads} is less than one" if number_threads < 1
       @wid = "-"
 
-      # Call super
-      super()
 
       # Create worker threads
       info "WorkerPool initializing with #{number_threads} workers"

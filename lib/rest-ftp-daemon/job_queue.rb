@@ -4,6 +4,9 @@ module RestFtpDaemon
   class JobQueue < Queue
 
     def initialize
+      # Logger
+      @logger = ActiveSupport::Logger.new Settings.logs.queue, 'daily' unless Settings.logs.queue.nil?
+
       # Instance variables
       @queued = []
       @popped = []
@@ -29,6 +32,14 @@ module RestFtpDaemon
           end
           }
       end
+
+    end
+
+    def by_status status
+      return [] if status.nil?
+
+      # Delete jobs from the queue if their status is (status)
+      @popped.select { |item| item.get(:status) == status.to_sym }
     end
 
     def queued
@@ -45,8 +56,8 @@ module RestFtpDaemon
     end
 
     def push(obj)
-      # Check that itme responds to "priorty" method
-      raise "object should respond to priority method" unless obj.respond_to? :priority
+      # Check that item responds to "priorty" method
+      raise "JobQueue.push: object should respond to priority method" unless obj.respond_to? :priority
 
       @mutex.synchronize{
         @queued.push obj
@@ -96,7 +107,6 @@ module RestFtpDaemon
 
   protected
 
-    def pick
     def conchita_loop
       info "conchita starting with: #{@conchita.inspect}"
       loop do
@@ -134,6 +144,18 @@ module RestFtpDaemon
       end
 
     end
+
+    def progname
+      "QUEUE"
+    end
+
+    def info message, level = 0
+      # progname = "Job [#{id}]" unless id.nil?
+      # progname = "Worker [#{id}]" unless worker_id.nil?
+      @logger.add(Logger::INFO, "#{'  '*(level+1)} #{message}", progname) unless @logger.nil?
+    end
+
+    def pick  # called inside a mutex/sync
       # Sort jobs by priority and get the biggest one
       picked = @queued.sort { |a,b| a.priority.to_i <=> b.priority.to_i }.last
       return nil if picked.nil?
