@@ -57,7 +57,7 @@ You may use ```rbenv``` and ```ruby-build``` to get the right Ruby version
 Use a dedicated user for the daemon
 
 ```
-# useradd rftpd
+# adduser --disabled-password --gecos "" rftpd
 # su rftpd -l
 ```
 
