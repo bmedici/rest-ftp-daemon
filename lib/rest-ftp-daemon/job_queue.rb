@@ -12,6 +12,21 @@ module RestFtpDaemon
       @waiting.taint
       self.taint
       @mutex = Mutex.new
+      # Conchita configuration
+      @conchita = Settings.conchita
+      if @conchita.nil?
+        info "conchita: missing conchita.* configuration"
+      elsif @conchita[:timer].nil?
+        info "conchita: missing conchita.timer value"
+      else
+        Thread.new {
+          begin
+            conchita_loop
+          rescue Exception => e
+            info "CONCHITA EXCEPTION: #{e.inspect}"
+          end
+          }
+      end
     end
 
     def queued
@@ -88,6 +103,43 @@ module RestFtpDaemon
   protected
 
     def pick
+    def conchita_loop
+      info "conchita starting with: #{@conchita.inspect}"
+      loop do
+        conchita_clean :finished
+        conchita_clean :failed
+        sleep @conchita[:timer]
+      end
+    end
+
+    def conchita_clean status
+      # Init
+      return if status.nil?
+      key = "clean_#{status.to_s}"
+
+      # Read config state
+      max_age = @conchita[key]
+      return if [nil, false].include? max_age
+
+      # Delete jobs from the queue if their status is (status)
+      @popped.delete_if do |job|
+        # Skip it if wrong status
+        next unless job.get(:status) == status.to_sym
+
+        # Skip it if updated_at invalid
+        updated_at = job.get(:updated_at)
+        next if updated_at.nil?
+
+        # Skip it if not aged enough yet
+        age = Time.now - updated_at
+        next if age < max_age
+
+        # Ok, we have to clean it up ..
+        info "conchita_clean #{status.to_s} max_age:#{max_age} job:#{job.id} age:#{age}"
+        true
+      end
+
+    end
       # Sort jobs by priority and get the biggest one
       picked = @queued.sort { |a,b| a.priority.to_i <=> b.priority.to_i }.last
 

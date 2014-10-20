@@ -9,6 +9,11 @@ defaults: &defaults
     chunk_size: 100000
     notify_size: 10000000
 
+  conchita:
+    timer: 5
+    clean_failed: 3600
+    clean_finished: 600
+
   logs:
     thin:
     api:

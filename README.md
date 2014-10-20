@@ -19,6 +19,7 @@ As of today, its main features are :
 * Allow authentication in FTP target in a standard URI-format
 * Allow configuration-based path templates to abstract local mounts or remote FTPs (endpoint tokens)
 * Remote supported protocols: FTP and FTPs
+* Automatically clean-up jobs after a configurable amount of time (failed, finished)
 
 Expected features in a short-time range :
 
@@ -88,9 +89,11 @@ Otherwise separate logging paths can be provided for the Thin webserver, API rel
 
 
 Usage examples
+Job cleanup
 ------------------------------------------------------------------------------------
 
 * Start a job to transfer a file named "file.iso" to a local FTP server
+Job can be cleanup up after a certain amount of time, when they reach on of these status:
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
@@ -99,7 +102,10 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 
 Requesting notifications is achieved by passing a "notify" key in the request, with a callback URL.
 This URL will be called at some points, ``POST```'ing a generic JSON structure with progress information.
+- failed, after conchita.clean_failed seconds
+- finished, after conchita.clean_finished seconds
 
+Cleanup is done on a regular basis, every few seconds (conchita.timer)
 
 * Start a job requesting notifications ``POST```'ed on "http://requestb.in/1321axg1"
 
