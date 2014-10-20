@@ -28,8 +28,6 @@ module RestFtpDaemon
     def progname
       "WORKER #{@wid}"
     end
-    #     progname = "Job [#{id}]" unless id.nil?
-    # progname = "Worker [#{id}]" unless worker_id.nil?
 
     def run
       # Generate a random key

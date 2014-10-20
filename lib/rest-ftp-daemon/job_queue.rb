@@ -4,6 +4,7 @@ module RestFtpDaemon
   class JobQueue < Queue
 
     def initialize
+      # Instance variables
       @queued = []
       @popped = []
 
@@ -12,6 +13,7 @@ module RestFtpDaemon
       @waiting.taint
       self.taint
       @mutex = Mutex.new
+
       # Conchita configuration
       @conchita = Settings.conchita
       if @conchita.nil?
@@ -32,22 +34,14 @@ module RestFtpDaemon
     def queued
       @queued
     end
-    def queued_size
-      @queued.length
-    end
-
     def popped
       @popped
     end
-    def popped_size
-      @popped.length
-    end
-
     def all
       @queued + @popped
     end
     def all_size
-      popped_size + queued_size
+      @queued.length + @popped.length
     end
 
     def push(obj)
@@ -73,7 +67,7 @@ module RestFtpDaemon
     # thread isn't suspended, and an exception is raised.
     #
     def pop(non_block=false)
-      @mutex.synchronize{
+      @mutex.synchronize do
         while true
           if @queued.empty?
             raise ThreadError, "queue empty" if non_block
@@ -83,7 +77,7 @@ module RestFtpDaemon
             return pick
           end
         end
-      }
+      end
     end
     alias shift pop
     alias deq pop
@@ -142,9 +136,10 @@ module RestFtpDaemon
     end
       # Sort jobs by priority and get the biggest one
       picked = @queued.sort { |a,b| a.priority.to_i <=> b.priority.to_i }.last
+      return nil if picked.nil?
 
       # Delete it from the queue
-      @queued.delete_if { |item| item == picked } unless picked.nil?
+      @queued.delete_if { |item| item == picked }
 
       # Stack it to popped items
       @popped.push picked

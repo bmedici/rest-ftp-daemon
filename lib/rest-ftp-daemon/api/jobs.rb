@@ -39,7 +39,7 @@ module RestFtpDaemon
         end
 
         def job_describe job_id
-          raise RestFtpDaemon::JobNotFound if ($queue.queued_size==0 && $queue.popped_size==0)
+          raise RestFtpDaemon::JobNotFound if ($queue.all_size==0)
 
           # Find job with this id
           found = $queue.all.select { |job| job.id == job_id }.first
@@ -142,11 +142,8 @@ module RestFtpDaemon
           job_id = $last_worker_id += 1
           job = Job.new(job_id, params)
 
-          # And psuh it to the queue
+          # And push it to the queue
           $queue.push job
-
-          # Later: start it asynchronously
-          #job.future.process
 
         rescue JSON::ParserError => exception
           status 406

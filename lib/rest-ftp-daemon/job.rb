@@ -92,8 +92,8 @@ module RestFtpDaemon
     end
 
     def get attribute
-      return nil unless @params.is_a? Enumerable
       @params[attribute.to_s]
+      @params || {}
     end
 
   protected
@@ -122,7 +122,7 @@ module RestFtpDaemon
     # end
 
     def set attribute, value
-      return unless @params.is_a? Enumerable
+      @params || {}
       @params[:updated_at] = Time.now
       @params[attribute.to_s] = value
     end
