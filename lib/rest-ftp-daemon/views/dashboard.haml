@@ -67,9 +67,7 @@
         .btn.btn-default.btn-info Transferred
         .btn.btn-default= format_nice_bytes(@total_transferred)
 
-
-      = render :dashboard_jobs, {jobs: @jobs_all}
-
+      = render :dashboard_jobs, {jobs: @jobs, counts: @counts}
       = render :dashboard_tokens, {tokens: Settings.endpoints || {}}
 
       %br

@@ -57,7 +57,7 @@ module RestFtpDaemon
       # Server global status
       get '/' do
         # Prepare data
-        @jobs_all = $queue.all
+        #@jobs_all = $queue.all
         #@jobs_all_size = $queue.all_size
         #@jobs_all = $queue.all_size
 
@@ -68,7 +68,6 @@ module RestFtpDaemon
         @info_ipaddr = Facter.value(:ipaddress)
         @info_memfree = Facter.value(:memoryfree)
 
-
         # Compute normalized load
         # puts "info_procs: #{info_procs}"
         if @info_procs.zero?
@@ -77,11 +76,31 @@ module RestFtpDaemon
           @info_norm = (100 * @info_load / @info_procs).round(1)
         end
 
+        # Jobs to display
+        @only = nil
+        @only = params["only"].to_sym unless params["only"].nil? || params["only"].blank?
+
+        case @only
+        when nil
+          @jobs = $queue.all
+        when :queue
+          @jobs = $queue.queued
+        else
+          @jobs = $queue.by_status (@only)
+        end
+
         # Compute total transferred
         @total_transferred = 0
-        @jobs_all.each do |job|
+
+        $queue.all.each do |job|
           sent = job.get(:file_sent)
           @total_transferred += sent unless sent.nil?
+        end
+
+        @counts = {}
+        grouped = $queue.all.group_by { |job| job.get(:status) }
+        grouped.each do |status, jobs|
+          @counts[status] = jobs.size
         end
 
         # Compile haml template

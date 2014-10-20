@@ -1,30 +1,14 @@
-- grouped = jobs.group_by { |job| job.get(:status) }
-- counts = {}
-- grouped.each do |status, jobs|
-  - counts[status] = jobs.size
-
-:ruby
-  if !params["only"].blank? && (grouped.keys.include? params["only"].to_sym)
-    jobs_to_display = grouped[params["only"].to_sym] || []
-  else
-    jobs_to_display = jobs
-  end
-
-  label = "All jobs (#{jobs.size})"
-
-
-
 %h2
   Jobs (#{jobs.size})
   = "&nbsp;"
 
   .btn-group.btn-group-xs
-    - klass = (params['only'].blank?) ? "btn-info" : ""
+    - klass = @only.blank? ? "btn-info" : ""
     %a.btn.btn-default{href: "?only=", class: klass}
       ALL
 
     - counts.each do |status, count|
-      - klass = (status.to_s == params['only']) ? "btn-info" : ""
+      - klass = (status.to_s == @only) ? "btn-info" : ""
       %a.btn.btn-default{href: "?only=#{status}", class: klass}
         #{status} (#{count})
 
@@ -42,7 +26,7 @@
     %th= "progress"
     %th
 
-  - jobs_to_display.each do |job|
+  - jobs.each do |job|
     - error = job.get :error
     - status = job.get :status
     - size = job.get :file_size
