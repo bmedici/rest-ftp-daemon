@@ -1,42 +1,109 @@
 #!/usr/bin/env ruby
 
-# Include libs and config file
-require "thin"
+# Try to load libs
+begin
+  require "thin"
+  require 'optparse'
+  require 'socket'
+  require 'timeout'
+rescue LoadError
+  raise "EXITING: some of basic libs were not found: thin, optparse, socket, timeout"
+end
+puts
+
+# Detect environment from options
+begin
+  OptionParser.new do |opts|
+    opts.on("-e", "--environment ENV")   { |env| APP_ENV = env }
+    opts.on("-d", "--dev")               { APP_ENV = "development" }
+  end.parse(ARGV)
+rescue OptionParser::InvalidOption => e
+end
+#APP_ENV ||= "production"
+
+
+# Load remaining libs and config subsystem
 app_root = File.expand_path(File.dirname(__FILE__) + '/../')
-require File.expand_path("#{app_root}/lib/rest-ftp-daemon/config.rb")
+[:constants, :helpers, :config].each do |lib|
+  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib.to_s}.rb")
+end
+# require File.expand_path("#{app_root}/lib/rest-ftp-daemon/helpers.rb")
+# require File.expand_path("#{app_root}/lib/rest-ftp-daemon/config.rb")
 
-# Build rackup context
-settings_daemonize = [nil, true, 1, "1"].include?(Settings.daemonize)
-pid_file = Settings.pidfile
 
-argv = ARGV
-argv << ["-e", "development"] unless ARGV.include?("-e")
-argv << ["-p", Settings[:port].to_s] unless ARGV.include?("-p") || Settings[:port].nil?
-argv << ["--pid", Settings.pidfile] unless Settings.pidfile.nil? || ARGV.include?("-P") || ARGV.include?("-pid")
-argv << ["-l", Settings[:logs][:thin]] unless ARGV.include?("-l") unless Settings[:logs][:thin].nil? unless Settings[:logs].nil?
-argv << ["--daemonize"] if settings_daemonize unless (ARGV.include?("-d") || ARGV.include?("--daemonize"))
-argv << ["-R", File.expand_path("#{app_root}/config.ru")] unless ARGV.include?("-R")
+# Setup options and import current ARGV
+options = {}
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename $0} [options] start|stop|restart"
+  opts.on("-e", "--environment ENV", "Environment (#{APP_ENV if defined? APP_ENV})")
+  opts.on("--dev", "Force development environment")
+  opts.on("-p", "--port PORT", "use PORT (#{Settings.port})")          { |port| options["port"] = port.to_i }
+  opts.on("-d", "--daemonize", "Run daemonized in the background")     { |bool| options["daemonize"] = bool || true }
+  opts.on("-P", "--pid FILE", "File to store PID")                     { |file| options["pidfile"] = file }
+  opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")  { |user| options["user"] = user }
+  opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)")  { |group| options["group"] = group }
+  opts.on_tail("-h", "--help", "Show this message")                    { puts opts; exit }
+  opts.on_tail('-v', '--version', "Show version")                      { puts Settings['app_ver']; exit }
+end
+begin
+  parser.order!(ARGV)
+  command = ARGV.shift
+  unless ["start", "stop", "restart"].include? command
+    puts parser
+    exit 1
+  end
+rescue OptionParser::InvalidOption => e
+  puts "EXITING: option parser: #{e.message}"
+  exit 1
+end
+Settings.merge!(options)
+
 
 # Display compiled configuration
-puts "---"
-puts "Version     \t #{Settings.app_ver}"
-puts "Environment \t #{Settings.namespace}"
-puts "Config file \t #{Settings.source}"
-puts "PID file    \t #{Settings.pidfile}"
-puts "Parameters  \t #{argv.flatten}"
+puts "--- #{APP_NAME} #{APP_VER}"
+puts "Config file  \t #{APP_CONF}"
+puts "PID file     \t #{Settings.pidfile}"
+puts "Namespace    \t #{Settings.namespace}"
+puts "Network port \t #{Settings['port']}"
+puts "Daemonize    \t #{Settings['daemonize']}"
+puts "User:group   \t #{Settings['user']}:#{Settings['group']}"
+puts
 puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
+puts
+
+# Build final ARGV
+argv = []
+# argv << ["-R", File.expand_path("#{app_root}/config.ru")] unless ARGV.include?("-R")
+
+argv << ["-e", Settings.namespace]
+argv << ["-p", Settings["port"].to_s] unless Settings["port"].nil?
+argv << ["--pid", Settings.pidfile]
+argv << ["--log", Settings["logs"]["thin"].to_s] unless Settings["logs"]["thin"].nil? if Settings["logs"].is_a? Enumerable
+argv << ["--daemonize"] if [1, true].include? Settings["daemonize"]
+# User / group
+if Settings["user"] && Settings["group"]
+  argv << ["--user", Settings["user"]]
+  argv << ["--group", Settings["group"]]
+end
+argv << command unless command.nil? rescue nil
+puts "--- Thin ARGV"
+puts argv.flatten.join(' ')
+puts
+
+
 
 # Start Thin with this rackup configuration
-puts "---"
-puts
 begin
   Thin::Runner.new(argv.flatten).run!
+  rescue RuntimeError => e
+    puts "FAILED: RuntimeError: #{e.message}"
   rescue Thin::PidFileExist
-    puts "ERROR: daemon was already running (Thin::PidFileExist)"
+    puts "FAILED: daemon was already running (Thin::PidFileExist)"
   rescue Thin::PidFileNotFound
-    puts "ERROR: daemon was not running (Thin::PidFileNotFound)"
+    puts "FAILED: daemon was not running (Thin::PidFileNotFound)"
   rescue SystemExit
-    puts "EXITING: daemon in the background (SystemExit)"
+    # puts "EXITING: daemon in the background (SystemExit)"
   else
-    puts "EXITING: process ending"
+    # puts "FAILED: process ending"
 end
+
