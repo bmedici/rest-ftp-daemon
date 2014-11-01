@@ -52,14 +52,14 @@
       %td
         .label.label-info= job.get :source_method
         .label.label-primary= job.get :target_method
-      %td= format_nice_bytes(size)
+      %td= Helpers.format_bytes(size, "B")
       %td= status
       %td= error
       %td
         - unless progress.nil?
           .progress
             .progress-bar{style:"width: #{progress}%;"}
-              = format_nice_bytes job.get(:file_sent)
+              = Helpers.format_bytes job.get(:transfer_sent), "B"
       %td
         - unless progress.nil?
           = "#{progress} %"

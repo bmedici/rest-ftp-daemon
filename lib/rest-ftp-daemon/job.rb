@@ -147,7 +147,8 @@ module RestFtpDaemon
 
       # Replace endpoints defined in config
       Settings.endpoints.each do |from, to|
-        newpath.gsub! "[#{from}]", to
+        #info "Job.replace_token #{Helpers.tokenize(from)} > #{to}"
+        newpath.gsub! Helpers.tokenize(from), to
       end
 
       # Replace with the special RAND token

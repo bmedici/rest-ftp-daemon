@@ -4,6 +4,6 @@
   - tokens.each do |token, value|
     %tr
       %td
-        %b= token
+        %b= Helpers.tokenize(token)
       %td
         = value
