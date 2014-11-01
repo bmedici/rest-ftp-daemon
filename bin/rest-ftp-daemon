@@ -71,6 +71,18 @@ puts
 puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
 puts
 
+
+# Validate network configuration
+if ["start", "restart"].include? command
+  if Settings['port'].nil?
+    puts "ABORTING: Network port is missing"
+    exit 1
+  elsif RestFtpDaemon::Helpers.local_port_used?(Settings['port'])
+    puts "ABORTING: Network port is already in use" if Settings.port_used?
+    exit 1
+  end
+end
+
 # Build final ARGV
 argv = []
 # argv << ["-R", File.expand_path("#{app_root}/config.ru")] unless ARGV.include?("-R")
