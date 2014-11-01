@@ -4,10 +4,10 @@
 # APP_ROOT = File.expand_path(File.dirname(__FILE__) + '/../')
 APP_LIBS = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(APP_LIBS) unless $LOAD_PATH.include?(APP_LIBS)
-require 'rest-ftp-daemon/config'
+require 'rest-ftp-daemon/constants'
 
 Gem::Specification.new do |spec|
-  spec.name = Settings[:app_name]
+  spec.name = APP_NAME
   spec.date = Time.now.strftime("%Y-%m-%d")
   spec.authors = ["Bruno MEDICI"]
   spec.email = "rest-ftp-daemon@bmconseil.com"
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-  spec.version       = Settings[:app_ver]
+  spec.version       = APP_VER
 
   #spec.required_ruby_version = '>= 1.9.3'
   spec.required_ruby_version = '>= 2.1'

@@ -5,6 +5,7 @@ require 'securerandom'
 # require 'celluloid/autostart'
 
 # My libs
+require 'rest-ftp-daemon/constants'
 require 'rest-ftp-daemon/config'
 require 'rest-ftp-daemon/exceptions'
 require 'rest-ftp-daemon/common'

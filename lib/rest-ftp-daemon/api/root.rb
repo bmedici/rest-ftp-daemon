@@ -42,12 +42,9 @@ module RestFtpDaemon
 ####### INITIALIZATION
 
       def initialize
-        $last_worker_id = 0
-
         # Check that Queue and Pool are available
         raise RestFtpDaemon::MissingQueue unless defined? $queue
         raise RestFtpDaemon::MissingQueue unless defined? $pool
-
         super
       end
 
@@ -124,10 +121,10 @@ module RestFtpDaemon
         status 200
         return  {
           hostname: `hostname`.chomp,
-          version: Settings.app_ver,
+          version: APP_VER,
           config: Settings.to_hash,
-          started: Settings.app_started,
-          uptime: (Time.now - Settings.app_started).round(1),
+          started: APP_STARTED,
+          uptime: (Time.now - APP_STARTED).round(1),
           status: job_list_by_status,
           queue_size: $queue.all_size,
           jobs_queued: $queue.queued.collect(&:id),

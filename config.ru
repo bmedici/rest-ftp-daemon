@@ -5,7 +5,7 @@ require 'rest-ftp-daemon'
 
 # Create queue and worker pool
 $queue = RestFtpDaemon::JobQueue.new
-$pool = RestFtpDaemon::WorkerPool.new(Settings.workers.to_i)
+$pool = RestFtpDaemon::WorkerPool.new(Settings[:workers] || DEFAULT_WORKERS)
 
 # Rack middleware
 # use Rack::Etag           # Add an ETag
@@ -15,10 +15,9 @@ unless Settings.adminpwd.nil?
     [username, password] == ['admin', Settings.adminpwd]
   end
 end
-#use Rack::Deflator      # Compress
 
 # Serve static assets
-use Rack::Static, :urls => ["/css", "/images"], :root => "#{Settings.app_lib}/static/"
+use Rack::Static, :urls => ["/css", "/images"], :root => "#{APP_LIBS}/static/"
 
 # Launch the main daemon
 run Rack::Cascade.new [RestFtpDaemon::API::Root]
