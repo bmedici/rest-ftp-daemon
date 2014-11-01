@@ -5,7 +5,7 @@ module RestFtpDaemon
 
     def initialize
       # Logger
-      @logger = ActiveSupport::Logger.new Settings.logs.queue, 'daily' unless Settings.logs.queue.nil?
+      @logger = ActiveSupport::Logger.new(Settings.logs[:queue], 'daily') unless Settings.logs.nil?
 
       # Instance variables
       @queued = []
@@ -145,9 +145,9 @@ module RestFtpDaemon
 
     end
 
-    def progname
-      "QUEUE"
-    end
+    # def progname
+    #   "QUEUE"
+    # end
 
     def info message, level = 0
       # progname = "Job [#{id}]" unless id.nil?

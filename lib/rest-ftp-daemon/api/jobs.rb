@@ -6,8 +6,6 @@ module RestFtpDaemon
 
 ####### CLASS CONFIG
 
-      #include RestFtpDaemon::API::Defaults
-      #logger ActiveSupport::Logger.new Settings.logs.api, 'daily' unless Settings.logs.api.nil?
 
       params do
         optional :overwrite, type: Integer, default: false
@@ -162,9 +160,9 @@ module RestFtpDaemon
 
     protected
 
-    def progname
-      "API::Jobs"
-    end
+    # def progname
+    #   "API::Jobs"
+    # end
 
     end
   end

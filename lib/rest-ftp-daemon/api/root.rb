@@ -10,11 +10,11 @@ module RestFtpDaemon
 
 
 ####### CLASS CONFIG
-      include RestFtpDaemon::API::Defaults
-      logger ActiveSupport::Logger.new(Settings.logs.api, 'daily') unless Settings.logs.api.nil?
-      #add_swagger_documentation
 
+      include RestFtpDaemon::API::Defaults
+      logger RestFtpDaemon::Logger.new(:api, "API")
       mount RestFtpDaemon::API::Jobs => '/jobs'
+      #add_swagger_documentation
       # mount RestFtpDaemon::API::Workers => '/workers'
 
 
@@ -22,7 +22,7 @@ module RestFtpDaemon
 
       helpers do
         def info message, level = 0
-          Root.logger.add(Logger::INFO, "#{'  '*level} #{message}", "API::Root")
+          Root.logger.info(message, level)
         end
 
         def job_list_by_status
@@ -56,6 +56,8 @@ module RestFtpDaemon
 
       # Server global status
       get '/' do
+        info "GET /"
+
         # Prepare data
         #@jobs_all = $queue.all
         #@jobs_all_size = $queue.all_size

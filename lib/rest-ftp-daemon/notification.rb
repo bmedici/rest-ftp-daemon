@@ -25,14 +25,17 @@ module RestFtpDaemon
       # Generate a random key
       @key = SecureRandom.hex(2)
 
+      # Logger
+      @logger = RestFtpDaemon::Logger.new(:workers, "NOTIF #{@key}")
+
       # Call super
       super
 
     end
 
-    def progname
-      "NOTIF #{@key}"
-    end
+    # def progname
+    #   "NOTIF #{@key}"
+    # end
 
 
     # def status key, val
@@ -68,8 +71,7 @@ module RestFtpDaemon
       # Post the notification
       http = Net::HTTP.new(uri.host, uri.port)
       response = http.post(uri.path, params.to_json, headers)
-
-      info "notify reply: #{response.body.strip}"
+      # info "notify reply: #{response.body.strip}"
     end
 
   protected

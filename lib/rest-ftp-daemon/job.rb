@@ -11,6 +11,9 @@ module RestFtpDaemon
       # Call super
       super()
 
+      # Logger
+      @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
+
       # Grab params
       @params = params
 

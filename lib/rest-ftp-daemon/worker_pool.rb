@@ -7,6 +7,9 @@ module RestFtpDaemon
       # Call super
       super()
 
+      # Logger
+      @logger = RestFtpDaemon::Logger.new(:workers, "WORKER")
+
       # Check parameters
       raise "A thread count of #{number_threads} is less than one" if number_threads < 1
       @wid = "-"
@@ -26,9 +29,9 @@ module RestFtpDaemon
       block_given? ? (yield item) : item
     end
 
-    def progname
-      "WORKER #{@wid}"
-    end
+    # def progname
+    #   "WORKER #{@wid}"
+    # end
 
     def run
       # Generate a random key

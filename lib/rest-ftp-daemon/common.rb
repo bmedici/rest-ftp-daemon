@@ -4,10 +4,6 @@ module RestFtpDaemon
 
   protected
 
-    def initialize
-      # Logger
-      @logger = ActiveSupport::Logger.new Settings.logs.workers, 'daily' unless Settings.logs.workers.nil?
-    end
 
     def id
     end
@@ -16,9 +12,7 @@ module RestFtpDaemon
     end
 
     def info message, level = 0
-      # progname = "Job [#{id}]" unless id.nil?
-      # progname = "Worker [#{id}]" unless worker_id.nil?
-      @logger.add(Logger::INFO, "#{'  '*(level+1)} #{message}", progname) unless @logger.nil?
+      @logger.info(message, level) unless @logger.nil?
     end
 
     def notify signal, error = 0, status = {}
