@@ -29,7 +29,7 @@
   - jobs.each do |job|
     - error = job.get :error
     - status = job.get :status
-    - size = job.get :file_size
+    - size = job.get :transfer_size
     - progress = job.get :progress
 
     - if error!=0 && !error.nil?
@@ -62,4 +62,7 @@
               = Helpers.format_bytes job.get(:transfer_sent), "B"
       %td
         - unless progress.nil?
-          = "#{progress} %"
+          = "#{progress}%"
+        - if (bitrate = job.get :transfer_bitrate)
+          = "|"
+          =  Helpers.format_bytes(bitrate, "bps")

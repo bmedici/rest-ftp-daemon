@@ -65,7 +65,7 @@
 
       .btn-group.btn-group-sm
         .btn.btn-default.btn-info Transferred
-        .btn.btn-default= format_nice_bytes(@total_transferred)
+        .btn.btn-default= Helpers.format_bytes(@total_transferred, "B")
 
       = render :dashboard_jobs, {jobs: @jobs, counts: @counts}
       = render :dashboard_tokens, {tokens: Settings.endpoints || {}}

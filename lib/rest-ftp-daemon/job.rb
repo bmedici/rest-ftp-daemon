@@ -26,10 +26,10 @@ module RestFtpDaemon
       notify "rftpd.queued"
     end
 
-    def progname
-      job_id = get(:id)
-      "JOB #{job_id}"
-    end
+    # def progname
+    #   job_id = get(:id)
+    #   "JOB #{job_id}"
+    # end
 
     def id
       get :id
@@ -291,16 +291,42 @@ module RestFtpDaemon
       # Do transfer
       info "Job.transfer uploading"
       set :status, :uploading
-      chunk_size = Settings.transfer.chunk_size || Settings[:default_chunk_size]
-      notify_size = Settings.transfer.chunk_size || Settings[:default_notify_size]
-      ftp.putbinaryfile(@source_path, target_name, chunk_size) do |block|
+      # Read source file size and parameters
+      source_size = File.size @source_path
+      set :transfer_size, source_size
+      update_every_kb = (Settings.transfer.update_every_kb rescue nil) || DEFAULT_UPDATE_EVERY_KB
+      notify_after_sec = Settings.transfer.notify_after_sec rescue nil
+
+      # Start transfer
+      transferred = 0
+      chunk_size = update_every_kb * 1024
+      t0 = tstart = Time.now
+      notified_at = Time.now
+      @ftp.putbinaryfile(@source_path, target_name, chunk_size) do |block|
         # Update counters
         transferred += block.bytesize
+        set :transfer_sent, transferred
+
+        # Update bitrate
+        dt = Time.now - t0
+        bitrate0 = (8 * chunk_size/dt).round(0)
+        set :transfer_bitrate, bitrate0
 
         # Update job info
-        percent = (100.0 * transferred / source_size).round(1)
-        set :progress, percent
-        set :file_sent, transferred
+        percent1 = (100.0 * transferred / source_size).round(1)
+        set :progress, percent1
+
+        # Log progress
+        status = []
+        status << "#{percent1} %"
+        status << (Helpers.format_bytes transferred, "B")
+        status << (Helpers.format_bytes source_size, "B")
+        status << (Helpers.format_bytes bitrate0, "bps")
+        info "Job.ftp_transfer" + status.map{|txt| ("%#{DEFAULT_LOGS_PROGNAME_TRIM.to_i}s" % txt)}.join("\t")
+
+        # Update time pointer
+        t0 = Time.now
+
       end
 
       # Close FTP connexion

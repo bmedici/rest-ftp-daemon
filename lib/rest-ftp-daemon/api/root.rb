@@ -95,7 +95,7 @@ module RestFtpDaemon
         @total_transferred = 0
 
         $queue.all.each do |job|
-          sent = job.get(:file_sent)
+          sent = job.get(:transfer_sent)
           @total_transferred += sent unless sent.nil?
         end
 
