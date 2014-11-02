@@ -1,23 +1,28 @@
 defaults: &defaults
   daemonize: 1
   port: 3200
-  workers: 1
-  adminpwd: "admin"
+  workers: 2
+  #adminpwd: "admin"
   pidfile: /tmp/rftpd.pid
+  user: rftpd
+  group: rftpd
 
   transfer:
-    chunk_size: 100000
-    notify_size: 10000000
+    #update_every_kb: 500
+    #notify_after_sec: 10
 
   conchita:
-    timer: 5
-    clean_failed: 3600
-    clean_finished: 600
+    timer: 10
+    #clean_failed: 3600
+    #clean_finished: 600
 
   logs:
     thin:
     api:
     workers:
+
+preprod:
+  <<: *defaults
 
 production:
   <<: *defaults
