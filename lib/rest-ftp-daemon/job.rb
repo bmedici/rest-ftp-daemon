@@ -130,7 +130,6 @@ module RestFtpDaemon
 
       # Return the whole structure  FIXME
       @params
-
       # @mutex.synchronize do
       #   out = @params.clone
       # end
@@ -187,16 +186,17 @@ module RestFtpDaemon
     def replace_token path
       # Ensure endpoints are not a nil value
       return path unless Settings.endpoints.is_a? Enumerable
-      newpath = path.clone
+      vectors = Settings.endpoints.clone
+
+      # Stack RANDOM into tokens
+      vectors['RANDOM'] = SecureRandom.hex(IDENT_RANDOM_LEN)
 
       # Replace endpoints defined in config
-      Settings.endpoints.each do |from, to|
+      newpath = path.clone
+      vectors.each do |from, to|
         #info "Job.replace_token #{Helpers.tokenize(from)} > #{to}"
         newpath.gsub! Helpers.tokenize(from), to
       end
-
-      # Replace with the special RAND token
-      newpath.gsub! "[RANDOM]", SecureRandom.hex(8)
 
       return newpath
     end
