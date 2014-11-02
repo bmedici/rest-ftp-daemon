@@ -16,13 +16,14 @@ module RestFtpDaemon
       # Logger
       @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
 
-      # Grab params
-      @params = params
+      # Protect with a mutex
+      @mutex = Mutex.new
 
       # Init context
+      @params = params
       set :id, id
       set :started_at, Time.now
-      set :status, :created
+      status :created
 
       # Send first notification
       info "Job.initialize/notify"
@@ -46,63 +47,100 @@ module RestFtpDaemon
     end
 
     def process
-      set :status, :starting
-      set :error, 0
+      # Update job's status
+      set :error, nil
 
       # Prepare job
       begin
         info "Job.process/prepare"
+        status :preparing
         prepare
 
-        # Process
-        transfer
+      rescue RestFtpDaemon::JobMissingAttribute => exception
+        return oops "rftpd.started", exception, :job_missing_attribute
 
-      rescue Net::FTPPermError => exception
-        info "Job.process failed [Net::FTPPermError]"
-        set :status, :failed
-        set :error, exception.class
+      rescue RestFtpDaemon::JobSourceNotFound => exception
+        return oops "rftpd.started", exception, :job_source_not_found
 
-      rescue RestFtpDaemonException => exception
-        info "Job.process failed [::#{exception.class}]"
-        set :status, :failed
-        set :error, exception.class
+      rescue RestFtpDaemon::RestFtpDaemonException => exception
+        return oops "rftpd.started", exception, :job_prepare_failed
 
       rescue Exception => exception
-        info "Job.process exception [#{exception.class}] #{exception.backtrace.inspect}"
-        set :status, :crashed
-        set :error, exception.class
+        return oops "rftpd.started", exception, :job_prepare_unhandled, true
+
+      rescue exception
+        return oops "rftpd.started", exception, :WOUHOU, true
 
       else
+        # Update job's status
+        info "Job.process/prepare ok"
+        status :prepared
+        info "Job.process/prepare status updated"
+
+        # Notify rftpd.start
+        info "Job.process/prepare notify started"
+        notify "rftpd.started", 0
+        info "Job.process/prepare notified started"
+      end
+
+      info "Job.process prepare>transfer"
+
+      # Process job
+      begin
+        info "Job.process/transfer"
+        status :starting
+        transfer
+
+      rescue Timeout::Error => exception
+        return oops "rftpd.ended", exception, :job_timeout_error
+
+      rescue Net::FTPPermError => exception
+        return oops "rftpd.ended", exception, :job_ftp_perm_error
+
+      rescue Errno::ECONNREFUSED => exception
+        return oops "rftpd.ended", exception, :job_connexion_refused
+
+      rescue Errno::EMFILE => exception
+        return oops "rftpd.ended", exception, :job_too_many_open_files
+
+      rescue RestFtpDaemon::JobTargetFileExists => exception
+        return oops "rftpd.ended", exception, :job_target_file_exists
+
+      rescue RestFtpDaemon::RestFtpDaemonException => exception
+        return oops "rftpd.ended", exception, :job_transfer_failed
+
+      rescue Exception => exception
+        return oops "rftpd.ended", exception, :job_transfer_unhandled, true
+
+      else
+        # Update job's status
         info "Job.process finished"
-        set :status, :finished
+        status :finished
+
+        # Notify rftpd.ended
+        notify "rftpd.ended", 0
       end
 
     end
 
     def describe
       # Update realtime info
-      #w = wandering_time
-      #set :wandering, w.round(2) unless w.nil?
-
-      # Update realtime info
       u = up_time
       set :uptime, u.round(2) unless u.nil?
 
-      # Return the whole structure
+      # Return the whole structure  FIXME
       @params
-    end
 
-    def status text
-      @status = text
+      # @mutex.synchronize do
+      #   out = @params.clone
+      # end
     end
 
     def get attribute
-      @params || {}
-      @params[attribute]
-    end
-
-      def params
-      @params || {}
+      @mutex.synchronize do
+        @params || {}
+        @params[attribute]
+      end
     end
 
   protected
@@ -125,16 +163,17 @@ module RestFtpDaemon
       @wander_for.to_f - (Time.now - @wander_started)
     end
 
-    # def exception_handler(actor, reason)
-    #   set :status, :crashed
-    #   set :error, reason
-    # end
-
     def set attribute, value
-      @params || {}
-      # return unless @params.is_a? Enumerable
-      @params[:updated_at] = Time.now
-      @params[attribute] = value
+      @mutex.synchronize do
+        @params || {}
+        # return unless @params.is_a? Enumerable
+        @params[:updated_at] = Time.now
+        @params[attribute] = value
+      end
+    end
+
+    def status status
+      set :status, status
     end
 
     def expand_path path
@@ -164,24 +203,22 @@ module RestFtpDaemon
 
     def prepare
       # Init
-      info "Job.prepare"
-      set :status, :preparing
+      status :preparing
       @source_method = :file
       @target_method = nil
       @source_path = nil
       @target_url = nil
 
       # Check source
-      raise JobSourceMissing unless @params["source"]
-      @source_path = expand_path @params["source"]
+      raise RestFtpDaemon::JobMissingAttribute unless @params[:source]
       @source_path = expand_path @params[:source]
       set :source_path, @source_path
       set :source_method, :file
 
       # Check target
-      raise JobTargetMissing unless @params["target"]
-      set :target_url, @target_url.inspect
+      raise RestFtpDaemon::JobMissingAttribute unless @params[:target]
       @target_url = expand_url @params[:target]
+      set :target_url, @target_url.to_s
 
       if @target_url.kind_of? URI::FTP
         @target_method = :ftp
@@ -193,104 +230,131 @@ module RestFtpDaemon
       set :target_method, @target_method
 
       # Check compliance
-      raise JobTargetUnparseable if @target_url.nil?
-      raise JobTargetUnsupported if @target_method.nil?
-      raise JobSourceNotFound unless File.exists? @source_path
-
-    end
-
-    def transfer_fake
-      # Init
-      set :status, :faking
-
-      # Work
-      (0..9).each do |i|
-        set :faking, i
-        sleep 0.5
-      end
+      raise RestFtpDaemon::JobTargetUnparseable if @target_url.nil?
+      raise RestFtpDaemon::JobTargetUnsupported if @target_method.nil?
+      raise RestFtpDaemon::JobSourceNotFound unless File.exists? @source_path
     end
 
     def transfer
-      # Init
-      info "Job.transfer"
-
-      # Send first notification
-      transferred = 0
-      notify "rftpd.started"
-
-      # Ensure @source and @target are there
+      # Method assertions
       info "Job.transfer checking_source"
-      set :status, :checking_source
-      raise RestFtpDaemon::JobPrerequisitesNotMet unless @source_path
-      raise RestFtpDaemon::JobPrerequisitesNotMet unless @target_url
-      target_path = File.dirname @target_url.path
+      status :checking_source
+      raise RestFtpDaemon::JobAssertionFailed unless @source_path &&  @target_url
+
+      # Init
+
       target_name = File.basename @target_url.path
 
-      # Read source file size
-      source_size = File.size @source_path
-      set :file_size, source_size
-
-      # Prepare FTP transfer
-      info "Job.transfer preparing"
-
       # Scheme-aware config
-      case @target_method
-      when :ftp
-        info "Job.transfer scheme FTP"
-        ftp = Net::FTP.new
-      when :ftps
-        info "Job.transfer scheme FTPS"
-        ftp = DoubleBagFTPS.new
-        ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
-        ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
-      else
-        info "Job.transfer scheme other: [#{@target_url.scheme}]"
-      end
+      ftp_init
 
-      # Connect remote server
-      info "Job.transfer connecting"
-      set :status, :connecting
-      ftp.connect(@target_url.host)
-      ftp.passive = true
-
-      # Logging in
-      info "Job.transfer login"
-      begin
-        u = ftp.login @target_url.user, @target_url.password
-      rescue Exception => exception
-        info "Job.process login failed [#{exception.class}] #{u.inspect}"
-        set :status, :login_failed
-        set :error, exception.class
-      end
-
-      # Changing to directory
-      info "Job.transfer chdir"
-      set :status, :chdir
-      ftp.chdir(target_path)
+      # Connect remote server, login and chdir
+      ftp_connect
 
       # Check for target file presence
-      if get(:overwrite).nil?
-        info "Job.transfer remote_check (#{target_name})"
-        set :status, :remote_check
-
-        # Get file list, sometimes the response can be an empty value
-        results = ftp.list(target_name) rescue nil
-
-        # Result can be nil or a list of files
-        if results.nil? || results.count.zero?
-          info "Job.transfer remote_absent"
-          set :status, :remote_absent
-        else
-          info "Job.transfer remote_present"
-          set :status, :remote_present
-          ftp.close
-          notify "rftpd.ended", RestFtpDaemon::JobTargetFileExists
-          raise RestFtpDaemon::JobTargetFileExists
-        end
-
+      if get(:overwrite).nil? && (ftp_presence target_name)
+        @ftp.close
+        raise RestFtpDaemon::JobTargetFileExists
       end
 
-      set :status, :uploading
+      # Do transfer
+      ftp_transfer target_name
+
+      # Close FTP connexion
+      info "Job.transfer disconnecting"
+      status :disconnecting
+      @ftp.close
+    end
+
+  private
+
+    def oops signal_name, exception, error_name = nil, include_backtrace = false
+      # Log this error
+      error_name = exception.class if error_name.nil?
+      info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}]"
+
+      # Update job's internal status
+      set :status, :failed
+      set :error, error_name
+      set :error_exception, exception.class
+
+      # Build status stack
+      status = nil
+      if include_backtrace
+        set :error_backtrace, exception.backtrace
+        status = {
+          backtrace: exception.backtrace,
+        }
+      end
+
+      # Prepare notification if signal given
+      return unless signal_name
+      notify signal_name, error_name, status
+    end
+
+    def ftp_init
+      # Method assertions
+      info "Job.ftp_init"
+      status :ftp_init
+      raise RestFtpDaemon::JobAssertionFailed if @target_method.nil? || @target_url.nil?
+
+      case @target_method
+      when :ftp
+        info "Job.ftp_init scheme: ftp"
+        @ftp = Net::FTP.new
+      when :ftps
+        info "Job.transfer scheme: ftps"
+        @ftp = DoubleBagFTPS.new
+        @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
+        @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
+      else
+        info "Job.transfer scheme: other [#{@target_url.scheme}]"
+      end
+    end
+
+    def ftp_connect
+      #status :ftp_connect
+      # connect_timeout_sec = (Settings.transfer.connect_timeout_sec rescue nil) || DEFAULT_CONNECT_TIMEOUT_SEC
+
+      # Method assertions
+      info "Job.ftp_connect connect"
+      status :ftp_connect
+      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
+
+        ret = @ftp.connect(@target_url.host)
+        @ftp.passive = true
+
+      info "Job.ftp_connect login"
+      status :ftp_login
+      ret = @ftp.login @target_url.user, @target_url.password
+
+      info "Job.ftp_connect chdir"
+      status :ftp_chdir
+      path = File.dirname @target_url.path
+      ret = @ftp.chdir(path)
+
+    end
+
+    def ftp_presence target_name
+      # Method assertions
+      info "Job.ftp_presence"
+      status :ftp_presence
+      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
+
+      # Get file list, sometimes the response can be an empty value
+      results = @ftp.list(target_name) rescue nil
+
+      # Result can be nil or a list of files
+      return false if results.nil?
+      return results.count >0
+    end
+
+    def ftp_transfer target_name
+      # Method assertions
+      info "Job.ftp_transfer starting"
+      status :ftp_transfer
+      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @source_path.nil?
+
       # Read source file size and parameters
       source_size = File.size @source_path
       set :transfer_size, source_size
@@ -302,6 +366,7 @@ module RestFtpDaemon
       chunk_size = update_every_kb * 1024
       t0 = tstart = Time.now
       notified_at = Time.now
+      status :uploading
       @ftp.putbinaryfile(@source_path, target_name, chunk_size) do |block|
         # Update counters
         transferred += block.bytesize
@@ -329,15 +394,12 @@ module RestFtpDaemon
 
       end
 
-      # Close FTP connexion
-      info "Job.transfer closing"
-      set :status, :disconnecting
-      notify "rftpd.ended"
-      set :progress, nil
-      ftp.close
+
+
+      # Done
+      #set :progress, nil
+      info "Job.ftp_transfer finished"
     end
-
-
 
     def notify signal, error = 0, status = {}
       RestFtpDaemon::Notification.new get(:notify), {
