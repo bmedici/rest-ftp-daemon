@@ -148,7 +148,7 @@ module RestFtpDaemon
       key = "clean_#{status.to_s}"
 
       # Read config state
-      max_age = @conchita[key]
+      max_age = @conchita[key.to_s]
       return if [nil, false].include? max_age
 
       # Delete jobs from the queue if their status is (status)

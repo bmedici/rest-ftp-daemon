@@ -5,7 +5,6 @@ rescue LoadError
   raise "config.rb warning: Settingslogic is needed to provide configuration values to the Gemspec file"
 end
 
-
 # Configuration class
 class Settings < Settingslogic
   # Read configuration
@@ -15,3 +14,4 @@ class Settings < Settingslogic
 
 
 end
+

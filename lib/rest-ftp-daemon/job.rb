@@ -11,7 +11,7 @@ module RestFtpDaemon
 
     def initialize(id, params={})
       # Call super
-      super()
+      # super()
       info "Job.initialize"
 
       # Generate new Job.id
@@ -411,7 +411,7 @@ module RestFtpDaemon
       end
 
       # Compute final bitrate
-      tbitrate0 = (8 * source_size.to_f / (Time.now - tstart))
+      tbitrate0 = (8 * source_size.to_f / (Time.now - tstart)).round(0)
       set :transfer_bitrate, tbitrate0
 
       # Add total transferred to counter
