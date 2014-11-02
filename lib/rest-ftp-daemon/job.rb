@@ -336,7 +336,6 @@ module RestFtpDaemon
       status :ftp_chdir
       path = File.dirname @target_url.path
       ret = @ftp.chdir(path)
-
     end
 
     def ftp_presence target_name
