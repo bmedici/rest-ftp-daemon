@@ -63,8 +63,8 @@ module RestFtpDaemon
     def by_status status
       return [] if status.nil?
 
-      # Delete jobs from the queue if their status is (status)
-      @popped.select { |item| item.get(:status) == status.to_sym }
+      # Select jobs from the queue if their status is (status)
+      all.select { |item| item.get(:status) == status.to_sym }
     end
 
     def queued
