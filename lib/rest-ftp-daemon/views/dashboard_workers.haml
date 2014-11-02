@@ -1,0 +1,45 @@
+- styles = {waiting: :success, processing: :info, crashed: :error, done: :success }
+
+%h2
+  Workers
+  = "&nbsp;"
+
+  .btn-group.btn-group-md
+    .btn.btn-default
+      = Settings.workers
+
+
+%table.table.table-striped.table-hover.table-condensed
+
+  %tr
+    %th= "ID"
+    %th= "status"
+    %th= "job"
+    %th= "time"
+
+  - @gworker_statuses.each do |wid, infos|
+    - status = infos[:status]
+    - if infos[:active_at].is_a? Time
+      - no_news_for = (Time.now - infos[:active_at]).round(0)
+    - else
+      - no_news_for = "?"
+
+    -# status = :waiting
+    - style = styles[status] || ""
+    -# style = "success"
+
+    %tr{class: style.to_s}
+
+      %td= wid
+      %td= infos[:status]
+      %td= infos[:jobid]
+      %td
+        = no_news_for
+
+%h2 Counters
+- $queue.counters.each do |name, value|
+  %b= "#{name}"
+  = value
+  %br
+
+

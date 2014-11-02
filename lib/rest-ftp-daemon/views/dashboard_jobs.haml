@@ -1,14 +1,17 @@
 %h2
-  Jobs (#{jobs.size})
+  Jobs
   = "&nbsp;"
 
-  .btn-group.btn-group-xs
-    - klass = @only.blank? ? "btn-info" : ""
+  .btn-group.btn-group-md
+    - klass = @only.nil? ? "btn-info" : ""
     %a.btn.btn-default{href: "?only=", class: klass}
-      ALL
+      ALL (#{jobs.size})
 
+      =# jobs.size
+
+  .btn-group.btn-group-md
     - counts.each do |status, count|
-      - klass = (status.to_s == @only) ? "btn-info" : ""
+      - klass = (status == @only) ? "btn-info" : ""
       %a.btn.btn-default{href: "?only=#{status}", class: klass}
         #{status} (#{count})
 

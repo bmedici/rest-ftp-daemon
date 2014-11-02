@@ -69,11 +69,14 @@ module RestFtpDaemon
         end
 
         # Jobs to display
-        @only = nil
-        @only = params["only"].to_sym unless params["only"].nil? || params["only"].blank?
-
-        # Select which jobs to display
         all_jobs_in_queue = $queue.all
+
+        if params["only"].nil? || params["only"].blank?
+          @only = nil
+        else
+          @only = params["only"].to_sym
+        end
+
         case @only
         when nil
           @jobs = all_jobs_in_queue
@@ -89,6 +92,9 @@ module RestFtpDaemon
         grouped.each do |status, jobs|
           @counts[status] = jobs.size
         end
+
+        # Get workers status
+        @gworker_statuses = $pool.get_worker_statuses
 
         # Compile haml template
         output = render :dashboard

@@ -44,10 +44,6 @@
         .btn.btn-default= @info_procs
 
       .btn-group.btn-group-sm
-        .btn.btn-default.btn-success Workers
-        .btn.btn-default= Settings.workers
-
-      .btn-group.btn-group-sm
         .btn.btn-default.btn-success IP
         .btn.btn-default= @info_ipaddr
 
@@ -67,7 +63,13 @@
         .btn.btn-default.btn-info Transferred
         .btn.btn-default= Helpers.format_bytes(trans, "B")
 
-      = render :dashboard_jobs, {jobs: @jobs, counts: @counts}
+
+      .row
+        .col-md-9
+          = render :dashboard_jobs, {jobs: @jobs, counts: @counts}
+        .col-md-3
+          = render :dashboard_workers, {}
+
       = render :dashboard_tokens, {tokens: Settings.endpoints || {}}
 
       %br
