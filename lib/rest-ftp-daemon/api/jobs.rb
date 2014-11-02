@@ -140,7 +140,7 @@ module RestFtpDaemon
         begin
           # Extract params
           request.body.rewind
-          params = JSON.parse request.body.read
+          params = JSON.parse(request.body.read, symbolize_names: true)
 
           # Create a new job
           # job_id = $last_worker_id += 1

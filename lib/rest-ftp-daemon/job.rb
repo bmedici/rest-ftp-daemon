@@ -173,15 +173,15 @@ module RestFtpDaemon
 
       # Check source
       raise JobSourceMissing unless @params["source"]
-      #@source = expand_path @params["source"]
       @source_path = expand_path @params["source"]
+      @source_path = expand_path @params[:source]
       set :source_path, @source_path
       set :source_method, :file
 
       # Check target
       raise JobTargetMissing unless @params["target"]
-      @target_url = expand_url @params["target"]
       set :target_url, @target_url.inspect
+      @target_url = expand_url @params[:target]
 
       if @target_url.kind_of? URI::FTP
         @target_method = :ftp
