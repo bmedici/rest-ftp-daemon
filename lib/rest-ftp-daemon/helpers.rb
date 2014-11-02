@@ -1,3 +1,6 @@
+require 'securerandom'
+
+
 module RestFtpDaemon
   class Helpers
 
@@ -9,6 +12,11 @@ module RestFtpDaemon
       converted = number.to_i / ( 1024 ** index )
       "#{converted} #{units[index]}#{unit}"
     end
+
+    def self.identifier len
+      rand(36**len).to_s(36)
+    end
+    #SecureRandom.hex(IDENT_JOB_BYTES)
 
     def self.tokenize(item)
       "[#{item}]"

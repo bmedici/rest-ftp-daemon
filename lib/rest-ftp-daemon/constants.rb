@@ -4,6 +4,10 @@ APP_CONF = "/etc/#{APP_NAME}.yml"
 APP_VER = "0.81"
 
 
+# Some global constants
+# IDENT_JOB_BYTES = 4
+IDENT_NOTIF_LEN = 4
+IDENT_RANDOM_LEN = 8
 # Some defaults
 DEFAULT_CONNECT_TIMEOUT_SEC = 30
 DEFAULT_UPDATE_EVERY_KB = 1024

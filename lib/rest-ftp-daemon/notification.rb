@@ -23,7 +23,7 @@ module RestFtpDaemon
       @message = nil
 
       # Generate a random key
-      @key = SecureRandom.hex(2)
+      key = Helpers.identifier(IDENT_NOTIF_LEN)
 
       # Logger
       @logger = RestFtpDaemon::Logger.new(:workers, "NOTIF #{@key}")
