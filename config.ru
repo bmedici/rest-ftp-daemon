@@ -1,6 +1,6 @@
 # Load gem files
-APP_LIBS = File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
-$LOAD_PATH.unshift(APP_LIBS) unless $LOAD_PATH.include?(APP_LIBS)
+load_path_libs = File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
+$LOAD_PATH.unshift(load_path_libs) unless $LOAD_PATH.include?(load_path_libs)
 require 'rest-ftp-daemon'
 
 # Create queue and worker pool

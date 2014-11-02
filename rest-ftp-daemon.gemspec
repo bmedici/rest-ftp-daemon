@@ -1,11 +1,10 @@
 # coding: utf-8
 
 # Libs
-# APP_ROOT = File.expand_path(File.dirname(__FILE__) + '/../')
-APP_LIBS = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(APP_LIBS) unless $LOAD_PATH.include?(APP_LIBS)
-require 'rest-ftp-daemon/constants'
+app_root = File.dirname(__FILE__)
+require File.expand_path("#{app_root}/lib/rest-ftp-daemon/constants")
 
+# Gemspec
 Gem::Specification.new do |spec|
   spec.name = APP_NAME
   spec.date = Time.now.strftime("%Y-%m-%d")
@@ -35,7 +34,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "double-bag-ftps"
   spec.add_runtime_dependency "facter"
   spec.add_runtime_dependency "sys-cpu"
-
   spec.add_runtime_dependency "socket"
   spec.add_runtime_dependency "timeout"
 end
