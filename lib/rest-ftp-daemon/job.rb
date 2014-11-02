@@ -7,11 +7,15 @@ require 'timeout'
 
 module RestFtpDaemon
   class Job < RestFtpDaemon::Common
+    attr_accessor :wid
 
     def initialize(id, params={})
       # Call super
       super()
       info "Job.initialize"
+
+      # Generate new Job.id
+      # $queue.counter_add :transferred, source_size
 
       # Logger
       @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
@@ -392,9 +396,26 @@ module RestFtpDaemon
         # Update time pointer
         t0 = Time.now
 
+        # Notify if requested
+        unless notify_after_sec.nil? || (notified_at + notify_after_sec > Time.now)
+          status = {
+            progress: percent1,
+            transfer_sent: transferred,
+            transfer_size: source_size,
+            transfer_bitrate: bitrate0
+            }
+          notify "rftpd.progress", 0, status
+          notified_at = Time.now
+        end
+
       end
 
+      # Compute final bitrate
+      tbitrate0 = (8 * source_size.to_f / (Time.now - tstart))
+      set :transfer_bitrate, tbitrate0
 
+      # Add total transferred to counter
+      $queue.counter_add :transferred, source_size
 
       # Done
       #set :progress, nil
