@@ -11,11 +11,7 @@ module RestFtpDaemon
     attr_accessor :job
     attr_accessor :key
 
-    def initialize
-      @status = {}
-      @error = 0
-      @message = nil
-
+    def initialize url, params
       # Generate a random key
       key = Helpers.identifier(IDENT_NOTIF_LEN)
 
@@ -27,36 +23,43 @@ module RestFtpDaemon
 
     end
 
-
-    # def status key, val
-    #   @status[key.to_s] = val
-    # end
-
-    def notify
       # Check context
-      raise NotificationMissingUrl unless @url
-      raise NotificationMissingSignal unless @signal
-      #sraise NotifImpossible unless @status
+      if url.nil?
+        info "skipping (missing url): #{params}"
+        return
+      elsif params[:signal].nil?
+        info "skipping (missing signal): #{params}"
+        return
+      else
+        # info "queuing: s[#{params[:signal]}] e[#{params[:error]}] u[#{url}]"
+        info "queuing: #{params.inspect}"
+      end
 
       # Params
-      params = {
-        id: @job_id,
-        host: get_hostname,
-        signal: @signal,
-        error: @error,
+      body = {
+        id:       params[:id],
+        signal:   params[:signal],
+        error:    params[:error],
+        host:     get_hostname,
         }
+      body[:status] = params[:status] unless params[:status].empty? || params[:status].nil?
 
-      params["status"] = @status unless @status.empty?
-      params["message"] = @message unless @message.to_s.blank?
+      # Send message in a thread
+      Thread.new do |thread|
+        # Prepare query
+        uri = URI(url)
+        headers = {"Content-Type" => "application/json",
+                  "Accept" => "application/json"}
 
-      info "notify params: #{params.inspect}"
+        # Post notification
+        info "sending: #{body.inspect}"
+        http = Net::HTTP.new(uri.host, uri.port)
+        response = http.post(uri.path, body.to_json, headers)
 
-      uri = URI(@url)
-      headers = {"Content-Type" => "application/json",
-                "Accept" => "application/json"}
+        # info "notify reply: #{response.body.strip}"
+        info "reply: #{response.body.strip}"
+      end
 
-      http = Net::HTTP.new(uri.host, uri.port)
-      response = http.post(uri.path, params.to_json, headers)
     end
 
   protected
