@@ -28,6 +28,13 @@ module RestFtpDaemon
 
       helpers do
 
+        def next_job_id
+          @@last_worker_id ||= 0
+          @@last_worker_id += 1
+          #Helpers.identifier(IDENT_JOB_BYTES)
+          #SecureRandom.hex(IDENT_JOB_BYTES)
+        end
+
         def threads_with_id job_id
           $threads.list.select do |thread|
             next unless thread[:job].is_a? Job
@@ -136,7 +143,8 @@ module RestFtpDaemon
           params = JSON.parse request.body.read
 
           # Create a new job
-          job_id = $last_worker_id += 1
+          # job_id = $last_worker_id += 1
+          job_id = next_job_id
           job = Job.new(job_id, params)
 
           # And push it to the queue
