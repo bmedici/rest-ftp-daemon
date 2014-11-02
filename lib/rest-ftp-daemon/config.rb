@@ -12,6 +12,10 @@ class Settings < Settingslogic
   source ((File.exists? APP_CONF) ? APP_CONF : Hash.new)
   suppress_errors true
 
+  # Compute my PID filename
+  def pidfile
+    self["pidfile"] || "/tmp/#{APP_NAME}.port#{self['port'].to_s}.pid"
+  end
 
 end
 
