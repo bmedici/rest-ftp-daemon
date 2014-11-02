@@ -12,12 +12,6 @@ module RestFtpDaemon
     attr_accessor :key
 
     def initialize
-    #def initialize(job, signal, error, status)
-      # Grab params
-      #@job = job
-      # @signal = signal
-      # @error = error
-      # @status = status
       @status = {}
       @error = 0
       @message = nil
@@ -32,10 +26,6 @@ module RestFtpDaemon
       super
 
     end
-
-    # def progname
-    #   "NOTIF #{@key}"
-    # end
 
 
     # def status key, val
@@ -56,22 +46,17 @@ module RestFtpDaemon
         error: @error,
         }
 
-      # Add status only if present
       params["status"] = @status unless @status.empty?
       params["message"] = @message unless @message.to_s.blank?
 
-      # Log this notification
       info "notify params: #{params.inspect}"
 
-      # Prepare query
       uri = URI(@url)
       headers = {"Content-Type" => "application/json",
                 "Accept" => "application/json"}
 
-      # Post the notification
       http = Net::HTTP.new(uri.host, uri.port)
       response = http.post(uri.path, params.to_json, headers)
-      # info "notify reply: #{response.body.strip}"
     end
 
   protected

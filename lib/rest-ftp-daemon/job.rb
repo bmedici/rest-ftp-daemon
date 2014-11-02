@@ -3,6 +3,7 @@
 require 'uri'
 require 'net/ftp'
 require 'double_bag_ftps'
+require 'timeout'
 
 module RestFtpDaemon
   class Job < RestFtpDaemon::Common
@@ -10,6 +11,7 @@ module RestFtpDaemon
     def initialize(id, params={})
       # Call super
       super()
+      info "Job.initialize"
 
       # Logger
       @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
@@ -23,6 +25,7 @@ module RestFtpDaemon
       set :status, :created
 
       # Send first notification
+      info "Job.initialize/notify"
       notify "rftpd.queued"
     end
 
@@ -43,13 +46,12 @@ module RestFtpDaemon
     end
 
     def process
-      # Init
-      info "Job.process starting"
       set :status, :starting
       set :error, 0
 
+      # Prepare job
       begin
-        # Validate job and params
+        info "Job.process/prepare"
         prepare
 
         # Process
@@ -288,8 +290,6 @@ module RestFtpDaemon
 
       end
 
-      # Do transfer
-      info "Job.transfer uploading"
       set :status, :uploading
       # Read source file size and parameters
       source_size = File.size @source_path

@@ -59,7 +59,7 @@ module RestFtpDaemon
       # Check that item responds to "priorty" method
       raise "JobQueue.push: object should respond to priority method" unless obj.respond_to? :priority
 
-      @mutex.synchronize{
+      @mutex.synchronize do
         @queued.push obj
         begin
           t = @waiting.shift
@@ -67,7 +67,7 @@ module RestFtpDaemon
         rescue ThreadError
           retry
         end
-      }
+      end
     end
     alias << push
     alias enq push
@@ -105,6 +105,7 @@ module RestFtpDaemon
       @waiting.size
     end
 
+
   protected
 
     def conchita_loop
@@ -139,19 +140,13 @@ module RestFtpDaemon
         next if age < max_age
 
         # Ok, we have to clean it up ..
-        info "conchita_clean #{status.to_s} max_age:#{max_age} job:#{job.id} age:#{age}"
+        info "conchita_clean #{status.inspect} max_age:#{max_age} job:#{job.id} age:#{age}"
         true
       end
 
     end
 
-    # def progname
-    #   "QUEUE"
-    # end
-
     def info message, level = 0
-      # progname = "Job [#{id}]" unless id.nil?
-      # progname = "Worker [#{id}]" unless worker_id.nil?
       @logger.add(Logger::INFO, "#{'  '*(level+1)} #{message}", progname) unless @logger.nil?
     end
 

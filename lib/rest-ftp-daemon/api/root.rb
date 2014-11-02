@@ -32,7 +32,6 @@ module RestFtpDaemon
             statuses[item.get_status] ||= 0
             statuses[item.get_status] +=1
           end
-
           statuses
         end
 
@@ -55,11 +54,6 @@ module RestFtpDaemon
       get '/' do
         info "GET /"
 
-        # Prepare data
-        #@jobs_all = $queue.all
-        #@jobs_all_size = $queue.all_size
-        #@jobs_all = $queue.all_size
-
         # Initialize UsageWatch
         Facter.loadfacts
         @info_load = Sys::CPU.load_avg.first.to_f
@@ -68,7 +62,6 @@ module RestFtpDaemon
         @info_memfree = Facter.value(:memoryfree)
 
         # Compute normalized load
-        # puts "info_procs: #{info_procs}"
         if @info_procs.zero?
           @info_norm = "N/A"
         else
@@ -79,9 +72,11 @@ module RestFtpDaemon
         @only = nil
         @only = params["only"].to_sym unless params["only"].nil? || params["only"].blank?
 
+        # Select which jobs to display
+        all_jobs_in_queue = $queue.all
         case @only
         when nil
-          @jobs = $queue.all
+          @jobs = all_jobs_in_queue
         when :queue
           @jobs = $queue.queued
         else
@@ -96,14 +91,14 @@ module RestFtpDaemon
           @total_transferred += sent unless sent.nil?
         end
 
+        # Count jobs for each status
         @counts = {}
-        grouped = $queue.all.group_by { |job| job.get(:status) }
+        grouped = all_jobs_in_queue.group_by { |job| job.get(:status) }
         grouped.each do |status, jobs|
           @counts[status] = jobs.size
         end
 
         # Compile haml template
-        @name = "Test"
         output = render :dashboard
 
         # Send response
@@ -117,7 +112,7 @@ module RestFtpDaemon
 
       # Server global status
       get '/status' do
-        info "GET /"
+        info "GET /status"
         status 200
         return  {
           hostname: `hostname`.chomp,
@@ -135,7 +130,8 @@ module RestFtpDaemon
 
       # Server test
       get '/debug' do
-        info "GET /debug/"
+        info "GET /debug"
+
         begin
           raise RestFtpDaemon::DummyException
         rescue RestFtpDaemon::RestFtpDaemonException => exception

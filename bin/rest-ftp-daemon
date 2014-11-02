@@ -103,7 +103,6 @@ puts argv.flatten.join(' ')
 puts
 
 
-
 # Start Thin with this rackup configuration
 begin
   Thin::Runner.new(argv.flatten).run!

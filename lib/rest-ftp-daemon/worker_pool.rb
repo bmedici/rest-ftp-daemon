@@ -4,9 +4,6 @@ module RestFtpDaemon
     attr_reader :requested, :processed, :wid
 
     def initialize(number_threads)
-      # Call super
-      super()
-
       # Logger
       @logger = RestFtpDaemon::Logger.new(:workers, "WORKER")
 
@@ -29,11 +26,11 @@ module RestFtpDaemon
 
     end
 
-    def wait
-      item = @out.pop
-      @lock.synchronize { @processed += 1 }
-      block_given? ? (yield item) : item
-    end
+    # def wait
+    #   item = @out.pop
+    #   @lock.synchronize { @processed += 1 }
+    #   block_given? ? (yield item) : item
+    # end
 
     # def progname
     #   "WORKER #{@wid}"
@@ -54,19 +51,21 @@ module RestFtpDaemon
           job.process
           info "worker [#{wid}] processed [#{job.id}]"
 
+        rescue Exception => ex
+          info "UNHANDLED EXCEPTION: #{ex.message}"
+          ex.backtrace.each do |line|
+            info line, 1
+          end
+        else
+
+        # Clean job status
+        job.wid = nil
+
         end
-      rescue Exception => ex
-        info 'WORKER UNHANDLED EXCEPTION: ', ex.message , "\n", ex.backtrace.join("\n")
+
       end
-    end
-
-    def process job
-
-      @lock.synchronize do
-        job.dummy
-      end
-
     end
 
   end
+
 end

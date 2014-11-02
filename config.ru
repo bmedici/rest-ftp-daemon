@@ -7,9 +7,7 @@ require 'rest-ftp-daemon'
 $queue = RestFtpDaemon::JobQueue.new
 $pool = RestFtpDaemon::WorkerPool.new(Settings[:workers] || DEFAULT_WORKERS)
 
-# Rack middleware
-# use Rack::Etag           # Add an ETag
-# use Rack::Reloader,   0
+# Rack authent
 unless Settings.adminpwd.nil?
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
     [username, password] == ['admin', Settings.adminpwd]

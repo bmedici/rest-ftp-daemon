@@ -1,7 +1,6 @@
 # Global libs
 require 'rubygems'
 require 'json'
-require 'securerandom'
 # require 'celluloid/autostart'
 
 # My libs

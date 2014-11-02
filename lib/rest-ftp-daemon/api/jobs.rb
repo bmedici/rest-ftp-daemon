@@ -6,16 +6,15 @@ module RestFtpDaemon
 
 ####### CLASS CONFIG
 
-
-      params do
-        optional :overwrite, type: Integer, default: false
-      end
+      # params do
+      #   optional :overwrite, type: Integer, default: false
+      # end
 
 
 ####### INITIALIZATION
 
       def initialize
-        $last_worker_id = 0
+        #$last_worker_id = 0
 
         # Check that Queue and Pool are available
         raise RestFtpDaemon::MissingQueue unless defined? $queue
