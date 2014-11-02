@@ -4,8 +4,8 @@ module RestFtpDaemon
   class JobQueue < Queue
 
     def initialize
-      # Logger
-      @logger = ActiveSupport::Logger.new(Settings.logs[:queue], 'daily') unless Settings.logs.nil?
+      # # Logger
+      @logger = RestFtpDaemon::Logger.new(:queue, "QUEUE")
 
       # Instance variables
       @queued = []
@@ -188,6 +188,12 @@ module RestFtpDaemon
 
       # Return picked
       picked
+    end
+
+  private
+
+    def info message, level = 0
+      @logger.info(message, level) unless @logger.nil?
     end
 
   end
