@@ -27,6 +27,8 @@ As of today, its main features are :
 * Remote supported protocols: FTP and FTPs
 * Allow main file transfer protocols: sFTP, FTPs / FTPes
 * Automatically clean-up jobs after a configurable amount of time (failed, finished)
+* Current bitrate on the last blocks chunk updated in the job attributes
+* Global bitrate on the whole file transfer is re-computed after the transfer finishes
 
 Expected features in a short-time range :
 
@@ -46,33 +48,42 @@ Installation
 
 This project is available as a rubygem, requires Ruby 2.1 and rubygems installed.
 
+You may use ```rbenv``` and ```ruby-build``` to get the right Ruby version. If this is your case, ensure that ruby-build definitions are up-to-date and include ruby-2.1.0
 
-You may use ```rbenv``` and ```ruby-build``` to get the right Ruby version
+```
+# ruby-build --definitions | grep '2.1'
+
+```
+Otherwise, you way have to update ruby-build to include Ruby 2.1.0 definitions.
+On Debian, 2.1.0 is not included in Wheezy and appears in Jessie's version of the package.
 
 ```
 # apt-get install ruby-build rbenv
 
 ```
 
-Use a dedicated user for the daemon
+Use a dedicated user for the daemon, switch to this user and enable rbenv
 
 ```
 # adduser --disabled-password --gecos "" rftpd
 # su rftpd -l
+# echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+# echo 'eval "$(rbenv init -)"' >> ~/.bashrc
 ```
 
-Install the right ruby version, update rubygems
+
+Install the right ruby version and activate it
 
 ```
 # rbenv install 2.1.0
 # rbenv local 2.1.0
 # rbenv rehash
+```
+
+Update RubyGems and install the gem from rubygems.org
+
+```
 # gem update --system
-```
-
-Get and install the gem from rubygems.org
-
-```
 # gem install rest-ftp-daemon --no-ri --no-rdoc
 # rest-ftp-daemon start
 ```
