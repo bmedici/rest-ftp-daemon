@@ -7,6 +7,11 @@ require 'rest-ftp-daemon'
 $queue = RestFtpDaemon::JobQueue.new
 $pool = RestFtpDaemon::WorkerPool.new(Settings[:workers] || DEFAULT_WORKERS)
 
+# Rack reloader
+unless Settings.namespace == "production"
+  use Rack::Reloader, 0
+end
+
 # Rack authent
 unless Settings.adminpwd.nil?
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
