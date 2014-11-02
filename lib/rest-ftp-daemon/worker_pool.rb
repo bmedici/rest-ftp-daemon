@@ -1,7 +1,7 @@
 module RestFtpDaemon
   class WorkerPool < RestFtpDaemon::Common
 
-    attr_reader :requested, :processed
+    attr_reader :requested, :processed, :wid
 
     def initialize(number_threads)
       # Call super
@@ -12,13 +12,19 @@ module RestFtpDaemon
 
       # Check parameters
       raise "A thread count of #{number_threads} is less than one" if number_threads < 1
-      @wid = "-"
-
 
       # Create worker threads
       info "WorkerPool initializing with #{number_threads} workers"
-      number_threads.times do
-        Thread.new { run }
+      @mutex = Mutex.new
+      @counter = 0
+
+      for wid in 1..number_threads
+        Thread.new() do
+          @mutex.synchronize do
+            @counter +=1
+          end
+          work("w#{@counter}")
+        end
       end
 
     end
@@ -33,21 +39,20 @@ module RestFtpDaemon
     #   "WORKER #{@wid}"
     # end
 
-    def run
-      # Generate a random key
-      @wid = SecureRandom.hex(2)
+    def work wid
+      loop do
 
-      begin
-        loop do
-          info "worker [#{@wid}] ready, waiting for a job"
+        begin
+          info "worker [#{wid}] waiting for a job"
 
           # Wait for a job to come into the queue
           job = $queue.pop
-          prefix = "working on job [#{job.id}]"
+          info "worker [#{wid}] popped [#{job.id}]"
 
           # Do the job
-          info "job [#{job.id}] processing: #{job.inspect}"
+          job.wid = wid
           job.process
+          info "worker [#{wid}] processed [#{job.id}]"
 
         end
       rescue Exception => ex
