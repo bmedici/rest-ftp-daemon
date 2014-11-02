@@ -38,7 +38,7 @@
 
     .container
 
-
+      - trans = $queue.counter_get :transferred
       .btn-group.btn-group-sm
         .btn.btn-default.btn-success Processors
         .btn.btn-default= @info_procs
@@ -65,7 +65,7 @@
 
       .btn-group.btn-group-sm
         .btn.btn-default.btn-info Transferred
-        .btn.btn-default= Helpers.format_bytes(@total_transferred, "B")
+        .btn.btn-default= Helpers.format_bytes(trans, "B")
 
       = render :dashboard_jobs, {jobs: @jobs, counts: @counts}
       = render :dashboard_tokens, {tokens: Settings.endpoints || {}}

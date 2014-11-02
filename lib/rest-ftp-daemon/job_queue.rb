@@ -17,6 +17,10 @@ module RestFtpDaemon
       self.taint
       @mutex = Mutex.new
 
+      # Mutex for counters
+      @counters = {}
+      @mutex_counters = Mutex.new
+
       # Conchita configuration
       @conchita = Settings.conchita
       if @conchita.nil?
@@ -33,6 +37,27 @@ module RestFtpDaemon
           }
       end
 
+    end
+
+    def counter_add name, value
+      @mutex_counters.synchronize do
+        @counters[name] ||= 0
+        @counters[name] += value
+      end
+    end
+
+    def counter_inc name
+      counter_add name, 1
+    end
+
+    def counter_get name
+      @counters[name]
+    end
+
+    def counters
+      @mutex_counters.synchronize do
+        @counters.clone
+      end
     end
 
     def by_status status

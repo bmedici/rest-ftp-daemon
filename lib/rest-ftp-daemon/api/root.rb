@@ -83,14 +83,6 @@ module RestFtpDaemon
           @jobs = $queue.by_status (@only)
         end
 
-        # Compute total transferred
-        @total_transferred = 0
-
-        $queue.all.each do |job|
-          sent = job.get(:transfer_sent)
-          @total_transferred += sent unless sent.nil?
-        end
-
         # Count jobs for each status
         @counts = {}
         grouped = all_jobs_in_queue.group_by { |job| job.get(:status) }
