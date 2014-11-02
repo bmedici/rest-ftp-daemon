@@ -24,6 +24,7 @@
     %th= "status"
     %th= "error"
     %th= "progress"
+    %th= "worker"
     %th
 
   - jobs.each do |job|
@@ -66,3 +67,6 @@
         - if (bitrate = job.get :transfer_bitrate)
           = "|"
           =  Helpers.format_bytes(bitrate, "bps")
+
+      %td= job.wid
+
