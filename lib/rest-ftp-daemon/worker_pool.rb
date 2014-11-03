@@ -73,7 +73,7 @@ module RestFtpDaemon
         # Clean job status
         worker_status wid, :ready
         job.wid = nil
-sleep 1
+        # sleep 1
 
         end
 
