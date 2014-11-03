@@ -51,16 +51,12 @@ This project is available as a rubygem, requires Ruby 2.1 and rubygems installed
 You may use ```rbenv``` and ```ruby-build``` to get the right Ruby version. If this is your case, ensure that ruby-build definitions are up-to-date and include ruby-2.1.0
 
 ```
+# apt-get install ruby-build rbenv
 # ruby-build --definitions | grep '2.1'
 
 ```
 Otherwise, you way have to update ruby-build to include Ruby 2.1.0 definitions.
 On Debian, 2.1.0 is not included in Wheezy and appears in Jessie's version of the package.
-
-```
-# apt-get install ruby-build rbenv
-
-```
 
 Use a dedicated user for the daemon, switch to this user and enable rbenv
 
