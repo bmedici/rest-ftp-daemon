@@ -23,4 +23,5 @@ end
 use Rack::Static, :urls => ["/css", "/images"], :root => "#{APP_LIBS}/static/"
 
 # Launch the main daemon
-run Rack::Cascade.new [RestFtpDaemon::API::Root]
+run RestFtpDaemon::API::Root
+#run Rack::Cascade.new [RestFtpDaemon::API::Root]
