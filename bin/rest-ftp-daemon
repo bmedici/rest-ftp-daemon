@@ -15,7 +15,7 @@ puts
 begin
   OptionParser.new do |opts|
     opts.on("-e", "--environment ENV")   { |env| APP_ENV = env }
-    opts.on("-d", "--dev")               { APP_ENV = "development" }
+    opts.on("", "--dev")                 { APP_ENV = "development" }
   end.parse(ARGV)
 rescue OptionParser::InvalidOption => e
 end
@@ -72,7 +72,7 @@ if ["start", "restart"].include? command
     puts "ABORTING: Network port is missing"
     exit 1
   elsif RestFtpDaemon::Helpers.local_port_used?(Settings['port'])
-    puts "ABORTING: Network port is already in use" if Settings.port_used?
+    puts "ABORTING: Network port #{Settings['port']} is already in use"
     exit 1
   end
 end
