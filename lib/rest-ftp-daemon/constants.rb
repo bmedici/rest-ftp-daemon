@@ -5,7 +5,6 @@ APP_VER = "0.83"
 
 
 # Some global constants
-# IDENT_JOB_BYTES = 4
 IDENT_NOTIF_LEN = 4
 IDENT_RANDOM_LEN = 8
 
