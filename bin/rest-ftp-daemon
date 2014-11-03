@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-# Try to load libs
+# Try to load libs and constants
+app_root = File.dirname(__FILE__) + '/../'
 begin
   require "thin"
   require 'optparse'
@@ -9,37 +10,24 @@ begin
 rescue LoadError
   raise "EXITING: some of basic libs were not found: thin, optparse, socket, timeout"
 end
+require File.expand_path("#{app_root}/lib/rest-ftp-daemon/constants")
 puts
+#puts "--- #{APP_NAME} #{APP_VER}"
 
-# Detect environment from options
-begin
-  OptionParser.new do |opts|
-    opts.on("-e", "--environment ENV")   { |env| APP_ENV = env }
-    opts.on("", "--dev")                 { APP_ENV = "development" }
-  end.parse(ARGV)
-rescue OptionParser::InvalidOption => e
-end
-
-# Load remaining libs and config subsystem
-app_root = File.dirname(__FILE__) + '/../'
-[:constants, :helpers, :config].each do |lib|
-  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib.to_s}.rb")
-end
-
-# Setup options and import current ARGV
+# Detect options from ARGV
 options = {}
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: #{File.basename $0} [options] start|stop|restart"
-  opts.on("-e", "--environment ENV", "Environment (#{APP_ENV if defined? APP_ENV})")
-  opts.on("--dev", "Force development environment")
-  opts.on("-p", "--port PORT", "use PORT (#{Settings.port})")          { |port| options["port"] = port.to_i }
-  opts.on("-w", "--workers COUNT", "Use COUNT worker threads (#{Settings['workers']})") { |count| options["workers"] = count.to_i }
+  opts.on("-e", "--environment ENV")                                   { |env| APP_ENV = env }
+  opts.on("", "--dev")                                                 { APP_ENV = "development" }
+  opts.on("-p", "--port PORT", "use PORT")                             { |port| options["port"] = port.to_i }
+  opts.on("-w", "--workers COUNT", "Use COUNT worker threads")        { |count| options["workers"] = count.to_i }
   opts.on("-d", "--daemonize", "Run daemonized in the background")     { |bool| options["daemonize"] = bool || true }
   opts.on("-P", "--pid FILE", "File to store PID")                     { |file| options["pidfile"] = file }
   opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")  { |user| options["user"] = user }
   opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)"){ |group| options["group"] = group }
   opts.on_tail("-h", "--help", "Show this message")                    { puts opts; exit }
-  opts.on_tail('-v', '--version', "Show version")                      { puts Settings['app_ver']; exit }
+  opts.on_tail('-v', '--version', "Show version (#{APP_VER})")                      { puts APP_VER; exit }
 end
 begin
   parser.order!(ARGV)
@@ -52,6 +40,14 @@ rescue OptionParser::InvalidOption => e
   puts "EXITING: option parser: #{e.message}"
   exit 1
 end
+
+# Load helpers and config
+app_root = File.dirname(__FILE__) + '/../'
+[:helpers, :config].each do |lib|
+  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib.to_s}")
+end
+
+# Merge options from ARGV into settings
 Settings.merge!(options)
 
 # Display compiled configuration
