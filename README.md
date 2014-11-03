@@ -81,6 +81,7 @@ Update RubyGems and install the gem from rubygems.org
 ```
 # gem update --system
 # gem install rest-ftp-daemon --no-ri --no-rdoc
+# rbenv rehash
 # rest-ftp-daemon start
 ```
 
