@@ -33,10 +33,11 @@ parser = OptionParser.new do |opts|
   opts.on("-e", "--environment ENV", "Environment (#{APP_ENV if defined? APP_ENV})")
   opts.on("--dev", "Force development environment")
   opts.on("-p", "--port PORT", "use PORT (#{Settings.port})")          { |port| options["port"] = port.to_i }
+  opts.on("-w", "--workers COUNT", "Use COUNT worker threads (#{Settings['workers']})") { |count| options["workers"] = count.to_i }
   opts.on("-d", "--daemonize", "Run daemonized in the background")     { |bool| options["daemonize"] = bool || true }
   opts.on("-P", "--pid FILE", "File to store PID")                     { |file| options["pidfile"] = file }
   opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")  { |user| options["user"] = user }
-  opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)")  { |group| options["group"] = group }
+  opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)"){ |group| options["group"] = group }
   opts.on_tail("-h", "--help", "Show this message")                    { puts opts; exit }
   opts.on_tail('-v', '--version', "Show version")                      { puts Settings['app_ver']; exit }
 end
