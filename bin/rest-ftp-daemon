@@ -96,15 +96,31 @@ puts
 
 # Start Thin with this rackup configuration
 begin
-  Thin::Runner.new(argv.flatten).run!
-  rescue RuntimeError => e
-    puts "FAILED: RuntimeError: #{e.message}"
-  rescue Thin::PidFileExist
-    puts "FAILED: daemon was already running (Thin::PidFileExist)"
-  rescue Thin::PidFileNotFound
-    puts "FAILED: daemon was not running (Thin::PidFileNotFound)"
-  rescue SystemExit
-    # puts "EXITING: daemon in the background (SystemExit)"
-  else
-    # puts "FAILED: process ending"
+  r = Thin::Runner.new(argv.flatten).run!
+
+rescue RuntimeError => e
+  puts "FAILED: RuntimeError: #{e.message}"
+rescue Thin::PidFileExist
+  puts "FAILED: daemon was already running (Thin::PidFileExist)"
+rescue Thin::PidFileNotFound
+  puts "FAILED: daemon was not running (Thin::PidFileNotFound)"
+rescue SystemExit
+  # Leave some time for the daemon to launch
+  pidfile = Settings.pidfile
+  while !File.file?(pidfile) do
+    sleep 0.1
+  end
+
+  # Check that this process is running
+  pid = File.read(pidfile).to_i
+  begin
+    Process.kill(0, pid)
+    puts "Process ##{pid} is running"
+  rescue Errno::EPERM                     # changed uid
+      puts "No permission to query process ##{pid}!";
+  rescue Errno::ESRCH
+      puts "Process ##{pid} is NOT running.";      # or zombied
+  rescue
+      puts "Unable to determine status for ##{pid}: #{$!}"
+  end
 end
