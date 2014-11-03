@@ -198,6 +198,7 @@ module RestFtpDaemon
       # Replace endpoints defined in config
       newpath = path.clone
       vectors.each do |from, to|
+        next if to.to_s.blank?
         #info "Job.replace_token #{Helpers.tokenize(from)} > #{to}"
         newpath.gsub! Helpers.tokenize(from), to
       end
