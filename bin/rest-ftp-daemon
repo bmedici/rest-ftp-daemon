@@ -90,10 +90,11 @@ puts "--- Thin ARGV"
 puts argv.flatten.join(' ')
 puts
 
-# Start Thin with this rackup configuration
-begin
-  r = Thin::Runner.new(argv.flatten).run!
 
+# Start Thin with this rackup configuration, changing to app_root first
+begin
+  Dir.chdir app_root
+  r = Thin::Runner.new(argv.flatten).run!
 rescue RuntimeError => e
   puts "FAILED: RuntimeError: #{e.message}"
 rescue Thin::PidFileExist
@@ -103,9 +104,12 @@ rescue Thin::PidFileNotFound
 rescue SystemExit
   # Leave some time for the daemon to launch
   pidfile = Settings.pidfile
+    print "Waiting for pidfile"
   while !File.file?(pidfile) do
-    sleep 0.1
+    print "."
+    sleep 0.25
   end
+  puts
 
   # Check that this process is running
   pid = File.read(pidfile).to_i
