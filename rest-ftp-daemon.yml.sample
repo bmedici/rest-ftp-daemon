@@ -1,9 +1,8 @@
 defaults: &defaults
-  daemonize: 1
-  port: 3200
+  daemonize: true
+  port: 3000
   workers: 2
   #adminpwd: "admin"
-  pidfile: /tmp/rftpd.pid
   user: rftpd
   group: rftpd
   host: <%= `hostname`.chomp.split('.').first %>
@@ -26,4 +25,8 @@ preprod:
   <<: *defaults
 
 production:
+  # Insert your environment-specific configuration here
+  port: 3200
+
+  # Merge parameters from the "default" section
   <<: *defaults

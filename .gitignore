@@ -4,3 +4,4 @@ pkg
 *.log
 tmp/
 work/
+rest-ftp-daemon.yml
