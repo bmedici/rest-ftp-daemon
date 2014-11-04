@@ -35,7 +35,7 @@ module RestFtpDaemon
         id:       params[:id],
         signal:   params[:signal],
         error:    params[:error],
-        host:     get_hostname,
+        host:     Settings['host'].to_s,
         }
       body[:status] = params[:status] unless params[:status].empty? || params[:status].nil?
 
@@ -58,10 +58,6 @@ module RestFtpDaemon
     end
 
   protected
-
-    def get_hostname
-      `hostname`.chomp
-    end
 
   end
 end

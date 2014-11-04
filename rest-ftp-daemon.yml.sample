@@ -6,6 +6,7 @@ defaults: &defaults
   pidfile: /tmp/rftpd.pid
   user: rftpd
   group: rftpd
+  host: <%= `hostname`.chomp.split('.').first %>
 
   transfer:
     #update_every_kb: 500

@@ -48,6 +48,10 @@
         .btn.btn-default= @info_ipaddr
 
       .btn-group.btn-group-sm
+        .btn.btn-default.btn-success Host
+        .btn.btn-default= Settings['host']
+
+      .btn-group.btn-group-sm
         .btn.btn-default.btn-warning Load
         .btn.btn-default= @info_load.round(1)
 
