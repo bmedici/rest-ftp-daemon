@@ -29,6 +29,7 @@ As of today, its main features are :
 * Automatically clean-up jobs after a configurable amount of time (failed, finished)
 * Current bitrate on the last blocks chunk updated in the job attributes
 * Global bitrate on the whole file transfer is re-computed after the transfer finishes
+* Daemon process is tagged with its name and environement in process lists
 
 Expected features in a short-time range :
 
