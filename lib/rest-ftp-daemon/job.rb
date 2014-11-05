@@ -61,6 +61,12 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobSourceNotFound => exception
         return oops "rftpd.started", exception, :job_source_not_found
 
+      rescue RestFtpDaemon::JobUnresolvedTokens => exception
+        return oops "rftpd.started", exception, :job_unresolved_tokens
+
+      rescue RestFtpDaemon::JobTargetUnparseable => exception
+        return oops "rftpd.started", exception, :job_target_unparseable
+
       rescue RestFtpDaemon::RestFtpDaemonException => exception
         return oops "rftpd.started", exception, :job_prepare_failed
 
@@ -175,14 +181,14 @@ module RestFtpDaemon
     end
 
     def expand_path path
-      File.expand_path replace_token(path)
+      File.expand_path replace_tokens(path)
     end
 
     def expand_url path
-      URI::parse replace_token(path) rescue nil
+      URI::parse replace_tokens(path) rescue nil
     end
 
-    def replace_token path
+    def replace_tokens path
       # Ensure endpoints are not a nil value
       return path unless Settings.endpoints.is_a? Enumerable
       vectors = Settings.endpoints.clone
@@ -194,10 +200,14 @@ module RestFtpDaemon
       newpath = path.clone
       vectors.each do |from, to|
         next if to.to_s.blank?
-        #info "Job.replace_token #{Helpers.tokenize(from)} > #{to}"
+        #info "Job.replace_tokens #{Helpers.tokenize(from)} > #{to}"
         newpath.gsub! Helpers.tokenize(from), to
       end
 
+      # Ensure result does not contain tokens after replacement
+      raise RestFtpDaemon::JobUnresolvedTokens if Helpers.contains_tokens newpath
+
+      # All OK, return this
       return newpath
     end
 

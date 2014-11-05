@@ -22,6 +22,10 @@ module RestFtpDaemon
       "[#{item}]"
     end
 
+    def self.contains_tokens(item)
+      /\[[a-zA-Z0-9]+\]/.match(item)
+    end
+
     def self.local_port_used? port
       ip = '0.0.0.0'
       timeout = 1
