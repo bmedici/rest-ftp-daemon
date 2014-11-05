@@ -330,9 +330,8 @@ module RestFtpDaemon
       info "Job.ftp_connect connect"
       status :ftp_connect
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
-
-        ret = @ftp.connect(@target_url.host)
-        @ftp.passive = true
+      @ftp.connect(@target_url.host)
+      @ftp.passive = true
 
       info "Job.ftp_connect login"
       status :ftp_login

@@ -25,8 +25,5 @@ preprod:
   <<: *defaults
 
 production:
-  # Insert your environment-specific configuration here
-  port: 3200
-
-  # Merge parameters from the "default" section
   <<: *defaults
+  port: 3200

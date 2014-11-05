@@ -71,7 +71,7 @@ module RestFtpDaemon
 
       desc "Get information about a specific job"
       params do
-        requires :id, type: Integer, desc: "job id"
+        #requires :id, type: Integer, desc: "job id"
       end
       get ':id' do
         info "GET /jobs/#{params[:id]}"

@@ -5,9 +5,9 @@ APP_VER = "0.86.1"
 
 
 # Some global constants
+IDENT_JOB_BYTES = 8
 IDENT_NOTIF_LEN = 4
 IDENT_RANDOM_LEN = 8
-
 
 # Some defaults
 DEFAULT_CONNECT_TIMEOUT_SEC = 30

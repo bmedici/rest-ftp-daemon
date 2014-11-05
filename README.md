@@ -42,6 +42,9 @@ Expected features in a short-time range :
 * Allow to specify random remote/local source/target
 * Allow more transfer protocols (sFTP, HTTP POST etc)
 
+Known bugs :
+
+* As this project is based on SettingsLogic, which in turns uses Syck YAML parser, configuration merge from "defaults" section and environment-specific section is broken. A sub-tree defined for a specific environment, will overwrite the corresponding subtree from "defaults".
 
 
 Installation
