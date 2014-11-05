@@ -3,6 +3,7 @@
   %head
     %meta{:charset => "utf-8"}/
     %link{ href:"/css/bootstrap.css" , rel: "stylesheet"}
+    %link{ href:"/css/main.css" , rel: "stylesheet"}
 
     %title="#{Settings['host']} [#{Settings.namespace}] #{APP_NAME}"
 
@@ -69,9 +70,9 @@
 
 
       .row
-        .col-md-9
+        .col-md-10
           = render :dashboard_jobs, {jobs: @jobs, counts: @counts}
-        .col-md-3
+        .col-md-2
           = render :dashboard_workers, {}
 
       = render :dashboard_tokens, {tokens: Settings.endpoints || {}}

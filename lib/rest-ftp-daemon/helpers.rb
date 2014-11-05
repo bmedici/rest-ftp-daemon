@@ -45,6 +45,23 @@ module RestFtpDaemon
       end
     end
 
+    def self.job_method_label method
+      return if method.nil?
+      klass = case method
+      when :file
+        'label-primary'
+      when :ftp
+        'label-danger'
+      when :ftps
+        'label-warning'
+      when :ftpes
+        'label-warning'
+      else
+         'label-default'
+      end
+      "<div class=\"label #{klass}\">#{method.upcase}</div>"
+    end
+
     # def snakecase
     #   gsub(/::/, '/').
     #   gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
