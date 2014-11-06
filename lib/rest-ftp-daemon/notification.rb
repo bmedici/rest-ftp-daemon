@@ -32,7 +32,7 @@ module RestFtpDaemon
 
       # Params
       body = {
-        id:       params[:id],
+        id:       params[:id].to_s,
         signal:   params[:signal],
         error:    params[:error],
         host:     Settings['host'].to_s,
