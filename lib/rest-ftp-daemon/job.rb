@@ -25,7 +25,7 @@ module RestFtpDaemon
 
       # Init context
       @params = params
-      set :id, id
+      set :id, id.to_s
       set :started_at, Time.now
       status :created
 
