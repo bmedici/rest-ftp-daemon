@@ -3,6 +3,8 @@ require 'securerandom'
 
 module RestFtpDaemon
   class JobQueue < Queue
+    attr_reader :queued
+    attr_reader :popped
 
     def initialize
       # # Logger
@@ -81,20 +83,20 @@ module RestFtpDaemon
       all.select { |item| item.get(:status) == status.to_sym }
     end
 
-    def queued
-      @queued
-    end
-    def popped
-      @popped
-    end
     def all
+      # queued2 = @queued.clone
+      # return queued2.merge(@popped)
       @queued + @popped
     end
     def all_size
       @queued.length + @popped.length
     end
 
-    def push(obj)
+    def find_by_id id
+      @queued.select { |item| item.id == id }.last || @popped.select { |item| item.id == id }.last
+    end
+
+    def push obj
       # Check that item responds to "priorty" method
       raise "JobQueue.push: object should respond to priority method" unless obj.respond_to? :priority
 
@@ -111,11 +113,7 @@ module RestFtpDaemon
     alias << push
     alias enq push
 
-    #
-    # Retrieves data from the queue.  If the queue is empty, the calling thread is
-    # suspended until data is pushed onto the queue.  If +non_block+ is true, the
-    # thread isn't suspended, and an exception is raised.
-    #
+
     def pop(non_block=false)
       @mutex.synchronize do
         while true
@@ -124,7 +122,7 @@ module RestFtpDaemon
             @waiting.push Thread.current
             @mutex.sleep
           else
-            return pick
+            return pick_one
           end
         end
       end
@@ -144,6 +142,9 @@ module RestFtpDaemon
       @waiting.size
     end
 
+    def ordered_queue
+      @queued.sort_by { |item| [item.priority.to_i, - item.id.to_i] }
+    end
 
   protected
 
@@ -189,15 +190,13 @@ module RestFtpDaemon
       @logger.add(Logger::INFO, "#{'  '*(level+1)} #{message}", progname) unless @logger.nil?
     end
 
-    def pick  # called inside a mutex/sync
+    def pick_one  # called inside a mutex/sync
       # Sort jobs by priority and get the biggest one
-      picked = @queued.sort { |a,b| a.priority.to_i <=> b.priority.to_i }.last
+      picked = ordered_queue.last
       return nil if picked.nil?
 
-      # Delete it from the queue
+      # Move it away from the queue to the @popped array
       @queued.delete_if { |item| item == picked }
-
-      # Stack it to popped items
       @popped.push picked
 
       # Return picked

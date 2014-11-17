@@ -39,7 +39,7 @@ module RestFtpDaemon
           raise RestFtpDaemon::JobNotFound if ($queue.all_size==0)
 
           # Find job with this id
-          found = $queue.all.select { |job| job.id == job_id }.first
+          found = $queue.find_by_id job_id
           raise RestFtpDaemon::JobNotFound if found.nil?
           raise RestFtpDaemon::JobNotFound unless found.is_a? Job
 
