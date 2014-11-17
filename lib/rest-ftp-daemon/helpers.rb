@@ -57,7 +57,7 @@ module RestFtpDaemon
       else
          'label-default'
       end
-      "<div class=\"label #{klass}\">#{method.upcase}</div>"
+      "<div class=\"transfer-method label #{klass}\">#{method.upcase}</div>"
     end
 
     # def snakecase

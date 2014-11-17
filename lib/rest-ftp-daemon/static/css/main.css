@@ -1,3 +1,10 @@
 .text-right {
   text-align: right;
   }
+
+.transfer-method {
+  display: inline-block;
+  width: 35px;
+  padding: 4px 1px;
+  font-weight: normal;
+  }
