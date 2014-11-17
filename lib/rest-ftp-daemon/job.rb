@@ -34,7 +34,7 @@ module RestFtpDaemon
       status :created
 
       # Send first notification
-      info "Job.initialize/notify"
+      #info "Job.initialize/notify"
       notify "rftpd.queued"
     end
 
@@ -134,11 +134,14 @@ module RestFtpDaemon
 
     def describe
       # Update realtime info
-      u = up_time
-      set :uptime, u.round(2) unless u.nil?
+      #u = up_time
+      #set :uptime, u.round(2) unless u.nil?
 
       # Return the whole structure  FIXME
-      @params
+      @params.merge({
+        id: @id,
+        uptime: up_time.round(2)
+        })
       # @mutex.synchronize do
       #   out = @params.clone
       # end
@@ -154,7 +157,7 @@ module RestFtpDaemon
   protected
 
     def up_time
-      return if @params[:started_at].nil?
+      return 0 if @params[:started_at].nil?
       Time.now - @params[:started_at]
     end
 

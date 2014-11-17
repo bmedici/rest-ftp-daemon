@@ -67,7 +67,7 @@ module RestFtpDaemon
           ex.backtrace.each do |line|
             info line, 1
           end
-          sleep 2
+          sleep 1
         else
 
         # Clean job status
