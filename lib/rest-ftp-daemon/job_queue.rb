@@ -1,4 +1,5 @@
 require 'thread'
+require 'securerandom'
 
 module RestFtpDaemon
   class JobQueue < Queue
@@ -16,6 +17,12 @@ module RestFtpDaemon
       @waiting.taint
       self.taint
       @mutex = Mutex.new
+
+      # Identifiers generator
+      @last_id = 0
+      #@prefix = SecureRandom.hex(IDENT_JOB_LEN)
+      @prefix = Helpers.identifier IDENT_JOB_LEN
+      info "queue initialized with prefix: #{@prefix}"
 
       # Mutex for counters
       @counters = {}
@@ -37,6 +44,13 @@ module RestFtpDaemon
           }
       end
 
+    end
+
+    def generate_id
+      rand(36**8).to_s(36)
+      @last_id ||= 0
+      @last_id += 1
+      "#{@prefix}.#{@last_id}"
     end
 
     def counter_add name, value

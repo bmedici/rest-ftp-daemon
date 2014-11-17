@@ -1,6 +1,5 @@
 require 'securerandom'
 
-
 module RestFtpDaemon
   class Helpers
 
@@ -16,7 +15,6 @@ module RestFtpDaemon
     def self.identifier len
       rand(36**len).to_s(36)
     end
-    #SecureRandom.hex(IDENT_JOB_BYTES)
 
     def self.tokenize(item)
       "[#{item}]"

@@ -28,13 +28,6 @@ module RestFtpDaemon
 
       helpers do
 
-        def next_job_id
-          @@last_worker_id ||= 0
-          @@last_worker_id += 1
-          #Helpers.identifier(IDENT_JOB_BYTES)
-          #SecureRandom.hex(IDENT_JOB_BYTES)
-        end
-
         def threads_with_id job_id
           $threads.list.select do |thread|
             next unless thread[:job].is_a? Job
@@ -76,7 +69,7 @@ module RestFtpDaemon
       get ':id' do
         info "GET /jobs/#{params[:id]}"
         begin
-          response = job_describe params[:id].to_i
+          response = job_describe params[:id]
         rescue RestFtpDaemon::JobNotFound => exception
           status 404
           api_error exception
@@ -144,10 +137,12 @@ module RestFtpDaemon
 
           # Create a new job
           # job_id = $last_worker_id += 1
-          job_id = next_job_id
+          job_id = $queue.generate_id
+          #job = Job.new(params)
           job = Job.new(job_id, params)
 
           # And push it to the queue
+          #$queue.push0 job
           $queue.push job
 
         rescue JSON::ParserError => exception

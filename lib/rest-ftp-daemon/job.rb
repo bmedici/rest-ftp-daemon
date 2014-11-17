@@ -7,9 +7,10 @@ require 'timeout'
 
 module RestFtpDaemon
   class Job < RestFtpDaemon::Common
+    attr_accessor :id
     attr_accessor :wid
 
-    def initialize(id, params={})
+    def initialize job_id, params={}
       # Call super
       # super()
       info "Job.initialize"
@@ -17,15 +18,18 @@ module RestFtpDaemon
       # Generate new Job.id
       # $queue.counter_add :transferred, source_size
 
-      # Logger
-      @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
+      # Init context
+      @params = params
+      @id = job_id.to_s
+      #set :id, job_id
 
       # Protect with a mutex
       @mutex = Mutex.new
 
-      # Init context
-      @params = params
-      set :id, id.to_s
+      # Logger
+      @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
+
+      # Flag current job
       set :started_at, Time.now
       status :created
 
@@ -35,7 +39,7 @@ module RestFtpDaemon
     end
 
     def id
-      get :id
+      @id
     end
 
     def priority
@@ -428,7 +432,7 @@ module RestFtpDaemon
 
     def notify signal, error = 0, status = {}
       RestFtpDaemon::Notification.new get(:notify), {
-        id: get(:id),
+        id: @id,
         signal: signal,
         error: error,
         status: status,
