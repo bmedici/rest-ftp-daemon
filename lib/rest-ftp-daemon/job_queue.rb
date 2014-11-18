@@ -146,6 +146,10 @@ module RestFtpDaemon
       @queued.sort_by { |item| [item.priority.to_i, - item.id.to_i] }
     end
 
+    def ordered_popped
+      @popped.sort_by { |item| [item.get(:updated_at)] }
+    end
+
   protected
 
     def conchita_loop

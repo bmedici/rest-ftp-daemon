@@ -70,6 +70,7 @@ module RestFtpDaemon
 
         # Jobs to display
         all_jobs_in_queue = $queue.all
+        popped_jobs = $queue.ordered_popped.reverse
 
         if params["only"].nil? || params["only"].blank?
           @only = nil
@@ -80,15 +81,18 @@ module RestFtpDaemon
         case @only
         when nil
           @jobs = all_jobs_in_queue
+          @jobs_popped = popped_jobs
         when :queue
           @jobs = $queue.queued
+          @jobs_popped = $queue.queued
         else
           @jobs = $queue.by_status (@only)
+          @jobs_popped = $queue.by_status (@only)
         end
 
         # Count jobs for each status
         @counts = {}
-        grouped = all_jobs_in_queue.group_by { |job| job.get(:status) }
+        grouped = popped_jobs.group_by { |job| job.get(:status) }
         grouped.each do |status, jobs|
           @counts[status] = jobs.size
         end
