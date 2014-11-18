@@ -1,77 +1,55 @@
-%h2
-  Jobs
-  = "&nbsp;"
+- jobs.each do |job|
+  - error = job.get :error
+  - status = job.get :status
+  - size = job.get :transfer_total
+  - progress = job.get :progress
+  - transfer_sources_count = job.get(:transfer_sources_count) || 0
+  - transfer_sources_done = job.get(:transfer_sources_done) || 0
 
-  .btn-group.btn-group-md
-    - klass = @only.nil? ? "btn-info" : ""
-    %a.btn.btn-default{href: "?only=", class: klass}
-      ALL (#{jobs.size})
+  - if error!=0 && !error.nil?
+    - trclass = "danger"
+  - elsif status == :uploading
+    - trclass = "info"
+  - elsif status == :finished
+    - trclass = "success"
+  - else
+    - trclass = "warning"
 
-      =# jobs.size
+  %tr{class: trclass}
 
-  .btn-group.btn-group-md
-    - counts.each do |status, count|
-      - klass = (status == @only) ? "btn-info" : ""
-      %a.btn.btn-default{href: "?only=#{status}", class: klass}
-        #{status} (#{count})
+    %td= job.id
 
-%table.table.table-striped.table-hover.table-condensed
+    %td= job.get :priority
 
-  %tr
-    %th= "JID"
-    %th= "prio"
-    %th= "source"
-    %th= "target"
-    %th= "status"
-    %th= "worker"
-    %th= "error"
-    %th= "size"
-    %th= "progress"
-    %th.text-right= "bitrate"
+    %td= job.wid
 
-  - jobs.each do |job|
-    - error = job.get :error
-    - status = job.get :status
-    - size = job.get :transfer_size
-    - progress = job.get :progress
+    %td{title: job.get(:source_path)}
+      = Helpers.job_method_label job.get(:source_method)
+      = job.get :source
 
-    - if error!=0 && !error.nil?
-      - trclass = "danger"
-    - elsif status == :uploading
-      - trclass = "info"
-    - elsif status == :finished
-      - trclass = "success"
-    - else
-      - trclass = "warning"
+    %td{title: job.get(:target_url)}
+      = Helpers.job_method_label job.get(:target_method)
+      = job.get :target
 
-    %tr{class: trclass}
+    %td
+      = status
+      - if (transfer_sources_count > 0) && (transfer_sources_done < transfer_sources_count)
+        %small= " #{transfer_sources_done}/#{transfer_sources_count}"
 
-      %td= job.id
-      %td= job.get :priority
+    %td
+      = error
+      - unless progress.nil? || status == :finished
+        %small= "#{progress}%"
 
-      %td{title: job.get(:source_path)}
-        = Helpers.job_method_label job.get(:source_method)
-        = job.get :source
+    %td= Helpers.format_bytes(size, "B")
 
-      %td{title: job.get(:target_url)}
-        = Helpers.job_method_label job.get(:target_method)
-        = job.get :target
+    %td
+      - unless progress.nil?
+        .progress
+          .progress-bar{style:"width: #{progress}%;"}
+            = Helpers.format_bytes job.get(:transfer_sent), "B"
 
-      %td= status
-      %td= job.wid
-
-      %td
-        = error
-        - unless progress.nil? || status == :finished
-          = "#{progress}%"
-
-      %td= Helpers.format_bytes(size, "B")
-      %td
-        - unless progress.nil?
-          .progress
-            .progress-bar{style:"width: #{progress}%;"}
-              = Helpers.format_bytes job.get(:transfer_sent), "B"
-      %td.text-right
-        - if (bitrate = job.get :transfer_bitrate)
-          =  Helpers.format_bytes(bitrate, "bps")
+    %td.text-right
+      - if (bitrate = job.get :transfer_bitrate)
+        =  Helpers.format_bytes(bitrate, "bps")
 

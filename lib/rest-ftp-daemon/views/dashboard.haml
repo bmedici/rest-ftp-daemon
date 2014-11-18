@@ -71,7 +71,9 @@
 
       .row
         .col-md-10
-          = render :dashboard_jobs, {jobs: @jobs, counts: @counts}
+            = render :dashboard_jobs, {jobs: @jobs_popped, counts: @counts}
+
+
         .col-md-2
           = render :dashboard_workers, {}
 
