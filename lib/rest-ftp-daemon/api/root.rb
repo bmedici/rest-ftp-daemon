@@ -118,6 +118,7 @@ module RestFtpDaemon
           config: Settings.to_hash,
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),
+          counters: $queue.counters,
           status: job_list_by_status,
           queue_size: $queue.all_size,
           jobs_queued: $queue.queued.collect(&:id),
