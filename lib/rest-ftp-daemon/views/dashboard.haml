@@ -71,6 +71,38 @@
 
       .row
         .col-md-10
+
+          %h2
+            Jobs &nbsp;
+
+            .btn-group.btn-group-md
+              - klass = @only.nil? ? "btn-info" : ""
+              %a.btn.btn-default{href: "?only=", class: klass}
+                ALL (#{@jobs_queued.size})
+            .btn-group.btn-group-md
+              - @counts.each do |status, count|
+                - klass = (status == @only) ? "btn-info" : ""
+                %a.btn.btn-default{href: "?only=#{status}", class: klass}
+                  #{status} (#{count})
+
+          %table.table.table-striped.table-hover.table-condensed
+            %tr
+              %th JID
+              %th prio
+              %th worker
+              %th source
+              %th target
+              %th status
+              %th error
+              %th size
+              %th progress
+              %th.text-right bitrate
+
+            - if @only.nil? && !@jobs_queued.empty?
+              = render :dashboard_jobs, {jobs: @jobs_queued, counts: @counts}
+              %tr
+                %th{colspan: 10}
+
             = render :dashboard_jobs, {jobs: @jobs_popped, counts: @counts}
 
 

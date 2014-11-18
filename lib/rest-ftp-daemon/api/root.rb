@@ -69,8 +69,11 @@ module RestFtpDaemon
         end
 
         # Jobs to display
-        all_jobs_in_queue = $queue.all
+        # all_jobs_in_queue = $queue.all
+        # all_jobs_in_queue = $queue.ordered_queue
+        # + $queue.popped
         popped_jobs = $queue.ordered_popped.reverse
+        @jobs_queued = $queue.ordered_queue.reverse
 
         if params["only"].nil? || params["only"].blank?
           @only = nil
@@ -80,13 +83,10 @@ module RestFtpDaemon
 
         case @only
         when nil
-          @jobs = all_jobs_in_queue
           @jobs_popped = popped_jobs
         when :queue
-          @jobs = $queue.queued
           @jobs_popped = $queue.queued
         else
-          @jobs = $queue.by_status (@only)
           @jobs_popped = $queue.by_status (@only)
         end
 
