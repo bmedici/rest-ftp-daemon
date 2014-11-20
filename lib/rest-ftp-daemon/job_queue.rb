@@ -52,7 +52,7 @@ module RestFtpDaemon
       rand(36**8).to_s(36)
       @last_id ||= 0
       @last_id += 1
-      "#{@prefix}.#{@last_id}"
+      prefixed_id @last_id
     end
 
     def counter_add name, value
@@ -105,7 +105,12 @@ module RestFtpDaemon
       @queued.length + @popped.length
     end
 
-    def find_by_id id
+    def find_by_id id, prefixed = false
+      # Build a prefixed id if expected
+      id = prefixed_id(id) if prefixed
+      info "find_by_id (#{id}, #{prefixed}) > #{id}"
+
+      # Search in both queues
       @queued.select { |item| item.id == id }.last || @popped.select { |item| item.id == id }.last
     end
 
@@ -164,6 +169,10 @@ module RestFtpDaemon
     end
 
   protected
+
+    def prefixed_id id
+      "#{@prefix}.#{id}"
+    end
 
     def conchita_loop
       info "conchita starting with: #{@conchita.inspect}"
