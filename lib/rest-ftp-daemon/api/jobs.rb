@@ -38,8 +38,13 @@ module RestFtpDaemon
         def job_describe job_id
           raise RestFtpDaemon::JobNotFound if ($queue.all_size==0)
 
-          # Find job with this id
-          found = $queue.find_by_id job_id
+          # Find job with exactly this id
+          found = $queue.find_by_id(job_id)
+
+          # Find job with this id while searching with the current prefix
+          found = $queue.find_by_id(job_id, true) if found.nil?
+
+          # Check that we did find it
           raise RestFtpDaemon::JobNotFound if found.nil?
           raise RestFtpDaemon::JobNotFound unless found.is_a? Job
 
@@ -64,10 +69,14 @@ module RestFtpDaemon
 
       desc "Get information about a specific job"
       params do
-        #requires :id, type: Integer, desc: "job id"
+        requires :id, type: String, desc: "job id", regexp:  /[^\/]+/
+        # optional :audio do
+        #   requires :format, type: Symbol, values: [:mp3, :wav, :aac, :ogg], default: :mp3
+        # end
       end
-      get ':id' do
+      get '*id' do
         info "GET /jobs/#{params[:id]}"
+        #return params
         begin
           response = job_describe params[:id]
         rescue RestFtpDaemon::JobNotFound => exception
@@ -134,6 +143,9 @@ module RestFtpDaemon
           # Extract params
           request.body.rewind
           params = JSON.parse(request.body.read, symbolize_names: true)
+
+
+params[:priority] = rand(10)
 
           # Create a new job
           # job_id = $last_worker_id += 1

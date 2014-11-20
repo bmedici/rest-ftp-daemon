@@ -30,6 +30,7 @@ As of today, its main features are :
 * Current bitrate on the last blocks chunk updated in the job attributes
 * Global bitrate on the whole file transfer is re-computed after the transfer finishes
 * Daemon process is tagged with its name and environement in process lists
+* Allow basic patterns in source filename to match multiple files (/dir/file*.jpg)
 
 Expected features in a short-time range :
 

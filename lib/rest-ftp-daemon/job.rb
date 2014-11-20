@@ -249,18 +249,26 @@ module RestFtpDaemon
       # Check compliance
       raise RestFtpDaemon::JobTargetUnparseable if @target_url.nil?
       raise RestFtpDaemon::JobTargetUnsupported if @target_method.nil?
-      raise RestFtpDaemon::JobSourceNotFound unless File.exists? @source_path
+      #raise RestFtpDaemon::JobSourceNotFound unless File.exists? @source_path
     end
 
     def transfer
-      # Method assertions
-      info "Job.transfer checking_source"
+      # Method assertions and init
       status :checking_source
-      raise RestFtpDaemon::JobAssertionFailed unless @source_path &&  @target_url
+      raise RestFtpDaemon::JobAssertionFailed unless @source_path && @target_url
+      @transfer_sent = 0
+      set :transfer_source_done, 0
 
-      # Init
+      # Guess source file names using Dir.glob
+      source_matches = Dir.glob @source_path
+      info "Job.transfer sources: #{source_matches}"
+      raise RestFtpDaemon::JobSourceNotFound if source_matches.empty?
+      set :transfer_source_count, source_matches.count
+      set :transfer_source_files, source_matches
 
-      target_name = File.basename @target_url.path
+      # Guess target file name, and fail if present while we matched multiple sources
+      target_name = Helpers.extract_filename @target_url.path
+      raise RestFtpDaemon::JobTargetShouldBeDirectory if target_name && !source_matches.empty?
 
       # Scheme-aware config
       ftp_init
@@ -272,10 +280,25 @@ module RestFtpDaemon
       if get(:overwrite).nil? && (ftp_presence target_name)
         @ftp.close
         raise RestFtpDaemon::JobTargetFileExists
+      # Check source files presence and compute total size, they should be there, coming from Dir.glob()
+      @transfer_total = 0
+      source_matches.each do |filename|
+        # @ftp.close
+        raise RestFtpDaemon::JobSourceNotFound unless File.exists? filename
+        @transfer_total += File.size filename
+      end
+      set :transfer_total, @transfer_total
+
+      # Handle each source file matched, and start a transfer
+      done = 0
+      source_matches.each do |filename|
+        ftp_transfer filename, target_name
+        done += 1
+        set :transfer_source_done, done
       end
 
-      # Do transfer
-      ftp_transfer target_name
+      # Add total transferred to counter
+      $queue.counter_add :transferred, @transfer_total
 
       # Close FTP connexion
       info "Job.transfer disconnecting"
@@ -364,43 +387,48 @@ module RestFtpDaemon
       return results.count >0
     end
 
-    def ftp_transfer target_name
+    def ftp_transfer source_match, target_name = nil
+#target_name
       # Method assertions
-      info "Job.ftp_transfer starting"
+      info "Job.ftp_transfer source_match: #{source_match}"
+      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil?
+      raise RestFtpDaemon::JobAssertionFailed if source_match.nil?
+      #raise RestFtpDaemon::JobAssertionFailed if @transfer_total.nil?
       status :ftp_transfer
-      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @source_path.nil?
+
+      # Use source filename if target path provided none (typically with multiple sources)
+      target_name ||= Helpers.extract_filename source_match
 
       # Read source file size and parameters
-      source_size = File.size @source_path
-      set :transfer_size, source_size
+# source_size = File.size source_match
+# set :transfer_size, source_size
       update_every_kb = (Settings.transfer.update_every_kb rescue nil) || DEFAULT_UPDATE_EVERY_KB
       notify_after_sec = Settings.transfer.notify_after_sec rescue nil
 
       # Start transfer
-      transferred = 0
       chunk_size = update_every_kb * 1024
       t0 = tstart = Time.now
       notified_at = Time.now
       status :uploading
-      @ftp.putbinaryfile(@source_path, target_name, chunk_size) do |block|
+      @ftp.putbinaryfile(source_match, target_name, chunk_size) do |block|
         # Update counters
-        transferred += block.bytesize
-        set :transfer_sent, transferred
+        @transfer_sent += block.bytesize
+        set :transfer_sent, @transfer_sent
 
         # Update bitrate
-        dt = Time.now - t0
-        bitrate0 = (8 * chunk_size/dt).round(0)
+        #dt = Time.now - t0
+        bitrate0 = get_bitrate(chunk_size, t0).round(0)
         set :transfer_bitrate, bitrate0
 
         # Update job info
-        percent1 = (100.0 * transferred / source_size).round(1)
+        percent1 = (100.0 * @transfer_sent / @transfer_total).round(1)
         set :progress, percent1
 
         # Log progress
         status = []
         status << "#{percent1} %"
-        status << (Helpers.format_bytes transferred, "B")
-        status << (Helpers.format_bytes source_size, "B")
+        status << (Helpers.format_bytes @transfer_sent, "B")
+        status << (Helpers.format_bytes @transfer_total, "B")
         status << (Helpers.format_bytes bitrate0, "bps")
         info "Job.ftp_transfer" + status.map{|txt| ("%#{DEFAULT_LOGS_PROGNAME_TRIM.to_i}s" % txt)}.join("\t")
 
@@ -411,8 +439,8 @@ module RestFtpDaemon
         unless notify_after_sec.nil? || (notified_at + notify_after_sec > Time.now)
           status = {
             progress: percent1,
-            transfer_sent: transferred,
-            transfer_size: source_size,
+            transfer_sent: @transfer_sent,
+            transfer_total: @transfer_total,
             transfer_bitrate: bitrate0
             }
           notify "rftpd.progress", 0, status
@@ -422,11 +450,9 @@ module RestFtpDaemon
       end
 
       # Compute final bitrate
-      tbitrate0 = (8 * source_size.to_f / (Time.now - tstart)).round(0)
+      #tbitrate0 = (8 * @transfer_total.to_f / (Time.now - tstart)).round(0)
+      tbitrate0 = get_bitrate(@transfer_total, tstart).round(0)
       set :transfer_bitrate, tbitrate0
-
-      # Add total transferred to counter
-      $queue.counter_add :transferred, source_size
 
       # Done
       #set :progress, nil
@@ -440,6 +466,10 @@ module RestFtpDaemon
         error: error,
         status: status,
         }
+    end
+
+    def get_bitrate total, last_timestamp
+      total.to_f / (Time.now - last_timestamp)
     end
 
   end
