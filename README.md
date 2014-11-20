@@ -173,6 +173,17 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"source":"~/file.dmg","priority":"3", target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
 
+
+* Get info about a job with ID="q89j.1"
+
+Both parameters ```q89j.1``` and ```1``` will be accepted as ID in the API. Requests below are equivalent:
+
+```
+GET http://localhost:3100/jobs/q89j.1
+GET http://localhost:3100/jobs/1
+```
+
+
 About
 ------------------------------------------------------------------------------------
 

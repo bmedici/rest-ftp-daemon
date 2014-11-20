@@ -71,14 +71,14 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobTargetUnparseable => exception
         return oops "rftpd.started", exception, :job_target_unparseable
 
+      rescue RestFtpDaemon::JobAssertionFailed => exception
+        return oops "rftpd.started", exception, :job_assertion_failed
+
       rescue RestFtpDaemon::RestFtpDaemonException => exception
         return oops "rftpd.started", exception, :job_prepare_failed
 
       rescue Exception => exception
         return oops "rftpd.started", exception, :job_prepare_unhandled, true
-
-      rescue exception
-        return oops "rftpd.started", exception, :WOUHOU, true
 
       else
         # Update job's status
@@ -115,11 +115,17 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobTargetFileExists => exception
         return oops "rftpd.ended", exception, :job_target_file_exists
 
+      rescue RestFtpDaemon::JobTargetShouldBeDirectory => exception
+        return oops "rftpd.ended", exception, :job_target_should_be_directory
+
+      rescue RestFtpDaemon::JobAssertionFailed => exception
+        return oops "rftpd.started", exception, :job_assertion_failed
+
       rescue RestFtpDaemon::RestFtpDaemonException => exception
         return oops "rftpd.ended", exception, :job_transfer_failed
 
-      rescue Exception => exception
-        return oops "rftpd.ended", exception, :job_transfer_unhandled, true
+# rescue Exception => exception
+#   return oops "rftpd.ended", exception, :job_transfer_unhandled, true
 
       else
         # Update job's status
@@ -375,12 +381,12 @@ module RestFtpDaemon
 
     def ftp_presence target_name
       # Method assertions
-      info "Job.ftp_presence"
       status :ftp_presence
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
 
       # Get file list, sometimes the response can be an empty value
       results = @ftp.list(target_name) rescue nil
+      info "Job.ftp_presence: #{results.inspect}"
 
       # Result can be nil or a list of files
       return false if results.nil?

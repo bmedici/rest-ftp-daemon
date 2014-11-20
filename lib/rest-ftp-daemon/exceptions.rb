@@ -9,13 +9,14 @@ module RestFtpDaemon
 
   class JobException              < RestFtpDaemonException; end
   class JobNotFound               < RestFtpDaemonException; end
+  class JobUnresolvedTokens       < RestFtpDaemonException; end
   class JobAssertionFailed        < RestFtpDaemonException; end
   class JobMissingAttribute       < RestFtpDaemonException; end
   class JobSourceNotFound         < RestFtpDaemonException; end
   class JobTargetUnsupported      < RestFtpDaemonException; end
   class JobTargetUnparseable      < RestFtpDaemonException; end
-  class JobUnresolvedTokens       < RestFtpDaemonException; end
   class JobTargetFileExists       < RestFtpDaemonException; end
+  class JobTargetShouldBeDirectory< RestFtpDaemonException; end
   class JobTooManyOpenFiles       < RestFtpDaemonException; end
 
 end

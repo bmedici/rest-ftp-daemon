@@ -78,7 +78,7 @@
             .btn-group.btn-group-md
               - klass = @only.nil? ? "btn-info" : ""
               %a.btn.btn-default{href: "?only=", class: klass}
-                ALL (#{@jobs_queued.size})
+                ALL (#{@jobs_queued.size} + #{@jobs_popped.size})
             .btn-group.btn-group-md
               - @counts.each do |status, count|
                 - klass = (status == @only) ? "btn-info" : ""
