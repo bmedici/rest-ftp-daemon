@@ -282,10 +282,6 @@ module RestFtpDaemon
       # Connect remote server, login and chdir
       ftp_connect
 
-      # Check for target file presence
-      if get(:overwrite).nil? && (ftp_presence target_name)
-        @ftp.close
-        raise RestFtpDaemon::JobTargetFileExists
       # Check source files presence and compute total size, they should be there, coming from Dir.glob()
       @transfer_total = 0
       source_matches.each do |filename|
@@ -404,6 +400,24 @@ module RestFtpDaemon
 
       # Use source filename if target path provided none (typically with multiple sources)
       target_name ||= Helpers.extract_filename source_match
+      info "Job.ftp_transfer target_name: #{target_name}"
+
+      # Check for target file presence
+      status :checking_target
+      overwrite = !get(:overwrite).nil?
+      present = ftp_presence target_name
+      if present
+        if overwrite
+          # delete it first
+          info "Job.ftp_transfer removing target file"
+          @ftp.delete(target_name)
+        else
+          # won't overwrite then stop here
+          info "Job.ftp_transfer failed: target file exists"
+          @ftp.close
+          raise RestFtpDaemon::JobTargetFileExists
+        end
+      end
 
       # Read source file size and parameters
 # source_size = File.size source_match
