@@ -76,11 +76,24 @@ module RestFtpDaemon
       end
     end
 
-    def by_status status
+    # def by_status status
+    #   return [] if status.nil?
+
+    #   # Select jobs from the queue if their status is (status)
+    #   all.select { |item| item.get(:status) == status.to_sym }
+    # end
+
+    def popped_reverse_sorted_by_status status
       return [] if status.nil?
 
       # Select jobs from the queue if their status is (status)
-      all.select { |item| item.get(:status) == status.to_sym }
+      ordered_popped.reverse.select { |item| item.get(:status) == status.to_sym }
+    end
+
+    def popped_counts_by_status
+      statuses = {}
+      @popped.group_by { |job| job.get(:status) }.map { |status, jobs| statuses[status] = jobs.size }
+      statuses
     end
 
     def all
@@ -206,6 +219,7 @@ module RestFtpDaemon
       # Return picked
       picked
     end
+
 
   private
 

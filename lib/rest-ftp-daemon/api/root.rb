@@ -25,16 +25,6 @@ module RestFtpDaemon
           Root.logger.info(message, level)
         end
 
-        def job_list_by_status
-          statuses = {}
-          alljobs = $queue.all.map do |item|
-            next unless item.is_a? Job
-            statuses[item.get_status] ||= 0
-            statuses[item.get_status] +=1
-          end
-          statuses
-        end
-
       end
 
 
@@ -84,18 +74,14 @@ module RestFtpDaemon
         case @only
         when nil
           @jobs_popped = popped_jobs
-        when :queue
-          @jobs_popped = $queue.queued
+        # when :queue
+        #   @jobs_popped = $queue.queued
         else
-          @jobs_popped = $queue.by_status (@only)
+          @jobs_popped = $queue.popped_reverse_sorted_by_status @only
         end
 
         # Count jobs for each status
-        @counts = {}
-        grouped = popped_jobs.group_by { |job| job.get(:status) }
-        grouped.each do |status, jobs|
-          @counts[status] = jobs.size
-        end
+        @counts = $queue.popped_counts_by_status
 
         # Get workers status
         @gworker_statuses = $pool.get_worker_statuses
@@ -123,7 +109,7 @@ module RestFtpDaemon
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),
           counters: $queue.counters,
-          status: job_list_by_status,
+          status: $queue.popped_counts_by_status,
           queue_size: $queue.all_size,
           jobs_queued: $queue.queued.collect(&:id),
           jobs_popped: $queue.popped.collect(&:id),
