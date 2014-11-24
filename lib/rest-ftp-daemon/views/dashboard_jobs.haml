@@ -23,11 +23,11 @@
 
     %td= job.wid
 
-    %td{title: job.get(:source_path)}
+    %td.fixed{title: job.get(:source_path)}
       = Helpers.job_method_label job.get(:source_method)
       = job.get :source
 
-    %td{title: job.get(:target_url)}
+    %td.fixed{title: job.get(:target_url)}
       = Helpers.job_method_label job.get(:target_method)
       = job.get :target
 
@@ -41,15 +41,16 @@
       - unless progress.nil? || status == :finished
         %small= "#{progress}%"
 
-    %td= Helpers.format_bytes(size, "B")
-
     %td
       - unless progress.nil?
         .progress
           .progress-bar{style:"width: #{progress}%;"}
             = Helpers.format_bytes job.get(:transfer_sent), "B"
 
-    %td.text-right
+    %td.nobr.text-right
+      = Helpers.format_bytes(size, "B")
+
+    %td.nobr.text-right
       - if (bitrate = job.get :transfer_bitrate)
         =  Helpers.format_bytes(bitrate, "bps")
 
