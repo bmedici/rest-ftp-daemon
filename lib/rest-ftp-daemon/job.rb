@@ -15,9 +15,6 @@ module RestFtpDaemon
       # super()
       info "Job.initialize"
 
-      # Generate new Job.id
-      # $queue.counter_add :transferred, source_size
-
       # Init context
       @params = params
       @id = job_id.to_s
@@ -274,7 +271,7 @@ module RestFtpDaemon
 
       # Guess target file name, and fail if present while we matched multiple sources
       target_name = Helpers.extract_filename @target_url.path
-      raise RestFtpDaemon::JobTargetShouldBeDirectory if target_name && !source_matches.empty?
+      raise RestFtpDaemon::JobTargetShouldBeDirectory if target_name && source_matches.count>1
 
       # Scheme-aware config
       ftp_init
@@ -420,8 +417,6 @@ module RestFtpDaemon
       end
 
       # Read source file size and parameters
-# source_size = File.size source_match
-# set :transfer_size, source_size
       update_every_kb = (Settings.transfer.update_every_kb rescue nil) || DEFAULT_UPDATE_EVERY_KB
       notify_after_sec = Settings.transfer.notify_after_sec rescue nil
 
