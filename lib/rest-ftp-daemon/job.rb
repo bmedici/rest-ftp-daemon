@@ -97,14 +97,17 @@ module RestFtpDaemon
         status :starting
         transfer
 
-      rescue Timeout::Error => exception
-        return oops "rftpd.ended", exception, :job_timeout_error
-
-      rescue Net::FTPPermError => exception
-        return oops "rftpd.ended", exception, :job_ftp_perm_error
+      rescue Errno::EHOSTDOWN => exception
+        return oops "rftpd.ended", exception, :job_host_is_down
 
       rescue Errno::ECONNREFUSED => exception
         return oops "rftpd.ended", exception, :job_connexion_refused
+
+      rescue Timeout::Error, Errno::ETIMEDOUT => exception
+        return oops "rftpd.ended", exception, :job_timeout
+
+      rescue Net::FTPPermError => exception
+        return oops "rftpd.ended", exception, :job_perm_error
 
       rescue Errno::EMFILE => exception
         return oops "rftpd.ended", exception, :job_too_many_open_files
@@ -121,8 +124,8 @@ module RestFtpDaemon
       rescue RestFtpDaemon::RestFtpDaemonException => exception
         return oops "rftpd.ended", exception, :job_transfer_failed
 
-# rescue Exception => exception
-#   return oops "rftpd.ended", exception, :job_transfer_unhandled, true
+      rescue Exception => exception
+        return oops "rftpd.ended", exception, :job_transfer_unhandled, true
 
       else
         # Update job's status
