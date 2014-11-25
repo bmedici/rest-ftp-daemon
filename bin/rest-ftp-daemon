@@ -63,7 +63,7 @@ puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => 
 puts
 
 # Validate network configuration
-if ["start", "restart"].include? command
+if ["start"].include? command
   if Settings['port'].nil?
     puts "ABORTING: Network port is missing"
     exit 1
