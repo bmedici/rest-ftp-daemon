@@ -59,8 +59,8 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobMissingAttribute => exception
         return oops "rftpd.started", exception, :job_missing_attribute
 
-      rescue RestFtpDaemon::JobSourceNotFound => exception
-        return oops "rftpd.started", exception, :job_source_not_found
+      # rescue RestFtpDaemon::JobSourceNotFound => exception
+      #   return oops "rftpd.started", exception, :job_source_not_found
 
       rescue RestFtpDaemon::JobUnresolvedTokens => exception
         return oops "rftpd.started", exception, :job_unresolved_tokens
@@ -110,6 +110,9 @@ module RestFtpDaemon
 
       rescue Errno::EMFILE => exception
         return oops "rftpd.ended", exception, :job_too_many_open_files
+
+      rescue RestFtpDaemon::JobSourceNotFound => exception
+        return oops "rftpd.ended", exception, :job_source_not_found
 
       rescue RestFtpDaemon::JobTargetFileExists => exception
         return oops "rftpd.ended", exception, :job_target_file_exists
