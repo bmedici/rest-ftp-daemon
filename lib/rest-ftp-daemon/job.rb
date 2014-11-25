@@ -375,10 +375,10 @@ module RestFtpDaemon
       status :ftp_login
       ret = @ftp.login @target_url.user, @target_url.password
 
-      path = File.dirname @target_url.path
       info "Job.ftp_connect chdir [#{path}]"
       status :ftp_chdir
       ret = @ftp.chdir(path)
+      path = Helpers.extract_dirname(@target_url.path)
     end
 
     def ftp_presence target_name
