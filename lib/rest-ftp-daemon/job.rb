@@ -91,8 +91,8 @@ module RestFtpDaemon
 
         # Notify rftpd.start
         info "Job.process/prepare notify started"
-        notify "rftpd.started", 0
         info "Job.process/prepare notified started"
+        notify "rftpd.started", nil
       end
 
       info "Job.process prepare>transfer"
@@ -139,7 +139,7 @@ module RestFtpDaemon
         status :finished
 
         # Notify rftpd.ended
-        notify "rftpd.ended", 0
+        notify "rftpd.ended", nil
       end
 
     end
@@ -473,7 +473,7 @@ module RestFtpDaemon
             transfer_total: @transfer_total,
             transfer_bitrate: bitrate0
             }
-          notify "rftpd.progress", 0, status
+          notify "rftpd.progress", nil, status
           notified_at = Time.now
         end
 
@@ -489,7 +489,7 @@ module RestFtpDaemon
       info "Job.ftp_transfer finished"
     end
 
-    def notify signal, error = 0, status = {}
+    def notify signal, error = nil, status = {}
       RestFtpDaemon::Notification.new get(:notify), {
         id: @id,
         signal: signal,
