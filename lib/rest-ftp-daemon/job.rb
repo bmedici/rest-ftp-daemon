@@ -52,7 +52,7 @@ module RestFtpDaemon
 
       # Prepare job
       begin
-        info "Job.process/prepare"
+        info "Job.process prepare"
         status :preparing
         prepare
 
@@ -84,22 +84,15 @@ module RestFtpDaemon
         return oops "rftpd.started", exception, :job_prepare_unhandled, true
 
       else
-        # Update job's status
-        info "Job.process/prepare ok"
+        # Prepare done !
         status :prepared
-        info "Job.process/prepare status updated"
-
-        # Notify rftpd.start
-        info "Job.process/prepare notify started"
-        info "Job.process/prepare notified started"
+        info "Job.process notify rftpd.started"
         notify "rftpd.started", nil
       end
 
-      info "Job.process prepare>transfer"
-
       # Process job
       begin
-        info "Job.process/transfer"
+        info "Job.process transfer"
         status :starting
         transfer
 
@@ -134,11 +127,9 @@ module RestFtpDaemon
         return oops "rftpd.ended", exception, :job_transfer_unhandled, true
 
       else
-        # Update job's status
-        info "Job.process finished"
+        # All done !
         status :finished
-
-        # Notify rftpd.ended
+        info "Job.process notify rftpd.ended"
         notify "rftpd.ended", nil
       end
 
@@ -215,7 +206,7 @@ module RestFtpDaemon
       # Ensure endpoints are not a nil value
       return path unless Settings.endpoints.is_a? Enumerable
       vectors = Settings.endpoints.clone
-      info "Job.replace_tokens vectors #{vectors.inspect}]"
+      #info "Job.replace_tokens vectors #{vectors.inspect}]"
 
       # Stack RANDOM into tokens
       vectors['RANDOM'] = SecureRandom.hex(IDENT_RANDOM_LEN)
@@ -225,7 +216,7 @@ module RestFtpDaemon
       vectors.each do |from, to|
         next if to.to_s.blank?
         newpath.gsub! Helpers.tokenize(from), to
-        info "Job.replace_tokens #{Helpers.tokenize(from)} > #{to} [#{newpath}]"
+        #info "Job.replace_tokens #{Helpers.tokenize(from)} > #{to} [#{newpath}]"
       end
 
       # Ensure result does not contain tokens after replacement
@@ -278,7 +269,7 @@ module RestFtpDaemon
 
       # Guess source file names using Dir.glob
       source_matches = Dir.glob @source_path
-      info "Job.transfer sources: #{source_matches}"
+      info "Job.transfer sources #{source_matches.inspect}"
       raise RestFtpDaemon::JobSourceNotFound if source_matches.empty?
       set :transfer_source_count, source_matches.count
       set :transfer_source_files, source_matches
@@ -347,21 +338,22 @@ module RestFtpDaemon
 
     def ftp_init
       # Method assertions
-      info "Job.ftp_init"
+      info "Job.ftp_init asserts"
       status :ftp_init
       raise RestFtpDaemon::JobAssertionFailed if @target_method.nil? || @target_url.nil?
 
+      info "Job.ftp_init target_method [#{@target_method}]"
       case @target_method
       when :ftp
-        info "Job.ftp_init scheme: ftp"
         @ftp = Net::FTP.new
+        @ftp.passive = true
       when :ftps
-        info "Job.transfer scheme: ftps"
         @ftp = DoubleBagFTPS.new
         @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
         @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
+        @ftp.passive = true
       else
-        info "Job.transfer scheme: other [#{@target_url.scheme}]"
+        info "Job.transfer unknown scheme [#{@target_url.scheme}]"
         railse RestFtpDaemon::JobTargetUnsupported
       end
     end
@@ -371,19 +363,18 @@ module RestFtpDaemon
       # connect_timeout_sec = (Settings.transfer.connect_timeout_sec rescue nil) || DEFAULT_CONNECT_TIMEOUT_SEC
 
       # Method assertions
-      info "Job.ftp_connect connect"
+      host = @target_url.host
+      info "Job.ftp_connect connect [#{host}]"
       status :ftp_connect
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
-      @ftp.connect(@target_url.host)
-      @ftp.passive = true
+      @ftp.connect(host)
 
-      info "Job.ftp_connect login"
       status :ftp_login
       ret = @ftp.login @target_url.user, @target_url.password
 
-      info "Job.ftp_connect chdir"
-      status :ftp_chdir
       path = File.dirname @target_url.path
+      info "Job.ftp_connect chdir [#{path}]"
+      status :ftp_chdir
       ret = @ftp.chdir(path)
     end
 
@@ -404,7 +395,7 @@ module RestFtpDaemon
     def ftp_transfer source_match, target_name = nil
 #target_name
       # Method assertions
-      info "Job.ftp_transfer source_match: #{source_match}"
+      info "Job.ftp_transfer source_match [#{source_match}]"
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil?
       raise RestFtpDaemon::JobAssertionFailed if source_match.nil?
       #raise RestFtpDaemon::JobAssertionFailed if @transfer_total.nil?
@@ -412,7 +403,7 @@ module RestFtpDaemon
 
       # Use source filename if target path provided none (typically with multiple sources)
       target_name ||= Helpers.extract_filename source_match
-      info "Job.ftp_transfer target_name: #{target_name}"
+      info "Job.ftp_transfer target_name [#{target_name}]"
 
       # Check for target file presence
       status :checking_target
