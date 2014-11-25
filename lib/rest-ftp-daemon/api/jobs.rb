@@ -138,20 +138,15 @@ module RestFtpDaemon
       # Spawn a new thread for this new job
       desc "Create a new job"
       post do
-        info "POST /jobs: #{request.body.read}"
+        info "POST /jobs: #{params.inspect}"
         begin
-          # Extract params
-          request.body.rewind
-          params = JSON.parse(request.body.read, symbolize_names: true)
-
-
-params[:priority] = rand(10)
+          # Symbolize keys from params, and strip some fields
+          symbolized = params.symbolize_keys
+          symbolized.delete :route_info
 
           # Create a new job
-          # job_id = $last_worker_id += 1
           job_id = $queue.generate_id
-          #job = Job.new(params)
-          job = Job.new(job_id, params)
+          job = Job.new(job_id, symbolized)
 
           # And push it to the queue
           #$queue.push0 job
