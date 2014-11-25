@@ -20,10 +20,6 @@ module RestFtpDaemon
       "[#{item}]"
     end
 
-    def self.contains_tokens(item)
-      /\[[a-zA-Z0-9]+\]/.match(item)
-    end
-
     def self.extract_filename path
       m = path.match /\/([^\/]+)$/
       return m[1] unless m.nil?

@@ -198,13 +198,18 @@ module RestFtpDaemon
     end
 
     def expand_url path
-      URI::parse replace_tokens(path) rescue nil
+      URI::parse replace_tokens(path)
+    end
+
+    def contains_brackets(item)
+      /\[.*\]/.match(item)
     end
 
     def replace_tokens path
       # Ensure endpoints are not a nil value
       return path unless Settings.endpoints.is_a? Enumerable
       vectors = Settings.endpoints.clone
+      info "Job.replace_tokens vectors #{vectors.inspect}]"
 
       # Stack RANDOM into tokens
       vectors['RANDOM'] = SecureRandom.hex(IDENT_RANDOM_LEN)
@@ -213,15 +218,15 @@ module RestFtpDaemon
       newpath = path.clone
       vectors.each do |from, to|
         next if to.to_s.blank?
-        #info "Job.replace_tokens #{Helpers.tokenize(from)} > #{to}"
         newpath.gsub! Helpers.tokenize(from), to
+        info "Job.replace_tokens #{Helpers.tokenize(from)} > #{to} [#{newpath}]"
       end
 
       # Ensure result does not contain tokens after replacement
-      raise RestFtpDaemon::JobUnresolvedTokens if Helpers.contains_tokens newpath
+      raise RestFtpDaemon::JobUnresolvedTokens if contains_brackets newpath
 
-      # All OK, return this
-      return newpath
+      # All OK, return this URL stripping multiple slashes
+      return newpath.gsub(/([^:])\/\//, '\1/')
     end
 
     def prepare
