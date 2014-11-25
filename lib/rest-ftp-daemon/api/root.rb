@@ -14,8 +14,19 @@ module RestFtpDaemon
       include RestFtpDaemon::API::Defaults
       logger RestFtpDaemon::Logger.new(:api, "API")
       mount RestFtpDaemon::API::Jobs => '/jobs'
-      #add_swagger_documentation
+      # add_swagger_documentation
       # mount RestFtpDaemon::API::Workers => '/workers'
+
+      # FIXME
+      # default_error_formatter :json
+      # format :json
+
+
+####### EXCETPIONS HANDLING
+      # FIXME
+      # rescue_from :all do |e|
+      #   error_response(message: "Internal server error", status: 500)
+      # end
 
 
 ####### HELPERS
@@ -59,9 +70,6 @@ module RestFtpDaemon
         end
 
         # Jobs to display
-        # all_jobs_in_queue = $queue.all
-        # all_jobs_in_queue = $queue.ordered_queue
-        # + $queue.popped
         popped_jobs = $queue.ordered_popped.reverse
         @jobs_queued = $queue.ordered_queue.reverse
 
@@ -71,11 +79,8 @@ module RestFtpDaemon
           @only = params["only"].to_sym
         end
 
-        case @only
-        when nil
+        if @only.nil?
           @jobs_popped = popped_jobs
-        # when :queue
-        #   @jobs_popped = $queue.queued
         else
           @jobs_popped = $queue.popped_reverse_sorted_by_status @only
         end
@@ -95,7 +100,6 @@ module RestFtpDaemon
         status 200
         content_type "text/html"
         body output
-
       end
 
       # Server global status
@@ -120,7 +124,6 @@ module RestFtpDaemon
       # Server test
       get '/debug' do
         info "GET /debug"
-
         begin
           raise RestFtpDaemon::DummyException
         rescue RestFtpDaemon::RestFtpDaemonException => exception

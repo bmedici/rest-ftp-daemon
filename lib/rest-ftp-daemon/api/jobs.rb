@@ -52,9 +52,6 @@ module RestFtpDaemon
           found.describe
         end
 
-        # def job_delete job_id
-        # end
-
         def job_list
           $queue.all.map do |item|
             next unless item.is_a? Job
@@ -98,7 +95,7 @@ module RestFtpDaemon
       desc "Kill and remove a specific job"
       delete ':id' do
        info "DELETE /jobs/#{params[:name]}"
-       status 501
+       #status 501
         # begin
         #   response = job_delete params[:id].to_i
         # rescue RestFtpDaemon::JobNotFound => exception
@@ -149,7 +146,6 @@ module RestFtpDaemon
           job = Job.new(job_id, symbolized)
 
           # And push it to the queue
-          #$queue.push0 job
           $queue.push job
 
         rescue JSON::ParserError => exception
@@ -166,12 +162,6 @@ module RestFtpDaemon
           job.describe
         end
       end
-
-    protected
-
-    # def progname
-    #   "API::Jobs"
-    # end
 
     end
   end

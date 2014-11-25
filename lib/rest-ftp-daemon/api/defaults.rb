@@ -12,11 +12,6 @@ module RestFtpDaemon
         do_not_route_head!
         do_not_route_options!
 
-        # before do
-        #   header['Access-Control-Allow-Origin'] = '*'
-        #   header['Access-Control-Request-Method'] = '*'
-        # end
-
         # Handle authentication
         # http_basic do |username, password|
         #   User.authenticate!(username, password)
