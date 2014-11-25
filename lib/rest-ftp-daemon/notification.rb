@@ -37,8 +37,7 @@ module RestFtpDaemon
         error:    params[:error],
         host:     Settings['host'].to_s,
         }
-      body[:status] = params[:status] if (params[:status].is_a? Enumerable)
-      # && (!params[:status].empty?)
+      body[:status] = params[:status] if (params[:status].is_a? Enumerable) unless params[:status].nil?
 
       # Send message in a thread
       Thread.new do |thread|
