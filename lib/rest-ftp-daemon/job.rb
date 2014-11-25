@@ -268,14 +268,14 @@ module RestFtpDaemon
       status :checking_source
       raise RestFtpDaemon::JobAssertionFailed unless @source_path && @target_url
       @transfer_sent = 0
-      set :transfer_source_done, 0
+      set :source_processed, 0
 
       # Guess source file names using Dir.glob
       source_matches = Dir.glob @source_path
       info "Job.transfer sources #{source_matches.inspect}"
       raise RestFtpDaemon::JobSourceNotFound if source_matches.empty?
-      set :transfer_source_count, source_matches.count
-      set :transfer_source_files, source_matches
+      set :source_count, source_matches.count
+      set :source_files, source_matches
 
       # Guess target file name, and fail if present while we matched multiple sources
       target_name = Helpers.extract_filename @target_url.path
@@ -301,7 +301,7 @@ module RestFtpDaemon
       source_matches.each do |filename|
         ftp_transfer filename, target_name
         done += 1
-        set :transfer_source_done, done
+        set :source_processed, done
       end
 
       # Add total transferred to counter
@@ -397,17 +397,15 @@ module RestFtpDaemon
     end
 
     def ftp_transfer source_match, target_name = nil
-#target_name
       # Method assertions
       info "Job.ftp_transfer source_match [#{source_match}]"
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil?
       raise RestFtpDaemon::JobAssertionFailed if source_match.nil?
-      #raise RestFtpDaemon::JobAssertionFailed if @transfer_total.nil?
-      status :ftp_transfer
 
       # Use source filename if target path provided none (typically with multiple sources)
       target_name ||= Helpers.extract_filename source_match
       info "Job.ftp_transfer target_name [#{target_name}]"
+      set :source_processing, target_name
 
       # Check for target file presence
       status :checking_target
@@ -481,6 +479,7 @@ module RestFtpDaemon
 
       # Done
       #set :progress, nil
+      set :source_processing, nil
       info "Job.ftp_transfer finished"
     end
 

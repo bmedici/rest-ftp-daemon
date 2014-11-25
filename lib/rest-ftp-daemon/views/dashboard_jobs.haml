@@ -3,8 +3,9 @@
   - status = job.get :status
   - size = job.get :transfer_total
   - progress = job.get :progress
-  - transfer_source_count = job.get(:transfer_source_count) || 0
-  - transfer_source_done = job.get(:transfer_source_done) || 0
+  - source_count = job.get(:source_count) || 0
+  - source_processed = job.get(:source_processed) || 0
+  - source_processing = job.get(:source_processing)
 
   - if error!=0 && !error.nil?
     - trclass = "danger"
@@ -33,13 +34,16 @@
 
     %td
       = status
-      - if (transfer_source_count > 0) #&& (transfer_source_done < transfer_source_count)
-        %small= " #{transfer_source_done}/#{transfer_source_count}"
+      - if (source_count > 0) #&& (source_processed < source_count)
+        %small= " #{source_processed}/#{source_count}"
 
     %td
       = error
-      - unless progress.nil? || status == :finished
-        %small= "#{progress}%"
+      - unless error || status == :finished
+        - unless progress.nil?
+          = "#{progress}%"
+        - unless source_processing.nil?
+          %small= " (#{source_processing})"
 
     %td
       - unless progress.nil?
