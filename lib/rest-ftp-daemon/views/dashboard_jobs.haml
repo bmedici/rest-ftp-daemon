@@ -38,7 +38,7 @@
         %small= " #{source_processed}/#{source_count}"
 
     %td
-      = error
+      = Helpers.text_or_empty(error)
       - unless error || status == :finished
         - unless progress.nil?
           = "#{progress}%"
