@@ -68,11 +68,17 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobTargetUnparseable => exception
         return oops "rftpd.started", exception, :job_target_unparseable
 
+      rescue RestFtpDaemon::JobTargetUnsupported => exception
+        return oops "rftpd.started", exception, :job_target_unsupported
+
       rescue RestFtpDaemon::JobAssertionFailed => exception
         return oops "rftpd.started", exception, :job_assertion_failed
 
       rescue RestFtpDaemon::RestFtpDaemonException => exception
         return oops "rftpd.started", exception, :job_prepare_failed
+
+      rescue URI::InvalidURIError => exception
+        return oops "rftpd.started", exception, :job_target_invalid
 
       rescue Exception => exception
         return oops "rftpd.started", exception, :job_prepare_unhandled, true
@@ -356,6 +362,7 @@ module RestFtpDaemon
         @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
       else
         info "Job.transfer scheme: other [#{@target_url.scheme}]"
+        railse RestFtpDaemon::JobTargetUnsupported
       end
     end
 
