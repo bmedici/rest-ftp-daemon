@@ -19,22 +19,18 @@
 
   - @gworker_statuses.each do |wid, infos|
     - status = infos[:status]
+    - style = styles[status] || ""
+
     - if infos[:active_at].is_a? Time
       - no_news_for = (Time.now - infos[:active_at]).round(0)
     - else
       - no_news_for = "?"
 
-    -# status = :waiting
-    - style = styles[status] || ""
-    -# style = "success"
-
     %tr{class: style.to_s}
-
       %td= wid
       %td= infos[:status]
       %td= infos[:jobid]
-      %td
-        = no_news_for
+      %td= no_news_for
 
 %h2 Counters
 - $queue.counters.each do |name, value|
