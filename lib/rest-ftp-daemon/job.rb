@@ -7,7 +7,10 @@ require 'timeout'
 
 module RestFtpDaemon
   class Job < RestFtpDaemon::Common
-    attr_accessor :id
+
+    FIELDS = [:source, :target, :priority, :notify, :overwrite]
+
+    attr_reader :id
     attr_accessor :wid
 
     attr_reader :error
@@ -15,15 +18,25 @@ module RestFtpDaemon
 
     attr_reader :started_at
     attr_reader :updated_at
+
+    attr_reader :params
+
+    FIELDS.each do |field|
+      attr_reader field
+    end
+
     def initialize job_id, params={}
       # Call super
       # super()
       info "Job.initialize"
 
       # Init context
-      @params = params
       @id = job_id.to_s
       #set :id, job_id
+      FIELDS.each do |field|
+        instance_variable_set("@#{field.to_s}", params[field])
+      end
+      @params = {}
 
       # Protect with a mutex
       @mutex = Mutex.new
@@ -240,14 +253,14 @@ module RestFtpDaemon
       @target_url = nil
 
       # Check source
-      raise RestFtpDaemon::JobMissingAttribute unless @params[:source]
-      @source_path = expand_path @params[:source]
+      raise RestFtpDaemon::JobMissingAttribute unless @source
+      @source_path = expand_path @source
       set :source_path, @source_path
       set :source_method, :file
 
       # Check target
-      raise RestFtpDaemon::JobMissingAttribute unless @params[:target]
-      @target_url = expand_url @params[:target]
+      raise RestFtpDaemon::JobMissingAttribute unless @target
+      @target_url = expand_url @target
       set :target_url, @target_url.to_s
 
       if @target_url.kind_of? URI::FTP
