@@ -53,14 +53,6 @@ module RestFtpDaemon
       client_notify "rftpd.queued"
     end
 
-    def id
-      @id
-    end
-
-    # def priority
-    #   get :priority
-    # end
-
     def process
       # Update job's status
       @error = nil
@@ -425,10 +417,9 @@ module RestFtpDaemon
 
       # Check for target file presence
       @status = :checking_target
-      overwrite = !get(:overwrite).nil?
       present = ftp_presence target_name
       if present
-        if overwrite
+        if @overwrite
           # delete it first
           info "Job.ftp_transfer removing target file"
           @ftp.delete(target_name)
@@ -500,7 +491,7 @@ module RestFtpDaemon
     end
 
     def client_notify signal, error = nil, status = {}
-      RestFtpDaemon::Notification.new get(:notify), {
+      RestFtpDaemon::Notification.new @notify, {
         id: @id,
         signal: signal,
         error: error,
