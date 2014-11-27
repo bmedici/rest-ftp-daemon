@@ -8,6 +8,15 @@ API documentation is [maintained on Apiary](http://docs.restftpdaemon.apiary.io/
 
 
 
+Doc TODO
+------------------------------------------------------------------------------------
+Document /status
+Document /routes
+Document multiple-files upload
+Document mkdir and overwrite options
+
+
+
 Features
 ------------------------------------------------------------------------------------
 

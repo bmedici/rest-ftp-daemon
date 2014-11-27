@@ -1,6 +1,5 @@
 module RestFtpDaemon
   module API
-
     class Root < Grape::API
 
 ####### DASHBOARD - GET /

@@ -76,13 +76,6 @@ module RestFtpDaemon
       end
     end
 
-    # def by_status status
-    #   return [] if status.nil?
-
-    #   # Select jobs from the queue if their status is (status)
-    #   all.select { |item| item.get(:status) == status.to_sym }
-    # end
-
     def popped_reverse_sorted_by_status status
       return [] if status.nil?
 
