@@ -102,41 +102,6 @@ module RestFtpDaemon
         body output
       end
 
-      # Server global status
-      get '/status' do
-        info "GET /status"
-        status 200
-        return  {
-          hostname: `hostname`.chomp,
-          version: APP_VER,
-          config: Settings.to_hash,
-          started: APP_STARTED,
-          uptime: (Time.now - APP_STARTED).round(1),
-          counters: $queue.counters,
-          status: $queue.popped_counts_by_status,
-          queue_size: $queue.all_size,
-          jobs_queued: $queue.queued.collect(&:id),
-          jobs_popped: $queue.popped.collect(&:id),
-          routes: RestFtpDaemon::API::Root::routes,
-          }
-      end
-
-      # Server test
-      get '/debug' do
-        info "GET /debug"
-        begin
-          raise RestFtpDaemon::DummyException
-        rescue RestFtpDaemon::RestFtpDaemonException => exception
-          status 501
-          api_error exception
-        rescue Exception => exception
-          status 501
-          api_error exception
-        else
-          status 200
-          {}
-        end
-      end
 
     end
   end
