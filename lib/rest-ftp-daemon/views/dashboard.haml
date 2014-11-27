@@ -89,7 +89,6 @@
             %tr
               %th JID
               %th prio
-              %th worker
               %th source
               %th target
               %th status
@@ -97,6 +96,7 @@
               %th progress
               %th.text-right size
               %th.text-right bitrate
+              %th.text-right worker
 
             - if @only.nil? && !@jobs_queued.empty?
               = render :dashboard_jobs, {jobs: @jobs_queued, counts: @counts}

@@ -18,17 +18,15 @@
 
     %td= job.id
 
-    %td= job.get :priority
-
-    %td= job.wid
+    %td= job.priority
 
     %td.fixed{title: job.get(:source_path)}
       = Helpers.job_method_label job.get(:source_method)
-      = job.get :source
+      = job.source
 
     %td.fixed{title: job.get(:target_url)}
       = Helpers.job_method_label job.get(:target_method)
-      = job.get :target
+      = job.target
 
     %td
       = job.status
@@ -36,12 +34,13 @@
         %small= " #{source_processed}/#{source_count}"
 
     %td
-      = Helpers.text_or_empty(job.error)
       - unless job.error || job.status == :finished
         - unless progress.nil?
           = "#{progress}%"
         - unless source_processing.nil?
           %small= " (#{source_processing})"
+      - else
+        = Helpers.text_or_empty(job.error)
 
     %td
       - unless progress.nil?
@@ -55,4 +54,6 @@
     %td.nobr.text-right
       - if (bitrate = job.get :transfer_bitrate)
         =  Helpers.format_bytes(bitrate, "bps")
+
+    %td.nobr.text-right= job.wid
 
