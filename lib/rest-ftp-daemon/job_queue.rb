@@ -87,12 +87,12 @@ module RestFtpDaemon
       return [] if status.nil?
 
       # Select jobs from the queue if their status is (status)
-      ordered_popped.reverse.select { |item| item.get(:status) == status.to_sym }
+      ordered_popped.reverse.select { |item| item.status == status.to_sym }
     end
 
     def popped_counts_by_status
       statuses = {}
-      @popped.group_by { |job| job.get(:status) }.map { |status, jobs| statuses[status] = jobs.size }
+      @popped.group_by { |job| job.status }.map { |status, jobs| statuses[status] = jobs.size }
       statuses
     end
 
@@ -165,7 +165,7 @@ module RestFtpDaemon
     end
 
     def ordered_popped
-      @popped.sort_by { |item| [item.get(:updated_at)] }
+      @popped.sort_by { |item| [item.updated_at] }
     end
 
   protected
@@ -195,10 +195,12 @@ module RestFtpDaemon
       # Delete jobs from the queue if their status is (status)
       @popped.delete_if do |job|
         # Skip it if wrong status
-        next unless job.get(:status) == status.to_sym
+        next unless job.status == status.to_sym
+        # next unless job.get(:status) == status.to_sym
 
         # Skip it if updated_at invalid
-        updated_at = job.get(:updated_at)
+        # updated_at = job.get(:updated_at)
+        updated_at = job.updated_at
         next if updated_at.nil?
 
         # Skip it if not aged enough yet

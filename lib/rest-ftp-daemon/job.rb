@@ -10,6 +10,11 @@ module RestFtpDaemon
     attr_accessor :id
     attr_accessor :wid
 
+    attr_reader :error
+    attr_reader :status
+
+    attr_reader :started_at
+    attr_reader :updated_at
     def initialize job_id, params={}
       # Call super
       # super()
@@ -27,8 +32,8 @@ module RestFtpDaemon
       @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
 
       # Flag current job
-      set :started_at, Time.now
-      status :created
+      @started_at = Time.now
+      @status = :created
 
       # Send first notification
       #info "Job.initialize/notify"
@@ -39,21 +44,18 @@ module RestFtpDaemon
       @id
     end
 
-    def priority
-      get :priority
-    end
-    def get_status
-      get :status
-    end
+    # def priority
+    #   get :priority
+    # end
 
     def process
       # Update job's status
-      set :error, nil
+      @error = nil
 
       # Prepare job
       begin
         info "Job.process prepare"
-        status :preparing
+        @status = :preparing
         prepare
 
       rescue RestFtpDaemon::JobMissingAttribute => exception
@@ -85,7 +87,7 @@ module RestFtpDaemon
 
       else
         # Prepare done !
-        status :prepared
+        @status = :prepared
         info "Job.process notify rftpd.started"
         notify "rftpd.started", nil
       end
@@ -93,7 +95,7 @@ module RestFtpDaemon
       # Process job
       begin
         info "Job.process transfer"
-        status :starting
+        @status = :starting
         transfer
 
       rescue Errno::EHOSTDOWN => exception
@@ -131,7 +133,7 @@ module RestFtpDaemon
 
       else
         # All done !
-        status :finished
+        @status = :finished
         info "Job.process notify rftpd.ended"
         notify "rftpd.ended", nil
       end
@@ -162,9 +164,9 @@ module RestFtpDaemon
 
   protected
 
-    def up_time
-      return 0 if @params[:started_at].nil?
-      Time.now - @params[:started_at]
+    def age
+      return 0 if @started_at.nil?
+      (Time.now - @started_at).round(2)
     end
 
     def wander time
@@ -184,14 +186,14 @@ module RestFtpDaemon
       @mutex.synchronize do
         @params || {}
         # return unless @params.is_a? Enumerable
-        @params[:updated_at] = Time.now
+        @updated_at = Time.now
         @params[attribute] = value
       end
     end
 
-    def status status
-      set :status, status
-    end
+    # def status status
+    #   set :status, status
+    # end
 
     def expand_path path
       File.expand_path replace_tokens(path)
@@ -231,7 +233,7 @@ module RestFtpDaemon
 
     def prepare
       # Init
-      status :preparing
+      @status = :preparing
       @source_method = :file
       @target_method = nil
       @source_path = nil
@@ -265,7 +267,7 @@ module RestFtpDaemon
 
     def transfer
       # Method assertions and init
-      status :checking_source
+      @status = :checking_source
       raise RestFtpDaemon::JobAssertionFailed unless @source_path && @target_url
       @transfer_sent = 0
       set :source_processed, 0
@@ -309,7 +311,7 @@ module RestFtpDaemon
 
       # Close FTP connexion
       info "Job.transfer disconnecting"
-      status :disconnecting
+      @status = :disconnecting
       @ftp.close
     end
 
@@ -321,8 +323,9 @@ module RestFtpDaemon
       info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}]"
 
       # Update job's internal status
-      set :status, :failed
-      set :error, error_name
+      @status = :failed
+      @error = error_name
+      set :error_name, error_name
       set :error_exception, exception.class
 
       # Build status stack
@@ -342,7 +345,7 @@ module RestFtpDaemon
     def ftp_init
       # Method assertions
       info "Job.ftp_init asserts"
-      status :ftp_init
+      @status = :ftp_init
       raise RestFtpDaemon::JobAssertionFailed if @target_method.nil? || @target_url.nil?
 
       info "Job.ftp_init target_method [#{@target_method}]"
@@ -362,29 +365,29 @@ module RestFtpDaemon
     end
 
     def ftp_connect
-      #status :ftp_connect
+      #@status = :ftp_connect
       # connect_timeout_sec = (Settings.transfer.connect_timeout_sec rescue nil) || DEFAULT_CONNECT_TIMEOUT_SEC
 
       # Method assertions
       host = @target_url.host
       info "Job.ftp_connect connect [#{host}]"
-      status :ftp_connect
+      @status = :ftp_connect
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
       @ftp.connect(host)
 
-      status :ftp_login
+      @status = :ftp_login
       info "Job.ftp_connect login [#{@target_url.user}]"
       @ftp.login @target_url.user, @target_url.password
 
-      status :ftp_chdir
       path = Helpers.extract_dirname(@target_url.path)
+      @status = :ftp_chdir
       info "Job.ftp_connect chdir [#{path}]"
       @ftp.chdir(path) unless path.blank?
     end
 
     def ftp_presence target_name
       # Method assertions
-      status :ftp_presence
+      @status = :ftp_presence
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
 
       # Get file list, sometimes the response can be an empty value
@@ -408,7 +411,7 @@ module RestFtpDaemon
       set :source_processing, target_name
 
       # Check for target file presence
-      status :checking_target
+      @status = :checking_target
       overwrite = !get(:overwrite).nil?
       present = ftp_presence target_name
       if present
@@ -432,7 +435,7 @@ module RestFtpDaemon
       chunk_size = update_every_kb * 1024
       t0 = tstart = Time.now
       notified_at = Time.now
-      status :uploading
+      @status = :uploading
       @ftp.putbinaryfile(source_match, target_name, chunk_size) do |block|
         # Update counters
         @transfer_sent += block.bytesize

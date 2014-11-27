@@ -1,17 +1,15 @@
 - jobs.each do |job|
-  - error = job.get :error
-  - status = job.get :status
   - size = job.get :transfer_total
   - progress = job.get :progress
   - source_count = job.get(:source_count) || 0
   - source_processed = job.get(:source_processed) || 0
   - source_processing = job.get(:source_processing)
 
-  - if error!=0 && !error.nil?
+  - if !job.error.nil?
     - trclass = "danger"
-  - elsif status == :uploading
+  - elsif job.status == :uploading
     - trclass = "info"
-  - elsif status == :finished
+  - elsif job.status == :finished
     - trclass = "success"
   - else
     - trclass = "warning"
@@ -33,13 +31,13 @@
       = job.get :target
 
     %td
-      = status
+      = job.status
       - if (source_count > 0) #&& (source_processed < source_count)
         %small= " #{source_processed}/#{source_count}"
 
     %td
-      = Helpers.text_or_empty(error)
-      - unless error || status == :finished
+      = Helpers.text_or_empty(job.error)
+      - unless job.error || job.status == :finished
         - unless progress.nil?
           = "#{progress}%"
         - unless source_processing.nil?
