@@ -1,10 +1,5 @@
-require 'haml'
-require "facter"
-require "sys/cpu"
-
 module RestFtpDaemon
   module API
-
     class Root < Grape::API
 
 

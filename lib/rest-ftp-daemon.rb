@@ -3,6 +3,9 @@ require 'rubygems'
 require 'json'
 require 'grape'
 require 'grape-entity'
+require 'haml'
+require "facter"
+require "sys/cpu"
 
 
 # require 'celluloid/autostart'
