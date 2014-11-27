@@ -37,7 +37,7 @@ module RestFtpDaemon
 
       # Send first notification
       #info "Job.initialize/notify"
-      notify "rftpd.queued"
+      client_notify "rftpd.queued"
     end
 
     def id
@@ -89,7 +89,7 @@ module RestFtpDaemon
         # Prepare done !
         @status = :prepared
         info "Job.process notify rftpd.started"
-        notify "rftpd.started", nil
+        client_notify "rftpd.started", nil
       end
 
       # Process job
@@ -135,25 +135,25 @@ module RestFtpDaemon
         # All done !
         @status = :finished
         info "Job.process notify rftpd.ended"
-        notify "rftpd.ended", nil
+        client_notify "rftpd.ended", nil
       end
 
     end
 
-    def describe
-      # Update realtime info
-      #u = up_time
-      #set :uptime, u.round(2) unless u.nil?
+    # def describe
+    #   # Update realtime info
+    #   #u = up_time
+    #   #set :uptime, u.round(2) unless u.nil?
 
-      # Return the whole structure  FIXME
-      @params.merge({
-        id: @id,
-        uptime: up_time.round(2)
-        })
-      # @mutex.synchronize do
-      #   out = @params.clone
-      # end
-    end
+    #   # Return the whole structure  FIXME
+    #   @params.merge({
+    #     id: @id,
+    #     uptime: up_time.round(2)
+    #     })
+    #   # @mutex.synchronize do
+    #   #   out = @params.clone
+    #   # end
+    # end
 
     def get attribute
       @mutex.synchronize do
@@ -329,17 +329,17 @@ module RestFtpDaemon
       set :error_exception, exception.class
 
       # Build status stack
-      status = nil
+      notif_status = nil
       if include_backtrace
         set :error_backtrace, exception.backtrace
-        status = {
+        notif_status = {
           backtrace: exception.backtrace,
         }
       end
 
       # Prepare notification if signal given
       return unless signal_name
-      notify signal_name, error_name, status
+      client_notify signal_name, error_name, notif_status
     end
 
     def ftp_init
@@ -451,25 +451,25 @@ module RestFtpDaemon
         set :progress, percent1
 
         # Log progress
-        status = []
-        status << "#{percent1} %"
-        status << (Helpers.format_bytes @transfer_sent, "B")
-        status << (Helpers.format_bytes @transfer_total, "B")
-        status << (Helpers.format_bytes bitrate0, "bps")
-        info "Job.ftp_transfer" + status.map{|txt| ("%#{DEFAULT_LOGS_PROGNAME_TRIM.to_i}s" % txt)}.join("\t")
+        stack = []
+        stack << "#{percent1} %"
+        stack << (Helpers.format_bytes @transfer_sent, "B")
+        stack << (Helpers.format_bytes @transfer_total, "B")
+        stack << (Helpers.format_bytes bitrate0, "bps")
+        info "Job.ftp_transfer" + stack.map{|txt| ("%#{DEFAULT_LOGS_PROGNAME_TRIM.to_i}s" % txt)}.join("\t")
 
         # Update time pointer
         t0 = Time.now
 
         # Notify if requested
         unless notify_after_sec.nil? || (notified_at + notify_after_sec > Time.now)
-          status = {
+          notif_status = {
             progress: percent1,
             transfer_sent: @transfer_sent,
             transfer_total: @transfer_total,
             transfer_bitrate: bitrate0
             }
-          notify "rftpd.progress", nil, status
+          client_notify "rftpd.progress", nil, notif_status
           notified_at = Time.now
         end
 
@@ -486,7 +486,7 @@ module RestFtpDaemon
       info "Job.ftp_transfer finished"
     end
 
-    def notify signal, error = nil, status = {}
+    def client_notify signal, error = nil, status = {}
       RestFtpDaemon::Notification.new get(:notify), {
         id: @id,
         signal: signal,
