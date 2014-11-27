@@ -58,10 +58,10 @@ module RestFtpDaemon
       desc "Create a new job"
 
       params do
-        requires :source, type: String, desc: "source pattern"
-        requires :target, type: String, desc: "target path"
-        optional :notify, type: String, desc: ""
-        optional :priority, type: Integer, desc: ""
+        requires :source, type: String, desc: "Source file pattern"
+        requires :target, type: String, desc: "Target remote path"
+        optional :notify, type: String, desc: "URL to get POST'ed notifications back"
+        optional :priority, type: Integer, desc: "Priority level of the job (lower is stronger)"
         optional :overwrite, type: Boolean, desc: "wether to overwrites files at target server"
       end
 

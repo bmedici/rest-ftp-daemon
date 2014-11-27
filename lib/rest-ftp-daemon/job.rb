@@ -1,5 +1,3 @@
-#require 'net/ftptls'
-
 require 'uri'
 require 'net/ftp'
 require 'double_bag_ftps'
@@ -145,21 +143,6 @@ module RestFtpDaemon
 
     end
 
-    # def describe
-    #   # Update realtime info
-    #   #u = up_time
-    #   #set :uptime, u.round(2) unless u.nil?
-
-    #   # Return the whole structure  FIXME
-    #   @params.merge({
-    #     id: @id,
-    #     uptime: up_time.round(2)
-    #     })
-    #   # @mutex.synchronize do
-    #   #   out = @params.clone
-    #   # end
-    # end
-
     def get attribute
       @mutex.synchronize do
         @params || {}
@@ -196,10 +179,6 @@ module RestFtpDaemon
       end
     end
 
-    # def status status
-    #   set :status, status
-    # end
-
     def expand_path path
       File.expand_path replace_tokens(path)
     end
@@ -216,7 +195,6 @@ module RestFtpDaemon
       # Ensure endpoints are not a nil value
       return path unless Settings.endpoints.is_a? Enumerable
       vectors = Settings.endpoints.clone
-      #info "Job.replace_tokens vectors #{vectors.inspect}]"
 
       # Stack RANDOM into tokens
       vectors['RANDOM'] = SecureRandom.hex(IDENT_RANDOM_LEN)
@@ -226,7 +204,6 @@ module RestFtpDaemon
       vectors.each do |from, to|
         next if to.to_s.blank?
         newpath.gsub! Helpers.tokenize(from), to
-        #info "Job.replace_tokens #{Helpers.tokenize(from)} > #{to} [#{newpath}]"
       end
 
       # Ensure result does not contain tokens after replacement
@@ -267,7 +244,6 @@ module RestFtpDaemon
       # Check compliance
       raise RestFtpDaemon::JobTargetUnparseable if @target_url.nil?
       raise RestFtpDaemon::JobTargetUnsupported if @target_method.nil?
-      #raise RestFtpDaemon::JobSourceNotFound unless File.exists? @source_path
     end
 
     def transfer
@@ -480,12 +456,9 @@ module RestFtpDaemon
       end
 
       # Compute final bitrate
-      #tbitrate0 = (8 * @transfer_total.to_f / (Time.now - tstart)).round(0)
-      tbitrate0 = get_bitrate(@transfer_total, tstart).round(0)
-      set :transfer_bitrate, tbitrate0
+      set :transfer_bitrate, get_bitrate(@transfer_total, tstart).round(0)
 
       # Done
-      #set :progress, nil
       set :source_processing, nil
       info "Job.ftp_transfer finished"
     end

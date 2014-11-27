@@ -189,10 +189,8 @@ module RestFtpDaemon
       @popped.delete_if do |job|
         # Skip it if wrong status
         next unless job.status == status.to_sym
-        # next unless job.get(:status) == status.to_sym
 
         # Skip it if updated_at invalid
-        # updated_at = job.get(:updated_at)
         updated_at = job.updated_at
         next if updated_at.nil?
 
