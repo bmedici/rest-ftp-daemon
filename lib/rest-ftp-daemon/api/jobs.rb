@@ -1,7 +1,6 @@
 module RestFtpDaemon
   module API
-
-    class Jobs < Grape::API
+    class Root < Grape::API
 
 
 ####### GET /jobs/:id
