@@ -52,12 +52,6 @@ module RestFtpDaemon
           found.describe
         end
 
-        def job_list
-          $queue.all.map do |item|
-            next unless item.is_a? Job
-            item.describe
-          end
-        end
 
       end
 
@@ -67,15 +61,11 @@ module RestFtpDaemon
       desc "Get information about a specific job"
       params do
         requires :id, type: String, desc: "job id", regexp:  /[^\/]+/
-        # optional :audio do
-        #   requires :format, type: Symbol, values: [:mp3, :wav, :aac, :ogg], default: :mp3
-        # end
       end
       get '*id' do
         info "GET /jobs/#{params[:id]}"
-        #return params
         begin
-          response = job_describe params[:id]
+          job = job_find params[:id]
         rescue RestFtpDaemon::JobNotFound => exception
           status 404
           api_error exception
@@ -87,7 +77,7 @@ module RestFtpDaemon
           api_error exception
         else
           status 200
-          response
+          present job, :with => RestFtpDaemon::API::Entities::JobPresenter, type: "complete"
         end
       end
 
@@ -118,7 +108,7 @@ module RestFtpDaemon
       get do
         info "GET /jobs"
         begin
-          response = job_list
+          jobs = $queue.all
         rescue RestFtpDaemonException => exception
           status 501
           api_error exception
@@ -127,7 +117,7 @@ module RestFtpDaemon
           api_error exception
         else
           status 200
-          response
+          present jobs, :with => RestFtpDaemon::API::Entities::JobPresenter
         end
       end
 
@@ -159,7 +149,7 @@ module RestFtpDaemon
           api_error exception
         else
           status 201
-          job.describe
+          present job, :with => RestFtpDaemon::API::Entities::JobPresenter
         end
       end
 

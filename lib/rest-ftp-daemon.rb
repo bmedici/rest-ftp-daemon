@@ -1,6 +1,10 @@
 # Global libs
 require 'rubygems'
 require 'json'
+require 'grape'
+require 'grape-entity'
+
+
 # require 'celluloid/autostart'
 
 # My libs
@@ -21,4 +25,5 @@ require 'rest-ftp-daemon/api/root'
 require 'rest-ftp-daemon/api/debug'
 require 'rest-ftp-daemon/api/routes'
 require 'rest-ftp-daemon/api/status'
+require 'rest-ftp-daemon/api/job_presenter'
 
