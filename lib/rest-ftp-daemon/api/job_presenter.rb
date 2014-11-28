@@ -24,7 +24,7 @@ module RestFtpDaemon
 
         # Params
         # expose :wid, unless: lambda { |object, options| object.wid.nil? }
-        expose :params
+        expose :params, unless: :hide_params
 
       end
 
