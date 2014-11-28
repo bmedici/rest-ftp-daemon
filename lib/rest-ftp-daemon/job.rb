@@ -338,16 +338,18 @@ module RestFtpDaemon
       case @target_method
       when :ftp
         @ftp = Net::FTP.new
-        @ftp.passive = true
       when :ftps
         @ftp = DoubleBagFTPS.new
         @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
         @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
-        @ftp.passive = true
       else
         info "Job.transfer unknown scheme [#{@target_url.scheme}]"
         railse RestFtpDaemon::JobTargetUnsupported
       end
+
+      # Common setup
+      @ftp.debug_mode = DEBUG_FTP_COMMANDS
+      @ftp.passive = true
     end
 
     def ftp_connect_and_login
@@ -373,15 +375,14 @@ module RestFtpDaemon
       @status = :ftp_chdir
 
       # Extract directory from path
-      subdir = '/' + Helpers.extract_dirname(path)
       if @mkdir
         # Split dir in parts
-        info "Job.ftp_chdir buildpath [#{subdir}]"
-        ftp_buildpath subdir
+        info "Job.ftp_chdir buildpath [#{path}]"
+        ftp_buildpath path
       else
         # Directly chdir if not mkdir requested
-        info "Job.ftp_chdir chdir [#{subdir}]"
-        @ftp.chdir subdir
+        info "Job.ftp_chdir chdir [#{path}]"
+        @ftp.chdir path
       end
     end
 
