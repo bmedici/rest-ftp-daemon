@@ -271,7 +271,8 @@ module RestFtpDaemon
       ftp_connect_and_login
 
       # Connect remote server, login and chdir
-      ftp_chdir_or_buildpath @target_url.path
+      path = '/' + Helpers.extract_dirname(@target_url.path).to_s
+      ftp_chdir_or_buildpath path
 
       # Check source files presence and compute total size, they should be there, coming from Dir.glob()
       @transfer_total = 0
