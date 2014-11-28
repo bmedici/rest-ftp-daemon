@@ -6,7 +6,7 @@ require 'timeout'
 module RestFtpDaemon
   class Job < RestFtpDaemon::Common
 
-    FIELDS = [:source, :target, :priority, :notify, :overwrite]
+    FIELDS = [:source, :target, :priority, :notify, :overwrite, :mkdir]
 
     attr_reader :id
     attr_accessor :wid
@@ -268,7 +268,10 @@ module RestFtpDaemon
       ftp_init
 
       # Connect remote server, login and chdir
-      ftp_connect
+      ftp_connect_and_login
+
+      # Connect remote server, login and chdir
+      ftp_chdir_or_buildpath @target_url.path
 
       # Check source files presence and compute total size, they should be there, coming from Dir.glob()
       @transfer_total = 0
@@ -345,7 +348,7 @@ module RestFtpDaemon
       end
     end
 
-    def ftp_connect
+    def ftp_connect_and_login
       #@status = :ftp_connect
       # connect_timeout_sec = (Settings.transfer.connect_timeout_sec rescue nil) || DEFAULT_CONNECT_TIMEOUT_SEC
 
@@ -359,12 +362,59 @@ module RestFtpDaemon
       @status = :ftp_login
       info "Job.ftp_connect login [#{@target_url.user}]"
       @ftp.login @target_url.user, @target_url.password
-
-      path = Helpers.extract_dirname(@target_url.path)
-      @status = :ftp_chdir
-      info "Job.ftp_connect chdir [#{path}]"
-      @ftp.chdir(path) unless path.blank?
     end
+
+    def ftp_chdir_or_buildpath path
+      # Method assertions
+      info "Job.ftp_chdir [#{path}] mkdir: #{@mkdir}"
+      raise RestFtpDaemon::JobAssertionFailed if path.nil?
+      @status = :ftp_chdir
+
+      # Extract directory from path
+      subdir = '/' + Helpers.extract_dirname(path)
+      if @mkdir
+        # Split dir in parts
+        info "Job.ftp_chdir buildpath [#{subdir}]"
+        ftp_buildpath subdir
+      else
+        # Directly chdir if not mkdir requested
+        info "Job.ftp_chdir chdir [#{subdir}]"
+        @ftp.chdir subdir
+      end
+    end
+
+    def ftp_buildpath path
+      # Init
+      pref = "Job.ftp_buildpath [#{path}]"
+
+      begin
+        # Try to chdir in this directory
+        @ftp.chdir(path)
+
+      rescue Net::FTPPermError => exception
+        # If not possible because the directory is missing
+        info "#{pref} chdir failed"
+        parent =  Helpers.extract_parent path
+
+        if parent.size > 0
+          # Do the same for the parent
+          ftp_buildpath parent
+
+          # Then finally create this dir and chdir
+          info "#{pref} > now mkdir [#{path}]"
+          @ftp.mkdir path
+
+          # And get into it (this chdir is not rescue'd on purpose in order to throw the ex)
+          info "#{pref} > now chdir [#{path}]"
+          @ftp.chdir(path)
+        end
+
+      end
+
+      # Now we were able to chdir inside, just tell it
+      info "#{pref} changed to [#{@ftp.pwd}]"
+    end
+
 
     def ftp_presence target_name
       # Method assertions

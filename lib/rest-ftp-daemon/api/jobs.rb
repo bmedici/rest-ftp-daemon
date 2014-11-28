@@ -63,6 +63,8 @@ module RestFtpDaemon
         optional :notify, type: String, desc: "URL to get POST'ed notifications back"
         optional :priority, type: Integer, desc: "Priority level of the job (lower is stronger)"
         optional :overwrite, type: Boolean, desc: "wether to overwrites files at target server"
+        optional :mkdir, type: Boolean, desc: "wether to create missing directories on target server",
+          default: false
       end
 
       post '/jobs/' do

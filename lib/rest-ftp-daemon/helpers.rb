@@ -37,6 +37,12 @@ module RestFtpDaemon
       return m[1] unless m.nil?
     end
 
+    def self.extract_parent path
+      # m = path.match(/^(.*\/)[^\/]*\/+$/)
+      m = path.match(/^(.*\/)[^\/]+\/?$/)
+      return m[1] unless m.nil?
+    end
+
     def self.local_port_used? port
       ip = '0.0.0.0'
       timeout = 1
