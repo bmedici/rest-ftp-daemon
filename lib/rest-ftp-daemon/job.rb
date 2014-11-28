@@ -311,6 +311,7 @@ module RestFtpDaemon
       @error = error_name
       set :error_name, error_name
       set :error_exception, exception.class
+      set :error_message, exception.message
 
       # Build status stack
       notif_status = nil
@@ -417,6 +418,8 @@ module RestFtpDaemon
 
 
     def ftp_presence target_name
+# FIXME / TODO: try with nlst
+
       # Method assertions
       @status = :ftp_presence
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
