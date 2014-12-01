@@ -113,6 +113,9 @@ module RestFtpDaemon
       rescue Net::FTPPermError => exception
         return oops "rftpd.ended", exception, :job_perm_error
 
+      rescue OpenSSL::SSL::SSLError => exception
+        return oops "rftpd.ended", exception, :job_openssl_error
+
       rescue Errno::EMFILE => exception
         return oops "rftpd.ended", exception, :job_too_many_open_files
 
