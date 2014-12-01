@@ -3,6 +3,13 @@ require 'securerandom'
 module RestFtpDaemon
   class Helpers
 
+    def self.get_censored_config
+      config = Settings.to_hash
+      config[:users] = Settings.users.keys if Settings.users
+      config[:endpoints] = Settings.endpoints.keys if Settings.endpoints
+      config
+    end
+
     def self.format_bytes number, unit=""
       return "&Oslash;" if number.nil? || number.zero?
 

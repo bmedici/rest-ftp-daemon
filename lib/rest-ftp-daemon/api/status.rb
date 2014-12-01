@@ -2,6 +2,7 @@ module RestFtpDaemon
   module API
     class Root < Grape::API
 
+
 ####### GET /status
 
       # Server global status
@@ -11,7 +12,7 @@ module RestFtpDaemon
         return  {
           hostname: `hostname`.chomp,
           version: APP_VER,
-          config: Settings.to_hash,
+          config: Helpers.get_censored_config,
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),
           counters: $queue.counters,
