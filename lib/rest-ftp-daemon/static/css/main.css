@@ -4,8 +4,8 @@
 
 .transfer-method {
   display: inline-block;
-  width: 35px;
-  padding: 4px 1px;
+  /*width: 35px;*/
+  padding: 3px 3px;
   font-weight: normal;
   }
 
@@ -13,6 +13,46 @@
   white-space: nowrap;
   }
 
-.fixed {
-  font-family: monospace;
+table tr td, .fixed {
+  font-family: 'Inconsolata', sans-serif;
+  font-size: 1em;
   }
+
+.token {
+  display: inline-block;
+  background-color: #f8f8f8;
+  padding: 0 2px;
+  /*font-weight: bold;*/
+  }
+
+/*
+.label-outline.badge-success {
+    border-color: #468847;
+}
+*/
+.label-outline {
+    color: black;
+    border: 1px solid #999;
+    background-color: transparent;
+}
+
+.flag {
+  margin-right: 3px;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-top: 2em;
+}
+
+#header {
+  padding: 20px auto;
+  border-bottom: 1px solid silver;
+  background-color: #eee;
+  }
+
+.progress {
+  margin-bottom: 0;
+  }
+
+
