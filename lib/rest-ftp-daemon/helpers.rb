@@ -79,15 +79,16 @@ module RestFtpDaemon
       "<div class=\"transfer-method label #{klass}\">#{method.upcase}</div>"
     end
 
-    # def snakecase
-    #   gsub(/::/, '/').
-    #   gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
-    #   gsub(/([a-z\d])([A-Z])/,'\1_\2').
-    #   tr('-', '_').
-    #   gsub(/\s/, '_').
-    #   gsub(/__+/, '_').
-    #   downcase
-    # end
+    # Dates and times: date with time generator
+    def self.datetime_full param
+      return "-"  if param.nil?
+      return param.to_datetime.strftime("%d.%m.%Y %H:%M")
+    end
+
+    def self.datetime_short param
+      return "-"  if param.nil?
+      return param.to_datetime.strftime("%d/%m %H:%M")
+    end
 
   end
 end

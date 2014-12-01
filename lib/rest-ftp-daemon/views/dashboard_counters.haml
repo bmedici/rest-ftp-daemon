@@ -1,0 +1,14 @@
+%h2 Counters
+
+%table.table.table-striped.table-hover.table-condensed
+
+  %tr
+    %th counter
+    %th value
+
+  - $queue.counters.each do |name, value|
+
+    %tr
+      %td= name
+      %td= value
+

@@ -70,7 +70,7 @@
 
 
       .row
-        .col-md-10
+        .col-md-12
 
           %h2
             Jobs &nbsp;
@@ -89,14 +89,15 @@
             %tr
               %th JID
               %th prio
+              %th worker
               %th source
               %th target
+              %th started
               %th status
-              %th error
               %th progress
+              %th error
               %th.text-right size
               %th.text-right bitrate
-              %th.text-right worker
 
             - if @only.nil? && !@jobs_queued.empty?
               = render :dashboard_jobs, {jobs: @jobs_queued, counts: @counts}
@@ -106,10 +107,15 @@
             = render :dashboard_jobs, {jobs: @jobs_popped, counts: @counts}
 
 
+
+      .row
+        .col-md-7
+          = render :dashboard_tokens, {tokens: Settings.endpoints || {}}
+
+        .col-md-3
+          = render :dashboard_workers
+
         .col-md-2
-          = render :dashboard_workers, {}
+          = render :dashboard_counters
 
-      = render :dashboard_tokens, {tokens: Settings.endpoints || {}}
-
-      %br
       %br

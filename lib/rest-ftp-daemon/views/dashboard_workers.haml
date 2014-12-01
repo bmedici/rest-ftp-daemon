@@ -1,21 +1,14 @@
 - styles = {waiting: :success, processing: :info, crashed: :error, done: :success }
 
-%h2
-  Workers
-  = "&nbsp;"
-
-  .btn-group.btn-group-md
-    .btn.btn-default
-      = Settings.workers
-
+%h2 Workers
 
 %table.table.table-striped.table-hover.table-condensed
 
   %tr
-    %th= "WID"
-    %th= "status"
-    %th= "job"
-    %th= "time"
+    %th ID
+    %th status
+    %th job
+    %th time
 
   - @gworker_statuses.each do |wid, infos|
     - status = infos[:status]
@@ -31,11 +24,4 @@
       %td= infos[:status]
       %td= infos[:jobid]
       %td= no_news_for
-
-%h2 Counters
-- $queue.counters.each do |name, value|
-  %b= "#{name}"
-  = value
-  %br
-
 

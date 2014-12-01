@@ -6,7 +6,6 @@
   - source_processing = job.get(:source_processing)
   - presented = present job, :with => RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
 
-
   - if !job.error.nil?
     - trclass = "danger"
   - elsif job.status == :uploading
@@ -23,6 +22,8 @@
 
     %td= job.priority
 
+    %td= job.wid
+
     %td.fixed{title: job.get(:source_path)}
       = Helpers.job_method_label job.get(:source_method)
       = job.source
@@ -32,9 +33,18 @@
       = job.target
 
     %td
+      = Helpers.datetime_short(job.started_at)
+
+    %td
       = job.status
-      - if (source_count > 0) #&& (source_processed < source_count)
+      - if (source_count > 1) && (source_processed < source_count)
         %small= " #{source_processed}/#{source_count}"
+
+    %td
+      - unless progress.nil?
+        .progress
+          .progress-bar{style:"width: #{progress}%;"}
+            = Helpers.format_bytes job.get(:transfer_sent), "B"
 
     %td
       - unless job.error || job.status == :finished
@@ -45,12 +55,6 @@
       - else
         = Helpers.text_or_empty(job.error)
 
-    %td
-      - unless progress.nil?
-        .progress
-          .progress-bar{style:"width: #{progress}%;"}
-            = Helpers.format_bytes job.get(:transfer_sent), "B"
-
     %td.nobr.text-right
       = Helpers.format_bytes(size, "B")
 
@@ -58,5 +62,4 @@
       - if (bitrate = job.get :transfer_bitrate)
         =  Helpers.format_bytes(bitrate, "bps")
 
-    %td.nobr.text-right= job.wid
 

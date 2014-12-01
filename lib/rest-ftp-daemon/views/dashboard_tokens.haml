@@ -1,9 +1,14 @@
 %h2 Endpoint tokens
 
 %table.table.table-striped.table-hover.table-condensed
+
+  %tr
+    %th token
+    %th value
+
   - tokens.each do |token, value|
     %tr
       %td
-        %b= Helpers.tokenize(token)
+        = Helpers.tokenize(token)
       %td
         = value
