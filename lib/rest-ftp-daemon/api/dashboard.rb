@@ -39,7 +39,7 @@ module RestFtpDaemon
         end
 
         # Count jobs for each status
-        @counts = $queue.popped_counts_by_status
+        @counts = $queue.counts_by_status
 
         # Get workers status
         @gworker_statuses = $pool.get_worker_statuses

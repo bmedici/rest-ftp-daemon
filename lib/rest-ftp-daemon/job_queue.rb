@@ -83,9 +83,9 @@ module RestFtpDaemon
       ordered_popped.reverse.select { |item| item.status == status.to_sym }
     end
 
-    def popped_counts_by_status
+    def counts_by_status
       statuses = {}
-      @popped.group_by { |job| job.status }.map { |status, jobs| statuses[status] = jobs.size }
+      all.group_by { |job| job.status }.map { |status, jobs| statuses[status] = jobs.size }
       statuses
     end
 
@@ -107,12 +107,18 @@ module RestFtpDaemon
       @queued.select { |item| item.id == id }.last || @popped.select { |item| item.id == id }.last
     end
 
-    def push obj
+    def push job
       # Check that item responds to "priorty" method
-      raise "JobQueue.push: object should respond to priority method" unless obj.respond_to? :priority
+      raise "JobQueue.push: job should respond to priority method" unless job.respond_to? :priority
 
       @mutex.synchronize do
-        @queued.push obj
+        # Push job into the queue
+        @queued.push job
+
+        # Tell the job it's been queued
+        job.set_queued if job.respond_to? :set_queued
+
+        # Try to wake a worker up
         begin
           t = @waiting.shift
           t.wakeup if t

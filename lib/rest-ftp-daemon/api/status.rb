@@ -15,7 +15,7 @@ module RestFtpDaemon
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),
           counters: $queue.counters,
-          status: $queue.popped_counts_by_status,
+          status: $queue.counts_by_status,
           queue_size: $queue.all_size,
           jobs_queued: $queue.queued.collect(&:id),
           jobs_popped: $queue.popped.collect(&:id),

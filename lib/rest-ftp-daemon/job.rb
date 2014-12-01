@@ -153,6 +153,10 @@ module RestFtpDaemon
       end
     end
 
+    def set_queued
+      @status = :queued
+    end
+
   protected
 
     def age
