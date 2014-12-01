@@ -22,35 +22,6 @@
 
     .container
 
-      - trans = $queue.counter_get :transferred
-      .btn-group.btn-group-sm
-        .btn.btn-default.btn-success Processors
-        .btn.btn-default= @info_procs
-
-      .btn-group.btn-group-sm
-        .btn.btn-default.btn-success IP
-        .btn.btn-default= @info_ipaddr
-
-      .btn-group.btn-group-sm
-        .btn.btn-default.btn-success Host
-        .btn.btn-default= Settings['host']
-
-      .btn-group.btn-group-sm
-        .btn.btn-default.btn-warning Load
-        .btn.btn-default= @info_load.round(1)
-
-      .btn-group.btn-group-sm
-        .btn.btn-default.btn-warning CPU
-        .btn.btn-default= "#{@info_norm} %"
-
-      .btn-group.btn-group-sm
-        .btn.btn-default.btn-warning Free
-        .btn.btn-default= @info_memfree
-
-      .btn-group.btn-group-sm
-        .btn.btn-default.btn-info Transferred
-        .btn.btn-default= Helpers.format_bytes(trans, "B")
-
       = render :dashboard_headers
 
       .row
@@ -72,8 +43,8 @@
           %table.table.table-striped.table-hover.table-condensed
             %tr
               %th JID
-              %th prio
-              %th worker
+              %th P
+              %th W
               %th source
               %th target
               %th started

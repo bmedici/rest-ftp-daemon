@@ -20,17 +20,21 @@
 
     %td{title: presented.to_json}= job.id
 
-    %td= job.priority
+    %td
+      - unless job.priority.nil?
+        = job.priority
 
-    %td= job.wid
+    %td
 
-    %td.fixed{title: job.get(:source_path)}
-      = Helpers.job_method_label job.get(:source_method)
-      = job.source
+
+      - unless job.wid.nil?
+        .label.label-warning.flag= "w#{job.wid}"
+
+    %td{title: job.get(:source_path)}
       =# Helpers.job_method_label job.get(:source_method)
       = Helpers.highlight_tokens job.source
 
-    %td.fixed{title: job.get(:target_url)}
+    %td{title: job.get(:target_url)}
       = Helpers.job_method_label job.get(:target_method)
       =# job.target
       = Helpers.highlight_tokens job.target
