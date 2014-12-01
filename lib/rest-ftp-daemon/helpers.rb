@@ -25,6 +25,10 @@ module RestFtpDaemon
       "[#{item}]"
     end
 
+    def self.highlight_tokens(path)
+      path.gsub(/(\[[^\[]+\])/, '<span class="token">\1</span>')
+    end
+
     def self.extract_filename path
       # match everything that's after a slash at the end of the string
       m = path.match /\/([^\/]+)$/

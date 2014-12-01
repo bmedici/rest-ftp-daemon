@@ -27,10 +27,13 @@
     %td.fixed{title: job.get(:source_path)}
       = Helpers.job_method_label job.get(:source_method)
       = job.source
+      =# Helpers.job_method_label job.get(:source_method)
+      = Helpers.highlight_tokens job.source
 
     %td.fixed{title: job.get(:target_url)}
       = Helpers.job_method_label job.get(:target_method)
-      = job.target
+      =# job.target
+      = Helpers.highlight_tokens job.target
 
     %td
       = Helpers.datetime_short(job.started_at)
