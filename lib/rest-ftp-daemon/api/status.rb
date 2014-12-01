@@ -16,7 +16,7 @@ module RestFtpDaemon
           uptime: (Time.now - APP_STARTED).round(1),
           counters: $queue.counters,
           status: $queue.counts_by_status,
-          queue_size: $queue.all_size,
+          jobs_count: $queue.all_size,
           jobs_queued: $queue.queued.collect(&:id),
           jobs_popped: $queue.popped.collect(&:id),
           #routes: RestFtpDaemon::API::Root::routes,
