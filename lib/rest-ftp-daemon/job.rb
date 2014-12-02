@@ -411,7 +411,8 @@ module RestFtpDaemon
         parent =  Helpers.extract_parent(path)
         info "#{pref} chdir failed - parent [#{parent}]"
 
-        if parent.size > 0
+        # And only if we still have something to "dive up into"
+        if parent
           # Do the same for the parent
           ftp_buildpath parent
 
