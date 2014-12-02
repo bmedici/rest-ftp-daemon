@@ -4,11 +4,11 @@
 
   %tr
     %th counter
-    %th value
+    %th.text-right value
 
   - $queue.counters.each do |name, value|
 
     %tr
       %td= name
-      %td= value
+      %td.text-right= value
 

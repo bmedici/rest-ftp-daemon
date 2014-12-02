@@ -8,7 +8,7 @@
     %th ID
     %th status
     %th job
-    %th time
+    %th.text-right idle
 
   - @gworker_statuses.each do |wid, infos|
     - status = infos[:status]
@@ -23,5 +23,7 @@
       %td= wid
       %td= infos[:status]
       %td= infos[:jobid]
-      %td= no_news_for
+      %td.text-right
+        = no_news_for
+        s
 
