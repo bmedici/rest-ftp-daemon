@@ -80,6 +80,9 @@ module RestFtpDaemon
           # And push it to the queue
           $queue.push job
 
+          # Increment a counter
+          $queue.counter_inc :jobs_received
+
         rescue JSON::ParserError => exception
           status 406
           api_error exception

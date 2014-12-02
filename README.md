@@ -14,6 +14,7 @@ Document /status
 Document /routes
 Document multiple-files upload
 Document mkdir and overwrite options
+Document counters
 
 
 

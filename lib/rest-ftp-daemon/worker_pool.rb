@@ -59,7 +59,7 @@ module RestFtpDaemon
           worker_status wid, :done
 
           # Increment total processed jobs count
-          $queue.counter_inc :processed_jobs
+          $queue.counter_inc :jobs_processed
 
         rescue Exception => ex
           worker_status wid, :crashed
