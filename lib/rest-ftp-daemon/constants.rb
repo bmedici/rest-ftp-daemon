@@ -1,7 +1,7 @@
 # Terrific constants
 APP_NAME = "rest-ftp-daemon"
 APP_CONF = "/etc/#{APP_NAME}.yml"
-APP_VER = "0.94.2"
+APP_VER = "0.94.3"
 
 # Some global constants
 IDENT_JOB_LEN = 4
