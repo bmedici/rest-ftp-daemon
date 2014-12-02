@@ -8,16 +8,6 @@ API documentation is [maintained on Apiary](http://docs.restftpdaemon.apiary.io/
 
 
 
-Doc TODO
-------------------------------------------------------------------------------------
-Document /status
-Document /routes
-Document multiple-files upload
-Document mkdir and overwrite options
-Document counters
-
-
-
 Features
 ------------------------------------------------------------------------------------
 
@@ -192,6 +182,22 @@ Both parameters ```q89j.1``` and ```1``` will be accepted as ID in the API. Requ
 GET http://localhost:3100/jobs/q89j.1
 GET http://localhost:3100/jobs/1
 ```
+
+
+
+Doc TODO
+------------------------------------------------------------------------------------
+
+Document /status
+
+Document /routes
+
+Document multiple-files upload
+
+Document mkdir and overwrite options
+
+Document counters
+
 
 
 About
