@@ -278,7 +278,8 @@ module RestFtpDaemon
       ftp_connect_and_login
 
       # Connect remote server, login and chdir
-      path = '/' + Helpers.extract_dirname(@target_url.path).to_s
+      #path = '/' + Helpers.extract_dirname(@target_url.path).to_s
+      path = Helpers.extract_dirname(@target_url.path).to_s
       ftp_chdir_or_buildpath path
 
       # Check source files presence and compute total size, they should be there, coming from Dir.glob()
@@ -407,8 +408,8 @@ module RestFtpDaemon
 
       rescue Net::FTPPermError => exception
         # If not possible because the directory is missing
-        info "#{pref} chdir failed"
-        parent =  Helpers.extract_parent path
+        parent =  Helpers.extract_parent(path)
+        info "#{pref} chdir failed - parent [#{parent}]"
 
         if parent.size > 0
           # Do the same for the parent

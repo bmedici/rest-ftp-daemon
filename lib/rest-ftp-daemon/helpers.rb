@@ -44,8 +44,8 @@ module RestFtpDaemon
 
     def self.extract_dirname path
       # match all the beginning of the string up to the last slash
-      m = path.match(/^(.*\/)[^\/]*$/)
-      return m[1] unless m.nil?
+      m = path.match(/^(.*)\/[^\/]*$/)
+      return "/#{m[1]}" unless m.nil?
     end
 
     def self.extract_parent path
