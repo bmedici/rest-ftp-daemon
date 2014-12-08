@@ -5,6 +5,7 @@
   - source_processed = job.get(:source_processed) || 0
   - source_processing = job.get(:source_processing)
   - presented = present job, :with => RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
+  - errmsg = job.get :error_message
 
   - if !job.error.nil?
     - trclass = "danger"
@@ -25,8 +26,6 @@
         = job.priority
 
     %td
-
-
       - unless job.wid.nil?
         .label.label-warning.flag= "w#{job.wid}"
 
@@ -60,7 +59,9 @@
         - unless source_processing.nil?
           %small= " (#{source_processing})"
       - else
-        = Helpers.text_or_empty(job.error)
+        .error{title: errmsg}
+          = Helpers.text_or_empty(job.error)
+
 
     %td.nobr.text-right
       = Helpers.format_bytes(size, "B")
