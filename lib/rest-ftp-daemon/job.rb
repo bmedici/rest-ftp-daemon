@@ -51,6 +51,12 @@ module RestFtpDaemon
       client_notify "rftpd.queued"
     end
 
+    def close
+      # Close logger
+      info "Job.close"
+      @logger.close
+    end
+
     def process
       # Update job's status
       @error = nil

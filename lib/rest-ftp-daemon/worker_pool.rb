@@ -56,6 +56,7 @@ module RestFtpDaemon
           job.wid = wid
           job.process
           info "worker [#{wid}] processed [#{job.id}]"
+          job.close
           worker_status wid, :done
 
           # Increment total processed jobs count
