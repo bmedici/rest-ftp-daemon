@@ -1,7 +1,7 @@
 # Terrific constants
 APP_NAME = "rest-ftp-daemon"
 APP_CONF = "/etc/#{APP_NAME}.yml"
-APP_VER = "0.94.4"
+APP_VER = "0.95"
 
 # Some global constants
 IDENT_JOB_LEN = 4
@@ -19,5 +19,5 @@ APP_STARTED = Time.now
 APP_LIBS = File.dirname(__FILE__)
 
 # Debugging
-DEBUG_FTP_COMMANDS = false
+DEBUG_FTP_COMMANDS = true
 
