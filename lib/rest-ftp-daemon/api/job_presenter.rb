@@ -18,7 +18,7 @@ module RestFtpDaemon
         expose :error
         expose :status
 
-        expose :started_at
+        expose :queued_at
         expose :updated_at
         expose :age
 

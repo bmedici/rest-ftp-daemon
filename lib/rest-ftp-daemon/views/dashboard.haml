@@ -47,7 +47,7 @@
               %th W
               %th source
               %th target
-              %th started
+              %th queued
               %th status
               %th progress
               %th error
@@ -64,13 +64,13 @@
 
 
       .row
-        .col-md-7
+        .col-md-6
           = render :dashboard_tokens, {tokens: Settings.endpoints || {}}
 
         .col-md-3
           = render :dashboard_workers
 
-        .col-md-2
+        .col-md-3
           = render :dashboard_counters
 
       %br

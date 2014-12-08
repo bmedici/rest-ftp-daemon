@@ -14,7 +14,7 @@ module RestFtpDaemon
     attr_reader :error
     attr_reader :status
 
-    attr_reader :started_at
+    attr_reader :queued_at
     attr_reader :updated_at
 
     attr_reader :params
@@ -43,7 +43,7 @@ module RestFtpDaemon
       @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
 
       # Flag current job
-      @started_at = Time.now
+      @queued_at = Time.now
       @status = :created
 
       # Send first notification
@@ -160,8 +160,8 @@ module RestFtpDaemon
   protected
 
     def age
-      return 0 if @started_at.nil?
-      (Time.now - @started_at).round(2)
+      return 0 if @queued_at.nil?
+      (Time.now - @queued_at).round(2)
     end
 
     def wander time
