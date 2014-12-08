@@ -113,6 +113,9 @@ module RestFtpDaemon
       rescue Errno::ECONNREFUSED => exception
         return oops "rftpd.ended", exception, :job_connexion_refused
 
+      rescue SocketError => exception
+        return oops "rftpd.ended", exception, :job_socket_error
+
       rescue Timeout::Error, Errno::ETIMEDOUT => exception
         return oops "rftpd.ended", exception, :job_timeout
 
@@ -343,6 +346,8 @@ module RestFtpDaemon
 
       # Prepare notification if signal given
       return unless signal_name
+
+      # Send the real notification
       client_notify signal_name, error_name, notif_status
     end
 
