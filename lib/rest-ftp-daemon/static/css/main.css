@@ -26,20 +26,12 @@ table tr td, .fixed {
   /*font-weight: bold;*/
   }
 
-/*
-.label-outline.badge-success {
-    border-color: #468847;
-}
-*/
-
 .label {
   font-size: 90%;
   padding: 2px 4px;
   font-weight: normal;
   display: inline-block;
-
   font-family: sans-serif;
-
   }
 
 .label-outline {
@@ -54,10 +46,6 @@ table tr td, .fixed {
   background-color: black;
   }
 
-/*.flag {
-  margin-right: 3px;
-}
-*/
 h2 {
   font-size: 1.5em;
   margin-top: 2em;
@@ -72,5 +60,4 @@ h2 {
 .progress {
   margin-bottom: 0;
   }
-
 

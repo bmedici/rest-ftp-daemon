@@ -1,12 +1,10 @@
 module RestFtpDaemon
-  class WorkerPool < RestFtpDaemon::Common
+  class WorkerPool
 
     attr_reader :requested, :processed, :wid
 
     def initialize number_threads
       # Logger
-      # @logger = RestFtpDaemon::Logger.new(:workers, "WORKER")
-      # @logger = $logger_pool.get :workers
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
 
       # Check parameters
@@ -30,16 +28,6 @@ module RestFtpDaemon
       end
 
     end
-
-    # def wait
-    #   item = @out.pop
-    #   @lock.synchronize { @processed += 1 }
-    #   block_given? ? (yield item) : item
-    # end
-
-    # def progname
-    #   "WORKER #{@wid}"
-    # end
 
     def work wid
       worker_status wid, "starting"
@@ -76,8 +64,6 @@ module RestFtpDaemon
         # Clean job status
         worker_status wid, :ready
         job.wid = nil
-        # sleep 1
-
         end
 
       end

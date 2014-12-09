@@ -4,7 +4,7 @@ require 'double_bag_ftps'
 require 'timeout'
 
 module RestFtpDaemon
-  class Job < RestFtpDaemon::Common
+  class Job
 
     FIELDS = [:source, :target, :priority, :notify, :overwrite, :mkdir]
 

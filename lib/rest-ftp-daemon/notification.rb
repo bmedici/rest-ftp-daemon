@@ -1,7 +1,7 @@
 require 'net/http'
 
 module RestFtpDaemon
-  class Notification < RestFtpDaemon::Common
+  class Notification
     attr_accessor :job_id
     attr_accessor :signal
     attr_accessor :error
@@ -9,7 +9,6 @@ module RestFtpDaemon
     attr_accessor :status
     attr_accessor :url
     attr_accessor :job
-    #attr_accessor :key
 
     def initialize url, params
       # Generate a random key

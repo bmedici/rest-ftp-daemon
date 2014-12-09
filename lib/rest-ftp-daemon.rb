@@ -14,7 +14,6 @@ require "sys/cpu"
 require 'rest-ftp-daemon/constants'
 require 'rest-ftp-daemon/config'
 require 'rest-ftp-daemon/exceptions'
-require 'rest-ftp-daemon/common'
 require 'rest-ftp-daemon/helpers'
 require 'rest-ftp-daemon/uri'
 require 'rest-ftp-daemon/job_queue'

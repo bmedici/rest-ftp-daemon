@@ -17,11 +17,11 @@ module RestFtpDaemon
       format :json
 
 
-####### EXCETPIONS HANDLING
-      # FIXME
-      # rescue_from :all do |e|
-      #   error_response(message: "Internal server error", status: 500)
-      # end
+####### INITIALIZATION
+
+      def initialize
+        super
+      end
 
 
 ####### HELPERS
@@ -36,7 +36,6 @@ module RestFtpDaemon
           {
           :error => exception.message,
           :message => exception.backtrace.first,
-          #:backtrace => exception.backtrace,
           }
         end
 
