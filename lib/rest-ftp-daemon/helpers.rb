@@ -28,13 +28,17 @@ module RestFtpDaemon
       rand(36**len).to_s(36)
     end
 
-    def self.tokenize(item)
+    def self.tokenize item
       "[#{item}]"
     end
 
-    def self.highlight_tokens(path)
+    def self.highlight_tokens path
       path.gsub(/(\[[^\[]+\])/, '<span class="token">\1</span>')
     end
+
+    # def self.hide_password url
+    #   path.gsub(/(\[[^\[]+\])/, '<span class="token">\1</span>')
+    # end
 
     def self.extract_filename path
       # match everything that's after a slash at the end of the string

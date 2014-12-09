@@ -26,7 +26,6 @@ module RestFtpDaemon
     def initialize job_id, params={}
       # Call super
       # super()
-      info "Job.initialize"
 
       # Init context
       @id = job_id.to_s
@@ -49,13 +48,14 @@ module RestFtpDaemon
 
       # Send first notification
       #info "Job.initialize/notify"
+      info "Job.initialized"
       client_notify "rftpd.queued"
     end
 
     def close
       # Close logger
-      info "Job.close"
-      @logger.close
+      # info "Job.close"
+      #@logger.close
     end
 
     def process
@@ -295,7 +295,6 @@ module RestFtpDaemon
       # Check source files presence and compute total size, they should be there, coming from Dir.glob()
       @transfer_total = 0
       source_matches.each do |filename|
-        # @ftp.close
         raise RestFtpDaemon::JobSourceNotFound unless File.exists? filename
         @transfer_total += File.size filename
       end
@@ -313,9 +312,9 @@ module RestFtpDaemon
       $queue.counter_add :transferred, @transfer_total
 
       # Close FTP connexion
+      @ftp.close
       info "Job.transfer disconnecting"
       @status = :disconnecting
-      @ftp.close
     end
 
   private
@@ -329,6 +328,9 @@ module RestFtpDaemon
       # Log this error
       error_name = exception.class if error_name.nil?
       info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}]"
+
+      # Close ftp connexion if open
+      @ftp.close unless @ftp.nil?
 
       # Update job's internal status
       @status = :failed
@@ -352,8 +354,6 @@ module RestFtpDaemon
 
       # Prepare notification if signal given
       return unless signal_name
-
-      # Send the real notification
       client_notify signal_name, error_name, notif_status
     end
 
@@ -521,7 +521,7 @@ module RestFtpDaemon
         stack << (Helpers.format_bytes @transfer_sent, "B")
         stack << (Helpers.format_bytes @transfer_total, "B")
         stack << (Helpers.format_bytes bitrate0, "bps")
-        info "Job.ftp_transfer" + stack.map{|txt| ("%#{DEFAULT_LOGS_PROGNAME_TRIM.to_i}s" % txt)}.join("\t")
+        info "Job.ftp_transfer" + stack.map{|txt| ("%#{DEFAULT_LOGS_PIPE_WIDTH.to_i}s" % txt)}.join("\t")
 
         # Update time pointer
         t0 = Time.now

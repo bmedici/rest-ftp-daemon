@@ -3,7 +3,7 @@ module RestFtpDaemon
 
     attr_reader :requested, :processed, :wid
 
-    def initialize(number_threads)
+    def initialize number_threads
       # Logger
       # @logger = RestFtpDaemon::Logger.new(:workers, "WORKER")
       # @logger = $logger_pool.get :workers

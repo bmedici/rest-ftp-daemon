@@ -7,11 +7,9 @@ module RestFtpDaemon
     attr_reader :popped
 
     def initialize
-
       # Instance variables
       @queued = []
       @popped = []
-
       @waiting = []
       @queued.taint          # enable tainted communication
       @waiting.taint
@@ -116,6 +114,7 @@ module RestFtpDaemon
       @mutex.synchronize do
         # Push job into the queue
         @queued.push job
+        #info "JobQueue.push: #{job.id}"
 
         # Tell the job it's been queued
         job.set_queued if job.respond_to? :set_queued
@@ -134,13 +133,16 @@ module RestFtpDaemon
 
 
     def pop(non_block=false)
+      # info "JobQueue.pop"
       @mutex.synchronize do
         while true
           if @queued.empty?
+            # info "JobQueue.pop: empty"
             raise ThreadError, "queue empty" if non_block
             @waiting.push Thread.current
             @mutex.sleep
           else
+            # info "JobQueue.pop: great, I'm not empty!!"
             return pick_one
           end
         end
@@ -223,9 +225,9 @@ module RestFtpDaemon
       @popped.push picked
 
       # Return picked
+      #info "JobQueue.pick_one: #{picked.id}"
       picked
     end
-
 
   private
 
