@@ -110,6 +110,7 @@ module RestFtpDaemon
     def push job
       # Check that item responds to "priorty" method
       raise "JobQueue.push: job should respond to priority method" unless job.respond_to? :priority
+      raise "JobQueue.push: job should respond to id method" unless job.respond_to? :id
 
       @mutex.synchronize do
         # Push job into the queue
