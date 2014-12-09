@@ -9,11 +9,11 @@ module RestFtpDaemon
     attr_accessor :status
     attr_accessor :url
     attr_accessor :job
-    attr_accessor :key
+    #attr_accessor :key
 
     def initialize url, params
       # Generate a random key
-      key = Helpers.identifier(IDENT_NOTIF_LEN)
+      @id = Helpers.identifier(IDENT_NOTIF_LEN)
 
       # Logger
       # @logger = RestFtpDaemon::Logger.new(:workers, "NOTIF #{key}")
