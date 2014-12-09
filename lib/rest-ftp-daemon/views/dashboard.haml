@@ -33,7 +33,7 @@
             .btn-group.btn-group-md
               - klass = @only.nil? ? "btn-info" : ""
               %a.btn.btn-default{href: "?only=", class: klass}
-                ALL (#{@jobs_queued.size} + #{@jobs_popped.size})
+                ALL (#{@count_all})
             .btn-group.btn-group-md
               - @counts.each do |status, count|
                 - klass = (status == @only) ? "btn-info" : ""
@@ -59,8 +59,7 @@
               %tr
                 %th{colspan: 10}
 
-            = render :dashboard_jobs, {jobs: @jobs_popped, counts: @counts}
-
+            = render :dashboard_jobs, {jobs: @jobs_current, counts: @counts}
 
 
       .row

@@ -32,14 +32,18 @@ module RestFtpDaemon
           @only = params["only"].to_sym
         end
 
-        if @only.nil?
-          @jobs_popped = popped_jobs
+        case @only
+        when nil
+          @jobs_current = popped_jobs
+        when :queued
+          @jobs_current = @jobs_queued
         else
-          @jobs_popped = $queue.popped_reverse_sorted_by_status @only
+          @jobs_current = $queue.popped_reverse_sorted_by_status @only
         end
 
-        # Count jobs for each status
+        # Count jobs for each status and total
         @counts = $queue.counts_by_status
+        @count_all = $queue.all_size
 
         # Get workers status
         @gworker_statuses = $pool.get_worker_statuses
