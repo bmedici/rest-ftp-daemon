@@ -17,9 +17,11 @@ defaults: &defaults
     #clean_finished: 600
 
   logs:
-    thin:
-    api:
-    workers:
+    thin:    "/tmp/rftpd-environment-thin.log"
+    queue:   "/tmp/rftpd-environment-core.log"
+    api:     "/tmp/rftpd-environment-core.log"
+    workers: "/tmp/rftpd-environment-work.log"
+    notify:  "/tmp/rftpd-environment-work.log"
 
 preprod:
   <<: *defaults
