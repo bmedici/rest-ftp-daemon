@@ -27,7 +27,7 @@
 
     %td
       - unless job.wid.nil?
-        .label.label-warning.flag= "w#{job.wid}"
+        .label.label-default.flag.worker-label= job.wid
 
     %td{title: job.get(:source_path)}
       =# Helpers.job_method_label job.get(:source_method)
