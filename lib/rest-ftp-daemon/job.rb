@@ -550,6 +550,10 @@ module RestFtpDaemon
     end
 
     def client_notify signal, error = nil, status = {}
+      # Skip if no URL given
+      return unless @notify
+
+      # Ok, create a notification!
       begin
         RestFtpDaemon::Notification.new @notify, {
           id: @id,
