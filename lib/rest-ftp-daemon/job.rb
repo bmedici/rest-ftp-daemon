@@ -544,12 +544,16 @@ module RestFtpDaemon
     end
 
     def client_notify signal, error = nil, status = {}
-      RestFtpDaemon::Notification.new @notify, {
-        id: @id,
-        signal: signal,
-        error: error,
-        status: status,
-        }
+      begin
+        RestFtpDaemon::Notification.new @notify, {
+          id: @id,
+          signal: signal,
+          error: error,
+          status: status,
+          }
+      rescue Exception => ex
+        info "Job.client_notify exception: #{ex.inspect}"
+      end
     end
 
     def get_bitrate total, last_timestamp
