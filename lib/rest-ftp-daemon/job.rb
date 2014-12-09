@@ -111,6 +111,9 @@ module RestFtpDaemon
       rescue Errno::EHOSTDOWN => exception
         return oops "rftpd.ended", exception, :job_host_is_down
 
+      rescue Errno::ENOTCONN => exception
+        return oops "rftpd.ended", exception, :job_connexion_failed
+
       rescue Errno::ECONNREFUSED => exception
         return oops "rftpd.ended", exception, :job_connexion_refused
 
