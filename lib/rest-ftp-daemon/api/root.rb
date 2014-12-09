@@ -5,7 +5,8 @@ module RestFtpDaemon
 
 ####### CLASS CONFIG
 
-      logger RestFtpDaemon::Logger.new(:api, "API")
+      # logger RestFtpDaemon::Logger.new(:api, "API")
+      logger RestFtpDaemon::LoggerPool.instance.get :api
 
       do_not_route_head!
       do_not_route_options!
@@ -27,8 +28,8 @@ module RestFtpDaemon
 
       helpers do
 
-        def info message, level = 0
-          Root.logger.info(message, level)
+        def info message
+          Root.logger.info_with_id message
         end
 
         def api_error exception

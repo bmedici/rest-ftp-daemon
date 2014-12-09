@@ -16,7 +16,8 @@ module RestFtpDaemon
       key = Helpers.identifier(IDENT_NOTIF_LEN)
 
       # Logger
-      @logger = RestFtpDaemon::Logger.new(:workers, "NOTIF #{key}")
+      # @logger = RestFtpDaemon::Logger.new(:workers, "NOTIF #{key}")
+      @logger = RestFtpDaemon::LoggerPool.instance.get :notify
 
       # Check context
       if url.nil?
@@ -58,6 +59,12 @@ module RestFtpDaemon
     end
 
   protected
+
+    def info message, level = 0
+      return if @logger.nil?
+      #puts "JOB: #{message}"
+      @logger.info_with_id message, level: level, id: @id
+    end
 
   end
 end

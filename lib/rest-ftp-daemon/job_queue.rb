@@ -7,8 +7,6 @@ module RestFtpDaemon
     attr_reader :popped
 
     def initialize
-      # # Logger
-      @logger = RestFtpDaemon::Logger.new(:queue, "QUEUE")
 
       # Instance variables
       @queued = []
@@ -19,6 +17,10 @@ module RestFtpDaemon
       @waiting.taint
       self.taint
       @mutex = Mutex.new
+
+      # # Logger
+      # @logger = RestFtpDaemon::Logger.new(:queue, "QUEUE")
+      @logger = RestFtpDaemon::LoggerPool.instance.get :queue
 
       # Identifiers generator
       @last_id = 0
@@ -211,10 +213,6 @@ module RestFtpDaemon
 
     end
 
-    def info message, level = 0
-      @logger.add(Logger::INFO, "#{'  '*(level+1)} #{message}", progname) unless @logger.nil?
-    end
-
     def pick_one  # called inside a mutex/sync
       # Sort jobs by priority and get the biggest one
       picked = ordered_queue.last
@@ -231,8 +229,9 @@ module RestFtpDaemon
 
   private
 
-    def info message, level = 0
-      @logger.info(message, level) unless @logger.nil?
+    def info message
+      return if @logger.nil?
+      @logger.info_with_id message
     end
 
   end

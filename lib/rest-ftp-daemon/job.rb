@@ -36,11 +36,12 @@ module RestFtpDaemon
       end
       @params = {}
 
+      # Logger
+      # @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
+      @logger = RestFtpDaemon::LoggerPool.instance.get :workers
+
       # Protect with a mutex
       @mutex = Mutex.new
-
-      # Logger
-      @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
 
       # Flag current job
       @queued_at = Time.now
@@ -318,6 +319,11 @@ module RestFtpDaemon
     end
 
   private
+
+    def info message, level = 0
+      return if @logger.nil?
+      @logger.info_with_id message, level: level, id: @id
+    end
 
     def oops signal_name, exception, error_name = nil, include_backtrace = false
       # Log this error

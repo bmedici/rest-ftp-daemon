@@ -5,7 +5,9 @@ module RestFtpDaemon
 
     def initialize(number_threads)
       # Logger
-      @logger = RestFtpDaemon::Logger.new(:workers, "WORKER")
+      # @logger = RestFtpDaemon::Logger.new(:workers, "WORKER")
+      # @logger = $logger_pool.get :workers
+      @logger = RestFtpDaemon::LoggerPool.instance.get :workers
 
       # Check parameters
       raise "A thread count of #{number_threads} is less than one" if number_threads < 1
@@ -88,6 +90,11 @@ module RestFtpDaemon
     end
 
   protected
+
+    def info message
+      return if @logger.nil?
+      @logger.info_with_id message
+    end
 
     def worker_status wid, status, jobid = nil
       @mutex.synchronize do
