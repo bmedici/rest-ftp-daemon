@@ -524,7 +524,7 @@ module RestFtpDaemon
         stack << (Helpers.format_bytes @transfer_sent, "B")
         stack << (Helpers.format_bytes @transfer_total, "B")
         stack << (Helpers.format_bytes bitrate0, "bps")
-        info "Job.ftp_transfer" + stack.map{|txt| ("%#{DEFAULT_LOGS_PIPE_WIDTH.to_i}s" % txt)}.join("\t")
+        info "Job.ftp_transfer" + stack.map{|txt| ("%#{DEFAULT_LOGS_PIPE_LEN.to_i}s" % txt)}.join("\t")
 
         # Update time pointer
         t0 = Time.now
