@@ -57,8 +57,8 @@ You may use ```rbenv``` and ```ruby-build``` to get the right Ruby version. If t
 ```
 # apt-get install ruby-build rbenv
 # ruby-build --definitions | grep '2.1'
-
 ```
+
 Otherwise, you way have to update ruby-build to include Ruby 2.1.0 definitions.
 On Debian, 2.1.0 is not included in Wheezy and appears in Jessie's version of the package.
 
@@ -119,13 +119,13 @@ You can simply start the daemon on the standart port, or on a specific port usin
 # rest-ftp-daemon -p 4000 start
 ```
 
-Check that the daemon is running and serve its status as a JSON structure on ```http://localhost:3200/status```.
+Check that the daemon is running and exposes a JSON status structure on ```http://localhost:3200/status```.
 
-The dashbaord will provide a gobal view exposed on ```http://localhost:3200/```
+The dashbaord will provide a gobal view on ```http://localhost:3200/```
 
-If the daemon seems to exit as soon as it's launched, this may be due to logfiles that cannot be written on (check permissions or owner).
+If the daemon appears to exit quickly when launched, it may be caused by logfiles that can't be written (check files permissions or owner).
 
-Launcher options are:
+Launcher options :
 
 | Param   | Short         | Default       | Description                                                 |
 |-------  |-------------- |-------------  |-----------------------------------------------------------  |
@@ -152,12 +152,12 @@ Otherwise separate logging paths can be provided for the Thin webserver, API rel
 Job cleanup
 ------------------------------------------------------------------------------------
 
-Job can be cleanup up after a certain amount of time, when they reach on of these status:
+Job can be cleanup up after a certain delay, when they are on one of these status:
 
-- failed, after conchita.clean_failed seconds
-- finished, after conchita.clean_finished seconds
+- "failed", cleaned up after conchita.clean_failed seconds
+- "finished", cleaned up after conchita.clean_finished seconds
 
-Cleanup is done on a regular basis, every few seconds (conchita.timer)
+Cleanup is done on a regular basis, every X seconds (X = conchita.timer)
 
 
 Usage examples
@@ -203,20 +203,18 @@ GET http://localhost:3100/jobs/1
 ```
 
 
-
-Doc TODO
+TODO for this document
 ------------------------------------------------------------------------------------
 
-Document /status
-
-Document /routes
-
-Document multiple-files upload
-
-Document mkdir and overwrite options
-
-Document counters
-
+* Update Apiary documentation
+* Update Apiary documentation
+* Update Apiary documentation
+* Update Apiary documentation !
+* Document /status
+* Document /routes
+* Document multiple-files upload
+* Document mkdir and overwrite options
+* Document counters
 
 
 About
