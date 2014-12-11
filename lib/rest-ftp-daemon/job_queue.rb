@@ -67,12 +67,14 @@ module RestFtpDaemon
     end
 
     def counter_get name
-      @counters[name]
+      @mutex_counters.synchronize do
+        @counters[name]
+      end
     end
 
     def counters
       @mutex_counters.synchronize do
-        @counters.clone
+        @counters
       end
     end
 
@@ -90,8 +92,6 @@ module RestFtpDaemon
     end
 
     def all
-      # queued2 = @queued.clone
-      # return queued2.merge(@popped)
       @queued + @popped
     end
     def all_size
@@ -115,7 +115,6 @@ module RestFtpDaemon
       @mutex.synchronize do
         # Push job into the queue
         @queued.push job
-        #info "JobQueue.push: #{job.id}"
 
         # Tell the job it's been queued
         job.set_queued if job.respond_to? :set_queued
@@ -131,7 +130,6 @@ module RestFtpDaemon
     end
     alias << push
     alias enq push
-
 
     def pop(non_block=false)
       # info "JobQueue.pop"
@@ -165,11 +163,15 @@ module RestFtpDaemon
     end
 
     def ordered_queue
-      @queued.sort_by { |item| [item.priority.to_i, - item.id.to_i] }
+      @mutex_counters.synchronize do
+        @queued.sort_by { |item| [item.priority.to_i, - item.id.to_i] }
+      end
     end
 
     def ordered_popped
-      @popped.sort_by { |item| [item.updated_at] }
+      @mutex_counters.synchronize do
+        @popped.sort_by { |item| [item.updated_at] }
+      end
     end
 
   protected
