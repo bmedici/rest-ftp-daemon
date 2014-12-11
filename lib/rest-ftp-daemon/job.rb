@@ -17,6 +17,9 @@ module RestFtpDaemon
     attr_reader :queued_at
     attr_reader :updated_at
 
+    attr_reader :started_at
+    attr_reader :finished_at
+
     attr_reader :params
 
     FIELDS.each do |field|
@@ -34,6 +37,12 @@ module RestFtpDaemon
         instance_variable_set("@#{field.to_s}", params[field])
       end
       @params = {}
+      @updated_at = nil
+      @started_at = nil
+      @finished_at = nil
+      @error = nil
+      @status = nil
+      @wid = nil
 
       # Logger
       # @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
@@ -173,8 +182,13 @@ module RestFtpDaemon
   protected
 
     def age
-      return 0 if @queued_at.nil?
+      return nil if @queued_at.nil?
       (Time.now - @queued_at).round(2)
+    end
+
+    def exectime
+      return nil if (@started_at.nil? || @finished_at.nil?)
+      (@finished_at - @started_at).round(2)
     end
 
     def wander time
@@ -267,6 +281,9 @@ module RestFtpDaemon
     end
 
     def transfer
+      # Start transfert flag
+      @started_at = Time.now
+
       # Method assertions and init
       @status = :checking_source
       raise RestFtpDaemon::JobAssertionFailed unless @source_path && @target_url
@@ -311,13 +328,14 @@ module RestFtpDaemon
         set :source_processed, done
       end
 
-      # Add total transferred to counter
-      $queue.counter_add :transferred, @transfer_total
-
       # Close FTP connexion
       @ftp.close
       info "Job.transfer disconnecting"
       @status = :disconnecting
+
+      # Update counters and flags
+      $queue.counter_add :transferred, @transfer_total
+      @finished_at = Time.now
     end
 
   private

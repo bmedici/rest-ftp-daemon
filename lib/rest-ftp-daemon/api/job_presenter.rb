@@ -17,10 +17,14 @@ module RestFtpDaemon
 
         expose :error
         expose :status
-
         expose :queued_at
         expose :updated_at
+        expose :started_at
+        expose :finished_at
+
+        # Computed fields
         expose :age
+        expose :exectime
 
         # Params
         # expose :wid, unless: lambda { |object, options| object.wid.nil? }
