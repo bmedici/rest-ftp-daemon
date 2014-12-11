@@ -18,4 +18,3 @@ class Settings < Settingslogic
   end
 
 end
-

@@ -13,6 +13,8 @@ Features
 
 As of today, its main features are :
 
+* Offer a basic dashboard directly within the daemon HTTP interface
+* Periodically send an update-notification with transfer status and progress
 * Allow environment-specific configuration in a YAML file
 * Delegate a transfer job by ``POST```'ing a simple JSON structure
 * Spawn a dedicated thread to handle this job in its own context
@@ -24,6 +26,7 @@ As of today, its main features are :
 * Provide RESTful notifications to the requesting client
 * Allow authentication in FTP target in a standard URI-format
 * Allow configuration-based path templates to abstract local mounts or remote FTPs (endpoint tokens)
+* Allow to specify random remote/local source/target
 * Remote supported protocols: FTP and FTPs
 * Allow main file transfer protocols: sFTP, FTPs / FTPes
 * Automatically clean-up jobs after a configurable amount of time (failed, finished)
@@ -34,13 +37,9 @@ As of today, its main features are :
 
 Expected features in a short-time range :
 
-* Allow change of priorities or other attributes after a job has been started
-* Offer a basic dashboard directly within the daemon HTTP interface
-* Periodically send an update-notification with transfer status and progress
 * Allow fallback file source when first file path is unavailable (failover)
 * Provide swagger-style API documentation
 * Authenticate API clients
-* Allow to specify random remote/local source/target
 * Allow more transfer protocols (sFTP, HTTP POST etc)
 
 Known bugs :
@@ -90,18 +89,6 @@ Update RubyGems and install the gem from rubygems.org
 # rest-ftp-daemon start
 ```
 
-Finally start the daemon on the standart port, or on a specific port using ```-p```
-
-```
-# rest-ftp-daemon -p 4000 start
-```
-
-Check that the daemon is running and providing its status info.
-If the daemon seems to exit as soon as it's launched, this may be due to logfiles that cannot be written on (check permissions or owner).
-
-```
-http://localhost:3200/
-```
 
 Configuration
 ------------------------------------------------------------------------------------
@@ -121,6 +108,38 @@ Configuration priority is defined as follows (from most important to last resort
 As a starting point, ``rest-ftp-daemon.yml.sample`` is an exemple config file that can be  copied into the expected location ``/etc/rest-ftp-daemon.yml``.
 
 Default administrator credentials are admin/admin. Please change the password in this configuration file before starting any kind of production.
+
+
+Execution
+------------------------------------------------------------------------------------
+
+You can simply start the daemon on the standart port, or on a specific port using ```-p```
+
+```
+# rest-ftp-daemon -p 4000 start
+```
+
+Check that the daemon is running and serve its status as a JSON structure on ```http://localhost:3200/status```.
+
+The dashbaord will provide a gobal view exposed on ```http://localhost:3200/```
+
+If the daemon seems to exit as soon as it's launched, this may be due to logfiles that cannot be written on (check permissions or owner).
+
+Launcher options are:
+
+| Param   | Short         | Default       | Description                                                 |
+|-------  |-------------- |-------------  |-----------------------------------------------------------  |
+| -p      | --port        | (automatic)   | Port to listen for API requests                             |
+| -e      |               | production    | Environment name                                            |
+|         | --dev         |               | Equivalent to -e development                                |
+| -w      | --workers     | 1             | Number of workers spawned at launch                         |
+| -d      | --daemonize   | false         | Wether to send the daemon to background                     |
+| -f      | --foreground  | false         | Wether to keep the daemon running in the shell              |
+| -P      | --pid         | (automatic)   | Path of the file containing the PID                         |
+| -u      | --user        | (none)        | User to run the daemon as                                   |
+| -g      | --group       | (none)        | Group of the user to run the daemon as                      |
+| -h      | --help        |               | Show info about the current version and available options   |
+| -v      | --version     |               | Show the current version                                    |
 
 
 Logging
