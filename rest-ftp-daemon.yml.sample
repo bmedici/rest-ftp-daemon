@@ -8,8 +8,8 @@ defaults: &defaults
   host: <%= `hostname`.chomp.split('.').first %>
 
   transfer:
-    #update_every_kb: 500
-    #notify_after_sec: 10
+    update_every_kb: 1024
+    notify_after_sec: 10
 
   conchita:
     timer: 10
