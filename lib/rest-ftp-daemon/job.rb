@@ -334,6 +334,7 @@ module RestFtpDaemon
       @status = :disconnecting
 
       # Update counters and flags
+      $queue.counter_inc :jobs_finished
       $queue.counter_add :transferred, @transfer_total
       @finished_at = Time.now
     end
@@ -567,7 +568,6 @@ module RestFtpDaemon
       # Done
       set :source_processing, nil
       info "Job.ftp_transfer finished"
-      $queue.counter_inc :jobs_finished
     end
 
     def client_notify signal, error = nil, status = {}
