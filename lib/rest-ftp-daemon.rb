@@ -8,8 +8,6 @@ require "facter"
 require "sys/cpu"
 
 
-# require 'celluloid/autostart'
-
 # My libs
 require 'rest-ftp-daemon/constants'
 require 'rest-ftp-daemon/config'

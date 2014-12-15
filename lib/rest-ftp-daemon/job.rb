@@ -32,7 +32,6 @@ module RestFtpDaemon
 
       # Init context
       @id = job_id.to_s
-      #set :id, job_id
       FIELDS.each do |field|
         instance_variable_set("@#{field.to_s}", params[field])
       end
@@ -62,9 +61,6 @@ module RestFtpDaemon
     end
 
     def close
-      # Close logger
-      # info "Job.close"
-      #@logger.close
     end
 
     def process
@@ -308,7 +304,6 @@ module RestFtpDaemon
       ftp_connect_and_login
 
       # Connect remote server, login and chdir
-      #path = '/' + Helpers.extract_dirname(@target_url.path).to_s
       path = Helpers.extract_dirname(@target_url.path).to_s
       ftp_chdir_or_buildpath path
 

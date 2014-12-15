@@ -15,7 +15,6 @@ module RestFtpDaemon
       @id = Helpers.identifier(IDENT_NOTIF_LEN)
 
       # Logger
-      # @logger = RestFtpDaemon::Logger.new(:workers, "NOTIF #{key}")
       @logger = RestFtpDaemon::LoggerPool.instance.get :notify
 
       # Check context

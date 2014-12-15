@@ -17,7 +17,6 @@ module RestFtpDaemon
       # Compute file path / STDERR
       logfile = Settings.logs[pipe] if Settings.logs.is_a? Hash
       logfile ||= STDERR
-      #logfile ||= STDOUT
 
       # Create the logger and return it
       logger = Logger.new(logfile, 'daily')   #, 10, 1024000)

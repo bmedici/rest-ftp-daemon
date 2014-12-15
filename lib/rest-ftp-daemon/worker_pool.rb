@@ -1,7 +1,7 @@
 module RestFtpDaemon
   class WorkerPool
 
-    attr_reader :requested, :processed, :wid
+    attr_reader :wid
 
     def initialize number_threads
       # Logger

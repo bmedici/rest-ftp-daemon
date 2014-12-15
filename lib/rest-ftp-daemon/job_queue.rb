@@ -17,12 +17,10 @@ module RestFtpDaemon
       @mutex = Mutex.new
 
       # # Logger
-      # @logger = RestFtpDaemon::Logger.new(:queue, "QUEUE")
       @logger = RestFtpDaemon::LoggerPool.instance.get :queue
 
       # Identifiers generator
       @last_id = 0
-      #@prefix = SecureRandom.hex(IDENT_JOB_LEN)
       @prefix = Helpers.identifier IDENT_JOB_LEN
       info "queue initialized with prefix: #{@prefix}"
 

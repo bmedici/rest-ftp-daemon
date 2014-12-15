@@ -99,7 +99,6 @@ module RestFtpDaemon
         end
       end
 
-
     end
   end
 end
