@@ -18,6 +18,7 @@ puts
 options = {}
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: #{File.basename $0} [options] start|stop|restart"
+  opts.on("-c", "--config CONFIGFILE")                                 { |config| APP_CONF = config }
   opts.on("-e", "--environment ENV")                                   { |env| APP_ENV = env }
   opts.on("", "--dev")                                                 { APP_ENV = "development" }
   opts.on("-p", "--port PORT", "use PORT")                             { |port| options["port"] = port.to_i }
@@ -44,6 +45,12 @@ end
 
 # Load helpers and config
 app_root = File.dirname(__FILE__) + '/../'
+# Build configuration file path from options
+APP_CONF ||= File.expand_path "/etc/#{APP_NAME}.yml"
+unless File.exists? APP_CONF
+  puts "EXITING: cannot read configuration file: #{APP_CONF}"
+  exit 13
+end
 [:helpers, :config].each do |lib|
   require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib.to_s}")
 end
