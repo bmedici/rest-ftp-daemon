@@ -44,7 +44,6 @@ rescue OptionParser::InvalidOption => e
 end
 
 # Load helpers and config
-app_root = File.dirname(__FILE__) + '/../'
 # Build configuration file path from options
 APP_CONF ||= File.expand_path "/etc/#{APP_NAME}.yml"
 unless File.exists? APP_CONF
