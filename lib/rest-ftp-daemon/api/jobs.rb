@@ -70,8 +70,7 @@ module RestFtpDaemon
       end
 
       post '/jobs/' do
-        info "POST /jobs"
-        # #{params.inspect}"
+        info "POST /jobs #{params.inspect}"
         # request.body.rewind
         begin
 

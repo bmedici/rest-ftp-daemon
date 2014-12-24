@@ -20,7 +20,7 @@ parser = OptionParser.new do |opts|
   opts.banner = "Usage: #{File.basename $0} [options] start|stop|restart"
   opts.on("-c", "--config CONFIGFILE")                                 { |config| APP_CONF = config }
   opts.on("-e", "--environment ENV")                                   { |env| APP_ENV = env }
-  opts.on("", "--dev")                                                 { APP_ENV = "development" }
+  opts.on("",   "--dev")                                               { APP_ENV = "development" }
   opts.on("-p", "--port PORT", "use PORT")                             { |port| options["port"] = port.to_i }
   opts.on("-w", "--workers COUNT", "Use COUNT worker threads")         { |count| options["workers"] = count.to_i }
   opts.on("-d", "--daemonize", "Run daemonized in the background")     { |bool| options["daemonize"] = true }
@@ -29,7 +29,7 @@ parser = OptionParser.new do |opts|
   opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")  { |user| options["user"] = user }
   opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)"){ |group| options["group"] = group }
   opts.on_tail("-h", "--help", "Show this message")                    { puts opts; exit }
-  opts.on_tail('-v', '--version', "Show version (#{APP_VER})")                      { puts APP_VER; exit }
+  opts.on_tail('-v', '--version', "Show version (#{APP_VER})")         { puts APP_VER; exit }
 end
 begin
   parser.order!(ARGV)
@@ -43,18 +43,17 @@ rescue OptionParser::InvalidOption => e
   exit 12
 end
 
-# Load helpers and config
 # Build configuration file path from options
 APP_CONF ||= File.expand_path "/etc/#{APP_NAME}.yml"
 unless File.exists? APP_CONF
   puts "EXITING: cannot read configuration file: #{APP_CONF}"
   exit 13
 end
+
+# Load helpers and config, and merge options from ARGV into settings
 [:helpers, :config].each do |lib|
   require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib.to_s}")
 end
-
-# Merge options from ARGV into settings
 Settings.merge!(options)
 
 # Display compiled configuration
