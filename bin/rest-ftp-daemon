@@ -36,11 +36,11 @@ begin
   command = ARGV.shift
   unless ["start", "stop", "restart"].include? command
     puts parser
-    exit 1
+    exit 11
   end
 rescue OptionParser::InvalidOption => e
   puts "EXITING: option parser: #{e.message}"
-  exit 1
+  exit 12
 end
 
 # Load helpers and config
@@ -74,10 +74,10 @@ puts
 if ["start"].include? command
   if Settings['port'].nil?
     puts "ABORTING: Network port is missing"
-    exit 1
+    exit 14
   elsif RestFtpDaemon::Helpers.local_port_used?(Settings['port'])
     puts "ABORTING: Network port #{Settings['port']} is already in use"
-    exit 1
+    exit 15
   end
 end
 
