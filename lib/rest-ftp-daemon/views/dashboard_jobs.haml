@@ -16,7 +16,6 @@
   - else
     - trclass = "warning"
 
-
   %tr{class: trclass}
 
     %td{title: presented.to_json}= job.id
@@ -28,6 +27,8 @@
     %td
       - unless job.wid.nil?
         .label.label-default.flag.worker-label= job.wid
+
+    %td= job.label
 
     %td{title: job.get(:source_path)}
       =# Helpers.job_method_label job.get(:source_method)
