@@ -1,6 +1,6 @@
 # Terrific constants
 APP_NAME = "rest-ftp-daemon"
-APP_VER = "0.100.2"
+APP_VER = "0.101"
 
 # Some global constants
 IDENT_JOB_LEN = 4
