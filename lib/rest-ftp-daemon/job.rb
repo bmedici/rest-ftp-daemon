@@ -6,7 +6,7 @@ require 'timeout'
 module RestFtpDaemon
   class Job
 
-    FIELDS = [:source, :target, :priority, :notify, :overwrite, :mkdir]
+    FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir]
 
     attr_reader :id
     attr_accessor :wid
