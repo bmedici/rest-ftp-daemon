@@ -98,7 +98,7 @@ module RestFtpDaemon
           api_error exception
         else
           status 201
-          present job, :with => RestFtpDaemon::API::Entities::JobPresenter
+          present job, :with => RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
         end
       end
 
