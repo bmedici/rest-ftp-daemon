@@ -349,7 +349,7 @@ module RestFtpDaemon
     def oops signal_name, exception, error_name = nil, include_backtrace = false
       # Log this error
       error_name = exception.class if error_name.nil?
-      info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}]"
+      info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}] #{exception.message}"
 
       # Close ftp connexion if open
       @ftp.close unless @ftp.nil?
