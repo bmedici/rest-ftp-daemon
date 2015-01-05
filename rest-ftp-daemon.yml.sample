@@ -11,6 +11,11 @@ defaults: &defaults
     update_every_kb: 1024
     notify_after_sec: 10
 
+    mkdir: true
+    tempfile: true
+    overwrite: false
+
+
   conchita:
     timer: 10
     #clean_failed: 3600

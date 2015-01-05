@@ -6,7 +6,8 @@ require 'timeout'
 module RestFtpDaemon
   class Job
 
-    FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir]
+    # FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir]
+    FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir, :tempfile]
 
     attr_reader :id
     attr_accessor :wid
@@ -50,6 +51,10 @@ module RestFtpDaemon
       # Protect with a mutex
       @mutex = Mutex.new
 
+      # Set super-default flags
+      flag_default :mkdir, false
+      flag_default :overwrite, false
+      flag_default :tempfile, false
       # Flag current job
       @queued_at = Time.now
       @status = :created
@@ -372,6 +377,17 @@ module RestFtpDaemon
       # Prepare notification if signal given
       return unless signal_name
       client_notify signal_name, error_name, notif_status
+    end
+
+    def flag_default name, default
+      # build the flag instance var name
+      variable = "@#{name.to_s}"
+
+      # If it's true or false, that's ok
+      return if [true, false].include? instance_variable_get(variable)
+
+      # Otherwise, set it to the default value
+      instance_variable_set variable, default
     end
 
     def ftp_init
