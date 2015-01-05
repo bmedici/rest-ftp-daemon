@@ -6,11 +6,8 @@ module RestFtpDaemon
         # Job ID
         expose :id
 
-        # Job specific attributes
-        Job::FIELDS.each do |field|
-          expose field
-          #expose field, unless: lambda { |object, options| object.instance_variable_get("@#{field}").nil? }
-        end
+        # Job specific attributes and flags
+        Job::FIELDS.each { |name| expose name }
 
         # Technical fields
         expose :wid, unless: lambda { |object, options| object.wid.nil? }

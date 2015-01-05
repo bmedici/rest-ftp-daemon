@@ -6,26 +6,25 @@ require 'timeout'
 module RestFtpDaemon
   class Job
 
-    # FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir]
     FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir, :tempfile]
 
-    attr_reader :id
     attr_accessor :wid
 
+    attr_reader :id
     attr_reader :error
     attr_reader :status
 
     attr_reader :queued_at
     attr_reader :updated_at
-
     attr_reader :started_at
     attr_reader :finished_at
 
     attr_reader :params
 
-    FIELDS.each do |field|
-      attr_reader field
+    FIELDS.each do |name|
+      attr_reader name
     end
+
 
     def initialize job_id, params={}
       # Call super
@@ -33,9 +32,6 @@ module RestFtpDaemon
 
       # Init context
       @id = job_id.to_s
-      FIELDS.each do |field|
-        instance_variable_set("@#{field.to_s}", params[field])
-      end
       @params = {}
       @updated_at = nil
       @started_at = nil
@@ -45,22 +41,26 @@ module RestFtpDaemon
       @wid = nil
 
       # Logger
-      # @logger = RestFtpDaemon::Logger.new(:workers, "JOB #{id}")
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
 
       # Protect with a mutex
       @mutex = Mutex.new
 
+      # Import query params
+      FIELDS.each do |name|
+        instance_variable_set "@#{name.to_s}", params[name]
+      end
+
       # Set super-default flags
       flag_default :mkdir, false
       flag_default :overwrite, false
       flag_default :tempfile, false
+
       # Flag current job
       @queued_at = Time.now
       @status = :created
 
       # Send first notification
-      #info "Job.initialize/notify"
       info "Job.initialized"
       client_notify "rftpd.queued"
     end
@@ -190,19 +190,6 @@ module RestFtpDaemon
     def exectime
       return nil if (@started_at.nil? || @finished_at.nil?)
       (@finished_at - @started_at).round(2)
-    end
-
-    def wander time
-      info "Job.wander #{time}"
-      @wander_for = time
-      @wander_started = Time.now
-      sleep time
-      info "Job.wandered ok"
-    end
-
-    def wandering_time
-      return if @wander_started.nil? || @wander_for.nil?
-      @wander_for.to_f - (Time.now - @wander_started)
     end
 
     def set attribute, value
