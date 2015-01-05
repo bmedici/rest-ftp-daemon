@@ -529,12 +529,19 @@ module RestFtpDaemon
       update_every_kb = (Settings.transfer.update_every_kb rescue nil) || DEFAULT_UPDATE_EVERY_KB
       notify_after_sec = Settings.transfer.notify_after_sec rescue nil
 
+      # Compute temp target name
+      target_real = target_name
+      if @tempfile
+        target_real = "#{target_name}.#{Helpers.identifier(IDENT_TEMPFILE_LEN)}-temp"
+        info "Job.ftp_transfer target_real [#{target_real}]"
+      end
+
       # Start transfer
       chunk_size = update_every_kb * 1024
       t0 = tstart = Time.now
       notified_at = Time.now
       @status = :uploading
-      @ftp.putbinaryfile(source_match, target_name, chunk_size) do |block|
+      @ftp.putbinaryfile(source_match, target_real, chunk_size) do |block|
         # Update counters
         @transfer_sent += block.bytesize
         set :transfer_sent, @transfer_sent
@@ -571,6 +578,13 @@ module RestFtpDaemon
           notified_at = Time.now
         end
 
+      end
+
+      # Rename temp file to target_temp
+      if @tempfile
+        @status = :renaming
+        info "Job.ftp_transfer renaming to #{target_name}"
+        @ftp.rename target_real, target_name
       end
 
       # Compute final bitrate
