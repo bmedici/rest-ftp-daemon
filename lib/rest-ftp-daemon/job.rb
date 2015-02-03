@@ -411,7 +411,7 @@ module RestFtpDaemon
     def ftp_login
       @status = :ftp_login
       info "Job.ftp_login [#{@target_url.user}]"
-      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.user? || @target_url.password?
+      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.user.nil? || @target_url.password.nil?
 
       @ftp.login @target_url.user, @target_url.password
     end
