@@ -76,31 +76,31 @@ module RestFtpDaemon
         prepare
 
       rescue RestFtpDaemon::JobMissingAttribute => exception
-        return oops "rftpd.started", exception, :job_missing_attribute
+        return oops "rftpd.started", exception, :missing_attribute
 
       # rescue RestFtpDaemon::JobSourceNotFound => exception
       #   return oops "rftpd.started", exception, :job_source_not_found
 
       rescue RestFtpDaemon::JobUnresolvedTokens => exception
-        return oops "rftpd.started", exception, :job_unresolved_tokens
+        return oops "rftpd.started", exception, :unresolved_tokens
 
       rescue RestFtpDaemon::JobTargetUnparseable => exception
-        return oops "rftpd.started", exception, :job_target_unparseable
+        return oops "rftpd.started", exception, :target_unparseable
 
       rescue RestFtpDaemon::JobTargetUnsupported => exception
-        return oops "rftpd.started", exception, :job_target_unsupported
-
-      rescue RestFtpDaemon::JobAssertionFailed => exception
-        return oops "rftpd.started", exception, :job_assertion_failed
-
-      rescue RestFtpDaemon::RestFtpDaemonException => exception
-        return oops "rftpd.started", exception, :job_prepare_failed
+        return oops "rftpd.started", exception, :target_unsupported
 
       rescue URI::InvalidURIError => exception
-        return oops "rftpd.started", exception, :job_target_invalid
+        return oops "rftpd.started", exception, :target_invalid
+
+      rescue RestFtpDaemon::JobAssertionFailed => exception
+        return oops "rftpd.started", exception, :assertion_failed
+
+      rescue RestFtpDaemon::RestFtpDaemonException => exception
+        return oops "rftpd.started", exception, :prepare_failed
 
       rescue Exception => exception
-        return oops "rftpd.started", exception, :job_prepare_unhandled, true
+        return oops "rftpd.started", exception, :prepare_unhandled, true
 
       else
         # Prepare done !
@@ -115,47 +115,47 @@ module RestFtpDaemon
         @status = :starting
         transfer
 
+      rescue SocketError => exception
+        return oops "rftpd.ended", exception, :conn_socket_error
+
       rescue Errno::EHOSTDOWN => exception
-        return oops "rftpd.ended", exception, :job_host_is_down
+        return oops "rftpd.ended", exception, :conn_host_is_down
 
       rescue Errno::ENOTCONN => exception
-        return oops "rftpd.ended", exception, :job_connexion_failed
+        return oops "rftpd.ended", exception, :conn_failed
 
       rescue Errno::ECONNREFUSED => exception
-        return oops "rftpd.ended", exception, :job_connexion_refused
-
-      rescue SocketError => exception
-        return oops "rftpd.ended", exception, :job_socket_error
+        return oops "rftpd.ended", exception, :conn_refused
 
       rescue Timeout::Error, Errno::ETIMEDOUT => exception
-        return oops "rftpd.ended", exception, :job_timeout
-
-      rescue Net::FTPPermError => exception
-        return oops "rftpd.ended", exception, :job_perm_error
+        return oops "rftpd.ended", exception, :conn_timeout
 
       rescue OpenSSL::SSL::SSLError => exception
-        return oops "rftpd.ended", exception, :job_openssl_error
+        return oops "rftpd.ended", exception, :conn_openssl_error
+
+      rescue Net::FTPPermError => exception
+        return oops "rftpd.ended", exception, :perm_error
 
       rescue Errno::EMFILE => exception
-        return oops "rftpd.ended", exception, :job_too_many_open_files
+        return oops "rftpd.ended", exception, :too_many_open_files
 
       rescue RestFtpDaemon::JobSourceNotFound => exception
-        return oops "rftpd.ended", exception, :job_source_not_found
+        return oops "rftpd.ended", exception, :source_not_found
 
       rescue RestFtpDaemon::JobTargetFileExists => exception
-        return oops "rftpd.ended", exception, :job_target_file_exists
+        return oops "rftpd.ended", exception, :target_file_exists
 
       rescue RestFtpDaemon::JobTargetShouldBeDirectory => exception
-        return oops "rftpd.ended", exception, :job_target_should_be_directory
+        return oops "rftpd.ended", exception, :target_not_directory
 
       rescue RestFtpDaemon::JobAssertionFailed => exception
-        return oops "rftpd.started", exception, :job_assertion_failed
+        return oops "rftpd.started", exception, :assertion_failed
 
       rescue RestFtpDaemon::RestFtpDaemonException => exception
-        return oops "rftpd.ended", exception, :job_transfer_failed
+        return oops "rftpd.ended", exception, :transfer_failed
 
       rescue Exception => exception
-        return oops "rftpd.ended", exception, :job_transfer_unhandled, true
+        return oops "rftpd.ended", exception, :transfer_unhandled, true
 
       else
         # All done !
