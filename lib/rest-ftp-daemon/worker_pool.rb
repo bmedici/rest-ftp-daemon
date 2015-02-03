@@ -39,14 +39,14 @@ module RestFtpDaemon
           # Wait for a job to come into the queue
           worker_status wid, :waiting
           job = $queue.pop
-          info "worker [#{wid}] popped [#{job.id}]"
 
           # Do the job
+          info "worker [#{wid}] processing [#{job.id}]"
           worker_status wid, :processing, job.id
           job.wid = wid
           job.process
           info "worker [#{wid}] processed [#{job.id}]"
-          job.close
+          # job.close
           worker_status wid, :done
 
           # Increment total processed jobs count

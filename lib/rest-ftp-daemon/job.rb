@@ -552,6 +552,8 @@ module RestFtpDaemon
         t0 = Time.now
 
         # Notify if requested
+        @status = :uploaded
+        info "Job.ftp_transfer uploaded"
         unless notify_after_sec.nil? || (notified_at + notify_after_sec > Time.now)
           notif_status = {
             progress: percent1,
