@@ -289,10 +289,11 @@ module RestFtpDaemon
       # Scheme-aware config
       ftp_init
 
-      # Connect remote server, login and chdir
-      ftp_connect_and_login
+      # Connect to remote server and login
+      ftp_connect
+      ftp_login
 
-      # Connect remote server, login and chdir
+      # Change to the right path
       path = Helpers.extract_dirname(@target_url.path).to_s
       ftp_chdir_or_buildpath path
 
@@ -398,19 +399,20 @@ module RestFtpDaemon
       @ftp.passive = true
     end
 
-    def ftp_connect_and_login
-      #@status = :ftp_connect
-      # connect_timeout_sec = (Settings.transfer.connect_timeout_sec rescue nil) || DEFAULT_CONNECT_TIMEOUT_SEC
-
-      # Method assertions
-      host = @target_url.host
-      info "Job.ftp_connect connect [#{host}]"
+    def ftp_connect
       @status = :ftp_connect
+      host = @target_url.host
+      info "Job.ftp_connect [#{host}]"
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
-      @ftp.connect(host)
 
+      @ftp.connect(host)
+    end
+
+    def ftp_login
       @status = :ftp_login
-      info "Job.ftp_connect login [#{@target_url.user}]"
+      info "Job.ftp_login [#{@target_url.user}]"
+      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.user? || @target_url.password?
+
       @ftp.login @target_url.user, @target_url.password
     end
 
