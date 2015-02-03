@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.date = Time.now.strftime("%Y-%m-%d")
   spec.authors = ["Bruno MEDICI"]
   spec.email = "rest-ftp-daemon@bmconseil.com"
-  spec.description = "This is a pretty simple FTP client daemon, controlled through a RESTfull API"
+  spec.description = "This is a pretty simple FTP client daemon, controlled through a RESTful API"
   spec.summary = "RESTful FTP client daemon"
   spec.homepage = "http://github.com/bmedici/rest-ftp-daemon"
   spec.licenses = ["MIT"]
