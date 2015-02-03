@@ -65,9 +65,6 @@ module RestFtpDaemon
       client_notify "rftpd.queued"
     end
 
-    def close
-    end
-
     def process
       # Update job's status
       @error = nil
@@ -339,7 +336,7 @@ module RestFtpDaemon
       info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}] #{exception.message}"
 
       # Close ftp connexion if open
-      @ftp.close unless @ftp.nil?
+      @ftp.close unless @ftp.welcome.nil?
 
       # Update job's internal status
       @status = :failed
@@ -507,7 +504,6 @@ module RestFtpDaemon
         else
           # won't overwrite then stop here
           info "Job.ftp_transfer failed: target file exists"
-          @ftp.close
           raise RestFtpDaemon::JobTargetFileExists
         end
       end
