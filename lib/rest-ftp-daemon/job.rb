@@ -97,7 +97,7 @@ module RestFtpDaemon
         return oops "rftpd.started", exception, :assertion_failed
 
       rescue RestFtpDaemon::RestFtpDaemonException => exception
-        return oops "rftpd.started", exception, :prepare_failed
+        return oops "rftpd.started", exception, :prepare_failed, true
 
       rescue Exception => exception
         return oops "rftpd.started", exception, :prepare_unhandled, true
@@ -155,7 +155,7 @@ module RestFtpDaemon
         return oops "rftpd.started", exception, :assertion_failed
 
       rescue RestFtpDaemon::RestFtpDaemonException => exception
-        return oops "rftpd.ended", exception, :transfer_failed
+        return oops "rftpd.ended", exception, :transfer_failed, true
 
       rescue Exception => exception
         return oops "rftpd.ended", exception, :transfer_unhandled, true
@@ -274,7 +274,8 @@ module RestFtpDaemon
 
       # Method assertions and init
       @status = :checking_source
-      raise RestFtpDaemon::JobAssertionFailed unless @source_path && @target_url
+      raise RestFtpDaemon::JobAssertionFailed, "transfer/1" unless @source_path
+      raise RestFtpDaemon::JobAssertionFailed, "transfer/2" unless @target_url
       @transfer_sent = 0
       set :source_processed, 0
 
@@ -382,7 +383,8 @@ module RestFtpDaemon
       # Method assertions
       info "Job.ftp_init asserts"
       @status = :ftp_init
-      raise RestFtpDaemon::JobAssertionFailed if @target_method.nil? || @target_url.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_init/1" if @target_method.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_init/2" if @target_url.nil?
 
       info "Job.ftp_init target_method [#{@target_method}]"
       case @target_method
@@ -406,14 +408,15 @@ module RestFtpDaemon
       @status = :ftp_connect
       host = @target_url.host
       info "Job.ftp_connect [#{host}]"
-      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/1" if @ftp.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/2" if @target_url.nil?
 
       @ftp.connect(host)
     end
 
     def ftp_login
       @status = :ftp_login
-      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.user.nil? || @target_url.password.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_login/1" if @ftp.nil?
 
       # use "anonymous" if user is empty
       login = @target_url.user || "anonymous"
@@ -426,7 +429,7 @@ module RestFtpDaemon
     def ftp_chdir_or_buildpath path
       # Method assertions
       info "Job.ftp_chdir [#{path}] mkdir: #{@mkdir}"
-      raise RestFtpDaemon::JobAssertionFailed if path.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_chdir_or_buildpath/1" if path.nil?
       @status = :ftp_chdir
 
       # Extract directory from path
