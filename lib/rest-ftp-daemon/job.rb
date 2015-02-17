@@ -337,7 +337,7 @@ module RestFtpDaemon
       info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}] #{exception.message}"
 
       # Close ftp connexion if open
-      @ftp.close unless @ftp.welcome.nil?
+      @ftp.close unless @ftp.nil? || @ftp.welcome.nil?
 
       # Update job's internal status
       @status = :failed
@@ -558,8 +558,6 @@ module RestFtpDaemon
         t0 = Time.now
 
         # Notify if requested
-        @status = :uploaded
-        info "Job.ftp_transfer uploaded"
         unless notify_after_sec.nil? || (notified_at + notify_after_sec > Time.now)
           notif_status = {
             progress: percent1,
