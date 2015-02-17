@@ -1,13 +1,13 @@
 # Terrific constants
 APP_NAME = "rest-ftp-daemon"
-APP_VER = "0.103.1"
+APP_VER = "0.104"
 
 # Some global constants
 IDENT_JOB_LEN = 4
 IDENT_NOTIF_LEN = 4
 IDENT_RANDOM_LEN = 8
 IDENT_TEMPFILE_LEN = 8
-DEFAULT_LOGS_PIPE_LEN = 15
+DEFAULT_LOGS_PIPE_LEN = 12
 DEFAULT_LOGS_ID_LEN = 8
 
 # Some defaults
