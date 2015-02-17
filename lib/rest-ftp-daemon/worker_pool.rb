@@ -32,7 +32,7 @@ module RestFtpDaemon
           Thread.current[:name] = name
           Thread.current[:vars] = {
             started_at: Time.now,
-          }
+            }
 
           # Start working
           work
@@ -59,16 +59,10 @@ module RestFtpDaemon
           # Do the job
           info "worker [#{wid}] processing [#{job.id}]"
 
-          # worker_status wid, :processing, job.id
-          # job.wid = Thread.current[:name]
-
           worker_status :processing, job.id
           job.wid = wid
           job.process
           info "worker [#{wid}] processed [#{job.id}]"
-          # info "processed [#{job.id}]"
-
-          # worker_status wid, :done
           worker_status :done
 
           # Increment total processed jobs count
@@ -94,9 +88,6 @@ module RestFtpDaemon
 
     def worker_vars
       vars = {}
-      # @mutex.synchronize do
-      #   @statuses
-      # end
 
       @workers.each do |name, thread|
         #currents[thread.id] = thread.current
@@ -104,14 +95,11 @@ module RestFtpDaemon
       end
 
       vars
-
-      # @workers
     end
 
   protected
 
     def ping
-
     end
 
     def info message

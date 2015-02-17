@@ -78,9 +78,6 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobMissingAttribute => exception
         return oops "rftpd.started", exception, :missing_attribute
 
-      # rescue RestFtpDaemon::JobSourceNotFound => exception
-      #   return oops "rftpd.started", exception, :job_source_not_found
-
       rescue RestFtpDaemon::JobUnresolvedTokens => exception
         return oops "rftpd.started", exception, :unresolved_tokens
 
@@ -195,7 +192,6 @@ module RestFtpDaemon
     def set attribute, value
       @mutex.synchronize do
         @params || {}
-        # return unless @params.is_a? Enumerable
         @updated_at = Time.now
         @params[attribute] = value
       end
@@ -420,7 +416,6 @@ module RestFtpDaemon
 
       # use "anonymous" if user is empty
       login = @target_url.user || "anonymous"
-
       info "Job.ftp_login [#{login}]"
 
       @ftp.login login, @target_url.password
