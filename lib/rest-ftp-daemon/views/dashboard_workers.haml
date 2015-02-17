@@ -10,19 +10,19 @@
     %th job
     %th.text-right idle
 
-  - @gworker_statuses.each do |wid, infos|
-    - status = infos[:status]
+  - @worker_vars.each do |wid, vars|
+    -# status = vars[:status]
     - style = styles[status] || ""
 
-    - if infos[:active_at].is_a? Time
-      - no_news_for = (Time.now - infos[:active_at]).round(0)
+    - if vars[:updted_at].is_a? Time
+      - no_news_for = (Time.now - vars[:updted_at]).round(0)
     - else
       - no_news_for = "?"
 
     %tr{class: style.to_s}
       %td= wid
-      %td= infos[:status]
-      %td= infos[:jobid]
+      %td= vars[:status]
+      %td= vars[:jobid]
       %td.text-right
         = no_news_for
         s

@@ -46,7 +46,7 @@ module RestFtpDaemon
         @count_all = $queue.all_size
 
         # Get workers status
-        @gworker_statuses = $pool.get_worker_statuses
+        @worker_vars = $pool.worker_vars
 
         # Compile haml template
         output = render :dashboard

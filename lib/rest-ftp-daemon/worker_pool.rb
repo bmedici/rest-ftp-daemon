@@ -12,84 +12,117 @@ module RestFtpDaemon
 
       # Prepare status hash
       @statuses = {}
+      @workers = {}
 
       # Create worker threads
       info "WorkerPool initializing with #{number_threads} workers"
       @mutex = Mutex.new
       @counter = 0
 
-      for wid in 1..number_threads
-        Thread.new() do
-          @mutex.synchronize do
-            @counter +=1
-          end
-          work("w#{@counter}")
+      number_threads.times do
+        # Increment counter
+        @mutex.synchronize do
+          @counter +=1
         end
+        name = "w#{@counter}"
+
+        th = Thread.new name do
+
+          # Set thread context
+          Thread.current[:name] = name
+          Thread.current[:vars] = {
+            started_at: Time.now,
+          }
+
+          # Start working
+          work
+        end
+
+        # Add this worker to the ThreadGroup
+        @workers[name] = th
       end
 
     end
 
-    def work wid
-      worker_status wid, "starting"
+    def work
+      worker_status :starting
+
       loop do
 
         begin
-          info "worker [#{wid}] waiting for a job"
+          info "waiting for a job"
 
           # Wait for a job to come into the queue
-          worker_status wid, :waiting
+          worker_status :waiting
           job = $queue.pop
 
           # Do the job
           info "worker [#{wid}] processing [#{job.id}]"
-          worker_status wid, :processing, job.id
+
+          # worker_status wid, :processing, job.id
+          # job.wid = Thread.current[:name]
+
+          worker_status :processing, job.id
           job.wid = wid
           job.process
           info "worker [#{wid}] processed [#{job.id}]"
-          # job.close
-          worker_status wid, :done
+          # info "processed [#{job.id}]"
+
+          # worker_status wid, :done
+          worker_status :done
 
           # Increment total processed jobs count
           $queue.counter_inc :jobs_processed
 
         rescue Exception => ex
-          worker_status wid, :crashed
+          worker_status :crashed
           info "UNHANDLED EXCEPTION: #{ex.message}"
           ex.backtrace.each do |line|
             info line, 1
           end
           sleep 1
-        else
 
-        # Clean job status
-        worker_status wid, :ready
-        job.wid = nil
+        else
+          # Clean job status
+          worker_status :free
+          job.wid = nil
+
         end
 
       end
     end
 
-    def get_worker_statuses
-      @mutex.synchronize do
-        @statuses
+    def worker_vars
+      vars = {}
+      # @mutex.synchronize do
+      #   @statuses
+      # end
+
+      @workers.each do |name, thread|
+        #currents[thread.id] = thread.current
+        vars[thread[:name]] = thread[:vars]
       end
+
+      vars
+
+      # @workers
     end
 
   protected
 
-    def info message
-      return if @logger.nil?
-      @logger.info_with_id message
+    def ping
+
     end
 
-    def worker_status wid, status, jobid = nil
-      @mutex.synchronize do
-        @statuses[wid] ||= {}
-        @statuses[wid][:status] = status
-        @statuses[wid][:jobid] = jobid
-        @statuses[wid][:active_at] = Time.now
-      end
+    def info message
+      return if @logger.nil?
+      @logger.info_with_id message, id: Thread.current[:name]
+    end
 
+    def worker_status status, jobid = nil
+      Thread.current[:vars][:status] = status
+      Thread.current[:vars][:jobid] = jobid
+      Thread.current[:vars][:updted_at] = Time.now
     end
 
   end
