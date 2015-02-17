@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# Try to load libs and constants
+# Try to load external libs
 app_root = File.dirname(__FILE__) + '/../'
 begin
   require "thin"
@@ -10,7 +10,12 @@ begin
 rescue LoadError
   raise "EXITING: some of basic libs were not found: thin, optparse, socket, timeout"
 end
-require File.expand_path("#{app_root}/lib/rest-ftp-daemon/constants")
+
+# Load helpers and constants
+[:constants, :helpers].each do |lib|
+  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib.to_s}")
+end
+
 puts
 #puts "--- #{APP_NAME} #{APP_VER}"
 
@@ -51,10 +56,14 @@ unless File.exists? APP_CONF
 end
 
 # Load helpers and config, and merge options from ARGV into settings
-[:helpers, :config].each do |lib|
-  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib.to_s}")
+begin
+  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/config")
+  Settings.merge!(options)
+rescue Psych::SyntaxError => e
+  puts "EXITING: config file syntax error: #{e.message}"
+  exit 16
 end
-Settings.merge!(options)
+
 
 # Display compiled configuration
 puts "--- #{APP_NAME} #{APP_VER}"
