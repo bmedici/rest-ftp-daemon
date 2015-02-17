@@ -3,11 +3,11 @@
   }
 
 .transfer-method {
-  width: 35px;
+  /*width: 35px;*/
   }
 
 .worker-label {
-  width: 25px;
+  /*width: 25px;*/
   }
 
 .nobr {
@@ -27,8 +27,9 @@ table tr td, .fixed {
   }
 
 .label {
-  font-size: 90%;
-  padding: 2px 4px;
+  font-size: 1em;
+  padding: 3px 3px 1px 3px;
+  margin-bottom: 1px  ;
   font-weight: normal;
   display: inline-block;
   font-family: sans-serif;

@@ -83,26 +83,27 @@ module RestFtpDaemon
       when :file
         'label-primary'
       when :ftp
-        'label-danger'
-      when :ftps
         'label-warning'
-      when :ftpes
-        'label-warning'
+      when :ftps, :ftpes
+        'label-success'
       else
-         'label-default'
+        'label-default'
       end
       "<div class=\"transfer-method label #{klass}\">#{method.upcase}</div>"
     end
 
     # Dates and times: date with time generator
-    def self.datetime_full param
-      return "-"  if param.nil?
-      return param.to_datetime.strftime("%d.%m.%Y %H:%M")
+    def self.datetime_full datetime
+      return "-"  if datetime.nil?
+      return datetime.to_datetime.strftime("%d.%m.%Y %H:%M")
     end
 
-    def self.datetime_short param
-      return "-"  if param.nil?
-      return param.to_datetime.strftime("%d/%m %H:%M")
+    def self.datetime_short datetime
+      # return param.class
+      return "-" if datetime.nil?
+      return "?" unless datetime.respond_to? :to_date
+      return datetime.to_datetime.strftime("%H:%M") if datetime.to_date == Time.now.to_date
+      return datetime.to_datetime.strftime("%d/%m %H:%M")
     end
 
     def self.hide_credentials_from_url url

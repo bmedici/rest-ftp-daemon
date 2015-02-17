@@ -6,6 +6,7 @@
   - source_processing = job.get(:source_processing)
   - presented = present job, :with => RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
   - errmsg = job.get :error_message
+  - method = job.get(:target_method)
 
   - if !job.error.nil?
     - trclass = "danger"
@@ -20,23 +21,15 @@
 
     %td{title: presented.to_json}= job.id
 
-    %td
-      - unless job.priority.nil?
-        = job.priority
-
-    %td
-      - unless job.wid.nil?
-        .label.label-default.flag.worker-label= job.wid
-
     %td= job.label
 
     %td{title: job.get(:source_path)}
-      =# Helpers.job_method_label job.get(:source_method)
       = Helpers.highlight_tokens job.source
 
+    %td
+      = Helpers.job_method_label method
+
     %td{title: job.get(:target_url)}
-      = Helpers.job_method_label job.get(:target_method)
-      =# job.target
       = Helpers.highlight_tokens job.target
 
     %td
@@ -44,8 +37,14 @@
 
     %td
       = job.status
-      - if (source_count > 1) && (source_processed < source_count)
-        %small= " #{source_processed}/#{source_count}"
+
+      -# if (source_count > 1) && (source_processed < source_count)
+      - if (source_processed < source_count)
+        %small= " (#{source_processed}/#{source_count})"
+
+      - unless source_processing.nil?
+        %br
+        %b= " #{source_processing}"
 
     %td
       - unless progress.nil?
@@ -57,8 +56,6 @@
       - unless job.error || job.status == :finished
         - unless progress.nil?
           = "#{progress}%"
-        - unless source_processing.nil?
-          %small= " (#{source_processing})"
       - else
         .error{title: errmsg}
           = Helpers.text_or_empty(job.error)
@@ -71,3 +68,10 @@
       - if (bitrate = job.get :transfer_bitrate)
         =  Helpers.format_bytes(bitrate, "bps")
 
+    %td
+      - unless job.priority.nil?
+        .label.label-info.flag.worker-label= job.priority
+
+      - unless job.wid.nil?
+        %br
+        .label.label-warning.flag.worker-label= job.wid

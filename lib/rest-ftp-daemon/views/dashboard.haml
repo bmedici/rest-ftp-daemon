@@ -43,10 +43,9 @@
           %table.table.table-striped.table-hover.table-condensed
             %tr
               %th ID
-              %th P
-              %th W
               %th label
               %th source
+              %th <=>
               %th target
               %th queued
               %th status
@@ -54,6 +53,7 @@
               %th error
               %th.text-right size
               %th.text-right bitrate
+              %th P/W
 
             - if @only.nil? && !@jobs_queued.empty?
               = render :dashboard_jobs, {jobs: @jobs_queued, counts: @counts}
