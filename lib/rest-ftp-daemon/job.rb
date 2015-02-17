@@ -413,10 +413,14 @@ module RestFtpDaemon
 
     def ftp_login
       @status = :ftp_login
-      info "Job.ftp_login [#{@target_url.user}]"
       raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.user.nil? || @target_url.password.nil?
 
-      @ftp.login @target_url.user, @target_url.password
+      # use "anonymous" if user is empty
+      login = @target_url.user || "anonymous"
+
+      info "Job.ftp_login [#{login}]"
+
+      @ftp.login login, @target_url.password
     end
 
     def ftp_chdir_or_buildpath path
@@ -476,7 +480,8 @@ module RestFtpDaemon
 
       # Method assertions
       @status = :ftp_presence
-      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil? || @target_url.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_presence/1" if @ftp.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_presence/2" if @target_url.nil?
 
       # Get file list, sometimes the response can be an empty value
       results = @ftp.list(target_name) rescue nil
@@ -490,8 +495,8 @@ module RestFtpDaemon
     def ftp_transfer source_match, target_name = nil
       # Method assertions
       info "Job.ftp_transfer source_match [#{source_match}]"
-      raise RestFtpDaemon::JobAssertionFailed if @ftp.nil?
-      raise RestFtpDaemon::JobAssertionFailed if source_match.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/1" if @ftp.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/2" if source_match.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
       target_name ||= Helpers.extract_filename source_match
