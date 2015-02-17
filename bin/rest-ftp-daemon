@@ -22,7 +22,7 @@ puts
 # Detect options from ARGV
 options = {}
 parser = OptionParser.new do |opts|
-  opts.banner = "Usage: #{File.basename $0} [options] start|stop|restart"
+  opts.banner = "Usage: #{File.basename $0} [options] start|stop"
   opts.on("-c", "--config CONFIGFILE")                                 { |config| APP_CONF = config }
   opts.on("-e", "--environment ENV")                                   { |env| APP_ENV = env }
   opts.on("",   "--dev")                                               { APP_ENV = "development" }
@@ -39,7 +39,7 @@ end
 begin
   parser.order!(ARGV)
   command = ARGV.shift
-  unless ["start", "stop", "restart"].include? command
+  unless ["start", "stop"].include? command
     puts parser
     exit 11
   end
