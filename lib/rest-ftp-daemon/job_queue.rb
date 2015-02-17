@@ -168,7 +168,8 @@ module RestFtpDaemon
 
     def ordered_popped
       @mutex_counters.synchronize do
-        @popped.sort_by { |item| [item.updated_at] }
+        @popped.sort_by { |item| [ item.wid.to_s, item.updated_at] }
+        # @popped.sort_by { |item| [item.status.to_s, item.wid.to_s, item.updated_at, - item.id.to_i] }
       end
     end
 
