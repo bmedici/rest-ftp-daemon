@@ -14,12 +14,15 @@
     - trclass = "info"
   - elsif job.status == :finished
     - trclass = "success"
+  - elsif job.status == :queued
+    - trclass = "active"
   - else
     - trclass = "warning"
 
   %tr{class: trclass}
 
-    %td{title: presented.to_json}= job.id
+    %td{title: presented.to_json}
+      %b= job.id
 
     %td= job.label
 
