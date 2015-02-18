@@ -10,7 +10,7 @@
   %body
 
     .navbar.navbar-default.navbar-fixed
-      .container
+      .container-fluid
 
         .navbar-header
           %h1
@@ -20,7 +20,7 @@
               = "[#{Settings.namespace}]"
 
 
-    .container
+    .container-fluid
 
       = render :dashboard_headers
 
@@ -47,13 +47,13 @@
               %th source
               %th <=>
               %th target
-              %th queued
+              %th date
               %th status
               %th progress
-              %th error
+              %th err
               %th.text-right size
               %th.text-right bitrate
-              %th P/W
+              %th
 
             - if @only.nil? && !@jobs_queued.empty?
               = render :dashboard_jobs, {jobs: @jobs_queued, counts: @counts}
