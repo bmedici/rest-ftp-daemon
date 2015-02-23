@@ -139,6 +139,9 @@ module RestFtpDaemon
       rescue Errno::EMFILE => exception
         return oops "rftpd.ended", exception, :too_many_open_files
 
+      rescue Errno::EINVAL => exception
+        return oops "rftpd.ended", exception, :invalid_argument, true
+
       rescue RestFtpDaemon::JobSourceNotFound => exception
         return oops "rftpd.ended", exception, :source_not_found
 
