@@ -64,18 +64,6 @@ rescue Psych::SyntaxError => e
 end
 
 
-# Display compiled configuration
-puts "--- #{APP_NAME} #{APP_VER}"
-puts "Config file  \t #{APP_CONF}"
-puts "PID file     \t #{Settings.pidfile}"
-puts "Namespace    \t #{Settings.namespace}"
-puts "Network port \t #{Settings['port']}"
-puts "Daemonize    \t #{Settings['daemonize']}"
-puts "User:group   \t #{Settings['user']}:#{Settings['group']}"
-puts
-puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
-puts
-
 # Validate network configuration
 if command == "start"
   if Settings['port'].nil?
@@ -100,6 +88,16 @@ if Settings["user"] && Settings["group"]
   argv << ["--group", Settings["group"]]
 end
 argv << command unless command.nil? rescue nil
+# Display final configuration
+puts "--- #{APP_NAME} #{APP_VER}"
+puts "Config file  \t #{APP_CONF}"
+puts "PID file     \t #{Settings.pidfile}"
+puts "Daemonize    \t #{Settings['daemonize'] ? 'YES' : "no"}"
+puts "Namespace    \t #{Settings.namespace}"
+puts "Network port \t #{Settings['port']}"
+puts "User:group   \t #{Settings['user']}:#{Settings['group']}" if Settings['user'] || Settings['group']
+puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
+puts
 puts "--- Thin ARGV"
 puts argv.flatten.join(' ')
 puts
