@@ -39,29 +39,24 @@ end
 begin
   parser.order!(ARGV)
   command = ARGV.shift
-  unless ["start", "stop"].include? command
-    puts parser
-    exit 11
-  end
 rescue OptionParser::InvalidOption => e
-  puts "EXITING: option parser: #{e.message}"
-  exit 12
+  abort "EXITING: option parser: #{e.message}"
+else
+  abort parser.to_s unless ["start", "stop"].include? command
 end
+
 
 # Build configuration file path from options
 APP_CONF ||= File.expand_path "/etc/#{APP_NAME}.yml"
-unless File.exists? APP_CONF
-  puts "EXITING: cannot read configuration file: #{APP_CONF}"
-  exit 13
-end
+abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exists? APP_CONF
+
 
 # Load helpers and config, and merge options from ARGV into settings
 begin
   require File.expand_path("#{app_root}/lib/rest-ftp-daemon/config")
   Settings.merge!(options)
 rescue Psych::SyntaxError => e
-  puts "EXITING: config file syntax error: #{e.message}"
-  exit 16
+  abort "EXITING: config file syntax error: #{e.message}"
 end
 
 
@@ -80,11 +75,9 @@ puts
 # Validate network configuration
 if ["start"].include? command
   if Settings['port'].nil?
-    puts "ABORTING: Network port is missing"
-    exit 14
+    abort "ABORTING: Network port is missing"
   elsif RestFtpDaemon::Helpers.local_port_used?(Settings['port'])
-    puts "ABORTING: Network port #{Settings['port']} is already in use"
-    exit 15
+    abort "ABORTING: Network port #{Settings['port']} is already in use"
   end
 end
 
