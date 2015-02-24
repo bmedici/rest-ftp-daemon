@@ -11,13 +11,13 @@ rescue LoadError
   raise "EXITING: some of basic libs were not found: thin, optparse, socket, timeout"
 end
 
+
 # Load helpers and constants
 [:constants, :helpers].each do |lib|
   require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib.to_s}")
 end
-
 puts
-#puts "--- #{APP_NAME} #{APP_VER}"
+
 
 # Detect options from ARGV
 options = {}
@@ -33,9 +33,13 @@ parser = OptionParser.new do |opts|
   opts.on("-P", "--pid FILE", "File to store PID")                     { |file| options["pidfile"] = file }
   opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")  { |user| options["user"] = user }
   opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)"){ |group| options["group"] = group }
+
   opts.on_tail("-h", "--help", "Show this message")                    { puts opts; exit }
   opts.on_tail('-v', '--version', "Show version (#{APP_VER})")         { puts APP_VER; exit }
 end
+
+
+# Parse options and check compliance
 begin
   parser.order!(ARGV)
   command = ARGV.shift
@@ -73,7 +77,7 @@ puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => 
 puts
 
 # Validate network configuration
-if ["start"].include? command
+if command == "start"
   if Settings['port'].nil?
     abort "ABORTING: Network port is missing"
   elsif RestFtpDaemon::Helpers.local_port_used?(Settings['port'])
@@ -81,7 +85,8 @@ if ["start"].include? command
   end
 end
 
-# Build final ARGV
+
+# ARGV: build final
 argv = []
 argv << ["-e", Settings.namespace]
 argv << ["-p", Settings["port"].to_s] unless Settings["port"].nil?
