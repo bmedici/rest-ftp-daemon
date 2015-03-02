@@ -103,9 +103,15 @@ module RestFtpDaemon
     def ping
     end
 
-    def info message
+    def info message, context = {}
       return if @logger.nil?
-      @logger.info_with_id message, id: Thread.current[:name]
+
+      # Inject context
+      context[:id] = Thread.current[:name]
+      context[:origin] = self.class
+
+      # Forward to logger
+      @logger.info_with_id message, context
     end
 
     def worker_status status, jobid = nil

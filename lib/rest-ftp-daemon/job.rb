@@ -329,44 +329,6 @@ module RestFtpDaemon
 
   private
 
-    def info message, level = 0
-      return if @logger.nil?
-      @logger.info_with_id message, level: level, id: @id
-    end
-
-    def oops signal_name, exception, error_name = nil, include_backtrace = false
-      # Log this error
-      error_name = exception.class if error_name.nil?
-      info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}] #{exception.message}"
-
-      # Close ftp connexion if open
-      @ftp.close unless @ftp.nil? || @ftp.welcome.nil?
-
-      # Update job's internal status
-      @status = :failed
-      @error = error_name
-      set :error_name, error_name
-      set :error_exception, exception.class
-      set :error_message, exception.message
-
-      # Build status stack
-      notif_status = nil
-      if include_backtrace
-        set :error_backtrace, exception.backtrace
-        notif_status = {
-          backtrace: exception.backtrace,
-        }
-      end
-
-      # Increment counter for this error
-      $queue.counter_inc "err_#{error_name}"
-      $queue.counter_inc :jobs_failed
-
-      # Prepare notification if signal given
-      return unless signal_name
-      client_notify signal_name, error_name, notif_status
-    end
-
     def flag_default name, default
       # build the flag instance var name
       variable = "@#{name.to_s}"
@@ -608,6 +570,51 @@ module RestFtpDaemon
 
     def get_bitrate total, last_timestamp
       total.to_f / (Time.now - last_timestamp)
+    end
+
+
+    def info message, context = {}
+      return if @logger.nil?
+
+      # Inject context
+      context[:id] = @id
+      context[:origin] = self.class
+
+      # Forward to logger
+      @logger.info_with_id message, context
+    end
+
+    def oops signal_name, exception, error_name = nil, include_backtrace = false
+      # Log this error
+      error_name = exception.class if error_name.nil?
+      info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}] #{exception.message}"
+
+      # Close ftp connexion if open
+      @ftp.close unless @ftp.nil? || @ftp.welcome.nil?
+
+      # Update job's internal status
+      @status = :failed
+      @error = error_name
+      #set :error_name, error_name
+      set :error_exception, exception.class
+      set :error_message, exception.message
+
+      # Build status stack
+      notif_status = nil
+      if include_backtrace
+        set :error_backtrace, exception.backtrace
+        notif_status = {
+          backtrace: exception.backtrace,
+        }
+      end
+
+      # Increment counter for this error
+      $queue.counter_inc "err_#{error_name}"
+      $queue.counter_inc :jobs_failed
+
+      # Prepare notification if signal given
+      return unless signal_name
+      client_notify signal_name, error_name, notif_status
     end
 
   end

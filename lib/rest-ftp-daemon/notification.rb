@@ -58,10 +58,14 @@ module RestFtpDaemon
 
   protected
 
-    def info message, level = 0
+    def info message, context = {}
       return if @logger.nil?
-      #puts "JOB: #{message}"
-      @logger.info_with_id message, level: level, id: @id
+
+      # Inject context
+      context[:id] = @id
+      context[:origin] = self.class
+
+      @logger.info_with_id message, context
     end
 
   end
