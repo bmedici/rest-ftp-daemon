@@ -42,13 +42,20 @@ module RestFtpDaemon
       Thread.new do |thread|
         # Prepare query
         uri = URI(url)
-        headers = {"Content-Type" => "application/json",
-                  "Accept" => "application/json"}
+        headers = {
+          'Content-Type'  => 'application/json',
+          'Accept'        => 'application/json',
+          'User-Agent'    => "#{APP_NAME} - #{APP_VER}"
+           }
+        data = body.to_json
+        info "sending #{data}"
+
+        # Prepare HTTP client
+        http = Net::HTTP.new uri.host, uri.port
+        # http.initialize_http_header({'User-Agent' => APP_NAME})
 
         # Post notification
-        info "sending: #{body.inspect}"
-        http = Net::HTTP.new(uri.host, uri.port)
-        response = http.post(uri.path, body.to_json, headers)
+        response = http.post uri.path, data, headers
 
         # info "notify reply: #{response.body.strip}"
         info "reply: #{response.body.strip}"
