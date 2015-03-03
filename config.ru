@@ -5,7 +5,7 @@ require 'rest-ftp-daemon'
 
 # Create queue and worker pool
 $queue = RestFtpDaemon::JobQueue.new
-$pool = RestFtpDaemon::WorkerPool.new(Settings[:workers] || DEFAULT_WORKERS)
+$pool = RestFtpDaemon::WorkerPool.new(Settings[:workers] || APP_WORKERS)
 
 # Rack reloader
 unless Settings.namespace == "production"

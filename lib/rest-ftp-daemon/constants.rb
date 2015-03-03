@@ -2,25 +2,29 @@
 APP_NAME = "rest-ftp-daemon"
 APP_VER = "0.104.5"
 
-# Some global constants
-IDENT_JOB_LEN = 4
-IDENT_NOTIF_LEN = 4
-IDENT_RANDOM_LEN = 8
-IDENT_TEMPFILE_LEN = 8
-DEFAULT_LOGS_PIPE_LEN = 12
-DEFAULT_LOGS_ID_LEN = 8
 
+
+# Logging
+DEFAULT_LOGS_PIPE_LEN = 10
+DEFAULT_LOGS_ID_LEN = 8
 DEFAULT_LOGS_TRIM_LINE = 80
 
+# Jobs identifiers length
+JOB_RANDOM_LEN = 8
+JOB_TEMPFILE_LEN = 8
+JOB_IDENT_LEN = 4
 
-# Some defaults
-DEFAULT_CONNECT_TIMEOUT_SEC = 30
-DEFAULT_UPDATE_EVERY_KB = 2048
-DEFAULT_WORKERS = 1
+# Jobs
+JOB_UPDATE_KB = 2048
+JOB_DEBUG_FTP = false
 
-# Initialize markers
+# Notifications
+NOTIFY_PREFIX = "rftpd"
+NOTIFY_USERAGENT = "#{APP_NAME} - #{APP_VER}"
+NOTIFY_IDENTIFIER_LEN = 4
+
+# Initialize defaults
 APP_STARTED = Time.now
 APP_LIBS = File.dirname(__FILE__)
+APP_WORKERS = 1
 
-# Debugging
-DEBUG_FTP_COMMANDS = false

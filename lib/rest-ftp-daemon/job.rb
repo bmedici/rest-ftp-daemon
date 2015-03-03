@@ -218,7 +218,7 @@ module RestFtpDaemon
       vectors = Settings.endpoints.clone
 
       # Stack RANDOM into tokens
-      vectors['RANDOM'] = SecureRandom.hex(IDENT_RANDOM_LEN)
+      vectors['RANDOM'] = SecureRandom.hex(JOB_RANDOM_LEN)
 
       # Replace endpoints defined in config
       newpath = path.clone
@@ -361,7 +361,7 @@ module RestFtpDaemon
       end
 
       # Common setup
-      @ftp.debug_mode = DEBUG_FTP_COMMANDS
+      @ftp.debug_mode = JOB_DEBUG_FTP
       @ftp.passive = true
     end
 
@@ -482,13 +482,13 @@ module RestFtpDaemon
       end
 
       # Read source file size and parameters
-      update_every_kb = (Settings.transfer.update_every_kb rescue nil) || DEFAULT_UPDATE_EVERY_KB
+      update_every_kb = (Settings.transfer.update_every_kb rescue nil) || JOB_UPDATE_KB
       notify_after_sec = Settings.transfer.notify_after_sec rescue nil
 
       # Compute temp target name
       target_real = target_name
       if @tempfile
-        target_real = "#{target_name}.#{Helpers.identifier(IDENT_TEMPFILE_LEN)}-temp"
+        target_real = "#{target_name}.#{Helpers.identifier(JOB_TEMPFILE_LEN)}-temp"
         info "Job.ftp_transfer target_real [#{target_real}]"
       end
 

@@ -12,7 +12,7 @@ module RestFtpDaemon
 
     def initialize url, params
       # Generate a random key
-      @id = Helpers.identifier(IDENT_NOTIF_LEN)
+      @id = Helpers.identifier(NOTIFY_IDENTIFIER_LEN)
 
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :notify

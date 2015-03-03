@@ -21,7 +21,7 @@ module RestFtpDaemon
 
       # Identifiers generator
       @last_id = 0
-      @prefix = Helpers.identifier IDENT_JOB_LEN
+      @prefix = Helpers.identifier JOB_IDENT_LEN
       info "queue initialized with prefix: #{@prefix}"
 
       # Mutex for counters
