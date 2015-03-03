@@ -37,11 +37,11 @@ module RestFtpDaemon
       # Params
       body = {
         id:       params[:id].to_s,
-        signal:   params[:signal],
+        signal:   "#{NOTIFY_PREFIX}.#{params[:event].to_s}",
         error:    params[:error],
         host:     Settings['host'].to_s,
         }
-      body[:status] = params[:status] if (params[:status].is_a? Enumerable) unless params[:status].nil?
+      body[:status] = params[:status] if params[:status].is_a? Enumerable
 
       # Send message in a thread
       Thread.new do |thread|
@@ -62,8 +62,17 @@ module RestFtpDaemon
         # Post notification
         response = http.post uri.path, data, headers
 
-        # info "notify reply: #{response.body.strip}"
-        info "reply: #{response.body.strip}"
+        # Handle server response / multi-lines
+        response_lines = response.body.lines
+
+        if response_lines.size > 1
+          human_size = Helpers.format_bytes(response.body.bytesize, "B")
+          #human_size = 0
+          info "received [#{response.code}] #{human_size} (#{response_lines.size} lines)", lines: response_lines
+        else
+          info "received [#{response.code}] #{response.body.strip}"
+        end
+
       end
 
     end

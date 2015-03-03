@@ -557,12 +557,9 @@ module RestFtpDaemon
 
       # Ok, create a notification!
       begin
-        RestFtpDaemon::Notification.new @notify, {
-          id: @id,
-          signal: signal,
-          error: error,
-          status: status,
-          }
+        payload[:id] = @id
+        payload[:event] = event
+        RestFtpDaemon::Notification.new @notify, payload
       rescue Exception => ex
         info "Job.client_notify exception: #{ex.inspect}"
       end
