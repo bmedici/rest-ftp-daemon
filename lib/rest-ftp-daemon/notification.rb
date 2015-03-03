@@ -18,15 +18,20 @@ module RestFtpDaemon
       @logger = RestFtpDaemon::LoggerPool.instance.get :notify
 
       # Check context
+
       if url.nil?
-        info "skipping (missing url): #{params}"
+        info "skipping (missing url): #{params.inspect}"
         return
-      elsif params[:signal].nil?
-        info "skipping (missing signal): #{params}"
+
+      elsif params[:event].nil?
+        info "skipping (missing event): #{params.inspect}"
         return
+
       else
-        # info "queuing: s[#{params[:signal]}] e[#{params[:error]}] u[#{url}]"
-        info "queuing: #{params.inspect}"
+        #info "created: OK"
+        # info "created: #{params.class}"
+        info "created #{params.inspect}"
+
       end
 
       # Params
