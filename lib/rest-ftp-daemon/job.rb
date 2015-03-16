@@ -629,7 +629,6 @@ module RestFtpDaemon
 
       # Forward to logger
       @logger.info_with_id message, context
-      #LoggerPool.log_to_pipe
     end
 
     def oops event, exception, error = nil, include_backtrace = false

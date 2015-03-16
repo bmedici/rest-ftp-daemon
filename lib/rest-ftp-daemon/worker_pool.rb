@@ -1,3 +1,5 @@
+
+
 module RestFtpDaemon
   class WorkerPool
 
@@ -6,6 +8,7 @@ module RestFtpDaemon
     def initialize number_threads
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
+
 
       # Check parameters
       raise "A thread count of #{number_threads} is less than one" if number_threads < 1
@@ -128,7 +131,7 @@ module RestFtpDaemon
     def info message, context = {}
       return if @logger.nil?
 
-      # Inject context
+      # Ensure context is a hash of options and inject context
       context[:id] = Thread.current[:name]
       context[:origin] = self.class
 

@@ -3,11 +3,11 @@ APP_NAME = "rest-ftp-daemon"
 APP_VER = "0.104.5"
 
 
-
 # Logging
 DEFAULT_LOGS_PIPE_LEN = 10
 DEFAULT_LOGS_ID_LEN = 8
 DEFAULT_LOGS_TRIM_LINE = 80
+
 
 # Jobs identifiers length
 JOB_RANDOM_LEN = 8
