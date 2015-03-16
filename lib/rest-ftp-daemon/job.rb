@@ -294,7 +294,12 @@ module RestFtpDaemon
 
       # Guess source file names using Dir.glob
       source_matches = Dir.glob @source_path
-      info "Job.transfer sources #{source_matches.inspect}"
+
+      # Log detected names
+      source_names = source_matches.map{ |s| Helpers.extract_filename s }
+      info "Job.transfer sources #{source_names.inspect}"
+
+      # Asserts and counters
       raise RestFtpDaemon::JobSourceNotFound if source_matches.empty?
       set :source_count, source_matches.count
       set :source_files, source_matches
@@ -331,7 +336,7 @@ module RestFtpDaemon
       end
 
       # FTP transfer finished
-      ftp_finish
+      ftp_finished
     end
 
 
@@ -389,10 +394,10 @@ module RestFtpDaemon
       @ftp.passive = true
     end
 
-    def ftp_finish
+    def ftp_finished
       # Close FTP connexion
       @ftp.close
-      info "Job.ftp_finish closed"
+      info "Job.ftp_finished closed"
 
       # FTP debug mode ?
       if @ftp_debug_enabled
@@ -504,15 +509,15 @@ module RestFtpDaemon
       return results.count >0
     end
 
-    def ftp_transfer source_match, target_name = nil
+    def ftp_transfer source_filename, target_name = nil
       # Method assertions
-      info "Job.ftp_transfer source_match [#{source_match}]"
+      info "Job.ftp_transfer source: #{source_filename}"
       raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/1" if @ftp.nil?
-      raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/2" if source_match.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/2" if source_filename.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
-      target_name ||= Helpers.extract_filename source_match
-      info "Job.ftp_transfer target_name [#{target_name}]"
+      target_name ||= Helpers.extract_filename source_filename
+      info "Job.ftp_transfer target: #{target_name}"
       set :source_processing, target_name
 
       # Check for target file presence
@@ -537,8 +542,8 @@ module RestFtpDaemon
       # Compute temp target name
       target_real = target_name
       if @tempfile
-        target_real = "#{target_name}.#{Helpers.identifier(JOB_TEMPFILE_LEN)}-temp"
-        info "Job.ftp_transfer target_real [#{target_real}]"
+        target_real = "#{target_name}.temp-#{Helpers.identifier(JOB_TEMPFILE_LEN)}"
+        info "Job.ftp_transfer tempfile: #{target_real}"
       end
 
       # Start transfer
@@ -546,7 +551,7 @@ module RestFtpDaemon
       t0 = tstart = Time.now
       notified_at = Time.now
       @status = :uploading
-      @ftp.putbinaryfile(source_match, target_real, chunk_size) do |block|
+      @ftp.putbinaryfile(source_filename, target_real, chunk_size) do |block|
         # Update counters
         @transfer_sent += block.bytesize
         set :transfer_sent, @transfer_sent
@@ -588,7 +593,7 @@ module RestFtpDaemon
       # Rename temp file to target_temp
       if @tempfile
         @status = :renaming
-        info "Job.ftp_transfer renaming to #{target_name}"
+        info "Job.ftp_transfer renaming: #{target_name}"
         @ftp.rename target_real, target_name
       end
 
