@@ -633,7 +633,13 @@ module RestFtpDaemon
     def oops event, exception, error = nil, include_backtrace = false
       # Log this error
       error = exception.class if error.nil?
-      info "Job.oops event[#{event.to_s}] error[#{error.to_s}] ex[#{exception.class}] #{exception.message}"
+
+      message = "Job.oops event[#{event.to_s}] error[#{error.to_s}] ex[#{exception.class}] #{exception.message}"
+      if include_backtrace
+        info message, lines: exception.backtrace
+      else
+        info message
+      end
 
       # Close ftp connexion if open
       @ftp.close unless @ftp.nil? || @ftp.welcome.nil?
