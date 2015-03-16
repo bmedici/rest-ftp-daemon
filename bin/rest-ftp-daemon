@@ -57,7 +57,7 @@ abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exists?
 
 # Load config, and merge options from ARGV into settings
 begin
-  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/config")
+  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/settings")
   Settings.merge!(options)
 rescue Psych::SyntaxError => e
   abort "EXITING: config file syntax error: #{e.message}"

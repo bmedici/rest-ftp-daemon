@@ -6,11 +6,12 @@ require 'grape-entity'
 require 'haml'
 require "facter"
 require "sys/cpu"
+require 'syslog'
 
 
 # My libs
 require 'rest-ftp-daemon/constants'
-require 'rest-ftp-daemon/config'
+require 'rest-ftp-daemon/settings'
 require 'rest-ftp-daemon/exceptions'
 require 'rest-ftp-daemon/helpers'
 require 'rest-ftp-daemon/uri'

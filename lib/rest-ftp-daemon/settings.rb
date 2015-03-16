@@ -19,7 +19,7 @@ class Settings < Settingslogic
 
   # Direct access to any depth
   def at *path
-    #put "Settings.nested: wrong path [#{path.inspect}]" unless path.is_a? Hash
+    #put "Config.nested: wrong path [#{path.inspect}]" unless path.is_a? Hash
     path.reduce(Settings) {|m,key| m && m[key.to_s] }
   end
 
