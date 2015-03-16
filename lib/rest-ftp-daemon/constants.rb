@@ -14,14 +14,16 @@ JOB_RANDOM_LEN = 8
 JOB_TEMPFILE_LEN = 8
 JOB_IDENT_LEN = 4
 
+
 # Jobs
 JOB_UPDATE_KB = 2048
-JOB_DEBUG_FTP = false
+
 
 # Notifications
 NOTIFY_PREFIX = "rftpd"
 NOTIFY_USERAGENT = "#{APP_NAME} - #{APP_VER}"
 NOTIFY_IDENTIFIER_LEN = 4
+
 
 # Initialize defaults
 APP_STARTED = Time.now

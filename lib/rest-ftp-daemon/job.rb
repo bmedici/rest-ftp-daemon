@@ -40,6 +40,9 @@ module RestFtpDaemon
       @status = nil
       @wid = nil
 
+      # Debug mode
+      @ftp_debug_enabled = (Settings.at :debug, :ftp) == true
+
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
 
@@ -367,13 +370,9 @@ module RestFtpDaemon
       end
 
       # FTP debug mode ?
-      if (JOB_DEBUG_FTP==true)
-        # Log debug status
-        info "Job.ftp_init JOB_DEBUG_FTP: true"
-
+      if @ftp_debug_enabled
         # Output header to STDOUT
         puts
-        #puts JOB_DEBUG_SEP
         puts "-------------------- FTP SESSION STARTING --------------------"
         puts "job id\t #{@id}"
         puts "source\t #{@source}"
@@ -396,7 +395,7 @@ module RestFtpDaemon
       info "Job.ftp_finish closed"
 
       # FTP debug mode ?
-      if (JOB_DEBUG_FTP==true)
+      if @ftp_debug_enabled
         puts "-------------------- FTP SESSION ENDED -----------------------"
       end
 
