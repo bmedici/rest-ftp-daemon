@@ -41,28 +41,26 @@
     %td
       = job.status
 
-      -# if (source_count > 1) && (source_processed < source_count)
       - if (source_processed < source_count)
-        %small= " (#{source_processed}/#{source_count})"
+        = " (#{source_processed}/#{source_count})"
 
-      - unless source_processing.nil?
+      - unless progress.nil?
+        = "#{progress}%"
+
+      - if job.status != JOB_STATUS_FINISHED
         %br
-        %b= " #{source_processing}"
+        %small= source_processing unless source_processing.nil?
 
     %td
-      - unless progress.nil?
+      - if !job.error && job.status != JOB_STATUS_FINISHED
+        -# unless progress.nil? ||
         .progress
           .progress-bar{style:"width: #{progress}%;"}
-            = Helpers.format_bytes job.get(:transfer_sent), "B"
+            = "#{progress}%" unless progress.nil?
 
-    %td
-      - unless job.error || job.status == :finished
-        - unless progress.nil?
-          = "#{progress}%"
       - else
         .error{title: errmsg}
           = Helpers.text_or_empty(job.error)
-
 
     %td.nobr.text-right
       = Helpers.format_bytes(size, "B")
@@ -76,5 +74,4 @@
         .label.label-info.flag.worker-label= job.priority
 
       - unless job.wid.nil?
-        %br
         .label.label-warning.flag.worker-label= job.wid

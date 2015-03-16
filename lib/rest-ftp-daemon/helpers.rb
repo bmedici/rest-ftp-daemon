@@ -20,7 +20,8 @@ module RestFtpDaemon
     end
 
     def self.text_or_empty text
-      return "&Oslash;" if text.nil? || text.empty?
+      return "-" if text.nil? || text.empty?
+      # return "&Oslash;" if text.nil? || text.empty?
       text
     end
 
