@@ -413,8 +413,8 @@ module RestFtpDaemon
       @status = :ftp_connect
 
       # Method assertions
-      info "Job.ftp_connect [#{host}]"
       host = @target_url.host
+      info "Job.ftp_connect [#{host}]"
       raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/1" if @ftp.nil?
       raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/2" if @target_url.nil?
 
