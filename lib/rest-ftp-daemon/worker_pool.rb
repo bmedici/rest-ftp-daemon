@@ -132,6 +132,7 @@ module RestFtpDaemon
       return if @logger.nil?
 
       # Ensure context is a hash of options and inject context
+      context = {} unless context.is_a? Hash
       context[:id] = Thread.current[:name]
       context[:origin] = self.class
 
