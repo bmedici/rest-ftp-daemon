@@ -318,15 +318,8 @@ module RestFtpDaemon
         set :source_processed, done
       end
 
-      # Close FTP connexion
-      @ftp.close
-      info "Job.transfer disconnecting"
-      @status = :disconnecting
-
-      # Update counters and flags
-      $queue.counter_inc :jobs_finished
-      $queue.counter_add :transferred, @transfer_total
-      @finished_at = Time.now
+      # FTP transfer finished
+      ftp_finish
     end
 
 
@@ -367,6 +360,25 @@ module RestFtpDaemon
       # Common setup
       @ftp.debug_mode = JOB_DEBUG_FTP
       @ftp.passive = true
+    end
+
+    def ftp_finish
+      # Close FTP connexion
+      @ftp.close
+      info "Job.ftp_finish closed"
+
+      # FTP debug mode ?
+      if (JOB_DEBUG_FTP==true)
+        puts "-------------------- FTP SESSION ENDED -----------------------"
+      end
+
+      # Update job status
+      @status = :disconnecting
+      @finished_at = Time.now
+
+      # Update counters
+      $queue.counter_inc :jobs_finished
+      $queue.counter_add :transferred, @transfer_total
     end
 
     def ftp_connect
