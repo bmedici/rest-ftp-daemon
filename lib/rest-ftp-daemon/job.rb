@@ -357,8 +357,27 @@ module RestFtpDaemon
         railse RestFtpDaemon::JobTargetUnsupported
       end
 
-      # Common setup
-      @ftp.debug_mode = JOB_DEBUG_FTP
+      # FTP debug mode ?
+      if (JOB_DEBUG_FTP==true)
+        # Log debug status
+        info "Job.ftp_init JOB_DEBUG_FTP: true"
+
+        # Output header to STDOUT
+        puts
+        #puts JOB_DEBUG_SEP
+        puts "-------------------- FTP SESSION STARTING --------------------"
+        puts "job id\t #{@id}"
+        puts "source\t #{@source}"
+        puts "target\t #{@target}"
+        puts "host\t #{@target_url.host}"
+        puts "user\t #{@target_url.user}"
+        puts "--------------------------------------------------------------"
+
+        # Set debug mode on connection
+        @ftp.debug_mode = true
+      end
+
+      # Activate passive mode
       @ftp.passive = true
     end
 
