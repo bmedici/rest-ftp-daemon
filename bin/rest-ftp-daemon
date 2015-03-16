@@ -66,10 +66,10 @@ end
 
 # Validate network configuration
 if command == "start"
-  if Settings['port'].nil?
+  if !Settings.port
     abort "ABORTING: Network port is missing"
-  elsif RestFtpDaemon::Helpers.local_port_used?(Settings['port'])
-    abort "ABORTING: Network port #{Settings['port']} is already in use"
+  elsif RestFtpDaemon::Helpers.local_port_used? Settings.port
+    abort "ABORTING: Network port #{Settings.port} is already in use"
   end
 end
 
@@ -77,11 +77,11 @@ end
 # ARGV: build final
 argv = []
 argv << ["-e", Settings.namespace]
-argv << ["-p", Settings["port"].to_s] unless Settings["port"].nil?
+argv << ["-p", Settings.port.to_s] if Settings.port
 argv << ["--pid", Settings.pidfile]
 argv << ["--tag", "'#{APP_NAME}/#{Settings.namespace}'"]
-argv << ["--log", Settings["logs"]["thin"].to_s] unless Settings["logs"]["thin"].nil? if Settings["logs"].is_a? Enumerable
-argv << ["--daemonize"] if [1, true].include? Settings["daemonize"]
+argv << ["--log", Settings.at(:logs, :thin)]
+argv << ["--daemonize"] if [1, true].include? Settings.daemonize
 
 # ARGV: logging
 if (Settings["logs"].is_a? Enumerable) && (logfile=Settings["logs"]["thin"])
@@ -89,9 +89,9 @@ if (Settings["logs"].is_a? Enumerable) && (logfile=Settings["logs"]["thin"])
 end
 
 # ARGV: user and group
-if Settings["user"] && Settings["group"]
-  argv << ["--user", Settings["user"]]
-  argv << ["--group", Settings["group"]]
+if Settings.user && Settings.group
+  argv << ["--user", Settings.user]
+  argv << ["--group", Settings.group]
 end
 
 
@@ -102,11 +102,11 @@ argv << command unless command.nil?
 puts "--- #{APP_NAME} #{APP_VER}"
 puts "Config file  \t #{APP_CONF}"
 puts "PID file     \t #{Settings.pidfile}"
-puts "Daemonize    \t #{Settings['daemonize'] ? 'YES' : "no"}"
+puts "Daemonize    \t #{Settings.daemonize ? 'YES' : "no"}"
 puts "Namespace    \t #{Settings.namespace}"
-puts "Network port \t #{Settings['port']}"
-puts "User:group   \t #{Settings['user']}:#{Settings['group']}" if Settings['user'] || Settings['group']
 puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
+puts "Network port \t #{Settings.port}"
+puts "User:group   \t #{Settings.user}:#{Settings.group}" if Settings.users || Setting.group
 puts
 puts "--- Thin ARGV"
 puts argv.flatten.join(' ')
