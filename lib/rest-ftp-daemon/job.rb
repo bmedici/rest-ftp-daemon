@@ -531,7 +531,7 @@ module RestFtpDaemon
       # Use source filename if target path provided none (typically with multiple sources)
       target_name ||= Helpers.extract_filename source_filename
       info "Job.ftp_transfer target: #{target_name}"
-      set :source_processing, target_name
+      set :source_current, target_name
 
       # Check for target file presence
       @status = :checking_target
@@ -614,7 +614,7 @@ module RestFtpDaemon
       set :transfer_bitrate, get_bitrate(@transfer_total, tstart).round(0)
 
       # Done
-      set :source_processing, nil
+      set :source_current, nil
       info "Job.ftp_transfer finished"
     end
 

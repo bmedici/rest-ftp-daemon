@@ -3,7 +3,7 @@
   - progress = job.get :progress
   - source_count = job.get(:source_count) || 0
   - source_processed = job.get(:source_processed) || 0
-  - source_processing = job.get(:source_processing)
+  - source_current = job.get(:source_current)
   - presented = present job, :with => RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
   - errmsg = job.get :error_message
   - method = job.get(:target_method)
@@ -49,7 +49,7 @@
 
       - if job.status != JOB_STATUS_FINISHED
         %br
-        %small= source_processing unless source_processing.nil?
+        %b= source_current unless source_current.nil?
 
     %td
       - if !job.error && job.status != JOB_STATUS_FINISHED
