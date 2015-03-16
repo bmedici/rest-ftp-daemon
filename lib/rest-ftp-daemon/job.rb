@@ -114,6 +114,9 @@ module RestFtpDaemon
       rescue SocketError => exception
         return oops :ended, exception, :conn_socket
 
+      rescue EOFError => exception
+        return oops :ended, exception, :conn_eof
+
       rescue Errno::EHOSTDOWN => exception
         return oops :ended, exception, :conn_host_is_down
 
