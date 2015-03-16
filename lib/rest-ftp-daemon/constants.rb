@@ -1,6 +1,6 @@
 # Terrific constants
 APP_NAME = "rest-ftp-daemon"
-APP_VER = "0.104.5"
+APP_VER = "0.200"
 
 
 # Logging
