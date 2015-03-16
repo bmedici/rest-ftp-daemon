@@ -2,7 +2,7 @@
 begin
   require "settingslogic"
 rescue LoadError
-  raise "config.rb warning: Settingslogic is needed to provide configuration values to the Gemspec file"
+  raise "warning: Settingslogic is needed to provide configuration values to the Gemspec file"
 end
 
 # Configuration class
@@ -19,7 +19,6 @@ class Settings < Settingslogic
 
   # Direct access to any depth
   def at *path
-    #put "Config.nested: wrong path [#{path.inspect}]" unless path.is_a? Hash
     path.reduce(Settings) {|m,key| m && m[key.to_s] }
   end
 
