@@ -10,11 +10,11 @@
 
   - if !job.error.nil?
     - trclass = "danger"
-  - elsif job.status == :uploading
+  - elsif job.status == JOB_STATUS_UPLOADING
     - trclass = "info"
-  - elsif job.status == :finished
+  - elsif job.status == JOB_STATUS_FINISHED
     - trclass = "success"
-  - elsif job.status == :queued
+  - elsif job.status == JOB_STATUS_QUEUED
     - trclass = "active"
   - else
     - trclass = "warning"

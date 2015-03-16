@@ -167,7 +167,7 @@ module RestFtpDaemon
 
       else
         # All done !
-        @status = :finished
+        @status = JOB_STATUS_FINISHED
         info "Job.process notify: ended"
         client_notify :ended
       end
@@ -183,7 +183,7 @@ module RestFtpDaemon
 
     def set_queued
       # Update job status
-      @status = :queued
+      @status = JOB_STATUS_QUEUED
     end
 
     def oops_after_crash exception
@@ -550,7 +550,7 @@ module RestFtpDaemon
       chunk_size = update_every_kb * 1024
       t0 = tstart = Time.now
       notified_at = Time.now
-      @status = :uploading
+      @status = JOB_STATUS_UPLOADING
       @ftp.putbinaryfile(source_filename, target_real, chunk_size) do |block|
         # Update counters
         @transfer_sent += block.bytesize

@@ -182,7 +182,7 @@ module RestFtpDaemon
     def conchita_loop
       info "conchita starting with: #{@conchita.inspect}"
       loop do
-        conchita_clean :finished
+        conchita_clean JOB_STATUS_FINISHED
         conchita_clean :failed
         sleep @conchita[:timer]
       end

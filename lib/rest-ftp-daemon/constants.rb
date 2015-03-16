@@ -17,7 +17,9 @@ JOB_IDENT_LEN = 4
 
 # Jobs
 JOB_UPDATE_KB = 2048
-
+JOB_STATUS_UPLOADING = :uploading
+JOB_STATUS_FINISHED = :finished
+JOB_STATUS_QUEUED = :queued
 
 # Notifications
 NOTIFY_PREFIX = "rftpd"

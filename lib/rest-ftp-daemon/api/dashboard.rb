@@ -35,7 +35,7 @@ module RestFtpDaemon
         case @only
         when nil
           @jobs_current = popped_jobs
-        when :queued
+        when JOB_STATUS_QUEUED
           @jobs_current = @jobs_queued
         else
           @jobs_current = $queue.popped_reverse_sorted_by_status @only
