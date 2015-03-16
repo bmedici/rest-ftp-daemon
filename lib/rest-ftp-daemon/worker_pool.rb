@@ -10,14 +10,18 @@ module RestFtpDaemon
       # Check parameters
       raise "A thread count of #{number_threads} is less than one" if number_threads < 1
 
-      # Prepare status hash
+      # Prepare status hash and vars
       @statuses = {}
       @workers = {}
+      @mutex = Mutex.new
+      @counter = 0
 
       # Create worker threads
       info "WorkerPool initializing with #{number_threads} workers"
-      @mutex = Mutex.new
-      @counter = 0
+      create_worker_threads number_threads
+
+    end
+
     def worker_vars
       vars = {}
 
@@ -28,26 +32,31 @@ module RestFtpDaemon
 
       vars
     end
+
+  private
+
+    def create_worker_threads n
+      n.times do
         # Increment counter
         @mutex.synchronize do
           @counter +=1
         end
+
+        # Create a dedicated thread for this worker
         name = "w#{@counter}"
+        @workers[name] = create_worker_thread name
+      end
 
-        th = Thread.new name do
+    end
+    def create_worker_thread name
+              @workers[name] = Thread.new name do
 
-          # Set thread context
-          Thread.current[:name] = name
-          Thread.current[:vars] = {
-            started_at: Time.now,
-            }
+        # Set thread context
+        Thread.current[:name] = name
+        Thread.current[:vars] = { started_at: Time.now }
 
-          # Start working
-          work
-        end
-
-        # Add this worker to the ThreadGroup
-        @workers[name] = th
+        # Start working
+        work
       end
 
     end
@@ -109,6 +118,7 @@ module RestFtpDaemon
       # Wait a bit
       sleep 1
     end
+
 
   protected
 
