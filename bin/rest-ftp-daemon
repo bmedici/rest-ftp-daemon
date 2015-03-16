@@ -83,9 +83,10 @@ argv << ["--tag", "'#{APP_NAME}/#{Settings.namespace}'"]
 argv << ["--log", Settings.at(:logs, :thin)]
 argv << ["--daemonize"] if [1, true].include? Settings.daemonize
 
+
 # ARGV: logging
-if (Settings["logs"].is_a? Enumerable) && (logfile=Settings["logs"]["thin"])
-  argv << ["--log", logfile]
+if (logfile = Settings.at :logs, :thin)
+  argv << ["--log", logfile] if logfile
 end
 
 # ARGV: user and group
@@ -104,9 +105,9 @@ puts "Config file  \t #{APP_CONF}"
 puts "PID file     \t #{Settings.pidfile}"
 puts "Daemonize    \t #{Settings.daemonize ? 'YES' : "no"}"
 puts "Namespace    \t #{Settings.namespace}"
-puts Settings.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
 puts "Network port \t #{Settings.port}"
 puts "User:group   \t #{Settings.user}:#{Settings.group}" if Settings.users || Setting.group
+puts Settings.dump
 puts
 puts "--- Thin ARGV"
 puts argv.flatten.join(' ')
