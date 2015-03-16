@@ -13,6 +13,7 @@ module RestFtpDaemon
   class JobAssertionFailed        < RestFtpDaemonException; end
   class JobMissingAttribute       < RestFtpDaemonException; end
   class JobSourceNotFound         < RestFtpDaemonException; end
+  class JobSourceNotReadable      < RestFtpDaemonException; end
   class JobTargetUnsupported      < RestFtpDaemonException; end
   class JobTargetUnparseable      < RestFtpDaemonException; end
   class JobTargetFileExists       < RestFtpDaemonException; end

@@ -150,6 +150,9 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobSourceNotFound => exception
         return oops :ended, exception, :source_not_found
 
+      rescue RestFtpDaemon::JobSourceNotReadable => exception
+        return oops :ended, exception, :source_not_readable
+
       rescue RestFtpDaemon::JobTargetFileExists => exception
         return oops :ended, exception, :target_file_exists
 
@@ -322,7 +325,12 @@ module RestFtpDaemon
       # Check source files presence and compute total size, they should be there, coming from Dir.glob()
       @transfer_total = 0
       source_matches.each do |filename|
-        raise RestFtpDaemon::JobSourceNotFound unless File.exists? filename
+        raise RestFtpDaemon::JobSourceNotReadable unless File.readable? filename
+        raise RestFtpDaemon::JobSourceNotReadable unless File.file? filename
+
+        # Skip if not a flie
+        next unless File.file? filename
+
         @transfer_total += File.size filename
       end
       set :transfer_total, @transfer_total
@@ -330,7 +338,12 @@ module RestFtpDaemon
       # Handle each source file matched, and start a transfer
       done = 0
       source_matches.each do |filename|
+        # Increment counter
+
+        # Do the transfer, only if it's a file
         ftp_transfer filename, target_name
+
+        # Update counters
         done += 1
         set :source_processed, done
       end
