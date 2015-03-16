@@ -82,12 +82,22 @@ argv << ["--pid", Settings.pidfile]
 argv << ["--tag", "'#{APP_NAME}/#{Settings.namespace}'"]
 argv << ["--log", Settings["logs"]["thin"].to_s] unless Settings["logs"]["thin"].nil? if Settings["logs"].is_a? Enumerable
 argv << ["--daemonize"] if [1, true].include? Settings["daemonize"]
-# User / group
+
+# ARGV: logging
+if (Settings["logs"].is_a? Enumerable) && (logfile=Settings["logs"]["thin"])
+  argv << ["--log", logfile]
+end
+
+# ARGV: user and group
 if Settings["user"] && Settings["group"]
   argv << ["--user", Settings["user"]]
   argv << ["--group", Settings["group"]]
 end
-argv << command unless command.nil? rescue nil
+
+
+# ARGV: add command
+argv << command unless command.nil?
+
 # Display final configuration
 puts "--- #{APP_NAME} #{APP_VER}"
 puts "Config file  \t #{APP_CONF}"
