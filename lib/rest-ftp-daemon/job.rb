@@ -180,6 +180,12 @@ module RestFtpDaemon
       @status = :queued
     end
 
+    def oops_after_crash exception
+      # info "Yes, we crash!"
+      return oops :crashed, exception, :crashed
+    end
+
+
   protected
 
     def age

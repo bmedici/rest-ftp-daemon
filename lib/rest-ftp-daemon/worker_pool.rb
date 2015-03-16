@@ -18,8 +18,16 @@ module RestFtpDaemon
       info "WorkerPool initializing with #{number_threads} workers"
       @mutex = Mutex.new
       @counter = 0
+    def worker_vars
+      vars = {}
 
-      number_threads.times do
+      @workers.each do |name, thread|
+        #currents[thread.id] = thread.current
+        vars[thread[:name]] = thread[:vars]
+      end
+
+      vars
+    end
         # Increment counter
         @mutex.synchronize do
           @counter +=1
@@ -70,12 +78,7 @@ module RestFtpDaemon
           $queue.counter_inc :jobs_processed
 
         rescue Exception => ex
-          worker_status :crashed
-          info "UNHANDLED EXCEPTION: #{ex.message}"
-          ex.backtrace.each do |line|
-            info line, 1
-          end
-          sleep 1
+          handle_job_uncaught_exception job, ex
 
         else
           # Clean job status
@@ -87,15 +90,24 @@ module RestFtpDaemon
       end
     end
 
-    def worker_vars
-      vars = {}
+    def handle_job_uncaught_exception job, ex
+      begin
+        # Log the exception
+        info "UNHDNALED EXCEPTION: job: #{ex.message}", lines: ex.backtrace
 
-      @workers.each do |name, thread|
-        #currents[thread.id] = thread.current
-        vars[thread[:name]] = thread[:vars]
+        # Tell the worker has creashed
+        worker_status :crashed
+
+        # Flag the job as crashed
+        job.oops_after_crash ex
+
+      rescue Exception => ex
+        info "DOUBLE EXCEPTION: #{ex.message}", lines: ex.backtrace
+
       end
 
-      vars
+      # Wait a bit
+      sleep 1
     end
 
   protected
