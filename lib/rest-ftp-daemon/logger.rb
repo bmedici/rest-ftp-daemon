@@ -1,8 +1,9 @@
 class Logger
 
-  attr_accessor :pipe
-
   def info_with_id message, context = {}
+    # Ensure context is a hash of options
+    context = {} unless context.is_a? Hash
+
     # Default context
     #add Logger::DEBUG,  "info_with_id/context: #{context.inspect} | #{message}"
     context[:level] ||= 0

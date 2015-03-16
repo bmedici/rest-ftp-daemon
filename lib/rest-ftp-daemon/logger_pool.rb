@@ -25,12 +25,14 @@ module RestFtpDaemon
         # stamp = Time.now.strftime("%Y-%m-%d %H:%M:%S")
         stamp = datetime.strftime("%Y-%m-%d %H:%M:%S")
         field_pipe = "%-#{DEFAULT_LOGS_PIPE_LEN.to_i}s" % progname
-        "#{stamp} #{field_pipe} #{message}\n"
+        "#{stamp}\t#{field_pipe}\t#{message}\n"
       end
 
       # Finally return this logger
       logger
     end
+
+  private
 
   end
 end
