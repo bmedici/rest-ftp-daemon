@@ -58,11 +58,10 @@ module RestFtpDaemon
 
       # Flag current job
       @queued_at = Time.now
-      @status = :created
 
       # Send first notification
-      info "Job.initialized"
-      client_notify "rftpd.queued"
+      info "Job.initialize notify: queued"
+      client_notify :queued
     end
 
     def process
@@ -76,34 +75,34 @@ module RestFtpDaemon
         prepare
 
       rescue RestFtpDaemon::JobMissingAttribute => exception
-        return oops "rftpd.started", exception, :missing_attribute
+        return oops :started, exception, :missing_attribute
 
       rescue RestFtpDaemon::JobUnresolvedTokens => exception
-        return oops "rftpd.started", exception, :unresolved_tokens
+        return oops :started, exception, :unresolved_tokens
 
       rescue RestFtpDaemon::JobTargetUnparseable => exception
-        return oops "rftpd.started", exception, :target_unparseable
+        return oops :started, exception, :target_unparseable
 
       rescue RestFtpDaemon::JobTargetUnsupported => exception
-        return oops "rftpd.started", exception, :target_unsupported
+        return oops :started, exception, :target_unsupported
 
       rescue URI::InvalidURIError => exception
-        return oops "rftpd.started", exception, :target_invalid
+        return oops :started, exception, :target_invalid
 
       rescue RestFtpDaemon::JobAssertionFailed => exception
-        return oops "rftpd.started", exception, :assertion_failed
+        return oops :started, exception, :assertion_failed
 
       rescue RestFtpDaemon::RestFtpDaemonException => exception
-        return oops "rftpd.started", exception, :prepare_failed, true
+        return oops :started, exception, :prepare_failed, true
 
       rescue Exception => exception
-        return oops "rftpd.started", exception, :prepare_unhandled, true
+        return oops :started, exception, :prepare_unhandled, true
 
       else
         # Prepare done !
         @status = :prepared
-        info "Job.process notify rftpd.started"
-        client_notify "rftpd.started", nil
+        info "Job.process notify: started"
+        client_notify :started
       end
 
       # Process job
@@ -113,58 +112,58 @@ module RestFtpDaemon
         transfer
 
       rescue SocketError => exception
-        return oops "rftpd.ended", exception, :conn_socket_error
+        return oops :ended, exception, :conn_socket
 
       rescue Errno::EHOSTDOWN => exception
-        return oops "rftpd.ended", exception, :conn_host_is_down
+        return oops :ended, exception, :conn_host_is_down
 
       rescue Errno::ENOTCONN => exception
-        return oops "rftpd.ended", exception, :conn_failed
+        return oops :ended, exception, :conn_failed
 
       rescue Errno::ECONNREFUSED => exception
-        return oops "rftpd.ended", exception, :conn_refused
+        return oops :ended, exception, :conn_refused
 
       rescue Timeout::Error, Errno::ETIMEDOUT => exception
-        return oops "rftpd.ended", exception, :conn_timeout
+        return oops :ended, exception, :conn_timeout
 
       rescue OpenSSL::SSL::SSLError => exception
-        return oops "rftpd.ended", exception, :conn_openssl_error
+        return oops :ended, exception, :conn_openssl_error
 
       rescue Net::FTPPermError => exception
-        return oops "rftpd.ended", exception, :ftp_perm_error
+        return oops :ended, exception, :ftp_perm
 
       rescue Net::FTPTempError => exception
-        return oops "rftpd.ended", exception, :ftp_temp_error
+        return oops :ended, exception, :ftp_temp
 
       rescue Errno::EMFILE => exception
-        return oops "rftpd.ended", exception, :too_many_open_files
+        return oops :ended, exception, :too_many_open_files
 
       rescue Errno::EINVAL => exception
-        return oops "rftpd.ended", exception, :invalid_argument, true
+        return oops :ended, exception, :invalid_argument, true
 
       rescue RestFtpDaemon::JobSourceNotFound => exception
-        return oops "rftpd.ended", exception, :source_not_found
+        return oops :ended, exception, :source_not_found
 
       rescue RestFtpDaemon::JobTargetFileExists => exception
-        return oops "rftpd.ended", exception, :target_file_exists
+        return oops :ended, exception, :target_file_exists
 
       rescue RestFtpDaemon::JobTargetShouldBeDirectory => exception
-        return oops "rftpd.ended", exception, :target_not_directory
+        return oops :ended, exception, :target_not_directory
 
       rescue RestFtpDaemon::JobAssertionFailed => exception
-        return oops "rftpd.started", exception, :assertion_failed
+        return oops :ended, exception, :assertion_failed
 
       rescue RestFtpDaemon::RestFtpDaemonException => exception
-        return oops "rftpd.ended", exception, :transfer_failed, true
+        return oops :ended, exception, :transfer_failed, true
 
       rescue Exception => exception
-        return oops "rftpd.ended", exception, :transfer_unhandled, true
+        return oops :ended, exception, :transfer_unhandled, true
 
       else
         # All done !
         @status = :finished
-        info "Job.process notify rftpd.ended"
-        client_notify "rftpd.ended", nil
+        info "Job.process notify: ended"
+        client_notify :ended
       end
 
     end
@@ -177,6 +176,7 @@ module RestFtpDaemon
     end
 
     def set_queued
+      # Update job status
       @status = :queued
     end
 
@@ -235,8 +235,10 @@ module RestFtpDaemon
     end
 
     def prepare
-      # Init
+      # Update job status
       @status = :preparing
+
+      # Init
       @source_method = :file
       @target_method = nil
       @source_path = nil
@@ -268,11 +270,11 @@ module RestFtpDaemon
     end
 
     def transfer
-      # Start transfert flag
+      # Update job status
+      @status = :checking_source
       @started_at = Time.now
 
       # Method assertions and init
-      @status = :checking_source
       raise RestFtpDaemon::JobAssertionFailed, "transfer/1" unless @source_path
       raise RestFtpDaemon::JobAssertionFailed, "transfer/2" unless @target_url
       @transfer_sent = 0
@@ -327,6 +329,7 @@ module RestFtpDaemon
       @finished_at = Time.now
     end
 
+
   private
 
     def flag_default name, default
@@ -341,9 +344,10 @@ module RestFtpDaemon
     end
 
     def ftp_init
-      # Method assertions
-      info "Job.ftp_init asserts"
+      # Update job status
       @status = :ftp_init
+
+      # Method assertions
       raise RestFtpDaemon::JobAssertionFailed, "ftp_init/1" if @target_method.nil?
       raise RestFtpDaemon::JobAssertionFailed, "ftp_init/2" if @target_url.nil?
 
@@ -356,7 +360,7 @@ module RestFtpDaemon
         @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
         @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
       else
-        info "Job.transfer unknown scheme [#{@target_url.scheme}]"
+        info "Job.ftp_init unknown scheme [#{@target_url.scheme}]"
         railse RestFtpDaemon::JobTargetUnsupported
       end
 
@@ -366,9 +370,12 @@ module RestFtpDaemon
     end
 
     def ftp_connect
+      # Update job status
       @status = :ftp_connect
-      host = @target_url.host
+
+      # Method assertions
       info "Job.ftp_connect [#{host}]"
+      host = @target_url.host
       raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/1" if @ftp.nil?
       raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/2" if @target_url.nil?
 
@@ -376,7 +383,10 @@ module RestFtpDaemon
     end
 
     def ftp_login
+      # Update job status
       @status = :ftp_login
+
+      # Method assertions
       raise RestFtpDaemon::JobAssertionFailed, "ftp_login/1" if @ftp.nil?
 
       # use "anonymous" if user is empty
@@ -389,8 +399,8 @@ module RestFtpDaemon
     def ftp_chdir_or_buildpath path
       # Method assertions
       info "Job.ftp_chdir [#{path}] mkdir: #{@mkdir}"
-      raise RestFtpDaemon::JobAssertionFailed, "ftp_chdir_or_buildpath/1" if path.nil?
       @status = :ftp_chdir
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_chdir_or_buildpath/1" if path.nil?
 
       # Extract directory from path
       if @mkdir
@@ -437,12 +447,12 @@ module RestFtpDaemon
       info "#{pref} changed to [#{@ftp.pwd}]"
     end
 
-
     def ftp_presence target_name
+      # Update job status
+      @status = :ftp_presence
 # FIXME / TODO: try with nlst
 
       # Method assertions
-      @status = :ftp_presence
       raise RestFtpDaemon::JobAssertionFailed, "ftp_presence/1" if @ftp.nil?
       raise RestFtpDaemon::JobAssertionFailed, "ftp_presence/2" if @target_url.nil?
 
@@ -530,7 +540,7 @@ module RestFtpDaemon
             transfer_total: @transfer_total,
             transfer_bitrate: bitrate0
             }
-          client_notify "rftpd.progress", nil, notif_status
+          client_notify :progress, status: notif_status
           notified_at = Time.now
         end
 
@@ -551,7 +561,7 @@ module RestFtpDaemon
       info "Job.ftp_transfer finished"
     end
 
-    def client_notify signal, error = nil, status = {}
+    def client_notify event, payload = {}
       # Skip if no URL given
       return unless @notify
 
@@ -561,7 +571,7 @@ module RestFtpDaemon
         payload[:event] = event
         RestFtpDaemon::Notification.new @notify, payload
       rescue Exception => ex
-        info "Job.client_notify exception: #{ex.inspect}"
+        info "Job.client_notify EXCEPTION: #{ex.inspect}"
       end
     end
 
@@ -579,20 +589,20 @@ module RestFtpDaemon
 
       # Forward to logger
       @logger.info_with_id message, context
+      #LoggerPool.log_to_pipe
     end
 
-    def oops signal_name, exception, error_name = nil, include_backtrace = false
+    def oops event, exception, error = nil, include_backtrace = false
       # Log this error
-      error_name = exception.class if error_name.nil?
-      info "Job.oops si[#{signal_name}] er[#{error_name.to_s}] ex[#{exception.class}] #{exception.message}"
+      error = exception.class if error.nil?
+      info "Job.oops event[#{event.to_s}] error[#{error.to_s}] ex[#{exception.class}] #{exception.message}"
 
       # Close ftp connexion if open
       @ftp.close unless @ftp.nil? || @ftp.welcome.nil?
 
       # Update job's internal status
       @status = :failed
-      @error = error_name
-      #set :error_name, error_name
+      @error = error
       set :error_exception, exception.class
       set :error_message, exception.message
 
@@ -602,16 +612,16 @@ module RestFtpDaemon
         set :error_backtrace, exception.backtrace
         notif_status = {
           backtrace: exception.backtrace,
-        }
+          }
       end
 
       # Increment counter for this error
-      $queue.counter_inc "err_#{error_name}"
+      $queue.counter_inc "err_#{error}"
       $queue.counter_inc :jobs_failed
 
       # Prepare notification if signal given
-      return unless signal_name
-      client_notify signal_name, error_name, notif_status
+      return unless event
+      client_notify event, error: error, status: notif_status
     end
 
   end
