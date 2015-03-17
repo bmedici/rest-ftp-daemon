@@ -55,11 +55,11 @@
               %th
 
             - if @only.nil? && !@jobs_queued.empty?
-              = render :dashboard_jobs, {jobs: @jobs_queued, counts: @counts}
+              = render :dashboard_table, {jobs: @jobs_queued, counts: @counts}
               %tr
                 %th{colspan: 12}
 
-            = render :dashboard_jobs, {jobs: @jobs_current, counts: @counts}
+            = render :dashboard_table, {jobs: @jobs_current, counts: @counts}
 
 
       .row
