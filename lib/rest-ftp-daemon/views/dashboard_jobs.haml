@@ -41,15 +41,16 @@
     %td
       = job.status
 
-      - if (source_processed < source_count)
-        = " (#{source_processed}/#{source_count})"
+      - unless job.status == JOB_STATUS_FINISHED
 
-      - unless progress.nil?
-        = "#{progress}%"
+        - if (source_processed < source_count)
+          = " (#{source_processed}/#{source_count})"
 
-      - if job.status != JOB_STATUS_FINISHED
-        %br
-        %b= source_current unless source_current.nil?
+        - unless progress.nil?
+          = "#{progress}%"
+
+          %br
+          %b= source_current unless source_current.nil?
 
     %td
       - if !job.error && job.status != JOB_STATUS_FINISHED
