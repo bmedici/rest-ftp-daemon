@@ -86,7 +86,8 @@ module RestFtpDaemon
 
       # Sort these elements
       elements.sort_by do |item|
-        [ item.wid.to_s, item.updated_at.to_s]
+        w = JOB_WEIGHTS[item.status] || 0
+        [ w,  item.wid.to_s, item.updated_at.to_s]
       end
 
     end
@@ -174,12 +175,12 @@ module RestFtpDaemon
       end
     end
 
-    def ordered_popped
-      @mutex_counters.synchronize do
-        @popped.sort_by { |item| [ item.wid.to_s, item.updated_at] }
-        # @popped.sort_by { |item| [item.status.to_s, item.wid.to_s, item.updated_at, - item.id.to_i] }
-      end
-    end
+    # def ordered_popped
+    #   @mutex_counters.synchronize do
+    #     @popped.sort_by { |item| [ item.wid.to_s, item.updated_at] }
+    #     # @popped.sort_by { |item| [item.status.to_s, item.wid.to_s, item.updated_at, - item.id.to_i] }
+    #   end
+    # end
 
   protected
 

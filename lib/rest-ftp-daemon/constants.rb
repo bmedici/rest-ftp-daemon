@@ -20,6 +20,7 @@ JOB_UPDATE_KB = 2048
 JOB_STATUS_UPLOADING = :uploading
 JOB_STATUS_FINISHED = :finished
 JOB_STATUS_QUEUED = :queued
+JOB_WEIGHTS = {queued: -10, uploading: 10, finished: 50}
 
 # Notifications
 NOTIFY_PREFIX = "rftpd"
