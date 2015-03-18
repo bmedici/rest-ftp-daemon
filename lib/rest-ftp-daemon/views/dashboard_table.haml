@@ -1,5 +1,6 @@
 - jobs.each do |job|
   - size = job.get :transfer_total
+  - sent = job.get :transfer_sent
   - progress = job.get :progress
   - source_count = job.get(:source_count) || 0
   - source_processed = job.get(:source_processed) || 0
@@ -39,25 +40,29 @@
       = Helpers.datetime_short(job.queued_at)
 
     %td
-      = job.status
+      %span.push-status
+        = job.status
 
-      - unless job.status == JOB_STATUS_FINISHED
+      - if (job.status != JOB_STATUS_FINISHED) && (source_processed < source_count)
+        = " (#{source_processed}/#{source_count})"
 
-        - if (source_processed < source_count)
-          = " (#{source_processed}/#{source_count})"
+      - if job.status == JOB_STATUS_UPLOADING
 
         - unless progress.nil?
-          = "#{progress}%"
+          %span.push-progress
+            = "#{progress}%"
 
-          %br
-          %b= source_current unless source_current.nil?
+        %br
+        %b
+          %span.push-filename
+            = source_current unless source_current.nil?
 
     %td
-      - if !job.error && job.status != JOB_STATUS_FINISHED
-        -# unless progress.nil? ||
+      - unless job.error || job.status == JOB_STATUS_FINISHED
         .progress
           .progress-bar{style:"width: #{progress}%;"}
-            = "#{progress}%" unless progress.nil?
+            =# "#{progress}%" unless progress.nil?
+            = Helpers.format_bytes(sent, "B")
 
       - else
         .error{title: errmsg}
@@ -68,7 +73,8 @@
 
     %td.nobr.text-right
       - if (bitrate = job.get :transfer_bitrate)
-        =  Helpers.format_bytes(bitrate, "bps")
+        %span.push-bitrate
+          = Helpers.format_bytes(bitrate, "bps")
 
     %td
       - unless job.priority.nil?
