@@ -593,12 +593,12 @@ module RestFtpDaemon
         set :transfer_bitrate, bitrate0
 
         # Update job info
-        percent1 = (100.0 * @transfer_sent / @transfer_total).round(1)
-        set :progress, percent1
+        percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
+        set :progress, percent0
 
         # Log progress
         stack = []
-        stack << "#{percent1} %"
+        stack << "#{percent0} %"
         stack << (Helpers.format_bytes @transfer_sent, "B")
         stack << (Helpers.format_bytes @transfer_total, "B")
         stack << (Helpers.format_bytes bitrate0, "bps")
@@ -610,7 +610,7 @@ module RestFtpDaemon
         # Notify if requested
         unless notify_after_sec.nil? || (notified_at + notify_after_sec > Time.now)
           notif_status = {
-            progress: percent1,
+            progress: percent0,
             transfer_sent: @transfer_sent,
             transfer_total: @transfer_total,
             transfer_bitrate: bitrate0
