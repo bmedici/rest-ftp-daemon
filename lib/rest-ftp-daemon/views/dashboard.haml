@@ -25,43 +25,8 @@
       = render :dashboard_headers
 
       .row
-        .col-md-12
-
-          %h2
-            Jobs &nbsp;
-
-            .btn-group.btn-group-md
-              - klass = @only.nil? ? "btn-info" : ""
-              %a.btn.btn-default{href: "?only=", class: klass}
-                ALL (#{@count_all})
-            .btn-group.btn-group-md
-              - @counts.each do |status, count|
-                - klass = (status == @only) ? "btn-info" : ""
-                %a.btn.btn-default{href: "?only=#{status}", class: klass}
-                  #{status} (#{count})
-
-          %table.table.table-striped.table-hover.table-condensed
-            %tr
-              %th ID
-              %th label
-              %th source
-              %th <=>
-              %th target
-              %th date
-              %th status
-              %th error
-              %th.text-right size
-              %th.text-right bitrate
-              %th
-
-            - if @only.nil? && !@jobs_queued.empty?
-              = render :dashboard_table, {jobs: @jobs_queued, counts: @counts}
-              %tr
-                %th{colspan: 12}
-
-            = render :dashboard_table, {jobs: @jobs_current, counts: @counts}
-
         #box-jobs.col-md-12
+          = render :dashboard_jobs, {jobs: jobs, only: only}
 
       .row
         #box-tokens.col-md-6

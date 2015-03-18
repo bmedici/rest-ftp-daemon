@@ -1,0 +1,36 @@
+- count_all = $queue.all_size
+- counts_by_status = $queue.counts_by_status
+
+
+%h2
+  Jobs &nbsp;
+
+  .btn-group.btn-group-md
+    - klass = only.empty? ? "btn-info" : ""
+    %a.btn.btn-default{href: "?only=", class: klass}
+      ALL (#{count_all})
+  .btn-group.btn-group-md
+    - counts_by_status.each do |status, count|
+      - klass = (status.to_s == only) ? "btn-info" : ""
+      %a.btn.btn-default{href: "?only=#{status}", class: klass}
+        #{status} (#{count})
+
+%table.table.table-striped.table-hover.table-condensed#jobs
+  %thead
+    %tr
+      %th ID
+      %th label
+      %th source
+      %th <=>
+      %th target
+      %th date
+      %th{width: 220} status
+      %th{width: 150} error
+      %th.text-right size
+      %th.text-right bitrate
+      %th
+      %th info
+
+  - if true
+    %tbody.current
+      = render :dashboard_table, {jobs: jobs}

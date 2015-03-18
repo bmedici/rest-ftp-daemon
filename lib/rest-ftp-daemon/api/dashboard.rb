@@ -40,7 +40,7 @@ module RestFtpDaemon
         @worker_vars = $pool.worker_vars
 
         # Compile haml template
-        output = render :dashboard
+        output = render :dashboard, {jobs: jobs, only: only}
 
         # Send response
         env['api.format'] = :html
