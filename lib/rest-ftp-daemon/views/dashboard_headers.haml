@@ -1,11 +1,16 @@
 - trans = $queue.counter_get :transferred
+- info_procs = Facter.value :processorcount
+- info_load = Sys::CPU.load_avg.first.to_f
+- info_norm = info_procs.zero? ? "N/A" : (100 * info_load / info_procs).round(1)
+
+
 .btn-group.btn-group-sm
-  .btn.btn-default.btn-success Processors
-  .btn.btn-default= @info_procs
+  .btn.btn-default.btn-success CPUs
+  .btn.btn-default= info_procs
 
 .btn-group.btn-group-sm
   .btn.btn-default.btn-success IP
-  .btn.btn-default= @info_ipaddr
+  .btn.btn-default= Facter.value(:ipaddress)
 
 .btn-group.btn-group-sm
   .btn.btn-default.btn-success Host
@@ -13,15 +18,15 @@
 
 .btn-group.btn-group-sm
   .btn.btn-default.btn-info Load
-  .btn.btn-default= @info_load.round(1)
+  .btn.btn-default= info_load.round(1)
 
 .btn-group.btn-group-sm
   .btn.btn-default.btn-info CPU
-  .btn.btn-default= "#{@info_norm} %"
+  .btn.btn-default= "#{info_norm} %"
 
 .btn-group.btn-group-sm
   .btn.btn-default.btn-info Free
-  .btn.btn-default= @info_memfree
+  .btn.btn-default= Facter.value(:memoryfree)
 
 .btn-group.btn-group-sm
   .btn.btn-default.btn-info Transferred
