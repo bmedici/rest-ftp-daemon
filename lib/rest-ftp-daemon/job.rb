@@ -74,7 +74,7 @@ module RestFtpDaemon
       # Prepare job
       begin
         info "Job.process prepare"
-        @status = :preparing
+        newstatus :preparing
         prepare
 
       rescue RestFtpDaemon::JobMissingAttribute => exception
@@ -103,7 +103,7 @@ module RestFtpDaemon
 
       else
         # Prepare done !
-        @status = :prepared
+        newstatus :prepared
         info "Job.process notify: started"
         client_notify :started
       end
@@ -111,7 +111,7 @@ module RestFtpDaemon
       # Process job
       begin
         info "Job.process transfer"
-        @status = :starting
+        newstatus :starting
         transfer
 
       rescue SocketError => exception
@@ -170,7 +170,7 @@ module RestFtpDaemon
 
       else
         # All done !
-        @status = JOB_STATUS_FINISHED
+        newstatus JOB_STATUS_FINISHED
         info "Job.process notify: ended"
         client_notify :ended
       end
@@ -186,7 +186,7 @@ module RestFtpDaemon
 
     def set_queued
       # Update job status
-      @status = JOB_STATUS_QUEUED
+      newstatus JOB_STATUS_QUEUED
     end
 
     def oops_after_crash exception
@@ -251,7 +251,7 @@ module RestFtpDaemon
 
     def prepare
       # Update job status
-      @status = :preparing
+      newstatus :preparing
 
       # Init
       @source_method = :file
@@ -286,7 +286,7 @@ module RestFtpDaemon
 
     def transfer
       # Update job status
-      @status = :checking_source
+      newstatus = :checking_source
       @started_at = Time.now
 
       # Method assertions and init
@@ -355,6 +355,23 @@ module RestFtpDaemon
 
   private
 
+    def info message, context = {}
+      return if @logger.nil?
+
+      # Inject context
+      context[:id] = @id
+      context[:origin] = self.class
+
+      # Forward to logger
+      @logger.info_with_id message, context
+    end
+
+    def newstatus name
+      # Update local status
+      @status = name
+      # push_job
+    end
+
     def flag_default name, default
       # build the flag instance var name
       variable = "@#{name.to_s}"
@@ -368,7 +385,7 @@ module RestFtpDaemon
 
     def ftp_init
       # Update job status
-      @status = :ftp_init
+      newstatus :ftp_init
 
       # Method assertions
       raise RestFtpDaemon::JobAssertionFailed, "ftp_init/1" if @target_method.nil?
@@ -418,7 +435,7 @@ module RestFtpDaemon
       end
 
       # Update job status
-      @status = :disconnecting
+      newstatus :disconnecting
       @finished_at = Time.now
 
       # Update counters
@@ -428,7 +445,7 @@ module RestFtpDaemon
 
     def ftp_connect
       # Update job status
-      @status = :ftp_connect
+      newstatus :ftp_connect
 
       # Method assertions
       host = @target_url.host
@@ -441,7 +458,7 @@ module RestFtpDaemon
 
     def ftp_login
       # Update job status
-      @status = :ftp_login
+      newstatus :ftp_login
 
       # Method assertions
       raise RestFtpDaemon::JobAssertionFailed, "ftp_login/1" if @ftp.nil?
@@ -456,7 +473,7 @@ module RestFtpDaemon
     def ftp_chdir_or_buildpath path
       # Method assertions
       info "Job.ftp_chdir [#{path}] mkdir: #{@mkdir}"
-      @status = :ftp_chdir
+      newstatus :ftp_chdir
       raise RestFtpDaemon::JobAssertionFailed, "ftp_chdir_or_buildpath/1" if path.nil?
 
       # Extract directory from path
@@ -506,7 +523,7 @@ module RestFtpDaemon
 
     def ftp_presence target_name
       # Update job status
-      @status = :ftp_presence
+      newstatus :ftp_presence
 # FIXME / TODO: try with nlst
 
       # Method assertions
@@ -534,7 +551,7 @@ module RestFtpDaemon
       set :source_current, target_name
 
       # Check for target file presence
-      @status = :checking_target
+      newstatus :checking_target
       present = ftp_presence target_name
       if present
         if @overwrite
@@ -563,7 +580,8 @@ module RestFtpDaemon
       chunk_size = update_every_kb * 1024
       t0 = tstart = Time.now
       notified_at = Time.now
-      @status = JOB_STATUS_UPLOADING
+      newstatus JOB_STATUS_UPLOADING
+
       @ftp.putbinaryfile(source_filename, target_real, chunk_size) do |block|
         # Update counters
         @transfer_sent += block.bytesize
@@ -605,7 +623,7 @@ module RestFtpDaemon
 
       # Rename temp file to target_temp
       if @tempfile
-        @status = :renaming
+        newstatus :renaming
         info "Job.ftp_transfer renaming: #{target_name}"
         @ftp.rename target_real, target_name
       end
@@ -636,18 +654,6 @@ module RestFtpDaemon
       total.to_f / (Time.now - last_timestamp)
     end
 
-
-    def info message, context = {}
-      return if @logger.nil?
-
-      # Inject context
-      context[:id] = @id
-      context[:origin] = self.class
-
-      # Forward to logger
-      @logger.info_with_id message, context
-    end
-
     def oops event, exception, error = nil, include_backtrace = false
       # Log this error
       error = exception.class if error.nil?
@@ -663,7 +669,7 @@ module RestFtpDaemon
       @ftp.close unless @ftp.nil? || @ftp.welcome.nil?
 
       # Update job's internal status
-      @status = :failed
+      newstatus :failed
       @error = error
       set :error_exception, exception.class
       set :error_message, exception.message
