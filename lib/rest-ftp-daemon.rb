@@ -4,8 +4,8 @@ require 'json'
 require 'grape'
 require 'grape-entity'
 require 'haml'
-require "facter"
-require "sys/cpu"
+require 'facter'
+require 'sys/cpu'
 require 'syslog'
 
 

@@ -60,5 +60,6 @@ h2 {
 
 .progress {
   margin-bottom: 0;
+  /*min-width: 60px;*/
   }
 

@@ -16,7 +16,7 @@ module RestFtpDaemon
       self.taint
       @mutex = Mutex.new
 
-      # # Logger
+      # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :queue
 
       # Identifiers generator
@@ -182,6 +182,7 @@ module RestFtpDaemon
     def conchita_loop
       info "conchita starting with: #{@conchita.inspect}"
       loop do
+        # Do the cleanup
         conchita_clean JOB_STATUS_FINISHED
         conchita_clean :failed
         sleep @conchita[:timer]

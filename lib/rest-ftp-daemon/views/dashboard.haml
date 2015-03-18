@@ -61,15 +61,16 @@
 
             = render :dashboard_table, {jobs: @jobs_current, counts: @counts}
 
+        #box-jobs.col-md-12
 
       .row
-        .col-md-6
+        #box-tokens.col-md-6
           = render :dashboard_tokens, {tokens: Settings.endpoints || {}}
 
-        .col-md-3
+        #box-workers.col-md-3
           = render :dashboard_workers
 
-        .col-md-3
+        #box-counters.col-md-3
           = render :dashboard_counters
 
       %br
