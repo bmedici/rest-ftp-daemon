@@ -76,11 +76,19 @@ module RestFtpDaemon
       end
     end
 
-    def popped_reverse_sorted_by_status status
-      return [] if status.nil?
+    def sorted_by_status status
+      # Just use the base if filter is empty
+      if status.empty?
+        elements = all
+      else
+        elements = all.select { |item| item.status == status.to_sym }
+      end
 
-      # Select jobs from the queue if their status is (status)
-      ordered_popped.reverse.select { |item| item.status == status.to_sym }
+      # Sort these elements
+      elements.sort_by do |item|
+        [ item.wid.to_s, item.updated_at.to_s]
+      end
+
     end
 
     def counts_by_status

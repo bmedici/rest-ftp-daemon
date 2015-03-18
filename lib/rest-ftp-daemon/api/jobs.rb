@@ -44,7 +44,12 @@ module RestFtpDaemon
         info "GET /jobs"
 
         begin
-          jobs = $queue.all
+          # Detect QS filters
+          only = params["only"].to_s
+
+          # Get jobs to display
+          jobs = $queue.sorted_by_status(only)
+
         rescue RestFtpDaemonException => exception
           info "EXCEPTION: RestFtpDaemonException: #{exception.message}"
           status 501
