@@ -11,7 +11,7 @@ module RestFtpDaemon
     end
 
     def self.format_bytes number, unit=""
-      return "&Oslash;" if number.nil? || number.zero?
+      return "&Oslash;" if number.nil? || number.to_f.zero?
 
       units = ["", "k", "M", "G", "T", "P" ]
       index = ( Math.log( number ) / Math.log( 2 ) ).to_i / 10
