@@ -651,7 +651,7 @@ module RestFtpDaemon
     end
 
     def get_bitrate total, last_timestamp
-      total.to_f / (Time.now - last_timestamp)
+      8*total.to_f / (Time.now - last_timestamp)
     end
 
     def oops event, exception, error = nil, include_backtrace = false
