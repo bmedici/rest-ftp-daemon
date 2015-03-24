@@ -360,7 +360,7 @@ module RestFtpDaemon
 
       # Inject context
       context[:id] = @id
-      context[:origin] = self.class
+      context[:origin] = self.class.to_s
 
       # Forward to logger
       @logger.info_with_id message, context
@@ -671,7 +671,7 @@ module RestFtpDaemon
       # Update job's internal status
       newstatus :failed
       @error = error
-      set :error_exception, exception.class
+      set :error_exception, exception.class.to_s
       set :error_message, exception.message
 
       # Build status stack
