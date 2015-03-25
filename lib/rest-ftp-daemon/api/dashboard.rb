@@ -29,7 +29,7 @@ module RestFtpDaemon
         queue = $queue.queue if only.empty?
 
         # Get workers status
-        @worker_vars = $pool.worker_vars
+        @worker_variables = $pool.worker_variables
 
         # Compile haml template
         output = render :dashboard, {queue: queue, current: current, only: only}

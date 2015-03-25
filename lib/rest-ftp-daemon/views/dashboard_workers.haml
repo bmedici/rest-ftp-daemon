@@ -8,7 +8,8 @@
     %th job
     %th.text-right seen
 
-  - @worker_vars.each do |wid, vars|
+  - @worker_variables.each do |vars|
+    - wid = vars[:wid]
     - status = vars[:status]
     - alive = $pool.worker_alive? wid
     - trclass = WORKER_STYLES[status]
@@ -25,6 +26,6 @@
     %tr{class: trclass.to_s}
       %td= wid
       %td= status
-      %td= vars[:jobid]
+      %td= vars[:jid]
       %td.text-right
         = "#{no_news_for} s"

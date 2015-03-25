@@ -9,9 +9,8 @@ module RestFtpDaemon
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
 
-
       # Check parameters
-      raise "A thread count of #{number_threads} is less than one" if number_threads < 1
+      raise "at least one worker is needed to continue (#{number_threads} is less than one)" if number_threads < 1
 
       # Prepare status hash and vars
       @statuses = {}
@@ -25,17 +24,18 @@ module RestFtpDaemon
 
     end
 
-    def worker_vars
-      vars = {}
-      @workers.each do |name, thread|
-        #currents[thread.id] = thread.current
-        vars[thread[:name]] = thread[:vars]
+    def worker_variables
+      @workers.collect do |wid, worker|
+        vars = {}
+        worker.thread_variables.each do |var|
+          vars[var] = worker.thread_variable_get var
+        end
+        vars
       end
-      vars
     end
 
-    def worker_alive? name
-      @workers[name] && @workers[name].alive?
+    def worker_alive? wid
+      @workers[wid] && @workers[wid].alive?
     end
 
   private
@@ -48,28 +48,29 @@ module RestFtpDaemon
         end
 
         # Create a dedicated thread for this worker
-        name = "w#{@counter}"
-        @workers[name] = create_worker_thread name
+        wid = "w#{@counter}"
+        @workers[wid] = create_worker_thread wid
       end
     end
 
-    def create_worker_thread name
-      # @workers[name] = Thread.new name do
-      Thread.new name do
+    def create_worker_thread wid
+      Thread.new wid do
 
         # Set thread context
-        Thread.current[:name] = name
-        Thread.current[:vars] = { started_at: Time.now }
+        Thread.current.thread_variable_set :wid, wid
+        Thread.current.thread_variable_set :started_at, Time.now
 
         # Start working
         worker_status :starting
         loop do
           work
         end
+
       end
     end
 
     def work
+
       info "waiting for a job"
 
       # Wait for a job to come into the queue
@@ -122,9 +123,6 @@ module RestFtpDaemon
 
   protected
 
-    def ping
-    end
-
     def info message, context = {}
       return if @logger.nil?
 
@@ -135,12 +133,15 @@ module RestFtpDaemon
         jid: Thread.current.thread_variable_get(:jid),
         origin: self.class.to_s
     end
+
+    def worker_status status
+      Thread.current.thread_variable_set :status, status
+      Thread.current.thread_variable_set :updted_at, Time.now
     end
 
-    def worker_status status, jobid = nil
-      Thread.current[:vars][:status] = status
-      Thread.current[:vars][:jobid] = jobid
-      Thread.current[:vars][:updted_at] = Time.now
+    def worker_jid jid
+      Thread.current.thread_variable_set :jid, jid
+      Thread.current.thread_variable_set :updted_at, Time.now
     end
 
   end
