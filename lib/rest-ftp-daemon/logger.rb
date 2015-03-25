@@ -9,8 +9,10 @@ class Logger
     context[:level] ||= 0
 
     # Common message header
-    field_id = "%#{-DEFAULT_LOGS_ID_LEN.to_i}s" % context[:id].to_s
-    prefix = "#{field_id}\t#{'  '*(context[:level].to_i+1)}"
+    field_wid = "%#{-DEFAULT_LOGS_COL_WID.to_i}s" % context[:wid].to_s
+    field_jid = "%#{-DEFAULT_LOGS_COL_JID.to_i}s" % context[:jid].to_s
+    field_id = "%#{-DEFAULT_LOGS_COL_ID.to_i}s" % context[:id].to_s
+    prefix = "#{field_wid} \t#{field_jid} \t#{field_id}\t#{'  '*(context[:level].to_i+1)}"
 
     # Send main message
     add Logger::INFO, prefix + message.to_s

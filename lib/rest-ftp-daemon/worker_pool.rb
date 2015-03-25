@@ -128,13 +128,13 @@ module RestFtpDaemon
     def info message, context = {}
       return if @logger.nil?
 
-      # Ensure context is a hash of options and inject context
-      context = {} unless context.is_a? Hash
-      context[:id] = Thread.current[:name]
-      context[:origin] = self.class
-
       # Forward to logger
-      @logger.info_with_id message, context
+      @logger.info_with_id message,
+        # id: Thread.current.thread_variable_get(:wid),
+        wid: Thread.current.thread_variable_get(:wid),
+        jid: Thread.current.thread_variable_get(:jid),
+        origin: self.class.to_s
+    end
     end
 
     def worker_status status, jobid = nil

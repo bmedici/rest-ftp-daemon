@@ -359,15 +359,15 @@ module RestFtpDaemon
 
   private
 
-    def info message, context = {}
+    def info message, lines = []
       return if @logger.nil?
 
-      # Inject context
-      context[:id] = @id
-      context[:origin] = self.class.to_s
-
       # Forward to logger
-      @logger.info_with_id message, context
+      @logger.info_with_id message,
+        wid: @wid,
+        jid: @id,
+        lines: lines,
+        origin: self.class.to_s
     end
 
     def newstatus name

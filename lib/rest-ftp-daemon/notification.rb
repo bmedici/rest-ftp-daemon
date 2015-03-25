@@ -79,14 +79,14 @@ module RestFtpDaemon
 
   protected
 
-    def info message, context = {}
+    def info message, lines = []
       return if @logger.nil?
 
-      # Inject context
-      context[:id] = @id
-      context[:origin] = self.class
-
-      @logger.info_with_id message, context
+      @logger.info_with_id message,
+        id: @id,
+        jid: @jid,
+        lines: lines,
+        origin: self.class.to_s
     end
 
   end
