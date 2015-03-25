@@ -125,6 +125,9 @@ module RestFtpDaemon
       rescue Errno::EHOSTDOWN => exception
         return oops :ended, exception, :conn_host_is_down
 
+      rescue Errno::ECONNRESET => exception
+        return oops :ended, exception, :conn_reset_by_peer
+
       rescue Errno::ENOTCONN => exception
         return oops :ended, exception, :conn_failed
 
