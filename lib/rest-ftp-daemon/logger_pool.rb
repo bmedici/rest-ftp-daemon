@@ -24,7 +24,7 @@ module RestFtpDaemon
       logger.formatter = proc do |severity, datetime, progname, message|
         # stamp = Time.now.strftime("%Y-%m-%d %H:%M:%S")
         stamp = datetime.strftime("%Y-%m-%d %H:%M:%S")
-        field_pipe = "%-#{DEFAULT_LOGS_PIPE_LEN.to_i}s" % progname
+        field_pipe = "%-#{LOG_PIPE_LEN.to_i}s" % progname
         "#{stamp}\t#{field_pipe}\t#{message}\n"
       end
 

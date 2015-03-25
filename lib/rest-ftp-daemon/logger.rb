@@ -9,9 +9,9 @@ class Logger
     context[:level] ||= 0
 
     # Common message header
-    field_wid = "%#{-DEFAULT_LOGS_COL_WID.to_i}s" % context[:wid].to_s
-    field_jid = "%#{-DEFAULT_LOGS_COL_JID.to_i}s" % context[:jid].to_s
-    field_id = "%#{-DEFAULT_LOGS_COL_ID.to_i}s" % context[:id].to_s
+    field_wid = "%#{-LOG_COL_WID.to_i}s" % context[:wid].to_s
+    field_jid = "%#{-LOG_COL_JID.to_i}s" % context[:jid].to_s
+    field_id = "%#{-LOG_COL_ID.to_i}s" % context[:id].to_s
     prefix = "#{field_wid} \t#{field_jid} \t#{field_id}\t#{'  '*(context[:level].to_i+1)}"
 
     # Send main message
@@ -21,7 +21,7 @@ class Logger
     context[:lines].each do |line|
       line.strip!
       next if line.empty?
-      add Logger::INFO, prefix + '   | ' + line[0..DEFAULT_LOGS_TRIM_LINE]
+      add Logger::INFO, prefix + '   | ' + line[0..LOG_TRIM_LINE]
     end if context[:lines].is_a? Enumerable
 
   end

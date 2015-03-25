@@ -17,7 +17,7 @@ module RestFtpDaemon
       @workers = {}
       @mutex = Mutex.new
       @counter = 0
-      @timeout = (Settings.transfer.timeout rescue nil) || WORKER_TIMEOUT
+      @timeout = (Settings.transfer.timeout rescue nil) || DEFAULT_WORKER_TIMEOUT
 
       # Create worker threads
       info "WorkerPool initializing with [#{number_threads}] workers and [#{@timeout}]s timeout"
