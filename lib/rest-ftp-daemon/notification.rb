@@ -13,6 +13,7 @@ module RestFtpDaemon
     def initialize url, params
       # Generate a random key
       @id = Helpers.identifier(NOTIFY_IDENTIFIER_LEN)
+      @jid = nil
 
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :notify
@@ -27,14 +28,9 @@ module RestFtpDaemon
         info "skipping (missing event): #{params.inspect}"
         return
 
-      else
-        #info "created: OK"
-        # info "created: #{params.class}"
-        info "created #{params.inspect}"
-
       end
 
-      # Params
+      # Build body and extract job ID if provided
       body = {
         id:       params[:id].to_s,
         signal:   "#{NOTIFY_PREFIX}.#{params[:event].to_s}",
@@ -42,6 +38,9 @@ module RestFtpDaemon
         host:     Settings.host.to_s,
         }
       body[:status] = params[:status] if params[:status].is_a? Enumerable
+      @jid = params[:id]
+      info "initialized"
+
 
       # Send message in a thread
       Thread.new do |thread|
@@ -54,6 +53,7 @@ module RestFtpDaemon
            }
         data = body.to_json
         info "sending #{data}"
+
 
         # Prepare HTTP client
         http = Net::HTTP.new uri.host, uri.port
@@ -68,7 +68,7 @@ module RestFtpDaemon
         if response_lines.size > 1
           human_size = Helpers.format_bytes(response.body.bytesize, "B")
           #human_size = 0
-          info "received [#{response.code}] #{human_size} (#{response_lines.size} lines)", lines: response_lines
+          info "received [#{response.code}] #{human_size} (#{response_lines.size} lines)", response_lines
         else
           info "received [#{response.code}] #{response.body.strip}"
         end
