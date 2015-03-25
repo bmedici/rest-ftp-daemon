@@ -9,8 +9,7 @@ defaults: &defaults
 
   transfer:
     update_every_kb: 1024
-    notify_after_sec: 10
-
+    notify_after_sec: 5
     mkdir: true
     tempfile: true
     overwrite: false
@@ -20,7 +19,7 @@ defaults: &defaults
   conchita:
     timer: 10
     #clean_failed: 3600
-    #clean_finished: 600
+    #clean_finished: 3600
     #clean_queued: 86400
 
   debug:
@@ -30,7 +29,8 @@ defaults: &defaults
     thin:    "/var/log/rftpd-environment-thin.log"
     queue:   "/var/log/rftpd-environment-core.log"
     api:     "/var/log/rftpd-environment-core.log"
-    workers: "/var/log/rftpd-environment-work.log"
+    workers: "/var/log/rftpd-environment-core.log"
+    jobs:    "/var/log/rftpd-environment-work.log"
     notify:  "/var/log/rftpd-environment-work.log"
 
 preprod:
