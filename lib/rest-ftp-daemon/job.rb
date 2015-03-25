@@ -64,6 +64,7 @@ module RestFtpDaemon
 
       # Flag current job
       @queued_at = Time.now
+      @updated_at = Time.now
 
       # Send first notification
       info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] update_every_kb[#{@update_every_kb}]"
@@ -204,9 +205,12 @@ module RestFtpDaemon
     end
 
     def oops_after_crash exception
-      return oops :crashed, exception, :crashed
+      return oops :ended, exception, :crashed
     end
 
+    def oops_you_stop_now exception
+      return oops :ended, exception, :timeout
+    end
 
   protected
 
