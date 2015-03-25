@@ -53,57 +53,52 @@ module RestFtpDaemon
         name = "w#{@counter}"
         @workers[name] = create_worker_thread name
       end
-
     end
+
     def create_worker_thread name
-              @workers[name] = Thread.new name do
+      # @workers[name] = Thread.new name do
+      Thread.new name do
 
         # Set thread context
         Thread.current[:name] = name
         Thread.current[:vars] = { started_at: Time.now }
 
         # Start working
-        work
+        worker_status :starting
+        loop do
+          work
+        end
       end
-
     end
 
     def work
-      worker_status :starting
+      info "waiting for a job"
 
-      loop do
+      # Wait for a job to come into the queue
+      worker_status :waiting
+      job = $queue.pop
 
-        begin
-          info "waiting for a job"
+      # Do the job
+      info "processing [#{job.id}]"
 
-          # Wait for a job to come into the queue
-          worker_status :waiting
-          job = $queue.pop
+      worker_status :processing, job.id
+      job.wid = Thread.current[:name]
+      job.process
+      info "processed [#{job.id}]"
+      job.wid = nil
+      worker_status :done
 
-          # Do the job
-          info "processing [#{job.id}]"
+      # Increment total processed jobs count
+      $queue.counter_inc :jobs_processed
 
-          worker_status :processing, job.id
-          job.wid = Thread.current[:name]
-          job.process
-          info "processed [#{job.id}]"
-          job.wid = nil
-          worker_status :done
+    rescue Exception => ex
+        handle_job_uncaught_exception job, ex
 
-          # Increment total processed jobs count
-          $queue.counter_inc :jobs_processed
+    else
+      # Clean job status
+      worker_status :free
+      job.wid = nil
 
-        rescue Exception => ex
-          handle_job_uncaught_exception job, ex
-
-        else
-          # Clean job status
-          worker_status :free
-          job.wid = nil
-
-        end
-
-      end
     end
 
     def handle_job_uncaught_exception job, ex
