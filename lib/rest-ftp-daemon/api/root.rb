@@ -50,13 +50,6 @@ module RestFtpDaemon
           haml_engine.render(binding, values)
         end
 
-        def job_find job_id
-          return nil if ($queue.all_size==0)
-
-          # Find a job with exactly this id, or prefixed if not found
-          $queue.find_by_id(job_id) || $queue.find_by_id(job_id, true)
-        end
-
       end
 
     end

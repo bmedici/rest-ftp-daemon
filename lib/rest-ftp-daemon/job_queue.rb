@@ -50,9 +50,9 @@ module RestFtpDaemon
     end
 
     def generate_id
-      rand(36**8).to_s(36)
       @last_id ||= 0
       @last_id += 1
+      # rand(36**8).to_s(36)
       prefixed_id @last_id
     end
 
@@ -149,7 +149,6 @@ module RestFtpDaemon
     alias enq push
 
     def pop(non_block=false)
-      # info "JobQueue.pop"
       @mutex.synchronize do
         while true
           if @queue.empty?

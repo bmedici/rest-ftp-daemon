@@ -3,6 +3,12 @@ module RestFtpDaemon
     class Root < Grape::API
 
 
+####### HELPERS
+
+      helpers do
+      end
+
+
 ####### DASHBOARD - GET /
 
       # Server global status
