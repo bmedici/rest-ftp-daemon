@@ -18,9 +18,8 @@ module RestFtpDaemon
           counters: $queue.counters,
           status: $queue.counts_by_status,
           vars: $pool.worker_vars,
-          jobs_count: $queue.all_size,
-          jobs_queued: $queue.queued.collect(&:id),
-          jobs_popped: $queue.popped.collect(&:id),
+          jobs_count: $queue.jobs_count,
+          jobs_queued: $queue.queued_ids
           #routes: RestFtpDaemon::API::Root::routes,
           }
       end

@@ -79,20 +79,16 @@ module RestFtpDaemon
       end
     end
 
-    def sorted_by_status status
-      # Just use the base if filter is empty
+    def filter_jobs status
+      # No status filter: return all execept queued
       if status.empty?
-        elements = all
+        @jobs.reject { |job| job.status == JOB_STATUS_QUEUED }
+
+      # Status filtering: only those jobs
       else
-        elements = all.select { |item| item.status == status.to_sym }
-      end
+        @jobs.select { |job| job.status == status.to_sym }
 
-      # Sort these elements
-      elements.sort_by do |item|
-        w = JOB_WEIGHTS[item.status] || 0
-        [ w,  item.wid.to_s, item.updated_at.to_s]
       end
-
     end
 
     def counts_by_status
@@ -105,8 +101,12 @@ module RestFtpDaemon
       @jobs
     end
 
-    def jobs_size
+    def jobs_count
       @jobs.length
+    end
+
+    def queued_ids
+      @queue.collect(&:id)
     end
 
     def find_by_id id, prefixed = false
@@ -114,8 +114,8 @@ module RestFtpDaemon
       id = prefixed_id(id) if prefixed
       info "find_by_id (#{id}, #{prefixed}) > #{id}"
 
-      # Search in both queues
-      @queued.select { |item| item.id == id }.last || @popped.select { |item| item.id == id }.last
+      # Search in jobs queues
+      @jobs.select { |item| item.id == id }.last
     end
 
     def push job

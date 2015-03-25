@@ -1,9 +1,10 @@
-- count_all = $queue.all_size
+- count_all = $queue.jobs_count
 - counts_by_status = $queue.counts_by_status
+-# jobs_without_queue = jobs
 
 
 %h2
-  Jobs &nbsp;
+  Jobs table &nbsp;
 
   .btn-group.btn-group-md
     - klass = only.empty? ? "btn-info" : ""
@@ -16,6 +17,7 @@
         #{status} (#{count})
 
 %table.table.table-striped.table-hover.table-condensed#jobs
+
   %thead
     %tr
       %th ID
@@ -23,13 +25,24 @@
       %th source
       %th <=>
       %th target
-      %th date
+      %th queued
       %th{width: 220} status
       %th{width: 150} error
       %th.text-right size
       %th.text-right bitrate
       %th info
+      %th sort key
 
-  - if true
-    %tbody.current
-      = render :dashboard_table, {jobs: jobs}
+
+    - unless queue.empty?
+      %tbody.jobs
+        = render :dashboard_table, {jobs: queue.reverse}
+
+        %thead
+          %tr
+            %td{colspan: 13}
+              %br
+
+    - unless current.empty?
+      %tbody.jobs
+        = render :dashboard_table, {jobs: current.reverse}

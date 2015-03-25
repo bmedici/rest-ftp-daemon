@@ -26,7 +26,7 @@
 
       .row
         #box-jobs.col-md-12
-          = render :dashboard_jobs, {jobs: jobs, only: only}
+          = render :dashboard_jobs, {current: current, queue: queue, title: title, only: only}
 
       .row
         #box-tokens.col-md-6
