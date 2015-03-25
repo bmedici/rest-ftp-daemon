@@ -77,8 +77,8 @@ module RestFtpDaemon
 
       # Prepare the job for processing
       worker_status :processing
-      info "job processing"
       worker_jid job.id
+      info "processing"
       job.wid = Thread.current.thread_variable_get :wid
 
       # Processs this job protected by a timeout
@@ -88,7 +88,7 @@ module RestFtpDaemon
 
       # Processing done
       worker_status :done
-      info "job processed"
+      info "done"
       worker_jid nil
       job.wid = nil
 

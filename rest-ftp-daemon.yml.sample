@@ -29,7 +29,7 @@ defaults: &defaults
     thin:    "/var/log/rftpd-environment-thin.log"
     queue:   "/var/log/rftpd-environment-core.log"
     api:     "/var/log/rftpd-environment-core.log"
-    workers: "/var/log/rftpd-environment-core.log"
+    workers: "/var/log/rftpd-environment-work.log"
     jobs:    "/var/log/rftpd-environment-work.log"
     notify:  "/var/log/rftpd-environment-work.log"
 
