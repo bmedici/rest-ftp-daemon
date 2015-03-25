@@ -111,6 +111,10 @@ module RestFtpDaemon
       @queue.collect(&:id)
     end
 
+    def jobs_ids
+      @jobs.collect(&:id)
+    end
+
     def find_by_id id, prefixed = false
       # Build a prefixed id if expected
       id = prefixed_id(id) if prefixed
