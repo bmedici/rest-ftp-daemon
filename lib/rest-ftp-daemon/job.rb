@@ -40,9 +40,6 @@ module RestFtpDaemon
       @status = nil
       @wid = nil
 
-      # Debug mode
-      @ftp_debug_enabled = (Settings.at :debug, :ftp) == true
-
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :jobs
 
@@ -59,11 +56,17 @@ module RestFtpDaemon
       flag_default :overwrite, false
       flag_default :tempfile, false
 
+      # Read source file size and parameters
+      @ftp_debug_enabled = (Settings.at :debug, :ftp) == true
+      update_every_kb = (Settings.transfer.update_every_kb rescue nil) || DEFAULT_FTP_CHUNK
+      @notify_after_sec = Settings.transfer.notify_after_sec rescue nil
+      @chunk_size = update_every_kb * 1024
+
       # Flag current job
       @queued_at = Time.now
 
       # Send first notification
-      info "Job.initialize notify: queued"
+      info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] update_every_kb[#{@update_every_kb}]"
       client_notify :queued
     end
 
@@ -567,10 +570,6 @@ module RestFtpDaemon
         end
       end
 
-      # Read source file size and parameters
-      update_every_kb = (Settings.transfer.update_every_kb rescue nil) || JOB_UPDATE_KB
-      notify_after_sec = Settings.transfer.notify_after_sec rescue nil
-
       # Compute temp target name
       target_real = target_name
       if @tempfile
@@ -579,48 +578,16 @@ module RestFtpDaemon
       end
 
       # Start transfer
-      chunk_size = update_every_kb * 1024
-      t0 = tstart = Time.now
-      notified_at = Time.now
+      transfer_started_at = Time.now
+      @transfer_pointer_at = transfer_started_at
+
+      @notified_at = Time.now
       newstatus JOB_STATUS_UPLOADING
 
-      @ftp.putbinaryfile(source_filename, target_real, chunk_size) do |block|
-        # Update counters
-        @transfer_sent += block.bytesize
-        set :transfer_sent, @transfer_sent
+      @ftp.putbinaryfile(source_filename, target_real, @chunk_size) do |block|
 
-        # Update bitrate
-        #dt = Time.now - t0
-        bitrate0 = get_bitrate(chunk_size, t0).round(0)
-        set :transfer_bitrate, bitrate0
-
-        # Update job info
-        percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
-        set :progress, percent0
-
-        # Log progress
-        stack = []
-        stack << "#{percent0} %"
-        stack << (Helpers.format_bytes @transfer_sent, "B")
-        stack << (Helpers.format_bytes @transfer_total, "B")
-        stack << (Helpers.format_bytes bitrate0, "bps")
-        info "Job.ftp_transfer" + stack.map{|txt| ("%#{DEFAULT_LOGS_PIPE_LEN.to_i}s" % txt)}.join("\t")
-
-        # Update time pointer
-        t0 = Time.now
-
-        # Notify if requested
-        unless notify_after_sec.nil? || (notified_at + notify_after_sec > Time.now)
-          notif_status = {
-            progress: percent0,
-            transfer_sent: @transfer_sent,
-            transfer_total: @transfer_total,
-            transfer_bitrate: bitrate0
-            }
-          client_notify :progress, status: notif_status
-          notified_at = Time.now
-        end
-
+        # Update job status after this block transfer
+        ftp_transfer_block block
       end
 
       # Rename temp file to target_temp
@@ -631,11 +598,51 @@ module RestFtpDaemon
       end
 
       # Compute final bitrate
-      set :transfer_bitrate, get_bitrate(@transfer_total, tstart).round(0)
+      set :transfer_bitrate, get_bitrate(@transfer_total, transfer_started_at).round(0)
 
       # Done
       set :source_current, nil
       info "Job.ftp_transfer finished"
+    end
+
+    def ftp_transfer_block block
+      # Update counters
+      @transfer_sent += block.bytesize
+      set :transfer_sent, @transfer_sent
+
+      # Update bitrate
+      #dt = Time.now - t0
+      bitrate0 = get_bitrate(@chunk_size, @transfer_pointer_at).round(0)
+      set :transfer_bitrate, bitrate0
+
+      # Update job info
+      percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
+      set :progress, percent0
+
+      # Log progress
+      stack = []
+      stack << "#{percent0} %"
+      stack << (Helpers.format_bytes @transfer_sent, "B")
+      stack << (Helpers.format_bytes @transfer_total, "B")
+      stack << (Helpers.format_bytes bitrate0, "bps")
+      stack2 = stack.map{ |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt)}.join("\t")
+      info "Job.ftp_transfer #{stack2}"
+
+      # Update time pointer
+      @transfer_pointer_at = Time.now
+
+      # Notify if requested
+      # info "Job.ftp_transfer next notif (#{(@notified_at+@notify_after_sec).to_f}) now #{Time.now.to_f}"
+      if @notify_after_sec.nil? || (Time.now > @notified_at + @notify_after_sec)
+        notif_status = {
+          progress: percent0,
+          transfer_sent: @transfer_sent,
+          transfer_total: @transfer_total,
+          transfer_bitrate: bitrate0
+          }
+        client_notify :progress, status: notif_status
+        @notified_at = Time.now
+      end
     end
 
     def client_notify event, payload = {}
