@@ -35,6 +35,14 @@ JOB_STYLES = {
   JOB_STATUS_UPLOADING => :info,
   }
 
+WORKER_STYLES = {
+  :waiting    => :success,
+  :processing => :info,
+  :crashed    => :danger,
+  :done       => :success,
+  :dead       => :danger
+  }
+
 # Initialize defaults
 APP_STARTED = Time.now
 APP_LIBS = File.dirname(__FILE__)

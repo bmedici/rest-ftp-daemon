@@ -1,5 +1,3 @@
-- styles = {waiting: :success, processing: :info, crashed: :error, done: :success }
-
 %h2 Workers
 
 %table.table.table-striped.table-hover.table-condensed
@@ -8,22 +6,25 @@
     %th ID
     %th status
     %th job
-    %th.text-right updated
+    %th.text-right seen
 
   - @worker_vars.each do |wid, vars|
-    -# status = vars[:status]
-    - style = styles[status] || ""
+    - status = vars[:status]
+    - alive = $pool.worker_alive? wid
+    - trclass = WORKER_STYLES[status]
+
+    - unless alive
+      - trclass = "danger"
+      - status = "DEAD"
 
     - if vars[:updted_at].is_a? Time
       - no_news_for = (Time.now - vars[:updted_at]).round(0)
     - else
       - no_news_for = "?"
 
-    %tr{class: style.to_s}
+    %tr{class: trclass.to_s}
       %td= wid
-      %td= vars[:status]
+      %td= status
       %td= vars[:jobid]
       %td.text-right
-        = no_news_for
-        s
-
+        = "#{no_news_for} s"

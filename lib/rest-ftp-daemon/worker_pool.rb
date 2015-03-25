@@ -36,6 +36,10 @@ module RestFtpDaemon
       vars
     end
 
+    def worker_alive? name
+      @workers[name] && @workers[name].alive?
+    end
+
   private
 
     def create_worker_threads n
