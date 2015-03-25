@@ -50,9 +50,11 @@ module RestFtpDaemon
     end
 
     def generate_id
-      @last_id ||= 0
-      @last_id += 1
       # rand(36**8).to_s(36)
+      @mutex.synchronize do
+        @last_id ||= 0
+        @last_id += 1
+      end
       prefixed_id @last_id
     end
 
