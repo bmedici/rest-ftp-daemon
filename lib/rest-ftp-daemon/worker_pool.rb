@@ -27,12 +27,10 @@ module RestFtpDaemon
 
     def worker_vars
       vars = {}
-
       @workers.each do |name, thread|
         #currents[thread.id] = thread.current
         vars[thread[:name]] = thread[:vars]
       end
-
       vars
     end
 
@@ -110,7 +108,7 @@ module RestFtpDaemon
         worker_status :crashed
 
         # Flag the job as crashed
-        job.oops_after_crash ex
+        job.oops_after_crash ex unless job.nil?
 
       rescue Exception => ex
         info "DOUBLE EXCEPTION: #{ex.message}", lines: ex.backtrace
