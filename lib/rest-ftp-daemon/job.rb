@@ -98,11 +98,15 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobAssertionFailed => exception
         return oops :started, exception, :assertion_failed
 
-      rescue RestFtpDaemon::RestFtpDaemonException => exception
-        return oops :started, exception, :prepare_failed, true
+      # rescue RestFtpDaemon::JobTimeout => exception
+      #   info "Job.process propagate JobTimeout to Worker"
+      #   raise RestFtpDaemon::JobTimeout
 
-      rescue Exception => exception
-        return oops :started, exception, :prepare_unhandled, true
+      # rescue RestFtpDaemon::RestFtpDaemonException => exception
+      #   return oops :started, exception, :prepare_failed, true
+
+      # rescue Exception => exception
+      #   return oops :started, exception, :prepare_unhandled, true
 
       else
         # Prepare done !
@@ -165,11 +169,15 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobAssertionFailed => exception
         return oops :ended, exception, :assertion_failed
 
-      rescue RestFtpDaemon::RestFtpDaemonException => exception
-        return oops :ended, exception, :transfer_failed, true
+      # rescue RestFtpDaemon::JobTimeout => exception
+      #   info "Job.process propagate JobTimeout to Worker"
+      #   raise RestFtpDaemon::JobTimeout
 
-      rescue Exception => exception
-        return oops :ended, exception, :transfer_unhandled, true
+      # rescue RestFtpDaemon::RestFtpDaemonException => exception
+      #   return oops :ended, exception, :transfer_failed, true
+
+      # rescue Exception => exception
+      #   return oops :ended, exception, :transfer_unhandled, true
 
       else
         # All done !
