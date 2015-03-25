@@ -1,8 +1,3 @@
-require 'uri'
-require 'net/ftp'
-require 'double_bag_ftps'
-require 'timeout'
-
 module RestFtpDaemon
   class Job
 
@@ -663,14 +658,13 @@ module RestFtpDaemon
       return unless @notify
 
       # Ok, create a notification!
-      begin
-        payload[:id] = @id
-        payload[:event] = event
-        RestFtpDaemon::Notification.new @notify, payload
-      rescue Exception => ex
-        info "Job.client_notify EXCEPTION: #{ex.inspect}"
-      end
-    end
+      payload[:id] = @id
+      payload[:event] = event
+      RestFtpDaemon::Notification.new @notify, payload
+
+    rescue Exception => ex
+      info "Job.client_notify EXCEPTION: #{ex.inspect}"
+     end
 
     def get_bitrate total, last_timestamp
       8*total.to_f / (Time.now - last_timestamp)

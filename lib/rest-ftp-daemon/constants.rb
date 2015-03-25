@@ -3,23 +3,23 @@ APP_NAME = "rest-ftp-daemon"
 APP_VER = "0.202.2"
 
 
-# Logging
-LOG_PIPE_LEN            = 10
-LOG_COL_WID             = 4
-LOG_COL_JID             = JOB_IDENT_LEN+3+2
-LOG_COL_ID              = 6
-LOG_TRIM_LINE           = 80
-
-
 # Jobs and workers
 JOB_RANDOM_LEN          = 8
-JOB_TEMPFILE_LEN        = 8
 JOB_IDENT_LEN           = 4
+JOB_TEMPFILE_LEN        = 8
 JOB_STATUS_UPLOADING    = :uploading
 JOB_STATUS_RENAMING     = :renaming
 JOB_STATUS_FINISHED     = :finished
 JOB_STATUS_FAILED       = :failed
 JOB_STATUS_QUEUED       = :queued
+
+
+# Logging and startup
+LOG_PIPE_LEN            = 10
+LOG_COL_WID             = 4
+LOG_COL_JID             = JOB_IDENT_LEN+3+2
+LOG_COL_ID              = 6
+LOG_TRIM_LINE           = 80
 
 
 # Notifications

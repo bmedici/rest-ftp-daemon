@@ -1,5 +1,3 @@
-require 'securerandom'
-
 module RestFtpDaemon
   class Helpers
 

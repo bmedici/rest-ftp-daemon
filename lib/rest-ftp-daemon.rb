@@ -5,12 +5,17 @@ require 'grape'
 require 'grape-entity'
 require 'haml'
 require 'facter'
+require 'uri'
+require 'securerandom'
+require 'timeout'
 require 'sys/cpu'
 require 'syslog'
-require 'timeout'
+require 'net/ftp'
+require 'net/http'
+require 'double_bag_ftps'
 
 
-# My libs
+# Project's libs
 require 'rest-ftp-daemon/constants'
 require 'rest-ftp-daemon/settings'
 require 'rest-ftp-daemon/exceptions'
