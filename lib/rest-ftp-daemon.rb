@@ -7,6 +7,7 @@ require 'haml'
 require 'facter'
 require 'sys/cpu'
 require 'syslog'
+require 'timeout'
 
 
 # My libs
@@ -16,6 +17,7 @@ require 'rest-ftp-daemon/exceptions'
 require 'rest-ftp-daemon/helpers'
 require 'rest-ftp-daemon/uri'
 require 'rest-ftp-daemon/job_queue'
+require 'rest-ftp-daemon/worker'
 require 'rest-ftp-daemon/worker_pool'
 require 'rest-ftp-daemon/logger'
 require 'rest-ftp-daemon/logger_pool'
