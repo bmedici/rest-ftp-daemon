@@ -13,7 +13,8 @@ module RestFtpDaemon
 
         begin
           # Get job to display
-          job = job_find params[:id]
+          raise RestFtpDaemon::JobNotFound if params[:id].nil?
+          job = $queue.find_by_id(params[:id]) || $queue.find_by_id(params[:id], true)
           raise RestFtpDaemon::JobNotFound if job.nil?
 
         rescue RestFtpDaemon::JobNotFound => exception
