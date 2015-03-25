@@ -159,8 +159,11 @@ module RestFtpDaemon
             @waiting.push Thread.current
             @mutex.sleep
           else
-            # info "JobQueue.pop: great, I'm not empty!!"
-            return pick_one
+            # Refresh queue order
+            # sort_queue!
+
+            # Extract the heaviest item in the queue
+            return @queue.pop
           end
         end
       end
