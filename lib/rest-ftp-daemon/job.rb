@@ -117,7 +117,7 @@ module RestFtpDaemon
         transfer
 
       rescue SocketError => exception
-        return oops :ended, exception, :conn_socket
+        return oops :ended, exception, :conn_socket_error
 
       rescue EOFError => exception
         return oops :ended, exception, :conn_eof
@@ -135,16 +135,16 @@ module RestFtpDaemon
         return oops :ended, exception, :conn_refused
 
       rescue Timeout::Error, Errno::ETIMEDOUT => exception
-        return oops :ended, exception, :conn_timeout
+        return oops :ended, exception, :conn_timed_out
 
       rescue OpenSSL::SSL::SSLError => exception
         return oops :ended, exception, :conn_openssl_error
 
       rescue Net::FTPPermError => exception
-        return oops :ended, exception, :ftp_perm
+        return oops :ended, exception, :ftp_perm_error
 
       rescue Net::FTPTempError => exception
-        return oops :ended, exception, :ftp_temp
+        return oops :ended, exception, :ftp_temp_error
 
       rescue Errno::EMFILE => exception
         return oops :ended, exception, :too_many_open_files
