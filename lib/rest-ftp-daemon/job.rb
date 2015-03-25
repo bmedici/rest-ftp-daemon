@@ -367,9 +367,7 @@ module RestFtpDaemon
     end
 
     def newstatus name
-      # Update local status
       @status = name
-      # push_job
     end
 
     def flag_default name, default
@@ -623,7 +621,7 @@ module RestFtpDaemon
 
       # Rename temp file to target_temp
       if @tempfile
-        newstatus :renaming
+        newstatus JOB_STATUS_RENAMING
         info "Job.ftp_transfer renaming: #{target_name}"
         @ftp.rename target_real, target_name
       end
@@ -669,7 +667,7 @@ module RestFtpDaemon
       @ftp.close unless @ftp.nil? || @ftp.welcome.nil?
 
       # Update job's internal status
-      newstatus :failed
+      newstatus JOB_STATUS_FAILED
       @error = error
       set :error_exception, exception.class.to_s
       set :error_message, exception.message

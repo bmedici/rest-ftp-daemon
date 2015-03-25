@@ -17,31 +17,35 @@ JOB_IDENT_LEN = 4
 
 # Jobs
 JOB_UPDATE_KB = 2048
-JOB_STATUS_UPLOADING = :uploading
-JOB_STATUS_FINISHED = :finished
-JOB_STATUS_QUEUED = :queued
-JOB_WEIGHTS = {queued: -10, uploading: 10, finished: 50}
+JOB_STATUS_UPLOADING    = :uploading
+JOB_STATUS_RENAMING     = :renaming
+JOB_STATUS_FINISHED     = :finished
+JOB_STATUS_FAILED       = :failed
+JOB_STATUS_QUEUED       = :queued
+
 
 # Notifications
 NOTIFY_PREFIX = "rftpd"
 NOTIFY_USERAGENT = "#{APP_NAME} - #{APP_VER}"
 NOTIFY_IDENTIFIER_LEN = 4
 
-# Dashboard
+# Dashboard row styles
 JOB_STYLES = {
-  JOB_STATUS_QUEUED    => :active,
-  JOB_STATUS_FAILED    => :warning,
-  JOB_STATUS_FINISHED  => :success,
-  JOB_STATUS_UPLOADING => :info,
+  JOB_STATUS_QUEUED     => :active,
+  JOB_STATUS_FAILED     => :warning,
+  JOB_STATUS_FINISHED   => :success,
+  JOB_STATUS_UPLOADING  => :info,
+  JOB_STATUS_RENAMING   => :info,
   }
 
 WORKER_STYLES = {
-  :waiting    => :success,
-  :processing => :info,
-  :crashed    => :danger,
-  :done       => :success,
-  :dead       => :danger
+  :waiting              => :success,
+  :processing           => :info,
+  :crashed              => :danger,
+  :done                 => :success,
+  :dead                 => :danger
   }
+
 
 # Initialize defaults
 APP_STARTED = Time.now

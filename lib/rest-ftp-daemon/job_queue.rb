@@ -193,7 +193,7 @@ module RestFtpDaemon
       loop do
         # Do the cleanup
         conchita_clean JOB_STATUS_FINISHED
-        conchita_clean :failed
+        conchita_clean JOB_STATUS_FAILED
         sleep @conchita[:timer]
       end
     end
