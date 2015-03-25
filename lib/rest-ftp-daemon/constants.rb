@@ -1,6 +1,6 @@
 # Terrific constants
 APP_NAME = "rest-ftp-daemon"
-APP_VER = "0.202.2"
+APP_VER = "0.210.0"
 
 
 # Jobs and workers
