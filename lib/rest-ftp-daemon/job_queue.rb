@@ -198,41 +198,52 @@ module RestFtpDaemon
     def conchita_loop
       info "conchita starting with: #{@conchita.inspect}"
       loop do
-        # Do the cleanup
-        conchita_clean JOB_STATUS_FINISHED
-        conchita_clean JOB_STATUS_FAILED
+        # Do the cleanup locking the queues
+        # info "conchita: cleanup expired jobs"
+        @mutex.synchronize do
+          conchita_clean JOB_STATUS_FINISHED
+          conchita_clean JOB_STATUS_FAILED
+          conchita_clean JOB_STATUS_QUEUED
+        end
         sleep @conchita[:timer]
       end
     end
 
-    def conchita_clean status
+    def conchita_clean status     # FIXME: clean both @jobs and @queue
       # Init
       return if status.nil?
-      key = "clean_#{status.to_s}"
 
       # Read config state
-      max_age = @conchita[key.to_s]
-      return if [nil, false].include? max_age
+      maxage = @conchita["clean_#{status.to_s}"] || 0
+      #info "conchita_clean status[#{status.to_s}] \t maxage[#{maxage}] s"
+      return unless maxage > 0
 
       # Delete jobs from the queue if their status is (status)
       @jobs.delete_if do |job|
-        # Skip it if wrong status
+
+        # Skip if wrong status
         next unless job.status == status.to_sym
 
-        # Skip it if updated_at invalid
-        updated_at = job.updated_at
-        next if updated_at.nil?
+        # Skip if updated_at invalid
+        next if job.updated_at.nil?
 
-        # Skip it if not aged enough yet
-        age = Time.now - updated_at
-        next if age < max_age
+        # Skip if not aged enough yet
+        age = Time.now - job.updated_at
+        next if age < maxage
 
         # Ok, we have to clean it up ..
-        info "conchita_clean #{status.inspect} max_age:#{max_age} job:#{job.id} age:#{age}"
+        info "conchita_clean status[#{status.to_s}] maxage[#{maxage}] job[#{job.id}] age[#{age}]"
+
+        # Remove it from the queue if present
+        job_in_queue = @queue.delete job
+        info "   removed queued job [#{job.id}]" unless job_in_queue.nil?
+
+        # Accept to delete it from @jobs
         true
       end
 
     end
+
 
   private
 
