@@ -44,7 +44,7 @@ module RestFtpDaemon
       @ftp_debug_enabled = (Settings.at :debug, :ftp) == true
 
       # Logger
-      @logger = RestFtpDaemon::LoggerPool.instance.get :workers
+      @logger = RestFtpDaemon::LoggerPool.instance.get :jobs
 
       # Protect with a mutex
       @mutex = Mutex.new
