@@ -17,9 +17,10 @@ module RestFtpDaemon
       @workers = {}
       @mutex = Mutex.new
       @counter = 0
+      @timeout = (Settings.transfer.timeout rescue nil) || WORKER_TIMEOUT
 
       # Create worker threads
-      info "WorkerPool initializing with #{number_threads} workers"
+      info "WorkerPool initializing with [#{number_threads}] workers and [#{@timeout}]s timeout"
       create_worker_threads number_threads
 
     end
@@ -70,28 +71,42 @@ module RestFtpDaemon
     end
 
     def work
-
-      info "waiting for a job"
-
       # Wait for a job to come into the queue
       worker_status :waiting
+      info "waiting for a job"
       job = $queue.pop
 
-      # Do the job
-      info "processing [#{job.id}]"
+      # Prepare the job for processing
+      worker_status :processing
+      info "job processing"
+      worker_jid job.id
+      job.wid = Thread.current.thread_variable_get :wid
 
-      worker_status :processing, job.id
-      job.wid = Thread.current[:name]
-      job.process
-      info "processed [#{job.id}]"
-      job.wid = nil
+      # Processs this job protected by a timeout
+      status = Timeout::timeout(@timeout, RestFtpDaemon::JobTimeout) do
+        job.process
+      end
+
+      # Processing done
       worker_status :done
+      info "job processed"
+      worker_jid nil
+      job.wid = nil
 
       # Increment total processed jobs count
       $queue.counter_inc :jobs_processed
 
+    rescue RestFtpDaemon::JobTimeout => ex
+      info "JOB TIMED OUT", lines: ex.backtrace
+      worker_status :timeout
+      job.oops_you_stop_now ex unless job.nil?
+      sleep 1
+
     rescue Exception => ex
-        handle_job_uncaught_exception job, ex
+      info "[#{job.id}] UNHDNALED EXCEPTION: #{ex.message}", lines: ex.backtrace
+      worker_status :crashed
+      job.oops_after_crash ex unless job.nil?
+      sleep 1
 
     else
       # Clean job status
@@ -99,27 +114,6 @@ module RestFtpDaemon
       job.wid = nil
 
     end
-
-    def handle_job_uncaught_exception job, ex
-      begin
-        # Log the exception
-        info "UNHDNALED EXCEPTION: job: #{ex.message}", lines: ex.backtrace
-
-        # Tell the worker has creashed
-        worker_status :crashed
-
-        # Flag the job as crashed
-        job.oops_after_crash ex unless job.nil?
-
-      rescue Exception => ex
-        info "DOUBLE EXCEPTION: #{ex.message}", lines: ex.backtrace
-
-      end
-
-      # Wait a bit
-      sleep 1
-    end
-
 
   protected
 

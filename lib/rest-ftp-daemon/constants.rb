@@ -25,6 +25,7 @@ JOB_STATUS_RENAMING     = :renaming
 JOB_STATUS_FINISHED     = :finished
 JOB_STATUS_FAILED       = :failed
 JOB_STATUS_QUEUED       = :queued
+WORKER_TIMEOUT          = 3600
 
 
 # Notifications

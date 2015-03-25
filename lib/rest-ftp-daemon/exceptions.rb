@@ -8,6 +8,7 @@ module RestFtpDaemon
   class MissingPool               < RestFtpDaemonException; end
 
   class JobException              < RestFtpDaemonException; end
+  class JobTimeout                < RestFtpDaemonException; end
   class JobNotFound               < RestFtpDaemonException; end
   class JobUnresolvedTokens       < RestFtpDaemonException; end
   class JobAssertionFailed        < RestFtpDaemonException; end

@@ -14,6 +14,7 @@ defaults: &defaults
     mkdir: true
     tempfile: true
     overwrite: false
+    timeout: 1800
 
 
   conchita:
