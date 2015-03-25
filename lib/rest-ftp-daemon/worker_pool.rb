@@ -1,5 +1,3 @@
-
-
 module RestFtpDaemon
   class WorkerPool
 
@@ -38,6 +36,7 @@ module RestFtpDaemon
     def worker_alive? wid
       @workers[wid] && @workers[wid].alive?
     end
+
 
   private
 
@@ -122,7 +121,6 @@ module RestFtpDaemon
 
       # Forward to logger
       @logger.info_with_id message,
-        # id: Thread.current.thread_variable_get(:wid),
         wid: Thread.current.thread_variable_get(:wid),
         jid: Thread.current.thread_variable_get(:jid),
         origin: self.class.to_s

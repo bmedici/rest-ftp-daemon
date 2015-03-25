@@ -350,8 +350,6 @@ module RestFtpDaemon
       # Handle each source file matched, and start a transfer
       done = 0
       source_matches.each do |filename|
-        # Increment counter
-
         # Do the transfer, only if it's a file
         ftp_transfer filename, target_name
 

@@ -17,15 +17,12 @@ module RestFtpDaemon
       @logger = RestFtpDaemon::LoggerPool.instance.get :notify
 
       # Check context
-
       if url.nil?
         info "skipping (missing url): #{params.inspect}"
         return
-
       elsif params[:event].nil?
         info "skipping (missing event): #{params.inspect}"
         return
-
       end
 
       # Build body and extract job ID if provided
