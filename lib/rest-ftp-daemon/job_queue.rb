@@ -3,15 +3,18 @@ require 'securerandom'
 
 module RestFtpDaemon
   class JobQueue < Queue
-    attr_reader :queued
-    attr_reader :popped
+    # attr_reader :queued
+    # attr_reader :popped
+
+    attr_reader :queue
+    attr_reader :jobs
 
     def initialize
       # Instance variables
-      @queued = []
-      @popped = []
+      @queue = []
+      @jobs = []
       @waiting = []
-      @queued.taint          # enable tainted communication
+      @queue.taint          # enable tainted communication
       @waiting.taint
       self.taint
       @mutex = Mutex.new
@@ -94,15 +97,16 @@ module RestFtpDaemon
 
     def counts_by_status
       statuses = {}
-      all.group_by { |job| job.status }.map { |status, jobs| statuses[status] = jobs.size }
+      @jobs.group_by { |job| job.status }.map { |status, jobs| statuses[status] = jobs.size }
       statuses
     end
 
-    def all
-      @queued + @popped
+    def jobs # change for accessor
+      @jobs
     end
-    def all_size
-      @queued.length + @popped.length
+
+    def jobs_size
+      @jobs.length
     end
 
     def find_by_id id, prefixed = false
@@ -121,9 +125,12 @@ module RestFtpDaemon
 
       @mutex.synchronize do
         # Push job into the queue
-        @queued.push job
+        @queue.push job
 
-        # Tell the job it's been queued
+        # Store the job into the global jobs list
+        @jobs.push job
+
+        # Inform the job that it's been queued
         job.set_queued if job.respond_to? :set_queued
 
         # Refresh queue order
@@ -145,7 +152,7 @@ module RestFtpDaemon
       # info "JobQueue.pop"
       @mutex.synchronize do
         while true
-          if @queued.empty?
+          if @queue.empty?
             # info "JobQueue.pop: empty"
             raise ThreadError, "queue empty" if non_block
             @waiting.push Thread.current
@@ -161,29 +168,16 @@ module RestFtpDaemon
     alias deq pop
 
     def empty?
-      @queued.empty?
+      @queue.empty?
     end
 
     def clear
-      @queued.clear
+      @queue.clear
     end
 
     def num_waiting
       @waiting.size
     end
-
-    def ordered_queue
-      @mutex_counters.synchronize do
-        @queued.sort_by { |item| [item.priority.to_i, - item.id.to_i] }
-      end
-    end
-
-    # def ordered_popped
-    #   @mutex_counters.synchronize do
-    #     @popped.sort_by { |item| [ item.wid.to_s, item.updated_at] }
-    #     # @popped.sort_by { |item| [item.status.to_s, item.wid.to_s, item.updated_at, - item.id.to_i] }
-    #   end
-    # end
 
   protected
 
@@ -217,7 +211,7 @@ module RestFtpDaemon
       return if [nil, false].include? max_age
 
       # Delete jobs from the queue if their status is (status)
-      @popped.delete_if do |job|
+      @jobs.delete_if do |job|
         # Skip it if wrong status
         next unless job.status == status.to_sym
 
@@ -234,20 +228,6 @@ module RestFtpDaemon
         true
       end
 
-    end
-
-    def pick_one  # called inside a mutex/sync
-      # Sort jobs by priority and get the biggest one
-      picked = ordered_queue.last
-      return nil if picked.nil?
-
-      # Move it away from the queue to the @popped array
-      @queued.delete_if { |item| item == picked }
-      @popped.push picked
-
-      # Return picked
-      #info "JobQueue.pick_one: #{picked.id}"
-      picked
     end
 
   private
