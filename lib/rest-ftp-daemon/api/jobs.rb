@@ -88,8 +88,8 @@ module RestFtpDaemon
       end
 
       post '/jobs/' do
-        info "POST /jobs #{params.inspect}"
-        # request.body.rewind
+        info "POST /jobs", params.collect {|name, value| "#{name}: #{value.inspect}"}
+
         begin
 
           # Create a new job

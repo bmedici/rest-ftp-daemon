@@ -33,8 +33,10 @@ module RestFtpDaemon
 
       helpers do
 
-        def info message, context = {}
-          Root.logger.info_with_id message, context
+        def info message, lines = []
+          Root.logger.info_with_id message,
+            lines: lines,
+            origin: self.class.to_s
         end
 
         def api_error exception
