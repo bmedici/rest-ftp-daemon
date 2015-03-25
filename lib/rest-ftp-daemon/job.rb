@@ -73,11 +73,11 @@ module RestFtpDaemon
     def process
       # Update job's status
       @error = nil
+      info "Job.process starting"
 
       # Prepare job
       begin
-        info "Job.process prepare"
-        newstatus :preparing
+        newstatus :prepare
         prepare
 
       rescue RestFtpDaemon::JobMissingAttribute => exception
@@ -111,13 +111,12 @@ module RestFtpDaemon
       else
         # Prepare done !
         newstatus :prepared
-        info "Job.process notify: started"
+        info "Job.process notify[started]"
         client_notify :started
       end
 
       # Process job
       begin
-        info "Job.process transfer"
         newstatus :starting
         transfer
 
@@ -182,7 +181,7 @@ module RestFtpDaemon
       else
         # All done !
         newstatus JOB_STATUS_FINISHED
-        info "Job.process notify: ended"
+        info "Job.process notify[ended]"
         client_notify :ended
       end
 
@@ -205,7 +204,6 @@ module RestFtpDaemon
     end
 
     def oops_after_crash exception
-      # info "Yes, we crash!"
       return oops :crashed, exception, :crashed
     end
 
@@ -531,7 +529,7 @@ module RestFtpDaemon
       end
 
       # Now we were able to chdir inside, just tell it
-      info "#{pref} changed to [#{@ftp.pwd}]"
+      info "#{pref} > ftp.pwd [#{@ftp.pwd}]"
     end
 
     def ftp_presence target_name
@@ -677,7 +675,7 @@ module RestFtpDaemon
 
       message = "Job.oops event[#{event.to_s}] error[#{error.to_s}] ex[#{exception.class}] #{exception.message}"
       if include_backtrace
-        info message, lines: exception.backtrace
+        info message, exception.backtrace
       else
         info message
       end
