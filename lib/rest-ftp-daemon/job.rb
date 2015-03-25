@@ -385,6 +385,7 @@ module RestFtpDaemon
 
     def newstatus name
       @status = name
+      worker_is_still_active
     end
 
     def flag_default name, default
@@ -595,6 +596,8 @@ module RestFtpDaemon
       newstatus JOB_STATUS_UPLOADING
 
       @ftp.putbinaryfile(source_filename, target_real, @chunk_size) do |block|
+        # Update the worker activity marker
+        worker_is_still_active
 
         # Update job status after this block transfer
         ftp_transfer_block block
@@ -671,6 +674,10 @@ module RestFtpDaemon
 
     def get_bitrate total, last_timestamp
       8*total.to_f / (Time.now - last_timestamp)
+    end
+
+    def worker_is_still_active
+       Thread.current.thread_variable_set :updted_at, Time.now
     end
 
     def oops event, exception, error = nil, include_backtrace = false
