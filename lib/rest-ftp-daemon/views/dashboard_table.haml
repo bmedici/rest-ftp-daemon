@@ -9,18 +9,12 @@
   - errmsg = job.get :error_message
   - method = job.get(:target_method)
 
-  - if !job.error.nil?
-    - trclass = "danger"
-  - elsif job.status == JOB_STATUS_UPLOADING
-    - trclass = "info"
-  - elsif job.status == JOB_STATUS_FINISHED
-    - trclass = "success"
-  - elsif job.status == JOB_STATUS_QUEUED
-    - trclass = "active"
-  - else
+  - trclass = JOB_STYLES[job.status]
+
+  - unless job.error.nil?
     - trclass = "warning"
 
-  %tr{class: trclass}
+  %tr{class: trclass.to_s}
 
     %td{title: presented.to_json}
       %b= job.id

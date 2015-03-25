@@ -27,6 +27,13 @@ NOTIFY_PREFIX = "rftpd"
 NOTIFY_USERAGENT = "#{APP_NAME} - #{APP_VER}"
 NOTIFY_IDENTIFIER_LEN = 4
 
+# Dashboard
+JOB_STYLES = {
+  JOB_STATUS_QUEUED    => :active,
+  JOB_STATUS_FAILED    => :warning,
+  JOB_STATUS_FINISHED  => :success,
+  JOB_STATUS_UPLOADING => :info,
+  }
 
 # Initialize defaults
 APP_STARTED = Time.now
