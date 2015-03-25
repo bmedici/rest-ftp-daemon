@@ -126,6 +126,9 @@ module RestFtpDaemon
         # Tell the job it's been queued
         job.set_queued if job.respond_to? :set_queued
 
+        # Refresh queue order
+        sort_queue!
+
         # Try to wake a worker up
         begin
           t = @waiting.shift
@@ -186,6 +189,12 @@ module RestFtpDaemon
 
     def prefixed_id id
       "#{@prefix}.#{id}"
+    end
+
+    def sort_queue!
+      @mutex_counters.synchronize do
+        @queue.sort_by! &:weight
+      end
     end
 
     def conchita_loop

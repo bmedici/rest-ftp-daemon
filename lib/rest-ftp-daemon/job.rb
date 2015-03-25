@@ -184,6 +184,10 @@ module RestFtpDaemon
       end
     end
 
+    def weight
+      @weight = [@priority.to_i, -@queued_at.to_i]
+    end
+
     def set_queued
       # Update job status
       newstatus JOB_STATUS_QUEUED
