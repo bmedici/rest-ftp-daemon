@@ -45,5 +45,6 @@ class Settings < Settingslogic
 
     # Logfile
     ENV['NEW_RELIC_LOG'] = Settings.at(:logs, :newrelic)
+  end
 
 end
