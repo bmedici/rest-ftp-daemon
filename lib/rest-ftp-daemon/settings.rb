@@ -20,4 +20,8 @@ class Settings < Settingslogic
     self.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
   end
 
+  def init_defaults
+    Settings['host'] ||= `hostname`.chomp.split('.').first
+  end
+
 end
