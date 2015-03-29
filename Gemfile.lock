@@ -8,6 +8,7 @@ PATH
       grape-entity
       haml
       json
+      newrelic_rpm
       settingslogic
       sys-cpu
       thin (~> 1.6)
@@ -61,6 +62,7 @@ GEM
     minitest (5.5.1)
     multi_json (1.11.0)
     multi_xml (0.5.5)
+    newrelic_rpm (3.11.1.284)
     rack (1.6.0)
     rack-accept (0.4.5)
       rack (>= 0.4)

@@ -27,4 +27,28 @@ class Settings < Settingslogic
     self.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
   end
 
+  def newrelic_enabled?
+    Settings.newrelic.is_a?(Hash) && Settings.at(:newrelic, :license)
+  end
+
+  def init_newrelic
+    # Skip if not enabled
+    return ENV['NEWRELIC_AGENT_ENABLED'] = 'false' unless Settings.newrelic_enabled?
+
+    # Enable module
+    ENV['NEWRELIC_AGENT_ENABLED'] = 'true'
+    ENV['NEW_RELIC_MONITOR_MODE'] = 'true'
+    #Settings['newrelic']['enabled'] = true
+
+    # License
+    ENV['NEW_RELIC_LICENSE_KEY'] = Settings.at(:newrelic, :license)
+
+    # Appname
+    ENV['NEW_RELIC_APP_NAME'] = Settings.at(:newrelic, :appname) || "#{APP_NICK}-#{Settings.host}-#{APP_ENV}"
+
+    # Logfile
+    ENV['NEW_RELIC_LOG'] = Settings.at(:logs, :newrelic)
+
+  end
+
 end

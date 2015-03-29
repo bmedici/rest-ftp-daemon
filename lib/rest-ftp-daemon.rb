@@ -13,6 +13,7 @@ require 'syslog'
 require 'net/ftp'
 require 'net/http'
 require 'double_bag_ftps'
+require 'newrelic_rpm'
 
 
 # Project's libs

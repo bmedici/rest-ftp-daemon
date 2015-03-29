@@ -59,6 +59,10 @@ abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exists?
 begin
   require File.expand_path("#{app_root}/lib/rest-ftp-daemon/settings")
   Settings.merge!(options)
+
+  # Init NewRelic
+  Settings.init_newrelic
+
 rescue Psych::SyntaxError => e
   abort "EXITING: config file syntax error: #{e.message}"
 end

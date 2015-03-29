@@ -1,6 +1,10 @@
 module RestFtpDaemon
   class Job
 
+    if Settings.newrelic_enabled?
+      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+    end
+
     FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir, :tempfile]
 
     attr_accessor :wid
@@ -19,7 +23,6 @@ module RestFtpDaemon
     FIELDS.each do |name|
       attr_reader name
     end
-
 
     def initialize job_id, params={}
       # Call super
@@ -711,6 +714,10 @@ module RestFtpDaemon
       # Prepare notification if signal given
       return unless event
       client_notify event, error: error, status: notif_status
+    end
+
+    if Settings.newrelic_enabled?
+      add_transaction_tracer :process, :category => :task
     end
 
   end

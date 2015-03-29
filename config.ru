@@ -19,6 +19,9 @@ unless Settings.adminpwd.nil?
   end
 end
 
+# NewRelic profiling
+GC::Profiler.enable if Settings.newrelic_enabled?
+
 # Serve static assets
 use Rack::Static, :urls => ["/css", "/images"], :root => "#{APP_LIBS}/static/"
 
