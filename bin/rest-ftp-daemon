@@ -6,9 +6,10 @@ begin
   require "thin"
   require 'optparse'
   require 'socket'
-  require 'timeout'
+  # require 'timeout'
+  require "settingslogic"
 rescue LoadError
-  raise "EXITING: some of basic libs were not found: thin, optparse, socket, timeout"
+  raise "EXITING: some of basic libs were not found: thin, optparse, socket, settingslogic"
 end
 
 
@@ -50,17 +51,22 @@ else
 end
 
 
-# Build configuration file path from options
+# Load config, and merge options from ARGV into settings
 APP_CONF ||= File.expand_path "/etc/#{APP_NAME}.yml"
 abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exists? APP_CONF
-
-
-# Load config, and merge options from ARGV into settings
 begin
+  # Import settings
   require File.expand_path("#{app_root}/lib/rest-ftp-daemon/settings")
+
+  # Set defaults
+  Settings.init_defaults
+
+  # Overwrite with commandline options
   Settings.merge!(options)
 rescue Psych::SyntaxError => e
   abort "EXITING: config file syntax error: #{e.message}"
+rescue Exception => e
+  abort "EXITING: unknow error loading settings  #{e.inspect}"
 end
 
 
@@ -84,30 +90,28 @@ argv << ["--log", Settings.at(:logs, :thin)]
 argv << ["--daemonize"] if [1, true].include? Settings.daemonize
 
 
-# ARGV: logging
+# ARGV: logging, user and group, command
 if (logfile = Settings.at :logs, :thin)
   argv << ["--log", logfile] if logfile
 end
-
-# ARGV: user and group
 if Settings.user && Settings.group
   argv << ["--user", Settings.user]
   argv << ["--group", Settings.group]
 end
-
-
-# ARGV: add command
 argv << command unless command.nil?
+
 
 # Display final configuration
 puts "--- #{APP_NAME} #{APP_VER}"
 puts "Config file  \t #{APP_CONF}"
 puts "PID file     \t #{Settings.pidfile}"
 puts "Daemonize    \t #{Settings.daemonize ? 'YES' : "no"}"
+puts "Host         \t #{Settings.host}"
 puts "Namespace    \t #{Settings.namespace}"
 puts "Network port \t #{Settings.port}"
 puts "User:group   \t #{Settings.user}:#{Settings.group}" if (Settings.user || Settings.group)
-puts Settings.dump
+puts "Newrelic     \t #{Settings.newrelic_enabled? ? Settings.newrelic.inspect : "no"}"
+# puts Settings.dump
 puts
 puts "--- Thin ARGV"
 puts argv.flatten.join(' ')
@@ -139,11 +143,11 @@ rescue SystemExit
   begin
     Process.kill(0, pid)
     puts "Process ##{pid} is running"
-  rescue Errno::EPERM                     # changed uid
-      puts "No permission to query process ##{pid}!";
+  rescue Errno::EPERM                            # changed uid
+    puts "No permission to query process ##{pid}!";
   rescue Errno::ESRCH
-      puts "Process ##{pid} is NOT running.";      # or zombied
+    puts "Process ##{pid} is NOT running.";      # or zombied
   rescue
-      puts "Unable to determine status for ##{pid}: #{$!}"
+    puts "Unable to determine status for ##{pid}: #{$!}"
   end
 end

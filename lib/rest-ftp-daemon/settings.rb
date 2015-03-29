@@ -1,10 +1,3 @@
-# Try to load Settingslogic
-begin
-  require "settingslogic"
-rescue LoadError
-  raise "warning: Settingslogic is needed to provide configuration values to the Gemspec file"
-end
-
 # Configuration class
 class Settings < Settingslogic
   # Read configuration
