@@ -18,9 +18,9 @@ defaults: &defaults
 
   conchita:
     timer: 10
-    #clean_failed: 3600
-    #clean_finished: 3600
-    #clean_queued: 86400
+    # clean_failed: 3600
+    # clean_finished: 3600
+    # clean_queued: 86400
 
   debug:
     ftp: false
