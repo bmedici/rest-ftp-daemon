@@ -15,6 +15,9 @@ defaults: &defaults
     overwrite: false
     timeout: 1800
 
+  # newrelic:
+    # appname: rftpd-testing
+    # license: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   conchita:
     timer: 10
@@ -32,6 +35,7 @@ defaults: &defaults
     workers: "/var/log/rftpd-environment-work.log"
     jobs:    "/var/log/rftpd-environment-work.log"
     notify:  "/var/log/rftpd-environment-work.log"
+    newrelic:"/var/log/rftpd-environment-newrelic.log"
 
 preprod:
   <<: *defaults
