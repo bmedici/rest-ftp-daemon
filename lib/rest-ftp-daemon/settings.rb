@@ -1,10 +1,3 @@
-# Try to load Settingslogic
-begin
-  require "settingslogic"
-rescue LoadError
-  raise "warning: Settingslogic is needed to provide configuration values to the Gemspec file"
-end
-
 # Configuration class
 class Settings < Settingslogic
   # Read configuration
@@ -25,6 +18,10 @@ class Settings < Settingslogic
   # Dump whole settings set to readable YAML
   def dump
     self.to_hash.to_yaml( :Indent => 4, :UseHeader => true, :UseVersion => false )
+  end
+
+  def init_defaults
+    Settings['host'] ||= `hostname`.chomp.split('.').first
   end
 
   def newrelic_enabled?
@@ -48,7 +45,5 @@ class Settings < Settingslogic
 
     # Logfile
     ENV['NEW_RELIC_LOG'] = Settings.at(:logs, :newrelic)
-
-  end
 
 end

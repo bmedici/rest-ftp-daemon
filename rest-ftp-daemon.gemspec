@@ -1,6 +1,7 @@
 # coding: utf-8
 
 # Libs
+require "settingslogic"
 app_root = File.dirname(__FILE__)
 require File.expand_path("#{app_root}/lib/rest-ftp-daemon/constants")
 

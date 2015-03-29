@@ -1,5 +1,6 @@
 # Global libs
 require 'rubygems'
+require "settingslogic"
 require 'json'
 require 'grape'
 require 'grape-entity'
