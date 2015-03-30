@@ -158,7 +158,7 @@ module RestFtpDaemon
     alias << push
     alias enq push
 
-    def pop(non_block=false)
+    def pop non_block=false
       @mutex.synchronize do
         while true
           if @queue.empty?
@@ -167,10 +167,6 @@ module RestFtpDaemon
             @waiting.push Thread.current
             @mutex.sleep
           else
-            # Refresh queue order
-            # sort_queue!
-
-            # Extract the heaviest item in the queue
             return @queue.pop
           end
         end

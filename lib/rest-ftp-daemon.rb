@@ -14,8 +14,8 @@ require 'syslog'
 require 'net/ftp'
 require 'net/http'
 require 'double_bag_ftps'
-require 'newrelic_rpm'
 
+require 'newrelic_rpm'
 require 'get_process_mem'
 
 # Project's libs

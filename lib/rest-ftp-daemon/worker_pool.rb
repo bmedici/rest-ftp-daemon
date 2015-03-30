@@ -41,7 +41,6 @@ module RestFtpDaemon
       @workers[wid] && @workers[wid].alive?
     end
 
-
   private
 
     def create_worker_threads n
@@ -59,13 +58,12 @@ module RestFtpDaemon
 
     def create_worker_thread wid
       Thread.new wid do
-
         # Set thread context
         Thread.current.thread_variable_set :wid, wid
         Thread.current.thread_variable_set :started_at, Time.now
+        worker_status :starting
 
         # Start working
-        worker_status :starting
         loop do
           begin
             work
