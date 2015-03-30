@@ -84,19 +84,19 @@ module RestFtpDaemon
       job = $queue.pop
 
       # Prepare the job for processing
-      worker_status :processing
+      worker_status :working
       worker_jid job.id
-      info "processing"
+      info "working"
       job.wid = Thread.current.thread_variable_get :wid
 
       # Processs this job protected by a timeout
-      status = Timeout::timeout(@timeout, RestFtpDaemon::JobTimeout) do
+      Timeout::timeout(@timeout, RestFtpDaemon::JobTimeout) do
         job.process
       end
 
       # Processing done
-      worker_status :done
-      info "done"
+      worker_status :finished
+      info "finished"
       worker_jid nil
       job.wid = nil
 
