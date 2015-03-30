@@ -109,7 +109,7 @@ argv << command unless command.nil?
 puts "--- #{APP_NAME} #{APP_VER}"
 puts "Config file  \t #{APP_CONF}"
 puts "PID file     \t #{Settings.pidfile}"
-puts "Daemonize    \t #{Settings.daemonize ? 'YES' : "no"}"
+puts "Daemonize    \t #{Settings.daemonize ? 'YES' : "no (PID: #{Process.pid})"}"
 puts "Host         \t #{Settings.host}"
 puts "Namespace    \t #{Settings.namespace}"
 puts "Network port \t #{Settings.port}"
