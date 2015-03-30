@@ -32,8 +32,10 @@
 
 .btn-group.btn-group-sm
   .btn.btn-default.btn-info Processed
-  .btn.btn-default= Helpers.format_bytes(info_processed)
+  .btn.btn-default= info_processed
 
 .btn-group.btn-group-sm
   .btn.btn-default.btn-info Transferred
   .btn.btn-default= Helpers.format_bytes(trans, "B")
+
+
