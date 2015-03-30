@@ -8,6 +8,8 @@ module RestFtpDaemon
       # Server global status
       get '/status' do
         info "GET /status"
+        mem = GetProcessMem.new
+
         status 200
         return  {
           hostname: `hostname`.chomp,
@@ -16,6 +18,8 @@ module RestFtpDaemon
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),
           counters: $queue.counters,
+          memory_bytes: mem.bytes.to_i,
+          memory_mb: mem.mb.round(0),
           status: $queue.counts_by_status,
           workers: $pool.worker_variables,
           jobs_count: $queue.jobs_count,

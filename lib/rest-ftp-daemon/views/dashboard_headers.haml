@@ -2,7 +2,7 @@
 - info_procs = (Facter.value :processorcount).to_i
 - info_load = Sys::CPU.load_avg.first.to_f
 - info_norm = info_procs.zero? ? "N/A" : (100 * info_load / info_procs).round(1)
-
+- mem = GetProcessMem.new
 
 .btn-group.btn-group-sm
   .btn.btn-default.btn-success CPUs
@@ -29,6 +29,9 @@
   .btn.btn-default= Facter.value(:memoryfree)
 
 .btn-group.btn-group-sm
+  .btn.btn-default.btn-info Mem
+  .btn.btn-default= Helpers.format_bytes(mem.bytes, "B")
+
+.btn-group.btn-group-sm
   .btn.btn-default.btn-info Transferred
   .btn.btn-default= Helpers.format_bytes(trans, "B")
-
