@@ -1,13 +1,10 @@
 - jobs.each do |job|
-  - size = job.get :transfer_total
-  - sent = job.get :transfer_sent
   - progress = job.get :progress
   - source_count = job.get(:source_count) || 0
   - source_processed = job.get(:source_processed) || 0
   - source_current = job.get(:source_current)
   - presented = present job, :with => RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
-  - errmsg = job.get :error_message
-  - method = job.get(:target_method)
+  - bitrate = job.get :transfer_bitrate
 
   - trclass = JOB_STYLES[job.status]
 
@@ -25,7 +22,7 @@
       = Helpers.highlight_tokens job.source
 
     %td
-      = Helpers.job_method_label method
+      = Helpers.job_method_label (job.get :target_method)
 
     %td{title: job.get(:target_url)}
       = Helpers.highlight_tokens job.target
@@ -45,28 +42,26 @@
         - unless progress.nil?
           %span.push-progress
             = "#{progress}%"
-
         %br
-        %b
-          %span.push-filename
-            = source_current unless source_current.nil?
+        %span.push-filename
+          %b= source_current unless source_current.nil?
 
     %td
       - unless job.error || job.status == JOB_STATUS_FINISHED
         .progress
           .progress-bar{style:"width: #{progress}%;"}
             =# "#{progress}%" unless progress.nil?
-            = Helpers.format_bytes(sent, "B")
+            = Helpers.format_bytes(job.get(:transfer_sent), "B")
 
       - else
-        .error{title: errmsg}
+        .error{title: job.get(:error_message)}
           = Helpers.text_or_empty(job.error)
 
     %td.nobr.text-right
-      = Helpers.format_bytes(size, "B")
+      = Helpers.format_bytes(job.get(:transfer_total), "B")
 
-    %td.nobr.text-right
-      - if (bitrate = job.get :transfer_bitrate)
+    %td.nobr.text-right{title: "transfer_time: #{job.get :transfer_time} s"}
+      - if bitrate
         %span.push-bitrate
           = Helpers.format_bytes(bitrate, "bps")
 
@@ -76,7 +71,5 @@
 
       - unless job.wid.nil?
         .label.label-warning.flag.worker-label= job.wid
-
-
 
 
