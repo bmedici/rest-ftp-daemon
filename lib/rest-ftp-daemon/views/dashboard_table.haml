@@ -60,7 +60,7 @@
     %td.nobr.text-right
       = Helpers.format_bytes(job.get(:transfer_total), "B")
 
-    %td.nobr.text-right{title: "transfer_time: #{job.get :transfer_time} s"}
+    %td.nobr.text-right{title: "time: #{job.exectime} s"}
       - if bitrate
         %span.push-bitrate
           = Helpers.format_bytes(bitrate, "bps")

@@ -200,6 +200,11 @@ module RestFtpDaemon
       @weight = [@priority.to_i, -@queued_at.to_i]
     end
 
+    def exectime
+      return nil if (@started_at.nil? || @finished_at.nil?)
+      (@finished_at - @started_at).round(2)
+    end
+
     def set_queued
       # Update job status
       newstatus JOB_STATUS_QUEUED
@@ -218,11 +223,6 @@ module RestFtpDaemon
     def age
       return nil if @queued_at.nil?
       (Time.now - @queued_at).round(2)
-    end
-
-    def exectime
-      return nil if (@started_at.nil? || @finished_at.nil?)
-      (@finished_at - @started_at).round(2)
     end
 
     def set attribute, value
