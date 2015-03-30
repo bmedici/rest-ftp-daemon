@@ -44,7 +44,7 @@ WORKER_STYLES = {
   :done                 => :success,
   :dead                 => :danger
   }
-
+PAGINATE_MAX            = 30
 
 # Configuration defaults
 DEFAULT_WORKER_TIMEOUT  = 3600

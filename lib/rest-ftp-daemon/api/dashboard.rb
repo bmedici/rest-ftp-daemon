@@ -19,20 +19,25 @@ module RestFtpDaemon
         Facter.loadfacts
 
         # Detect QS filters
-        only = params["only"].to_s
+        @only = params["only"].to_s
 
         # Get jobs for this view, order jobs by their weights
-        current = $queue.filter_jobs only
+        result = $queue.filter_jobs @only
 
         # Provide queue only if no filtering set
-        queue = []
-        queue = $queue.queue if only.empty?
+        @queue = []
+        @queue = $queue.queue if @only.empty?
 
         # Get workers status
         @worker_variables = $pool.worker_variables
 
+        # Build paginator
+        @paginate = Paginate.new result.reverse
+        @paginate.only = params["only"]
+        @paginate.page = params["page"]
+
         # Compile haml template
-        output = render :dashboard, {queue: queue, current: current, only: only}
+        output = render :dashboard
 
         # Send response
         env['api.format'] = :html

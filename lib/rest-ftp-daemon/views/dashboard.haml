@@ -24,9 +24,11 @@
 
       = render :dashboard_headers
 
-      .row
-        #box-jobs.col-md-12
-          = render :dashboard_jobs, {current: current, queue: queue, only: only}
+      %br
+      %br
+      %br
+
+      = render :dashboard_jobs
 
       .row
         #box-tokens.col-md-6

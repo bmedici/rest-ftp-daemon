@@ -1,47 +1,54 @@
-- count_all = $queue.jobs_count
 - counts_by_status = $queue.counts_by_status
--# jobs_without_queue = jobs
+- counts_all = $queue.jobs_count
+- jobs = @paginate.subset
 
 
-%h2
-  Jobs table &nbsp;
+.row
 
-  .btn-group.btn-group-md
-    - klass = only.empty? ? "btn-info" : ""
-    %a.btn.btn-default{href: "?only=", class: klass}
-      ALL (#{count_all})
-  .btn-group.btn-group-md
-    - counts_by_status.each do |status, count|
-      - klass = (status.to_s == only) ? "btn-info" : ""
-      %a.btn.btn-default{href: "?only=#{status}", class: klass}
-        #{status} (#{count})
+  .col-md-5
+    .btn-group.btn-group-md
+      - klass = @only.empty? ? "btn-info" : ""
+      %a.btn.btn-default{href: "?only=", class: klass}
+        ALL (#{counts_all})
+    .btn-group.btn-group-md
+      - counts_by_status.each do |status, count|
+        - klass = (status.to_s == @only) ? "btn-info" : ""
+        %a.btn.btn-default{href: "?only=#{status}", class: klass}
+          #{status} (#{count})
 
-%table.table.table-striped.table-hover.table-condensed#jobs
-
-  %thead
-    %tr
-      %th ID
-      %th label
-      %th source
-      %th <=>
-      %th target
-      %th queued
-      %th{width: 150} status
-      %th{"min-width" => 120} error
-      %th.text-right size
-      %th.text-right bitrate
-      %th info
+  .col-md-7
+    = @paginate.browser
 
 
-    - unless queue.empty?
-      %tbody.jobs
-        = render :dashboard_table, {jobs: queue.reverse}
 
-        %thead
-          %tr
-            %td{colspan: 13}
-              %br
+.row
+  #box-jobs.col-md-12
 
-    - unless current.empty?
-      %tbody.jobs
-        = render :dashboard_table, {jobs: current.reverse}
+    %table.table.table-striped.table-hover.table-condensed#jobs
+
+      %thead
+        %tr
+          %th ID
+          %th label
+          %th source
+          %th <=>
+          %th target
+          %th queued
+          %th{width: 150} status
+          %th{"min-width" => 120} error
+          %th.text-right size
+          %th.text-right bitrate
+          %th info
+
+        - unless @queue.empty?
+          %tbody.jobs
+            = render :dashboard_table, {jobs: @queue.reverse}
+
+            %thead
+              %tr
+                %td{colspan: 13}
+                  %br
+
+        - unless jobs.empty?
+          %tbody.jobs
+            = render :dashboard_table, {jobs: jobs.reverse}

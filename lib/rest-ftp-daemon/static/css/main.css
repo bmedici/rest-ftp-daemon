@@ -63,3 +63,16 @@ h2 {
   /*min-width: 60px;*/
   }
 
+a.class {
+  text-decoration: underline;
+  }
+
+
+a.page.btn {
+  /*font-weight: bold;*/
+  /*font-size: 1.5em;*/
+  }
+
+.debug {
+  border: 1px solid orange;
+}
