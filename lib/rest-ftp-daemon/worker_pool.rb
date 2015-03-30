@@ -67,9 +67,15 @@ module RestFtpDaemon
         # Start working
         worker_status :starting
         loop do
-          work
+          begin
+            work
+          rescue Exception => ex
+            puts "WORKER UNEXPECTED CRASH: #{ex.message}", lines: ex.backtrace
+            sleep 1
+          end
         end
 
+        # We should never get here
       end
     end
 
@@ -106,7 +112,7 @@ module RestFtpDaemon
       sleep 1
 
     rescue Exception => ex
-      info "[#{job.id}] UNHDNALED EXCEPTION: #{ex.message}", lines: ex.backtrace
+      info "UNHDNALED EXCEPTION: #{ex.message}", lines: ex.backtrace
       worker_status :crashed
       job.oops_after_crash ex unless job.nil?
       sleep 1
