@@ -137,7 +137,7 @@ module RestFtpDaemon
       rescue Errno::ECONNREFUSED => exception
         return oops :ended, exception, :conn_refused
 
-      rescue Timeout::Error, Errno::ETIMEDOUT => exception
+      rescue Timeout::Error, Errno::ETIMEDOUT, Net::ReadTimeout => exception
         return oops :ended, exception, :conn_timed_out
 
       rescue OpenSSL::SSL::SSLError => exception
@@ -147,7 +147,7 @@ module RestFtpDaemon
         return oops :ended, exception, :ftp_perm_error
 
       rescue Net::FTPTempError => exception
-        return oops :ended, exception, :ftp_temp_error
+        return oops :ended, exception, :net_temp_error
 
       rescue Errno::EMFILE => exception
         return oops :ended, exception, :too_many_open_files
