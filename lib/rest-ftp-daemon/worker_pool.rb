@@ -3,6 +3,10 @@ module RestFtpDaemon
 
     attr_reader :wid
 
+    if Settings.newrelic_enabled?
+      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+    end
+
     def initialize number_threads
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
@@ -134,6 +138,11 @@ module RestFtpDaemon
     def worker_jid jid
       Thread.current.thread_variable_set :jid, jid
       Thread.current.thread_variable_set :updted_at, Time.now
+    end
+
+    if Settings.newrelic_enabled?
+      add_transaction_tracer :create_worker_thread, :category => :task
+      add_transaction_tracer :work, :category => :task
     end
 
   end

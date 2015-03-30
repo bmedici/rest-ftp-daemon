@@ -9,6 +9,10 @@ module RestFtpDaemon
     attr_reader :queue
     attr_reader :jobs
 
+    if Settings.newrelic_enabled?
+      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+    end
+
     def initialize
       # Instance variables
       @queue = []
@@ -259,6 +263,11 @@ module RestFtpDaemon
         id: @id,
         lines: lines,
         origin: self.class.to_s
+    end
+
+    if Settings.newrelic_enabled?
+      add_transaction_tracer :push, :category => :task
+      add_transaction_tracer :pop, :category => :task
     end
 
   end
