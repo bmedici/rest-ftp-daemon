@@ -21,6 +21,7 @@ LOG_COL_WID             = 8
 LOG_COL_JID             = JOB_IDENT_LEN+3+2
 LOG_COL_ID              = 6
 LOG_TRIM_LINE           = 80
+LOG_DUMPS               = File.dirname(__FILE__) + '/../../log/'
 
 
 # Notifications
@@ -39,7 +40,7 @@ JOB_STYLES = {
   }
 WORKER_STYLES = {
   :waiting              => :success,
-  :processing           => :info,
+  :working              => :info,
   :crashed              => :danger,
   :done                 => :success,
   :dead                 => :danger

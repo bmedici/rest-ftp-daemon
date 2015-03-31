@@ -440,9 +440,10 @@ module RestFtpDaemon
     end
 
     def ftp_finished
-      # Close FTP connexion
+      # Close FTP connexion and free up memory
       @ftp.close
       info "Job.ftp_finished closed"
+      @ftp = nil
 
       # FTP debug mode ?
       if @ftp_debug_enabled
