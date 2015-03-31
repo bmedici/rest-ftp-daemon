@@ -17,14 +17,18 @@ module RestFtpDaemon
       # Prepare status hash and vars
       @statuses = {}
       @workers = {}
+      @conchita = nil
       @mutex = Mutex.new
       @counter = 0
       @timeout = (Settings.transfer.timeout rescue nil) || DEFAULT_WORKER_TIMEOUT
 
       # Create worker threads
-      info "WorkerPool initializing with [#{number_threads}] workers and [#{@timeout}]s timeout"
+      info "WorkerPool creating worker threads [#{number_threads}] timeout [#{@timeout}]s"
       create_worker_threads number_threads
 
+      # Create conchita thread
+      info "WorkerPool creating conchita thread"
+      create_conchita_thread
     end
 
     def worker_variables
@@ -74,6 +78,16 @@ module RestFtpDaemon
         end
 
         # We should never get here
+      end
+    end
+
+    def create_conchita_thread
+      Thread.new do
+        begin
+          @conchita = Conchita.new
+        rescue Exception => e
+          info "CONCHITA EXCEPTION: #{e.inspect}"
+        end
       end
     end
 

@@ -34,23 +34,6 @@ module RestFtpDaemon
       # Mutex for counters
       @counters = {}
       @mutex_counters = Mutex.new
-
-      # Conchita configuration
-      @conchita = Settings.conchita
-      if @conchita.nil?
-        info "conchita: missing conchita.* configuration"
-      elsif @conchita[:timer].nil?
-        info "conchita: missing conchita.timer value"
-      else
-        Thread.new {
-          begin
-            conchita_loop
-          rescue Exception => e
-            info "CONCHITA EXCEPTION: #{e.inspect}"
-          end
-          }
-      end
-
     end
 
     def generate_id
@@ -199,51 +182,31 @@ module RestFtpDaemon
       end
     end
 
-    def conchita_loop
-      info "conchita starting with: #{@conchita.inspect}"
-      loop do
-        # Do the cleanup locking the queues
-        # info "conchita: cleanup expired jobs"
-        @mutex.synchronize do
-          conchita_clean JOB_STATUS_FINISHED
-          conchita_clean JOB_STATUS_FAILED
-          conchita_clean JOB_STATUS_QUEUED
-        end
-        sleep @conchita[:timer]
-      end
-    end
-
-    def conchita_clean status     # FIXME: clean both @jobs and @queue
+    def expire status, maxage
+# FIXME: clean both @jobs and @queue
       # Init
-      return if status.nil?
+      return if status.nil? || maxage <= 0
 
-      # Read config state
-      maxage = @conchita["clean_#{status.to_s}"] || 0
-      #info "conchita_clean status[#{status.to_s}] \t maxage[#{maxage}] s"
-      return unless maxage > 0
+      # Compute oldest possible birthday
+      before = Time.now - maxage.to_i
+      # info "conchita_clean: SELECT status[#{status.to_s}] before[#{before}]"
 
-      # Delete jobs from the queue if their status is (status)
-      @jobs.delete_if do |job|
+      @mutex.synchronize do
+        # Delete jobs from the queue when they match status and age limits
+        @jobs.delete_if do |job|
 
-        # Skip if wrong status
-        next unless job.status == status.to_sym
+          # Skip if wrong status, updated_at invalid, or too young
+          next unless job.status == status.to_sym
+          next if job.updated_at.nil?
+          next if job.updated_at > before
 
-        # Skip if updated_at invalid
-        next if job.updated_at.nil?
+          # Ok, we have to clean it up ..
+          info "expire [#{status.to_s}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
+          info "       + unqueued" if @queue.delete(job)
 
-        # Skip if not aged enough yet
-        age = Time.now - job.updated_at
-        next if age < maxage
+          true
+        end
 
-        # Ok, we have to clean it up ..
-        info "conchita_clean status[#{status.to_s}] maxage[#{maxage}] job[#{job.id}] age[#{age}]"
-
-        # Remove it from the queue if present
-        job_in_queue = @queue.delete job
-        info "   removed queued job [#{job.id}]" unless job_in_queue.nil?
-
-        # Accept to delete it from @jobs
-        true
       end
 
     end
