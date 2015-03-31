@@ -32,6 +32,9 @@ module RestFtpDaemon
         $queue.expire JOB_STATUS_FAILED,    maxage(JOB_STATUS_FAILED)
         $queue.expire JOB_STATUS_QUEUED,    maxage(JOB_STATUS_QUEUED)
 
+        # Force garbage collector
+        GC.start if @conchita["garbage_collector"]
+
         # Sleep for a few seconds
         sleep @conchita[:timer]
       end
