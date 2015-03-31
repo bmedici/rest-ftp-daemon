@@ -17,9 +17,9 @@ require 'double_bag_ftps'
 require 'thread'
 require 'securerandom'
 
-
 require 'newrelic_rpm'
 require 'get_process_mem'
+
 
 # Project's libs
 require 'rest-ftp-daemon/constants'
