@@ -42,7 +42,7 @@
 
         - unless @queue.empty?
           %tbody.jobs
-            = render :dashboard_table, {jobs: @queue.reverse}
+            = render :dashboard_table, {jobs: @queue}
 
             %thead
               %tr
@@ -51,4 +51,4 @@
 
         - unless jobs.empty?
           %tbody.jobs
-            = render :dashboard_table, {jobs: jobs.reverse}
+            = render :dashboard_table, {jobs: jobs}

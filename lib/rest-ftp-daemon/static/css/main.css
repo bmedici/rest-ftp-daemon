@@ -14,8 +14,9 @@
   white-space: nowrap;
   }
 
-table tr td, .fixed {
-  font-family: 'Inconsolata', sans-serif;
+body, table tr td, .fixed {
+  /*font-family: 'Inconsolata', Verdana, sans-serif;*/
+  font-family: 'Verdana', Verdana, sans-serif;
   font-size: 1em;
   }
 
@@ -76,3 +77,9 @@ a.page.btn {
 .debug {
   border: 1px solid orange;
 }
+
+.table-condensed tbody > tr > td {
+  padding: 3px 3px;
+  }
+
+
