@@ -20,7 +20,7 @@ defaults: &defaults
     # license: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   conchita:
-    timer: 10
+    timer: 60
     # garbage_collector: true
     # clean_failed: 3600
     # clean_finished: 3600
