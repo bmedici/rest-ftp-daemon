@@ -14,6 +14,9 @@ require 'syslog'
 require 'net/ftp'
 require 'net/http'
 require 'double_bag_ftps'
+require 'thread'
+require 'securerandom'
+
 
 require 'newrelic_rpm'
 require 'get_process_mem'

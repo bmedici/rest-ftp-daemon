@@ -17,7 +17,7 @@ JOB_STATUS_QUEUED       = :queued
 
 # Logging and startup
 LOG_PIPE_LEN            = 10
-LOG_COL_WID             = 4
+LOG_COL_WID             = 8
 LOG_COL_JID             = JOB_IDENT_LEN+3+2
 LOG_COL_ID              = 6
 LOG_TRIM_LINE           = 80
@@ -45,6 +45,7 @@ WORKER_STYLES = {
   :dead                 => :danger
   }
 PAGINATE_MAX            = 30
+
 
 # Configuration defaults
 DEFAULT_WORKER_TIMEOUT  = 3600

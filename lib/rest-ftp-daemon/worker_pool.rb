@@ -48,6 +48,7 @@ module RestFtpDaemon
   private
 
     def create_worker_threads n
+# FIXME counter instead of upto ?
       n.times do
         # Increment counter
         @mutex.synchronize do

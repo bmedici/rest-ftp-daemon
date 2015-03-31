@@ -3,8 +3,10 @@ load_path_libs = File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
 $LOAD_PATH.unshift(load_path_libs) unless $LOAD_PATH.include?(load_path_libs)
 require 'rest-ftp-daemon'
 
-# Create queue and worker pool
+# Create global queue
 $queue = RestFtpDaemon::JobQueue.new
+
+# Initialize workers and conchita subsystem
 $pool = RestFtpDaemon::WorkerPool.new(Settings.workers || APP_WORKERS)
 
 # Rack reloader

@@ -1,10 +1,5 @@
-require 'thread'
-require 'securerandom'
-
 module RestFtpDaemon
   class JobQueue < Queue
-    # attr_reader :queued
-    # attr_reader :popped
 
     attr_reader :queue
     attr_reader :jobs
@@ -170,18 +165,6 @@ module RestFtpDaemon
       @waiting.size
     end
 
-  protected
-
-    def prefixed_id id
-      "#{@prefix}.#{id}"
-    end
-
-    def sort_queue!
-      @mutex_counters.synchronize do
-        @queue.sort_by! &:weight
-      end
-    end
-
     def expire status, maxage
 # FIXME: clean both @jobs and @queue
       # Init
@@ -211,8 +194,17 @@ module RestFtpDaemon
 
     end
 
+  protected
 
-  private
+    def prefixed_id id
+      "#{@prefix}.#{id}"
+    end
+
+    def sort_queue!
+      @mutex_counters.synchronize do
+        @queue.sort_by! &:weight
+      end
+    end
 
     def info message, lines = []
       return if @logger.nil?
@@ -227,6 +219,8 @@ module RestFtpDaemon
     if Settings.newrelic_enabled?
       add_transaction_tracer :push, :category => :task
       add_transaction_tracer :pop, :category => :task
+      add_transaction_tracer :sort_queue!, :category => :task
+      add_transaction_tracer :expire, :category => :task
     end
 
   end
