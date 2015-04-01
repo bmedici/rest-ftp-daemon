@@ -19,26 +19,29 @@ module RestFtpDaemon
       logfile ||= STDERR
 
       # Create the logger and return it
-      logger = Logger.new(logfile, 'daily')   #, 10, 1024000)
+      logger = Logger.new(logfile, LOG_ROTATION)   #, 10, 1024000)
       logger.progname = pipe.to_s.upcase
 
       # And the formatter
       logger.formatter = proc do |severity, datetime, progname, message|
-        # stamp = datetime.strftime("%Y-%m-%d %H:%M:%S")
-        # field_pipe = "%-#{LOG_PIPE_LEN.to_i}s" % progname
-        # "#{stamp}\t#{field_pipe}\t#{message}\n"
-        "%s\t%-#{LOG_PIPE_LEN.to_i}s\t%s\n" % [
-          datetime.strftime("%Y-%m-%d %H:%M:%S"),
+        # Build common line prefix
+        prefix = LOG_FORMAT_PREFIX % [
+          datetime.strftime(LOG_FORMAT_TIME),
+          severity,
           progname,
-          message,
         ]
+
+        # If we have a bunch of lines, prefix them and send them together
+        if message.is_a? Enumerable
+          message.map { |line| prefix + line + LOG_NEWLINE }.join
+        else
+          prefix + message.to_s + LOG_NEWLINE
+        end
       end
 
       # Finally return this logger
       logger
     end
-
-  private
 
   end
 end

@@ -22,7 +22,11 @@ LOG_COL_JID             = JOB_IDENT_LEN+3+2
 LOG_COL_ID              = 6
 LOG_TRIM_LINE           = 80
 LOG_DUMPS               = File.dirname(__FILE__) + '/../../log/'
-
+LOG_ROTATION            = 'daily'
+LOG_FORMAT_TIME         = "%Y-%m-%d %H:%M:%S"
+LOG_FORMAT_PREFIX       = "%s\t%s\t%-#{LOG_PIPE_LEN.to_i}s\t"
+LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-LOG_COL_ID.to_i}s"
+LOG_NEWLINE             = "\n"
 
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
