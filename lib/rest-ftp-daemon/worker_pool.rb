@@ -12,6 +12,9 @@ module RestFtpDaemon
     def initialize
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
+      # log_info "WorkerPool: log_info"
+      # log_error "WorkerPool: log_error"
+      # log_error "WorkerPool: log_error + lines", ['line1', 'line2']
 
       # Prepare status hash and vars
       @statuses = {}

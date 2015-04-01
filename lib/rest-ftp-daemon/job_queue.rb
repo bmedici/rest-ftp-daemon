@@ -1,5 +1,5 @@
 module RestFtpDaemon
-  class JobQueue < Queue
+  class JobQueue
     include LoggerHelper
 
     attr_reader :queue
@@ -35,9 +35,7 @@ module RestFtpDaemon
     end
 
     def generate_id
-      # rand(36**8).to_s(36)
       @mutex.synchronize do
-        @last_id ||= 0
         @last_id += 1
       end
       prefixed_id @last_id

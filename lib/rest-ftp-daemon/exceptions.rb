@@ -6,6 +6,7 @@ module RestFtpDaemon
 
   class MissingQueue              < RestFtpDaemonException; end
   class MissingPool               < RestFtpDaemonException; end
+  class InvalidWorkerNumber       < RestFtpDaemonException; end
 
   class JobException              < RestFtpDaemonException; end
   class JobTimeout                < RestFtpDaemonException; end
