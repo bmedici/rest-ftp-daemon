@@ -1,10 +1,10 @@
 module RestFtpDaemon
   class JobQueue
     include LoggerHelper
+    attr_reader :logger
 
     attr_reader :queue
     attr_reader :jobs
-    attr_reader :logger
 
 
     if Settings.newrelic_enabled?

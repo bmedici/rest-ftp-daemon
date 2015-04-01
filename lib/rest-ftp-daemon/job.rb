@@ -1,6 +1,7 @@
 module RestFtpDaemon
   class Job
     include LoggerHelper
+    attr_reader :logger
 
     if Settings.newrelic_enabled?
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation

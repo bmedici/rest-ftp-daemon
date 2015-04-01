@@ -111,7 +111,7 @@ module RestFtpDaemon
           status 412
           api_error exception
         rescue Exception => exception
-          log_error "#{exception.message}"
+          log_error "Exception: #{exception.message}"
           status 501
           api_error exception
         else

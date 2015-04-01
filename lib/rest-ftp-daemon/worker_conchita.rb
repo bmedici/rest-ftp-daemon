@@ -7,10 +7,10 @@ module RestFtpDaemon
 
       # Conchita configuration
       @conchita = Settings.conchita
-      if @conchita.nil?
-        return log_info "conchita: missing conchita.* configuration"
+      if !@conchita.is_a? Hash
+        return log_info "ConchitaWorker: missing conchita.* configuration"
       elsif @conchita[:timer].nil?
-        return log_info "conchita: missing conchita.timer value"
+        return log_info "ConchitaWorker: missing conchita.timer value"
       end
 
       # Start main loop
@@ -27,14 +27,13 @@ module RestFtpDaemon
       $queue.expire JOB_STATUS_FINISHED,  maxage(JOB_STATUS_FINISHED)
       $queue.expire JOB_STATUS_FAILED,    maxage(JOB_STATUS_FAILED)
       $queue.expire JOB_STATUS_QUEUED,    maxage(JOB_STATUS_QUEUED)
-sleep 5
 
       # Force garbage collector
       worker_status :collecting
       GC.start if @conchita["garbage_collector"]
-sleep 5
+
     rescue Exception => e
-      log_error "CONCHITA WORKER EXCEPTION: #{e.inspect}"
+      log_error "EXCEPTION: #{e.inspect}"
       sleep 1
     else
       # Sleep for a few seconds
