@@ -9,16 +9,34 @@ class Logger
     prefix1 = build_prefix(context)
     prefix2 = build_prefix() + '   | '
 
-    # Build output lines
-    output = []
-    output << prefix1 + message.strip
+    # # Build output lines
+    # output = []
+    # output << prefix1 + message.strip
 
-    # Add optional lines
-    context[:lines].each do |line|
-      line.strip!
-      next if line.empty?
-      output << prefix2 + line[0..LOG_TRIM_LINE]
-    end if context[:lines].is_a? Enumerable
+    # # Add optional lines
+    # context[:lines].each do |line|
+    #   # line.strip!
+    #   # next if line.empty?
+    #   output << prefix2 + line[0..LOG_TRIM_LINE]
+    # end if context[:lines].is_a? Enumerable
+
+    # Use "context[:lines]" according to its type
+    lines = context[:lines]
+
+    if lines.is_a? Hash
+      output = build_from_hash prefix2, lines
+
+    elsif lines.is_a? Array
+      output = build_from_array prefix2, lines
+
+    else
+      output = []
+
+    end
+
+
+    # Prepend plain message to output
+    output.unshift (prefix1 + message.strip)
 
     # Send all this to logger
     add context[:level], output
@@ -32,5 +50,21 @@ class Logger
       context[:level].to_i+1,
     ]
   end
+
+  protected
+
+    def build_from_array prefix, lines
+      lines.map do |value|
+        text = value.to_s.strip[0..LOG_TRIM_LINE]
+        "#{prefix}#{text}"
+      end
+    end
+
+    def build_from_hash prefix, lines
+      lines.map do |name, value|
+        text = value.to_s.strip[0..LOG_TRIM_LINE]
+        "#{prefix}#{name}: #{text}"
+      end
+    end
 
 end

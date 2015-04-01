@@ -88,7 +88,7 @@ module RestFtpDaemon
       end
 
       post '/jobs/' do
-        log_info "POST /jobs", params.collect {|name, value| "#{name}: #{value.inspect}"}
+        log_info "POST /jobs", params
 
         begin
 

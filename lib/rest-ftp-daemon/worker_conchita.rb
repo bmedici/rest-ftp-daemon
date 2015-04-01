@@ -14,7 +14,7 @@ module RestFtpDaemon
       end
 
       # Start main loop
-      log_info "ConchitaWorker starting", Helpers.hash_to_lines(@conchita)
+      log_info "ConchitaWorker starting", @conchita
       start
     end
 
