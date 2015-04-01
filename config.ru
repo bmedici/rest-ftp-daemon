@@ -7,7 +7,7 @@ require 'rest-ftp-daemon'
 $queue = RestFtpDaemon::JobQueue.new
 
 # Initialize workers and conchita subsystem
-$pool = RestFtpDaemon::WorkerPool.new(Settings.workers || APP_WORKERS)
+$pool = RestFtpDaemon::WorkerPool.new
 
 # Rack reloader
 unless Settings.namespace == "production"

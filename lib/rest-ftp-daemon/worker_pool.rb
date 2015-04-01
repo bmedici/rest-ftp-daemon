@@ -18,8 +18,9 @@ module RestFtpDaemon
       @workers = {}
       @conchita = nil
       @mutex = Mutex.new
-      @counter = 0
 
+      # Identifiers generator
+      @last_id = 0
 
       # Create worker threads
       create_threads
@@ -40,6 +41,13 @@ module RestFtpDaemon
     end
 
   private
+
+    def generate_id
+      @mutex.synchronize do
+        @last_id += 1
+      end
+      "w#{@last_id}"
+    end
 
     def create_threads
       # Read configuration
