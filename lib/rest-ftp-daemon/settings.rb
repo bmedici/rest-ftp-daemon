@@ -25,7 +25,7 @@ class Settings < Settingslogic
   end
 
   def newrelic_enabled?
-    Settings.newrelic.is_a?(Hash) && Settings.at(:newrelic, :license)
+    Settings.at(:debug, :newrelic)
   end
 
   def init_newrelic
@@ -38,10 +38,10 @@ class Settings < Settingslogic
     #Settings['newrelic']['enabled'] = true
 
     # License
-    ENV['NEW_RELIC_LICENSE_KEY'] = Settings.at(:newrelic, :license)
+    ENV['NEW_RELIC_LICENSE_KEY'] = Settings.at(:debug, :newrelic)
 
     # Appname
-    ENV['NEW_RELIC_APP_NAME'] = Settings.at(:newrelic, :appname) || "#{APP_NICK}-#{Settings.host}-#{APP_ENV}"
+    ENV['NEW_RELIC_APP_NAME'] = "#{APP_NICK}-#{Settings.host}-#{APP_ENV}"
 
     # Logfile
     ENV['NEW_RELIC_LOG'] = Settings.at(:logs, :newrelic)

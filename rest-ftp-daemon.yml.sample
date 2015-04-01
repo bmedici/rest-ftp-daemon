@@ -15,10 +15,6 @@ defaults: &defaults
     overwrite: false
     timeout: 1800
 
-  # newrelic:
-    # appname: rftpd-testing
-    # license: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
   conchita:
     timer: 60
     # garbage_collector: true
@@ -28,6 +24,7 @@ defaults: &defaults
 
   debug:
     ftp: false
+    # license: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   logs:
     thin:    "/var/log/rftpd-environment-thin.log"
