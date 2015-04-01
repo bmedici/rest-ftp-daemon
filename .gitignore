@@ -3,5 +3,6 @@ pkg
 .DS_Store
 *.log
 tmp/
+log/
 DOC/
 rest-ftp-daemon.yml
