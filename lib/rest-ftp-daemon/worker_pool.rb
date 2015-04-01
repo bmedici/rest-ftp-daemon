@@ -21,9 +21,6 @@ module RestFtpDaemon
       @counter = 0
 
 
-      # Create conchita thread
-      info "WorkerPool creating conchita thread"
-      create_conchita_thread
       # Create worker threads
       create_threads
     end
@@ -61,6 +58,10 @@ module RestFtpDaemon
         wid = generate_id
         @workers[wid] = create_worker_thread wid
       end
+
+      # Start conchita thread
+      @conchita = create_conchita_thread
+
     rescue Exception => ex
       log_error "UNHDNALED EXCEPTION: #{ex.message}", ex.backtrace
 
@@ -80,9 +81,10 @@ module RestFtpDaemon
     def create_conchita_thread
       Thread.new do
         begin
-          @conchita = Conchita.new
-        rescue Exception => e
-          info "CONCHITA EXCEPTION: #{e.inspect}"
+          worker = ConchitaWorker.new :conchita
+          log_info "ConchitaWorker: #{worker}"
+        rescue Exception => ex
+          log_error "EXCEPTION: #{ex.message}"
         end
       end
     end
