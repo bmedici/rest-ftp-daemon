@@ -9,12 +9,9 @@ module RestFtpDaemon
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     end
 
-    def initialize number_threads
+    def initialize
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
-
-      # Check parameters
-      raise "at least one worker is needed to continue (#{number_threads} is less than one)" if number_threads < 1
 
       # Prepare status hash and vars
       @statuses = {}
@@ -22,15 +19,13 @@ module RestFtpDaemon
       @conchita = nil
       @mutex = Mutex.new
       @counter = 0
-      @timeout = (Settings.transfer.timeout rescue nil) || DEFAULT_WORKER_TIMEOUT
 
-      # Create worker threads
-      info "WorkerPool creating worker threads [#{number_threads}] timeout [#{@timeout}]s"
-      create_worker_threads number_threads
 
       # Create conchita thread
       info "WorkerPool creating conchita thread"
       create_conchita_thread
+      # Create worker threads
+      create_threads
     end
 
     def worker_variables
@@ -49,38 +44,36 @@ module RestFtpDaemon
 
   private
 
-    def create_worker_threads n
-# FIXME counter instead of upto ?
-      n.times do
-        # Increment counter
-        @mutex.synchronize do
-          @counter +=1
-        end
+    def create_threads
+      # Read configuration
+      number_threads = (Settings.workers || APP_WORKERS)
 
-        # Create a dedicated thread for this worker
-        wid = "w#{@counter}"
+      if number_threads < 1
+        log_error "create_threads: one worker is the minimum possible number (#{number_threads} configured)"
+        raise InvalidWorkerNumber
+      end
+
+      # Create workers
+      log_info "WorkerPool creating #{number_threads}x JobWorker, 1x ConchitaWorker"
+
+      # Start worker threads
+      number_threads.times do
+        wid = generate_id
         @workers[wid] = create_worker_thread wid
       end
+    rescue Exception => ex
+      log_error "UNHDNALED EXCEPTION: #{ex.message}", ex.backtrace
+
     end
 
     def create_worker_thread wid
       Thread.new wid do
-        # Set thread context
-        Thread.current.thread_variable_set :wid, wid
-        Thread.current.thread_variable_set :started_at, Time.now
-        worker_status :starting
-
-        # Start working
-        loop do
-          begin
-            work
-          rescue Exception => ex
-            puts "WORKER UNEXPECTED CRASH: #{ex.message}", lines: ex.backtrace
-            sleep 1
-          end
+        begin
+          worker = JobWorker.new wid
+          log_info "JobWorker [#{wid}]: #{worker}"
+        rescue Exception => ex
+          log_error "EXCEPTION: #{ex.message}"
         end
-
-        # We should never get here
       end
     end
 
@@ -94,72 +87,7 @@ module RestFtpDaemon
       end
     end
 
-    def work
-      # Wait for a job to come into the queue
-      worker_status :waiting
-      info "waiting for a job"
-      job = $queue.pop
-
-      # Prepare the job for processing
-      worker_status :working
-      worker_jid job.id
-      info "working"
-      job.wid = Thread.current.thread_variable_get :wid
-
-      # Processs this job protected by a timeout
-      Timeout::timeout(@timeout, RestFtpDaemon::JobTimeout) do
-        job.process
-      end
-
-      # Processing done
-      worker_status :finished
-      info "finished"
-      worker_jid nil
-      job.wid = nil
-
-      # Increment total processed jobs count
-      $queue.counter_inc :jobs_processed
-
-    rescue RestFtpDaemon::JobTimeout => ex
-      info "JOB TIMED OUT", lines: ex.backtrace
-      worker_status :timeout
-      job.oops_you_stop_now ex unless job.nil?
-      sleep 1
-
-    rescue Exception => ex
-      info "UNHDNALED EXCEPTION: #{ex.message}", lines: ex.backtrace
-      worker_status :crashed
-      job.oops_after_crash ex unless job.nil?
-      sleep 1
-
-    else
-      # Clean job status
-      worker_status :free
-      job.wid = nil
-
-    end
-
   protected
-
-    def info message, context = {}
-      return if @logger.nil?
-
-      # Forward to logger
-      @logger.info_with_id message,
-        wid: Thread.current.thread_variable_get(:wid),
-        jid: Thread.current.thread_variable_get(:jid),
-        origin: self.class.to_s
-    end
-
-    def worker_status status
-      Thread.current.thread_variable_set :status, status
-      Thread.current.thread_variable_set :updted_at, Time.now
-    end
-
-    def worker_jid jid
-      Thread.current.thread_variable_set :jid, jid
-      Thread.current.thread_variable_set :updted_at, Time.now
-    end
 
     if Settings.newrelic_enabled?
       add_transaction_tracer :create_conchita_thread, :category => :task
