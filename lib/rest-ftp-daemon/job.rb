@@ -718,7 +718,10 @@ module RestFtpDaemon
     end
 
     if Settings.newrelic_enabled?
-      add_transaction_tracer :process, :category => :task
+      add_transaction_tracer :prepare, :category => :task
+      add_transaction_tracer :transfer, :category => :task
+      add_transaction_tracer :client_notify, :category => :task
+      add_transaction_tracer :initialize, :category => :task
     end
 
   end
