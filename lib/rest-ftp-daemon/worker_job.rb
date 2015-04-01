@@ -60,5 +60,10 @@ module RestFtpDaemon
 
     end
 
+
+    if Settings.newrelic_enabled?
+      add_transaction_tracer :work, :category => :task
+    end
+
   end
 end

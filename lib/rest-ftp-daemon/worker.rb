@@ -50,9 +50,5 @@ module RestFtpDaemon
       Thread.current.thread_variable_set :updted_at, Time.now
     end
 
-    if Settings.newrelic_enabled?
-      add_transaction_tracer :work, :category => :task
-    end
-
   end
 end

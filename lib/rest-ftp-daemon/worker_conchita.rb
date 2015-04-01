@@ -45,5 +45,10 @@ module RestFtpDaemon
       @conchita["clean_#{status.to_s}"] || 0
     end
 
+
+    if Settings.newrelic_enabled?
+      add_transaction_tracer :work, :category => :task
+    end
+
   end
 end

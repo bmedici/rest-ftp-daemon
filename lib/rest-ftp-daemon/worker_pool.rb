@@ -105,7 +105,6 @@ module RestFtpDaemon
     if Settings.newrelic_enabled?
       add_transaction_tracer :create_conchita_thread, :category => :task
       add_transaction_tracer :create_worker_thread, :category => :task
-      add_transaction_tracer :work, :category => :task
     end
 
   end
