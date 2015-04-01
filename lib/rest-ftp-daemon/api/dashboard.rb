@@ -13,7 +13,7 @@ module RestFtpDaemon
 
       # Server global status
       get '/' do
-        info "GET /"
+        log_info "GET /"
 
         # Initialize Facter
         Facter.loadfacts

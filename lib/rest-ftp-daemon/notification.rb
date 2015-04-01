@@ -1,5 +1,8 @@
 module RestFtpDaemon
   class Notification
+    include LoggerHelper
+    attr_reader :logger
+
     attr_accessor :job_id
     attr_accessor :signal
     attr_accessor :error
@@ -18,10 +21,10 @@ module RestFtpDaemon
 
       # Check context
       if url.nil?
-        info "skipping (missing url): #{params.inspect}"
+        log_info "skipping (missing url): #{params.inspect}"
         return
       elsif params[:event].nil?
-        info "skipping (missing event): #{params.inspect}"
+        log_info "skipping (missing event): #{params.inspect}"
         return
       end
 
@@ -34,7 +37,7 @@ module RestFtpDaemon
         }
       body[:status] = params[:status] if params[:status].is_a? Enumerable
       @jid = params[:id]
-      info "initialized"
+      log_info "initialized"
 
 
       # Send message in a thread
@@ -47,7 +50,7 @@ module RestFtpDaemon
           'User-Agent'    => "#{APP_NAME} - #{APP_VER}"
            }
         data = body.to_json
-        info "sending #{data}"
+        log_info "sending #{data}"
 
 
         # Prepare HTTP client
@@ -63,9 +66,9 @@ module RestFtpDaemon
         if response_lines.size > 1
           human_size = Helpers.format_bytes(response.body.bytesize, "B")
           #human_size = 0
-          info "received [#{response.code}] #{human_size} (#{response_lines.size} lines)", response_lines
+          log_info "received [#{response.code}] #{human_size} (#{response_lines.size} lines)", response_lines
         else
-          info "received [#{response.code}] #{response.body.strip}"
+          log_info "received [#{response.code}] #{response.body.strip}"
         end
 
       end
@@ -74,14 +77,11 @@ module RestFtpDaemon
 
   protected
 
-    def info message, lines = []
-      return if @logger.nil?
-
-      @logger.info_with_id message,
-        id: @id,
-        jid: @jid,
-        lines: lines,
-        origin: self.class.to_s
+    def log_context
+      {
+      id: @id,
+      jid: @jid
+      }
     end
 
   end

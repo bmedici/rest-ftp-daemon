@@ -1,8 +1,11 @@
 module RestFtpDaemon
   class JobQueue < Queue
+    include LoggerHelper
 
     attr_reader :queue
     attr_reader :jobs
+    attr_reader :logger
+
 
     if Settings.newrelic_enabled?
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
@@ -24,7 +27,7 @@ module RestFtpDaemon
       # Identifiers generator
       @last_id = 0
       @prefix = Helpers.identifier JOB_IDENT_LEN
-      info "queue initialized with prefix: #{@prefix}"
+      log_info "JobQueue initialized (prefix: #{@prefix})"
 
       # Mutex for counters
       @counters = {}
@@ -100,7 +103,7 @@ module RestFtpDaemon
     def find_by_id id, prefixed = false
       # Build a prefixed id if expected
       id = prefixed_id(id) if prefixed
-      info "find_by_id (#{id}, #{prefixed}) > #{id}"
+      log_info "find_by_id (#{id}, #{prefixed}) > #{id}"
 
       # Search in jobs queues
       @jobs.select { |item| item.id == id }.last
@@ -184,8 +187,8 @@ module RestFtpDaemon
           next if job.updated_at > before
 
           # Ok, we have to clean it up ..
-          info "expire [#{status.to_s}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
-          info "       + unqueued" if @queue.delete(job)
+          log_info "expire [#{status.to_s}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
+          log_info "       + unqueued" if @queue.delete(job)
 
           true
         end
@@ -204,16 +207,6 @@ module RestFtpDaemon
       @mutex_counters.synchronize do
         @queue.sort_by! &:weight
       end
-    end
-
-    def info message, lines = []
-      return if @logger.nil?
-
-      # Forward to logger
-      @logger.info_with_id message,
-        id: @id,
-        lines: lines,
-        origin: self.class.to_s
     end
 
     if Settings.newrelic_enabled?

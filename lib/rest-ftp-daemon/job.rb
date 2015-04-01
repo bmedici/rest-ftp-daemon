@@ -1,5 +1,6 @@
 module RestFtpDaemon
   class Job
+    include LoggerHelper
 
     if Settings.newrelic_enabled?
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
@@ -65,14 +66,14 @@ module RestFtpDaemon
       @updated_at = Time.now
 
       # Send first notification
-      info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] update_every_kb[#{@update_every_kb}]"
+      log_info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] update_every_kb[#{@update_every_kb}]"
       client_notify :queued
     end
 
     def process
       # Update job's status
       @error = nil
-      info "Job.process starting"
+      log_info "Job.process starting"
 
       # Prepare job
       begin
@@ -110,7 +111,7 @@ module RestFtpDaemon
       else
         # Prepare done !
         newstatus :prepared
-        info "Job.process notify[started]"
+        log_info "Job.process notify[started]"
         client_notify :started
       end
 
@@ -183,7 +184,7 @@ module RestFtpDaemon
       else
         # All done !
         newstatus JOB_STATUS_FINISHED
-        info "Job.process notify[ended]"
+        log_info "Job.process notify[ended]"
         client_notify :ended
       end
 
@@ -318,7 +319,7 @@ module RestFtpDaemon
 
       # Log detected names
       source_names = source_matches.map{ |s| Helpers.extract_filename s }
-      info "Job.transfer sources #{source_names.inspect}"
+      log_info "Job.transfer sources #{source_names.inspect}"
 
       # Asserts and counters
       raise RestFtpDaemon::JobSourceNotFound if source_matches.empty?
@@ -371,15 +372,11 @@ module RestFtpDaemon
 
   private
 
-    def info message, lines = []
-      return if @logger.nil?
-
-      # Forward to logger
-      @logger.info_with_id message,
-        wid: @wid,
-        jid: @id,
-        lines: lines,
-        origin: self.class.to_s
+    def log_context
+      {
+      wid: @wid,
+      jid: @id
+      }
     end
 
     def newstatus name
@@ -406,7 +403,7 @@ module RestFtpDaemon
       raise RestFtpDaemon::JobAssertionFailed, "ftp_init/1" if @target_method.nil?
       raise RestFtpDaemon::JobAssertionFailed, "ftp_init/2" if @target_url.nil?
 
-      info "Job.ftp_init target_method [#{@target_method}]"
+      log_info "Job.ftp_init target_method [#{@target_method}]"
       case @target_method
       when :ftp
         @ftp = Net::FTP.new
@@ -415,7 +412,7 @@ module RestFtpDaemon
         @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
         @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
       else
-        info "Job.ftp_init unknown scheme [#{@target_url.scheme}]"
+        log_info "Job.ftp_init unknown scheme [#{@target_url.scheme}]"
         railse RestFtpDaemon::JobTargetUnsupported
       end
 
@@ -442,7 +439,7 @@ module RestFtpDaemon
     def ftp_finished
       # Close FTP connexion and free up memory
       @ftp.close
-      info "Job.ftp_finished closed"
+      log_info "Job.ftp_finished closed"
       @ftp = nil
 
       # FTP debug mode ?
@@ -465,7 +462,7 @@ module RestFtpDaemon
 
       # Method assertions
       host = @target_url.host
-      info "Job.ftp_connect [#{host}]"
+      log_info "Job.ftp_connect [#{host}]"
       raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/1" if @ftp.nil?
       raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/2" if @target_url.nil?
 
@@ -481,25 +478,25 @@ module RestFtpDaemon
 
       # use "anonymous" if user is empty
       login = @target_url.user || "anonymous"
-      info "Job.ftp_login [#{login}]"
+      log_info "Job.ftp_login [#{login}]"
 
       @ftp.login login, @target_url.password
     end
 
     def ftp_chdir_or_buildpath path
       # Method assertions
-      info "Job.ftp_chdir [#{path}] mkdir: #{@mkdir}"
+      log_info "Job.ftp_chdir [#{path}] mkdir: #{@mkdir}"
       newstatus :ftp_chdir
       raise RestFtpDaemon::JobAssertionFailed, "ftp_chdir_or_buildpath/1" if path.nil?
 
       # Extract directory from path
       if @mkdir
         # Split dir in parts
-        info "Job.ftp_chdir buildpath [#{path}]"
+        log_info "Job.ftp_chdir buildpath [#{path}]"
         ftp_buildpath path
       else
         # Directly chdir if not mkdir requested
-        info "Job.ftp_chdir chdir [#{path}]"
+        log_info "Job.ftp_chdir chdir [#{path}]"
         @ftp.chdir path
       end
     end
@@ -515,7 +512,7 @@ module RestFtpDaemon
       rescue Net::FTPPermError => exception
         # If not possible because the directory is missing
         parent =  Helpers.extract_parent(path)
-        info "#{pref} chdir failed - parent [#{parent}]"
+        log_info "#{pref} chdir failed - parent [#{parent}]"
 
         # And only if we still have something to "dive up into"
         if parent
@@ -523,18 +520,18 @@ module RestFtpDaemon
           ftp_buildpath parent
 
           # Then finally create this dir and chdir
-          info "#{pref} > now mkdir [#{path}]"
+          log_info "#{pref} > now mkdir [#{path}]"
           @ftp.mkdir path
 
           # And get into it (this chdir is not rescue'd on purpose in order to throw the ex)
-          info "#{pref} > now chdir [#{path}]"
+          log_info "#{pref} > now chdir [#{path}]"
           @ftp.chdir(path)
         end
 
       end
 
       # Now we were able to chdir inside, just tell it
-      info "#{pref} > ftp.pwd [#{@ftp.pwd}]"
+      log_info "#{pref} > ftp.pwd [#{@ftp.pwd}]"
     end
 
     def ftp_presence target_name
@@ -548,7 +545,7 @@ module RestFtpDaemon
 
       # Get file list, sometimes the response can be an empty value
       results = @ftp.list(target_name) rescue nil
-      info "Job.ftp_presence: #{results.inspect}"
+      log_info "Job.ftp_presence: #{results.inspect}"
 
       # Result can be nil or a list of files
       return false if results.nil?
@@ -557,13 +554,13 @@ module RestFtpDaemon
 
     def ftp_transfer source_filename, target_name = nil
       # Method assertions
-      info "Job.ftp_transfer source: #{source_filename}"
+      log_info "Job.ftp_transfer source: #{source_filename}"
       raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/1" if @ftp.nil?
       raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/2" if source_filename.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
       target_name ||= Helpers.extract_filename source_filename
-      info "Job.ftp_transfer target: #{target_name}"
+      log_info "Job.ftp_transfer target: #{target_name}"
       set :source_current, target_name
 
       # Check for target file presence
@@ -572,11 +569,11 @@ module RestFtpDaemon
       if present
         if @overwrite
           # delete it first
-          info "Job.ftp_transfer removing target file"
+          log_info "Job.ftp_transfer removing target file"
           @ftp.delete(target_name)
         else
           # won't overwrite then stop here
-          info "Job.ftp_transfer failed: target file exists"
+          log_info "Job.ftp_transfer failed: target file exists"
           raise RestFtpDaemon::JobTargetFileExists
         end
       end
@@ -585,7 +582,7 @@ module RestFtpDaemon
       target_real = target_name
       if @tempfile
         target_real = "#{target_name}.temp-#{Helpers.identifier(JOB_TEMPFILE_LEN)}"
-        info "Job.ftp_transfer tempfile: #{target_real}"
+        log_info "Job.ftp_transfer tempfile: #{target_real}"
       end
 
       # Start transfer
@@ -606,7 +603,7 @@ module RestFtpDaemon
       # Rename temp file to target_temp
       if @tempfile
         newstatus JOB_STATUS_RENAMING
-        info "Job.ftp_transfer renaming: #{target_name}"
+        log_info "Job.ftp_transfer renaming: #{target_name}"
         @ftp.rename target_real, target_name
       end
 
@@ -615,7 +612,7 @@ module RestFtpDaemon
 
       # Done
       set :source_current, nil
-      info "Job.ftp_transfer finished"
+      log_info "Job.ftp_transfer finished"
     end
 
     def ftp_transfer_block block
@@ -639,7 +636,7 @@ module RestFtpDaemon
       stack << (Helpers.format_bytes @transfer_total, "B")
       stack << (Helpers.format_bytes bitrate0, "bps")
       stack2 = stack.map{ |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt)}.join("\t")
-      info "Job.ftp_transfer #{stack2}"
+      log_info "Job.ftp_transfer #{stack2}"
 
       # Update time pointer
       @transfer_pointer_at = Time.now
@@ -668,7 +665,7 @@ module RestFtpDaemon
       RestFtpDaemon::Notification.new @notify, payload
 
     rescue Exception => ex
-      info "Job.client_notify EXCEPTION: #{ex.inspect}"
+      log_error "Job.client_notify EXCEPTION: #{ex.inspect}"
      end
 
     def get_bitrate total, last_timestamp
@@ -685,9 +682,9 @@ module RestFtpDaemon
 
       message = "Job.oops event[#{event.to_s}] error[#{error.to_s}] ex[#{exception.class}] #{exception.message}"
       if include_backtrace
-        info message, exception.backtrace
+        log_error message, exception.backtrace
       else
-        info message
+        log_error message
       end
 
       # Close ftp connexion if open

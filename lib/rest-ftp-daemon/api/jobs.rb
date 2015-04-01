@@ -9,7 +9,7 @@ module RestFtpDaemon
         requires :id, type: String, desc: 'ID of the Job to read', regexp: /[^\/]+/
       end
       get '/jobs/*id' do
-        info "GET /jobs/#{params[:id]}"
+        log_info "GET /jobs/#{params[:id]}"
 
         begin
           # Get job to display
@@ -18,15 +18,15 @@ module RestFtpDaemon
           raise RestFtpDaemon::JobNotFound if job.nil?
 
         rescue RestFtpDaemon::JobNotFound => exception
-          info "EXCEPTION: JobNotFound: #{exception.message}"
+          log_error "JobNotFound: #{exception.message}"
           status 404
           api_error exception
         rescue RestFtpDaemonException => exception
-          info "EXCEPTION: RestFtpDaemonException: #{exception.message}"
+          log_error "RestFtpDaemonException: #{exception.message}"
           status 500
           api_error exception
         rescue Exception => exception
-          info "EXCEPTION: Exception: #{exception.message}"
+          log_error "Exception: #{exception.message}"
           status 501
           api_error exception
         else
@@ -42,7 +42,7 @@ module RestFtpDaemon
       desc "List all Jobs"
 
       get '/jobs/' do
-        info "GET /jobs"
+        log_info "GET /jobs"
 
         begin
           # Detect QS filters
@@ -53,11 +53,11 @@ module RestFtpDaemon
           jobs = $queue.jobs
 
         rescue RestFtpDaemonException => exception
-          info "EXCEPTION: RestFtpDaemonException: #{exception.message}"
+          log_error "RestFtpDaemonException: #{exception.message}"
           status 501
           api_error exception
         rescue Exception => exception
-          info "EXCEPTION: Exception: #{exception.message}"
+          log_error "Exception: #{exception.message}"
           status 501
           api_error exception
         else
@@ -88,7 +88,7 @@ module RestFtpDaemon
       end
 
       post '/jobs/' do
-        info "POST /jobs", params.collect {|name, value| "#{name}: #{value.inspect}"}
+        log_info "POST /jobs", params.collect {|name, value| "#{name}: #{value.inspect}"}
 
         begin
 
@@ -103,15 +103,15 @@ module RestFtpDaemon
           $queue.counter_inc :jobs_received
 
         rescue JSON::ParserError => exception
-          info "EXCEPTION: JSON::ParserError: #{exception.message}"
+          log_error "JSON::ParserError: #{exception.message}"
           status 406
           api_error exception
         rescue RestFtpDaemonException => exception
-          info "EXCEPTION: RestFtpDaemonException: #{exception.message}"
+          log_error "RestFtpDaemonException: #{exception.message}"
           status 412
           api_error exception
         rescue Exception => exception
-          info "EXCEPTION: #{exception.message}"
+          log_error "#{exception.message}"
           status 501
           api_error exception
         else

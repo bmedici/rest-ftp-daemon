@@ -5,7 +5,7 @@ module RestFtpDaemon
 ####### GET /debug
 
       get '/raise' do
-        info "GET /debug"
+        log_info "GET /debug"
         begin
           raise RestFtpDaemon::DummyException
         rescue RestFtpDaemon::RestFtpDaemonException => exception
