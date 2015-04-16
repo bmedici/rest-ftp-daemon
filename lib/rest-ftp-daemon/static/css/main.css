@@ -82,4 +82,8 @@ a.page.btn {
   padding: 3px 3px;
   }
 
+#box-jobs .error {
+  min-width: 100px;
+}
+
 
