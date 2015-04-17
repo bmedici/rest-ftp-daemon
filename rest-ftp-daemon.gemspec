@@ -1,7 +1,7 @@
 # coding: utf-8
 
 # Libs
-require "settingslogic"
+#require "settingslogic"
 app_root = File.dirname(__FILE__)
 require File.expand_path("#{app_root}/lib/rest-ftp-daemon/constants")
 
@@ -38,6 +38,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "sys-cpu"
   spec.add_runtime_dependency "timeout"
   spec.add_runtime_dependency "get_process_mem"
-
   spec.add_runtime_dependency "newrelic_rpm"
 end
