@@ -712,7 +712,7 @@ module RestFtpDaemon
 
       # Prepare notification if signal given
       return unless event
-      client_notify event, error: error, status: notif_status
+      client_notify event, error: error, status: notif_status, message: "#{exception.class.to_s} | #{exception.message}"
     end
 
     if Settings.newrelic_enabled?

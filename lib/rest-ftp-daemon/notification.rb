@@ -33,6 +33,7 @@ module RestFtpDaemon
         id:       params[:id].to_s,
         signal:   "#{NOTIFY_PREFIX}.#{params[:event].to_s}",
         error:    params[:error],
+        message:    params[:message],
         host:     Settings.host.to_s,
         }
       body[:status] = params[:status] if params[:status].is_a? Enumerable
