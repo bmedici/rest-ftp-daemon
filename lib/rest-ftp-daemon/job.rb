@@ -130,6 +130,9 @@ module RestFtpDaemon
       rescue Errno::EHOSTDOWN => exception
         return oops :ended, exception, :conn_host_is_down
 
+      rescue Errno::ENETUNREACH => exception
+        return oops :ended, exception, :conn_unreachable
+
       rescue Errno::ECONNRESET => exception
         return oops :ended, exception, :conn_reset_by_peer
 
