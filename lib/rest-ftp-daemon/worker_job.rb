@@ -44,6 +44,9 @@ module RestFtpDaemon
     rescue RestFtpDaemon::JobTimeout => ex
       log_error "JOB TIMED OUT", lines: ex.backtrace
       worker_status :timeout
+      worker_jid nil
+      job.wid = nil
+
       job.oops_you_stop_now ex unless job.nil?
       sleep 1
 
