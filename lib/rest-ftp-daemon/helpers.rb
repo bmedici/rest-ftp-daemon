@@ -8,13 +8,15 @@ module RestFtpDaemon
       config
     end
 
-    def self.format_bytes number, unit=""
+    def self.format_bytes number, unit="", decimals = 0
       return "&Oslash;" if number.nil? || number.to_f.zero?
 
       units = ["", "k", "M", "G", "T", "P" ]
       index = ( Math.log( number ) / Math.log( 2 ) ).to_i / 10
-      converted = number.to_i / ( 1024 ** index )
-      "#{converted} #{units[index]}#{unit}"
+      converted = number.to_f / ( 1024 ** index )
+
+      truncated = converted.round(decimals)
+      "#{truncated} #{units[index]}#{unit}"
     end
 
     def self.text_or_empty text
