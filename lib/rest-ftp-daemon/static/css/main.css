@@ -88,6 +88,17 @@ a.page.btn {
 
 
 
+
+
+/* Header styles
+-------------------------------------------------- */
+.header-indicators {
+  /*border: 1px solid red;*/
+  margin-top: 20px;
+  margin-bottom: 4px;
+}
+
+
 /* Footer styles
 -------------------------------------------------- */
 html {

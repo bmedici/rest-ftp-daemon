@@ -19,13 +19,13 @@
               = "v#{APP_VER}"
               = "[#{Settings.namespace}]"
 
+        .navbar-header.pull-right
+          .header-indicators
+            =# render :dashboard_indicators
+            = render :dashboard_status
 
     .container-fluid
 
-      = render :dashboard_headers
-
-      %br
-      %br
       %br
 
       = render :dashboard_jobs
