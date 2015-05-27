@@ -1,0 +1,19 @@
+- trans = $queue.counter_get :transferred
+- info_procs = (Facter.value :processorcount).to_i
+
+
+.btn-group.btn-group-sm
+  .btn.btn-default.btn-info Host
+  .btn.btn-default= Settings.host
+
+.btn-group.btn-group-sm
+  .btn.btn-default.btn-info IP
+  .btn.btn-default= Facter.value(:ipaddress)
+
+.btn-group.btn-group-sm
+  .btn.btn-default.btn-info Cores
+  .btn.btn-default= info_procs
+
+.btn-group.btn-group-sm
+  .btn.btn-default.btn-info Started
+  .btn.btn-default= Helpers.datetime_short(APP_STARTED)

@@ -40,4 +40,20 @@
         #box-counters.col-md-3
           = render :dashboard_counters
 
-      %br
+
+    .footer
+      .container-fluid
+
+        .footer-signature.pull-left
+
+          &copy; 2014
+          &middot;
+          %a{href: "http://bmconseil.com"}Bruno Medici Consultant
+          &middot;
+          %a{href: "http://github.com/bmedici/rest-ftp-daemon"} GitHub project page
+
+        .footer-indicators.pull-right
+          = render :dashboard_infos
+          =# render :dashboard_status
+
+
