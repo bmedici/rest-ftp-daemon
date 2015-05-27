@@ -50,7 +50,6 @@
       - unless job.error || job.status == JOB_STATUS_FINISHED
         .progress
           .progress-bar{style:"width: #{progress}%;"}
-            =# "#{progress}%" unless progress.nil?
             = Helpers.format_bytes(job.get(:transfer_sent), "B")
 
       - else

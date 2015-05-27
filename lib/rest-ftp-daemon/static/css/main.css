@@ -1,13 +1,7 @@
+/* Common styles
+-------------------------------------------------- */
 .text-right {
   text-align: right;
-  }
-
-.transfer-method {
-  /*width: 35px;*/
-  }
-
-.worker-label {
-  /*width: 25px;*/
   }
 
 .nobr {
@@ -15,7 +9,6 @@
   }
 
 body, table tr td, .fixed {
-  /*font-family: 'Inconsolata', Verdana, sans-serif;*/
   font-family: 'Verdana', Verdana, sans-serif;
   font-size: 1em;
   }
@@ -24,7 +17,6 @@ body, table tr td, .fixed {
   display: inline-block;
   background-color: #f8f8f8;
   padding: 0 2px;
-  /*font-weight: bold;*/
   }
 
 .label {
@@ -53,12 +45,6 @@ h2 {
   margin-top: 2em;
 }
 
-#header {
-  padding: 20px auto;
-  border-bottom: 1px solid silver;
-  background-color: #eee;
-  }
-
 .progress {
   margin-bottom: 0;
   /*min-width: 60px;*/
@@ -68,11 +54,6 @@ a.class {
   text-decoration: underline;
   }
 
-
-a.page.btn {
-  /*font-weight: bold;*/
-  /*font-size: 1.5em;*/
-  }
 
 .debug {
   border: 1px solid orange;
