@@ -1,7 +1,7 @@
 # Terrific constants
 APP_NAME = "rest-ftp-daemon"
 APP_NICK = "rftpd"
-APP_VER = "0.221.1"
+APP_VER = "0.221.2"
 
 
 # Jobs and workers
