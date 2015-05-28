@@ -11,18 +11,8 @@
 
     .navbar.navbar-default.navbar-fixed
       .container-fluid
+        = render :dashboard_header
 
-        .navbar-header
-          %h1
-            = APP_NAME
-            %small
-              = "v#{APP_VER}"
-              = "[#{Settings.namespace}]"
-
-        .navbar-header.pull-right
-          .header-indicators
-            =# render :dashboard_indicators
-            = render :dashboard_status
 
     .container-fluid
 
@@ -45,17 +35,5 @@
 
     .footer
       .container-fluid
-
-        .footer-signature.pull-left
-
-          &copy; 2014
-          &middot;
-          %a{href: "http://bmconseil.com"}Bruno Medici Consultant
-          &middot;
-          %a{href: "http://github.com/bmedici/rest-ftp-daemon"} GitHub project page
-
-        .footer-indicators.pull-right
-          = render :dashboard_infos
-          =# render :dashboard_status
-
+        = render :dashboard_footer
 
