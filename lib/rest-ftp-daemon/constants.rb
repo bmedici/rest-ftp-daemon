@@ -49,7 +49,7 @@ WORKER_STYLES = {
   :done                 => :success,
   :dead                 => :danger
   }
-PAGINATE_MAX            = 40
+PAGINATE_MAX            = 30
 
 
 # Configuration defaults
