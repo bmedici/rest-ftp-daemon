@@ -63,7 +63,7 @@ module RestFtpDaemon
       ip = '0.0.0.0'
       timeout = 1
       begin
-        Timeout::timeout(timeout) do
+        Timeout.timeout(timeout) do
           begin
             TCPSocket.new(ip, port).close
             true

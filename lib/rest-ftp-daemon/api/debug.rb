@@ -23,7 +23,7 @@ module RestFtpDaemon
       get '/routes' do
         info 'GET /routes'
         status 200
-        return RestFtpDaemon::API::Root::routes
+        return RestFtpDaemon::API::Root.routes
       end
 
     end

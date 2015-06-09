@@ -243,7 +243,7 @@ module RestFtpDaemon
     end
 
     def expand_url path
-      URI::parse replace_tokens(path)
+      URI.parse replace_tokens(path)
     end
 
     def contains_brackets(item)

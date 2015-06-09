@@ -28,7 +28,7 @@ module RestFtpDaemon
       job.wid = Thread.current.thread_variable_get :wid
 
       # Processs this job protected by a timeout
-      Timeout::timeout(@timeout, RestFtpDaemon::JobTimeout) do
+      Timeout.timeout(@timeout, RestFtpDaemon::JobTimeout) do
         job.process
       end
 
