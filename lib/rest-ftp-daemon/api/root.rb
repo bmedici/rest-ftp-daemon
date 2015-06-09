@@ -37,7 +37,7 @@ module RestFtpDaemon
 
         def api_error exception
           {
-          :error => exception.message,
+          error: exception.message
           #:message => exception.backtrace.first,
           }
         end

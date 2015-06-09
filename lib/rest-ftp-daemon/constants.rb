@@ -43,11 +43,11 @@ JOB_STYLES = {
   JOB_STATUS_RENAMING   => :info,
   }
 WORKER_STYLES = {
-  :waiting              => :success,
-  :working              => :info,
-  :crashed              => :danger,
-  :done                 => :success,
-  :dead                 => :danger
+  waiting:              :success,
+  working:              :info,
+  crashed:              :danger,
+  done:                 :success,
+  dead:                 :danger
   }
 PAGINATE_MAX            = 30
 

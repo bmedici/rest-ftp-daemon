@@ -413,7 +413,7 @@ module RestFtpDaemon
         @ftp = Net::FTP.new
       when :ftps
         @ftp = DoubleBagFTPS.new
-        @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(:verify_mode => OpenSSL::SSL::VERIFY_NONE)
+        @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(verify_mode: OpenSSL::SSL::VERIFY_NONE)
         @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
       else
         log_info "Job.ftp_init unknown scheme [#{@target_url.scheme}]"
@@ -720,10 +720,10 @@ module RestFtpDaemon
     end
 
     if Settings.newrelic_enabled?
-      add_transaction_tracer :prepare, :category => :task
-      add_transaction_tracer :transfer, :category => :task
-      add_transaction_tracer :client_notify, :category => :task
-      add_transaction_tracer :initialize, :category => :task
+      add_transaction_tracer :prepare,        category: :task
+      add_transaction_tracer :transfer,       category: :task
+      add_transaction_tracer :client_notify,  category: :task
+      add_transaction_tracer :initialize,     category: :task
     end
 
   end

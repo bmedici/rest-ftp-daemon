@@ -207,12 +207,12 @@ module RestFtpDaemon
     end
 
     if Settings.newrelic_enabled?
-      add_transaction_tracer :push, :category => :task
-      add_transaction_tracer :pop, :category => :task
-      add_transaction_tracer :sort_queue!, :category => :task
-      add_transaction_tracer :expire, :category => :task
-      add_transaction_tracer :counts_by_status, :category => :task
-      add_transaction_tracer :filter_jobs, :category => :task
+      add_transaction_tracer :push,             category: :task
+      add_transaction_tracer :pop,              category: :task
+      add_transaction_tracer :sort_queue!,      category: :task
+      add_transaction_tracer :expire,           category: :task
+      add_transaction_tracer :counts_by_status, category: :task
+      add_transaction_tracer :filter_jobs,      category: :task
     end
 
   end

@@ -3,7 +3,7 @@
   - source_count = job.get(:source_count) || 0
   - source_processed = job.get(:source_processed) || 0
   - source_current = job.get(:source_current)
-  - presented = present job, :with => RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
+  - presented = present job, with: RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
   - bitrate = job.get :transfer_bitrate
 
   - trclass = JOB_STYLES[job.status]

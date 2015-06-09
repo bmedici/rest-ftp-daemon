@@ -31,7 +31,7 @@ module RestFtpDaemon
           api_error exception
         else
           status 200
-          present job, :with => RestFtpDaemon::API::Entities::JobPresenter, type: 'complete'
+          present job, with: RestFtpDaemon::API::Entities::JobPresenter, type: 'complete'
         end
 
       end
@@ -58,7 +58,7 @@ module RestFtpDaemon
           api_error exception
         else
           status 200
-          present jobs, :with => RestFtpDaemon::API::Entities::JobPresenter
+          present jobs, with: RestFtpDaemon::API::Entities::JobPresenter
         end
       end
 
@@ -112,7 +112,7 @@ module RestFtpDaemon
           api_error exception
         else
           status 201
-          present job, :with => RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
+          present job, with: RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
         end
       end
 
