@@ -12,9 +12,6 @@ module RestFtpDaemon
       do_not_route_head!
       do_not_route_options!
 
-      # FIXME
-      # add_swagger_documentation
-      # default_error_formatter :json
       format :json
 
 
@@ -37,10 +34,6 @@ module RestFtpDaemon
         def logger
           Root.logger
         end
-
-        # def log_context
-        #   {}
-        # end
 
         def api_error exception
           {

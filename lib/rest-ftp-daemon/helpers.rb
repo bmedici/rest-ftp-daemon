@@ -16,12 +16,13 @@ module RestFtpDaemon
       converted = number.to_f / ( 1024 ** index )
 
       truncated = converted.round(decimals)
+
       "#{truncated} #{units[index]}#{unit}"
     end
 
     def self.text_or_empty text
       return '-' if text.nil? || text.empty?
-      # return "&Oslash;" if text.nil? || text.empty?
+
       text
     end
 
@@ -36,10 +37,6 @@ module RestFtpDaemon
     def self.highlight_tokens path
       path.gsub(/(\[[^\[]+\])/, '<span class="token">\1</span>')
     end
-
-    # def self.hide_password url
-    #   path.gsub(/(\[[^\[]+\])/, '<span class="token">\1</span>')
-    # end
 
     def self.extract_filename path
       # match everything that's after a slash at the end of the string
@@ -101,7 +98,6 @@ module RestFtpDaemon
     end
 
     def self.datetime_short datetime
-      # return param.class
       return '-' if datetime.nil?
       return '?' unless datetime.respond_to? :to_date
       return datetime.to_datetime.strftime('%H:%M:%S') if datetime.to_date == Time.now.to_date

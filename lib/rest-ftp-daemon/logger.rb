@@ -9,18 +9,6 @@ class Logger
     prefix1 = build_prefix(context)
     prefix2 = build_prefix() + '   | '
 
-    # # Build output lines
-    # output = []
-    # output << prefix1 + message.strip
-
-    # # Add optional lines
-    # context[:lines].each do |line|
-    #   # line.strip!
-    #   # next if line.empty?
-    #   output << prefix2 + line[0..LOG_TRIM_LINE]
-    # end if context[:lines].is_a? Enumerable
-
-    # Use "context[:lines]" according to its type
     lines = context[:lines]
 
     if lines.is_a? Hash

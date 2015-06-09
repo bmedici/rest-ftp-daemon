@@ -6,7 +6,6 @@ module RestFtpDaemon
     attr_reader :queue
     attr_reader :jobs
 
-
     if Settings.newrelic_enabled?
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     end

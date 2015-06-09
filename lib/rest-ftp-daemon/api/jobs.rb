@@ -49,7 +49,6 @@ module RestFtpDaemon
           only = params['only'].to_s
 
           # Get jobs to display
-          # jobs = $queue.sorted_by_status(only)
           jobs = $queue.jobs
 
         rescue RestFtpDaemonException => exception
