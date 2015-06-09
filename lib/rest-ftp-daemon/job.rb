@@ -106,7 +106,7 @@ module RestFtpDaemon
       # rescue RestFtpDaemon::RestFtpDaemonException => exception
       #   return oops :started, exception, :prepare_failed, true
 
-      # rescue Exception => exception
+      # rescue StandardError => exception
       #   return oops :started, exception, :prepare_unhandled, true
 
       else
@@ -182,7 +182,7 @@ module RestFtpDaemon
       # rescue RestFtpDaemon::RestFtpDaemonException => exception
       #   return oops :ended, exception, :transfer_failed, true
 
-      # rescue Exception => exception
+      # rescue StandardError => exception
       #   return oops :ended, exception, :transfer_unhandled, true
 
       else
@@ -669,7 +669,7 @@ module RestFtpDaemon
       payload[:event] = event
       RestFtpDaemon::Notification.new @notify, payload
 
-    rescue Exception => ex
+    rescue StandardError => ex
       log_error "Job.client_notify EXCEPTION: #{ex.inspect}"
      end
 

@@ -50,7 +50,7 @@ module RestFtpDaemon
       job.oops_you_stop_now ex unless job.nil?
       sleep 1
 
-    rescue Exception => ex
+    rescue StandardError => ex
       log_error "JOB UNHDNALED EXCEPTION: #{ex.message}", lines: ex.backtrace
       worker_status :crashed
       job.oops_after_crash ex unless job.nil?

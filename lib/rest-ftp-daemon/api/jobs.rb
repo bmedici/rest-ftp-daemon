@@ -25,7 +25,7 @@ module RestFtpDaemon
           log_error "RestFtpDaemonException: #{exception.message}"
           status 500
           api_error exception
-        rescue Exception => exception
+        rescue StandardError => exception
           log_error "Exception: #{exception.message}"
           status 501
           api_error exception
@@ -56,7 +56,7 @@ module RestFtpDaemon
           log_error "RestFtpDaemonException: #{exception.message}"
           status 501
           api_error exception
-        rescue Exception => exception
+        rescue StandardError => exception
           log_error "Exception: #{exception.message}"
           status 501
           api_error exception
@@ -110,7 +110,7 @@ module RestFtpDaemon
           log_error "RestFtpDaemonException: #{exception.message}"
           status 412
           api_error exception
-        rescue Exception => exception
+        rescue StandardError => exception
           log_error "Exception: #{exception.message}"
           status 501
           api_error exception

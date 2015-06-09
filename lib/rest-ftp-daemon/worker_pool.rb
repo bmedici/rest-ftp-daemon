@@ -73,7 +73,7 @@ module RestFtpDaemon
       # Start conchita thread
       @conchita = create_conchita_thread
 
-    rescue Exception => ex
+    rescue StandardError => ex
       log_error "UNHDNALED EXCEPTION: #{ex.message}", ex.backtrace
 
     end
@@ -83,7 +83,7 @@ module RestFtpDaemon
         begin
           worker = JobWorker.new wid
           log_info "JobWorker [#{wid}]: #{worker}"
-        rescue Exception => ex
+        rescue StandardError => ex
           log_error "EXCEPTION: #{ex.message}"
         end
       end
@@ -94,7 +94,7 @@ module RestFtpDaemon
         begin
           worker = ConchitaWorker.new :conchita
           log_info "ConchitaWorker: #{worker}"
-        rescue Exception => ex
+        rescue StandardError => ex
           log_error "EXCEPTION: #{ex.message}"
         end
       end

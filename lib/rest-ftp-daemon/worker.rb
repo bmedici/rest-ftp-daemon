@@ -33,7 +33,7 @@ module RestFtpDaemon
       loop do
         begin
           work
-        rescue Exception => e
+        rescue StandardError => e
           log_error "WORKER EXCEPTION: #{e.inspect}"
           sleep 1
         end

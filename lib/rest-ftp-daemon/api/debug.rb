@@ -11,7 +11,7 @@ module RestFtpDaemon
         rescue RestFtpDaemon::RestFtpDaemonException => exception
           status 501
           api_error exception
-        rescue Exception => exception
+        rescue StandardError => exception
           status 501
           api_error exception
         else

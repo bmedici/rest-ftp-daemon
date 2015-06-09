@@ -69,7 +69,7 @@ begin
 
 rescue Psych::SyntaxError => e
   abort "EXITING: config file syntax error: #{e.message}"
-rescue Exception => e
+rescue StandardError => e
   abort "EXITING: unknow error loading settings  #{e.inspect}"
 end
 
