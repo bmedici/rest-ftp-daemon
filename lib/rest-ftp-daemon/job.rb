@@ -309,7 +309,7 @@ module RestFtpDaemon
 
     def transfer
       # Update job status
-      newstatus = :checking_source
+      newstatus :checking_source
       @started_at = Time.now
 
       # Method assertions and init
@@ -513,7 +513,7 @@ module RestFtpDaemon
         # Try to chdir in this directory
         @ftp.chdir(path)
 
-      rescue Net::FTPPermError => exception
+      rescue Net::FTPPermError
         # If not possible because the directory is missing
         parent =  Helpers.extract_parent(path)
         log_info "#{pref} chdir failed - parent [#{parent}]"

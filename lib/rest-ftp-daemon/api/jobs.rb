@@ -45,9 +45,6 @@ module RestFtpDaemon
         log_info 'GET /jobs'
 
         begin
-          # Detect QS filters
-          only = params['only'].to_s
-
           # Get jobs to display
           jobs = $queue.jobs
 
