@@ -2,21 +2,20 @@ defaults: &defaults
   daemonize: true
   port: 3000
   workers: 2
-  #adminpwd: "admin"
   user: rftpd
   group: rftpd
-  host: <%= `hostname`.chomp.split('.').first %>
+  host: "myhost"
 
   transfer:
-    update_every_kb: 1024
-    notify_after_sec: 5
-    mkdir: true
-    tempfile: true
-    overwrite: false
-    timeout: 1800
+    update_every_kb: 1024     # block size to transfer between counter updates
+    notify_after_sec: 5       # wait at least X seconds between HTTP notifications
+    mkdir: true               # build directory tree if missing
+    tempfile: true            # transfer to temporary file, rename after sucessful transfer
+    overwrite: false          # overwrite any target file with the same name
+    timeout: 1800             # jobs running for longer than X seconds will be killed
 
   conchita:
-    timer: 60
+    # timer: 60
     # garbage_collector: true
     # clean_failed: 3600
     # clean_finished: 3600
@@ -24,7 +23,7 @@ defaults: &defaults
 
   debug:
     ftp: false
-    # license: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    # newrelic: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   logs:
     thin:    "/var/log/rftpd-environment-thin.log"
@@ -35,8 +34,10 @@ defaults: &defaults
     notify:  "/var/log/rftpd-environment-work.log"
     newrelic:"/var/log/rftpd-environment-newrelic.log"
 
-preprod:
+
+development:
   <<: *defaults
+  port: 3400
 
 production:
   <<: *defaults
