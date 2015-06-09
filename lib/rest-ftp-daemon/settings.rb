@@ -17,7 +17,7 @@ class Settings < Settingslogic
 
   # Dump whole settings set to readable YAML
   def dump
-    self.to_hash.to_yaml(indent: 4, useheader: true, useversion: false )
+    to_hash.to_yaml(indent: 4, useheader: true, useversion: false )
   end
 
   def init_defaults

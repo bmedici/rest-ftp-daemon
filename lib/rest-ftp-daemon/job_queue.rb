@@ -17,7 +17,7 @@ module RestFtpDaemon
       @waiting = []
       @queue.taint          # enable tainted communication
       @waiting.taint
-      self.taint
+      taint
       @mutex = Mutex.new
 
       # Logger
