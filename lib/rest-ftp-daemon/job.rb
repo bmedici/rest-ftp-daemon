@@ -293,11 +293,11 @@ module RestFtpDaemon
       @target_url = expand_url @target
       set :target_url, @target_url.to_s
 
-      if @target_url.kind_of? URI::FTP
+      if @target_url.is_a? URI::FTP
         @target_method = :ftp
-      elsif @target_url.kind_of? URI::FTPES
+      elsif @target_url.is_a? URI::FTPES
         @target_method = :ftps
-      elsif @target_url.kind_of? URI::FTPS
+      elsif @target_url.is_a? URI::FTPS
         @target_method = :ftps
       end
       set :target_method, @target_method
