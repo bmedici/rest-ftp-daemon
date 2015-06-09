@@ -12,7 +12,7 @@ class Settings < Settingslogic
 
   # Direct access to any depth
   def at *path
-    path.reduce(Settings) {|m,key| m && m[key.to_s] }
+    path.reduce(Settings) { |m, key| m && m[key.to_s] }
   end
 
   # Dump whole settings set to readable YAML
