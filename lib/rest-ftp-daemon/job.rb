@@ -216,11 +216,11 @@ module RestFtpDaemon
     end
 
     def oops_after_crash exception
-      return oops :ended, exception, :crashed
+      oops :ended, exception, :crashed
     end
 
     def oops_you_stop_now exception
-      return oops :ended, exception, :timeout
+      oops :ended, exception, :timeout
     end
 
   protected
@@ -269,7 +269,7 @@ module RestFtpDaemon
       raise RestFtpDaemon::JobUnresolvedTokens if contains_brackets newpath
 
       # All OK, return this URL stripping multiple slashes
-      return newpath.gsub(/([^:])\/\//, '\1/')
+      newpath.gsub(/([^:])\/\//, '\1/')
     end
 
     def prepare
@@ -553,7 +553,8 @@ module RestFtpDaemon
 
       # Result can be nil or a list of files
       return false if results.nil?
-      return results.count >0
+
+      results.count >0
     end
 
     def ftp_transfer source_filename, target_name = nil

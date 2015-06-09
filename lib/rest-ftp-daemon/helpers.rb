@@ -96,7 +96,8 @@ module RestFtpDaemon
     # Dates and times: date with time generator
     def self.datetime_full datetime
       return '-'  if datetime.nil?
-      return datetime.to_datetime.strftime('%d.%m.%Y %H:%M:%S')
+
+      datetime.to_datetime.strftime('%d.%m.%Y %H:%M:%S')
     end
 
     def self.datetime_short datetime
@@ -104,7 +105,8 @@ module RestFtpDaemon
       return '-' if datetime.nil?
       return '?' unless datetime.respond_to? :to_date
       return datetime.to_datetime.strftime('%H:%M:%S') if datetime.to_date == Time.now.to_date
-      return datetime.to_datetime.strftime('%d/%m %H:%M:%S')
+
+      datetime.to_datetime.strftime('%d/%m %H:%M:%S')
     end
 
     def self.hide_credentials_from_url url
