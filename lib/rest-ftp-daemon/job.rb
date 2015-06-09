@@ -48,7 +48,7 @@ module RestFtpDaemon
 
       # Import query params
       FIELDS.each do |name|
-        instance_variable_set "@#{name.to_s}", params[name]
+        instance_variable_set "@#{name}", params[name]
       end
 
       # Set super-default flags
@@ -390,7 +390,7 @@ module RestFtpDaemon
 
     def flag_default name, default
       # build the flag instance var name
-      variable = "@#{name.to_s}"
+      variable = "@#{name}"
 
       # If it's true or false, that's ok
       return if [true, false].include? instance_variable_get(variable)
@@ -685,7 +685,7 @@ module RestFtpDaemon
       # Log this error
       error = exception.class if error.nil?
 
-      message = "Job.oops event[#{event.to_s}] error[#{error.to_s}] ex[#{exception.class}] #{exception.message}"
+      message = "Job.oops event[#{event}] error[#{error}] ex[#{exception.class}] #{exception.message}"
       if include_backtrace
         log_error message, exception.backtrace
       else
@@ -716,7 +716,7 @@ module RestFtpDaemon
 
       # Prepare notification if signal given
       return unless event
-      client_notify event, error: error, status: notif_status, message: "#{exception.class.to_s} | #{exception.message}"
+      client_notify event, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
 
     if Settings.newrelic_enabled?

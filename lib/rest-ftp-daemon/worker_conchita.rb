@@ -42,7 +42,7 @@ module RestFtpDaemon
     end
 
     def maxage status
-      @conchita["clean_#{status.to_s}"] || 0
+      @conchita["clean_#{status}"] || 0
     end
 
 

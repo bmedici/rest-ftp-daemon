@@ -15,7 +15,7 @@ end
 
 # Load helpers and constants
 [:constants, :helpers].each do |lib|
-  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib.to_s}")
+  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib}")
 end
 puts
 

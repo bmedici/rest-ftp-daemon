@@ -31,7 +31,7 @@ module RestFtpDaemon
       # Build body and extract job ID if provided
       body = {
         id:       params[:id].to_s,
-        signal:   "#{NOTIFY_PREFIX}.#{params[:event].to_s}",
+        signal:   "#{NOTIFY_PREFIX}.#{params[:event]}",
         error:    params[:error],
         host:     Settings.host.to_s,
         }

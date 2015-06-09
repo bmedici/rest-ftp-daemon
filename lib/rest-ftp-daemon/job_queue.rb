@@ -184,7 +184,7 @@ module RestFtpDaemon
           next if job.updated_at > before
 
           # Ok, we have to clean it up ..
-          log_info "expire [#{status.to_s}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
+          log_info "expire [#{status}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
           log_info '       & unqueued' if @queue.delete(job)
 
           true
