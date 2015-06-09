@@ -47,7 +47,7 @@ class Logger
       context[:wid].to_s,
       context[:jid].to_s,
       context[:id].to_s,
-      context[:level].to_i+1,
+      context[:level].to_i+1
     ]
   end
 

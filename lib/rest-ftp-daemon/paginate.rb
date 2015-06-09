@@ -53,7 +53,7 @@ module RestFtpDaemon
         klass,
         @only,
         p,
-        p,
+        p
       ]
     end
 
