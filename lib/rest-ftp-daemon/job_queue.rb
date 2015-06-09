@@ -109,8 +109,8 @@ module RestFtpDaemon
 
     def push job
       # Check that item responds to "priorty" method
-      raise "JobQueue.push: job should respond to priority method" unless job.respond_to? :priority
-      raise "JobQueue.push: job should respond to id method" unless job.respond_to? :id
+      raise 'JobQueue.push: job should respond to priority method' unless job.respond_to? :priority
+      raise 'JobQueue.push: job should respond to id method' unless job.respond_to? :id
 
       @mutex.synchronize do
         # Push job into the queue
@@ -142,7 +142,7 @@ module RestFtpDaemon
         while true
           if @queue.empty?
             # info "JobQueue.pop: empty"
-            raise ThreadError, "queue empty" if non_block
+            raise ThreadError, 'queue empty' if non_block
             @waiting.push Thread.current
             @mutex.sleep
           else
@@ -186,7 +186,7 @@ module RestFtpDaemon
 
           # Ok, we have to clean it up ..
           log_info "expire [#{status.to_s}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
-          log_info "       + unqueued" if @queue.delete(job)
+          log_info '       & unqueued' if @queue.delete(job)
 
           true
         end

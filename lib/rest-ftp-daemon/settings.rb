@@ -7,7 +7,7 @@ class Settings < Settingslogic
 
   # Compute my PID filename
   def pidfile
-    self["pidfile"] || "/tmp/#{APP_NAME}.port#{self['port'].to_s}.pid"
+    self['pidfile'] || "/tmp/#{APP_NAME}.port#{self['port'].to_s}.pid"
   end
 
   # Direct access to any depth

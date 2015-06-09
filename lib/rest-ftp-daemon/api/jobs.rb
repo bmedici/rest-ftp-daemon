@@ -9,7 +9,7 @@ module RestFtpDaemon
         requires :id, type: String, desc: 'ID of the Job to read', regexp: /[^\/]+/
       end
       get '/jobs/*id' do
-        log_info "GET /jobs/#{params[:id]}"
+        log_info 'GET /jobs/#{params[:id]}'
 
         begin
           # Get job to display
@@ -31,7 +31,7 @@ module RestFtpDaemon
           api_error exception
         else
           status 200
-          present job, :with => RestFtpDaemon::API::Entities::JobPresenter, type: "complete"
+          present job, :with => RestFtpDaemon::API::Entities::JobPresenter, type: 'complete'
         end
 
       end
@@ -39,14 +39,14 @@ module RestFtpDaemon
 
 ####### GET /jobs/
 
-      desc "List all Jobs"
+      desc 'List all Jobs'
 
       get '/jobs/' do
-        log_info "GET /jobs"
+        log_info 'GET /jobs'
 
         begin
           # Detect QS filters
-          only = params["only"].to_s
+          only = params['only'].to_s
 
           # Get jobs to display
           # jobs = $queue.sorted_by_status(only)
@@ -70,25 +70,25 @@ module RestFtpDaemon
 
 ####### POST /jobs/
 
-      desc "Create a new job"
+      desc 'Create a new job'
 
       params do
-        requires :source, type: String, desc: "Source file pattern"
-        requires :target, type: String, desc: "Target remote path"
-        optional :label, type: String, desc: "Descriptive label for this job"
-        optional :notify, type: String, desc: "URL to get POST'ed notifications back"
-        optional :priority, type: Integer, desc: "Priority level of the job (lower is stronger)"
+        requires :source, type: String, desc: 'Source file pattern'
+        requires :target, type: String, desc: 'Target remote path'
+        optional :label, type: String, desc: 'Descriptive label for this job'
+        optional :notify, type: String, desc: 'URL to get POST\'ed notifications back'
+        optional :priority, type: Integer, desc: 'Priority level of the job (lower is stronger)'
 
-        optional :overwrite, type: Boolean, desc: "overwrites files at target server",
+        optional :overwrite, type: Boolean, desc: 'Overwrites files at target server',
           default: Settings.transfer[:overwrite]
-        optional :mkdir, type: Boolean, desc: "create missing directories on target server",
+        optional :mkdir, type: Boolean, desc: 'Create missing directories on target server',
           default: Settings.transfer[:mkdir]
-        optional :tempfile, type: Boolean, desc: "upload to a temp file before renaming it to the target filename",
+        optional :tempfile, type: Boolean, desc: 'Upload to a temp file before renaming it to the target filename',
           default: Settings.transfer[:tempfile]
       end
 
       post '/jobs/' do
-        log_info "POST /jobs", params
+        log_info 'POST /jobs', params
 
         begin
 

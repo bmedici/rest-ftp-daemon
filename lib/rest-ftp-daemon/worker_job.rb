@@ -9,7 +9,7 @@ module RestFtpDaemon
       @timeout = (Settings.transfer.timeout rescue nil) || DEFAULT_WORKER_TIMEOUT
 
       # Start main loop
-      log_info "JobWorker starting", ["timeout: #{@timeout}"]
+      log_info 'JobWorker starting', ["timeout: #{@timeout}"]
       start
     end
 
@@ -18,7 +18,7 @@ module RestFtpDaemon
     def work
       # Wait for a job to come into the queue
       worker_status :waiting
-      log_info "waiting for a job"
+      log_info 'waiting for a job'
       job = $queue.pop
 
       # Prepare the job for processing
@@ -42,7 +42,7 @@ module RestFtpDaemon
       $queue.counter_inc :jobs_processed
 
     rescue RestFtpDaemon::JobTimeout => ex
-      log_error "JOB TIMED OUT", lines: ex.backtrace
+      log_error 'JOB TIMED OUT', lines: ex.backtrace
       worker_status :timeout
       worker_jid nil
       job.wid = nil
