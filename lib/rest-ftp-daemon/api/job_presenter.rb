@@ -10,7 +10,7 @@ module RestFtpDaemon
         Job::FIELDS.each { |name| expose name }
 
         # Technical fields
-        expose :wid, unless: lambda { |object, options| object.wid.nil? }
+        expose :wid, unless: lambda { |object, _options| object.wid.nil? }
 
         expose :error
         expose :status

@@ -27,7 +27,7 @@ module RestFtpDaemon
     end
 
     def worker_variables
-      @workers.collect do |wid, worker|
+      @workers.collect do |_wid, worker|
         vars = {}
         worker.thread_variables.each do |var|
           vars[var] = worker.thread_variable_get var

@@ -42,7 +42,7 @@ module RestFtpDaemon
 
 
       # Send message in a thread
-      Thread.new do |thread|
+      Thread.new do
         # Prepare query
         uri = URI(url)
         headers = {
