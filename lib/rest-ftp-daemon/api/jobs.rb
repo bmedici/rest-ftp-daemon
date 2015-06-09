@@ -74,12 +74,17 @@ module RestFtpDaemon
         optional :label, type: String, desc: 'Descriptive label for this job'
         optional :notify, type: String, desc: 'URL to get POST\'ed notifications back'
         optional :priority, type: Integer, desc: 'Priority level of the job (lower is stronger)'
-
-        optional :overwrite, type: Boolean, desc: 'Overwrites files at target server',
+        optional :overwrite,
+          type: Boolean,
+          desc: 'Overwrites files at target server',
           default: Settings.transfer[:overwrite]
-        optional :mkdir, type: Boolean, desc: 'Create missing directories on target server',
+        optional :mkdir,
+          type: Boolean,
+          desc: 'Create missing directories on target server',
           default: Settings.transfer[:mkdir]
-        optional :tempfile, type: Boolean, desc: 'Upload to a temp file before renaming it to the target filename',
+        optional :tempfile,
+          ype: Boolean,
+          desc: 'Upload to a temp file before renaming it to the target filename',
           default: Settings.transfer[:tempfile]
       end
 
