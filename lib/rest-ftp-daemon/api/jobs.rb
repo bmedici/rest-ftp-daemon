@@ -16,7 +16,7 @@ module RestFtpDaemon
 ####### GET /jobs/:id
 
       params do
-        requires :id, type: String, desc: 'ID of the Job to read', regexp: /[^\/]+/
+        requires :id, type: String, desc: "ID of the Job to read", regexp: /[^\/]+/
       end
       get "/*id" do
         log_info "GET /jobs/#{params[:id]}"
@@ -74,7 +74,7 @@ module RestFtpDaemon
         requires :source, type: String, desc: "Source file pattern"
         requires :target, type: String, desc: "Target remote path"
         optional :label, type: String, desc: "Descriptive label for this job"
-        optional :notify, type: String, desc: "URL to get POSTed notifications back"
+        optional :notify, type: String, desc: "URL to get POST'ed notifications back"
         optional :priority, type: Integer, desc: "Priority level of the job (lower is stronger)"
         optional :overwrite,
           type: Boolean,
