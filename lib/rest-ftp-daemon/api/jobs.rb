@@ -29,21 +29,17 @@ module RestFtpDaemon
 
         rescue RestFtpDaemon::JobNotFound => exception
           log_error "JobNotFound: #{exception.message}"
-          status 404
-          api_error exception
-        rescue RestFtpDaemonException => exception
-          log_error "RestFtpDaemonException: #{exception.message}"
-          status 500
-          api_error exception
+          error!({error: :api_job_not_found, message: exception.message}, 404)
+
         rescue StandardError => exception
           log_error "Exception: #{exception.message}"
-          status 501
-          api_error exception
+          error!({error: :api_exception, message: exception.message}, 500)
+
         else
           status 200
           present job, with: RestFtpDaemon::API::Entities::JobPresenter, type: "complete"
-        end
 
+        end
       end
 
 
@@ -58,20 +54,16 @@ module RestFtpDaemon
           # Get jobs to display
           jobs = $queue.jobs
 
-        rescue RestFtpDaemonException => exception
-          log_error "RestFtpDaemonException: #{exception.message}"
-          status 501
-          api_error exception
         rescue StandardError => exception
           log_error "Exception: #{exception.message}"
-          status 501
-          api_error exception
+          error!({error: :api_exception, message: exception.message}, 500)
+
         else
           status 200
           present jobs, with: RestFtpDaemon::API::Entities::JobPresenter
+
         end
       end
-
 
 
 ####### POST /jobs/
@@ -115,19 +107,16 @@ module RestFtpDaemon
 
         rescue JSON::ParserError => exception
           log_error "JSON::ParserError: #{exception.message}"
-          status 406
-          api_error exception
+          error!({error: :api_parse_error, message: exception.message}, 422)
+
         rescue RestFtpDaemonException => exception
           log_error "RestFtpDaemonException: #{exception.message}"
-          status 412
-          api_error exception
-        rescue StandardError => exception
-          log_error "Exception: #{exception.message}"
-          status 501
-          api_error exception
+          error!({error: :api_exception, message: exception.message}, 500)
+
         else
           status 201
           present job, with: RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
+
         end
       end
 

@@ -37,12 +37,6 @@ module RestFtpDaemon
           Root.logger
         end
 
-        def api_error exception
-          {
-          error: exception.message
-          #:message => exception.backtrace.first,
-          }
-        end
 
         def render name, values={}
           template = File.read("#{APP_LIBS}/views/#{name}.haml")
