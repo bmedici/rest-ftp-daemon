@@ -83,7 +83,7 @@ module RestFtpDaemon
           desc: 'Create missing directories on target server',
           default: Settings.transfer[:mkdir]
         optional :tempfile,
-          ype: Boolean,
+          type: Boolean,
           desc: 'Upload to a temp file before renaming it to the target filename',
           default: Settings.transfer[:tempfile]
       end
