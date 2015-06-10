@@ -1,11 +1,21 @@
 module RestFtpDaemon
   module API
-    class Root < Grape::API
-
+    class Dashbaord < Grape::API
 
 ####### HELPERS
 
       helpers do
+
+        def logger
+          Root.logger
+        end
+
+        def render name, values={}
+          template = File.read("#{APP_LIBS}/views/#{name}.haml")
+          haml_engine = Haml::Engine.new(template)
+          haml_engine.render(binding, values)
+        end
+
       end
 
 
