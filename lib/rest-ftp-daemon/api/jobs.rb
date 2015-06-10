@@ -1,6 +1,16 @@
 module RestFtpDaemon
   module API
-    class Root < Grape::API
+    class Jobs < Grape::API
+
+####### HELPERS
+
+      helpers do
+
+        def logger
+          Root.logger
+        end
+
+      end
 
 
 ####### GET /jobs/:id
@@ -8,7 +18,7 @@ module RestFtpDaemon
       params do
         requires :id, type: String, desc: 'ID of the Job to read', regexp: /[^\/]+/
       end
-      get '/jobs/*id' do
+      get "/*id" do
         log_info "GET /jobs/#{params[:id]}"
 
         begin
@@ -41,7 +51,7 @@ module RestFtpDaemon
 
       desc "List all Jobs"
 
-      get '/jobs/' do
+      get "/" do
         log_info "GET /jobs"
 
         begin
@@ -88,7 +98,7 @@ module RestFtpDaemon
           default: Settings.transfer[:tempfile]
       end
 
-      post '/jobs/' do
+      post "/" do
         log_info "POST /jobs", params
 
         begin
