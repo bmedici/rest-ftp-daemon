@@ -1,0 +1,26 @@
+test:
+  daemonize: true
+  port: 5678
+  workers: 2
+  adminpwd: "admin"
+  host: 127.0.0.1
+
+  transfer:
+    update_every_kb: 1024
+    notify_after_sec: 5
+    mkdir: true
+    tempfile: true
+    overwrite: false
+    timeout: 1800
+
+  debug:
+    ftp: false
+
+  logs:
+    thin:     "./tmp/log/rftpd-environment-thin.log"
+    queue:    "./tmp/log/rftpd-environment-core.log"
+    api:      "./tmp/log/rftpd-environment-core.log"
+    workers:  "./tmp/log/rftpd-environment-work.log"
+    jobs:     "./tmp/log/rftpd-environment-work.log"
+    notify:   "./tmp/log/rftpd-environment-work.log"
+    newrelic: "/var/log/rftpd-environment-newrelic.log"
