@@ -256,7 +256,7 @@ module RestFtpDaemon
       vectors = Settings.endpoints.clone
 
       # Stack RANDOM into tokens
-      vectors['RANDOM'] = SecureRandom.hex(JOB_RANDOM_LEN)
+      vectors["RANDOM"] = SecureRandom.hex(JOB_RANDOM_LEN)
 
       # Replace endpoints defined in config
       newpath = path.clone

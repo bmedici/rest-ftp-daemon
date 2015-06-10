@@ -79,13 +79,13 @@ module RestFtpDaemon
       return if method.nil?
       klass = case method
       when :file
-        'label-primary'
+        "label-primary"
       when :ftp
-        'label-warning'
+        "label-warning"
       when :ftps, :ftpes
-        'label-success'
+        "label-success"
       else
-        'label-default'
+        "label-default"
       end
       "<div class=\"transfer-method label #{klass}\">#{method.upcase}</div>"
     end

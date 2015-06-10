@@ -6,7 +6,7 @@ module RestFtpDaemon
 ####### GET /status
 
       # Server global status
-      get '/status' do
+      get "/status" do
         log_info "GET /status"
         mem = GetProcessMem.new
 

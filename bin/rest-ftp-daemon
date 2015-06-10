@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
 # Try to load external libs
-app_root = File.dirname(__FILE__) + '/../'
+app_root = File.dirname(__FILE__) + "/../"
 begin
   require "thin"
-  require 'optparse'
-  require 'socket'
-  # require 'timeout'
+  require "optparse"
+  require "socket"
+  # require "timeout"
   require "settingslogic"
 rescue LoadError
   raise "EXITING: some of basic libs were not found: thin, optparse, socket, settingslogic"
@@ -36,7 +36,7 @@ parser = OptionParser.new do |opts|
   opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)"){ |group| options["group"] = group }
 
   opts.on_tail("-h", "--help", "Show this message")                    { puts opts; exit }
-  opts.on_tail('-v', '--version', "Show version (#{APP_VER})")         { puts APP_VER; exit }
+  opts.on_tail("-v", "--version", "Show version (#{APP_VER})")         { puts APP_VER; exit }
 end
 
 
@@ -109,7 +109,7 @@ argv << command unless command.nil?
 puts "--- #{APP_NAME} #{APP_VER}"
 puts "Config file  \t #{APP_CONF}"
 puts "PID file     \t #{Settings.pidfile}"
-puts "Daemonize    \t #{Settings.daemonize ? 'YES' : "no (PID: #{Process.pid})"}"
+puts "Daemonize    \t #{Settings.daemonize ? "YES" : "no (PID: #{Process.pid})"}"
 puts "Host         \t #{Settings.host}"
 puts "Namespace    \t #{Settings.namespace}"
 puts "Network port \t #{Settings.port}"
@@ -118,7 +118,7 @@ puts "Newrelic     \t #{Settings.newrelic_enabled? ? Settings.at(:debug, :newrel
 # puts Settings.dump
 puts
 puts "--- Thin ARGV"
-puts argv.flatten.join(' ')
+puts argv.flatten.join(" ")
 puts
 
 

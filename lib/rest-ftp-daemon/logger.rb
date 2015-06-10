@@ -7,7 +7,7 @@ class Logger
 
     # Build prefixes depending on this context
     prefix1 = build_prefix(context)
-    prefix2 = build_prefix() + '   | '
+    prefix2 = build_prefix() + "   | "
 
     lines = context[:lines]
 

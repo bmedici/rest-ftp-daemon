@@ -7,7 +7,8 @@ class Settings < Settingslogic
 
   # Compute my PID filename
   def pidfile
-    self["pidfile"] || "/tmp/#{APP_NAME}.port#{self['port']}.pid"
+    port = self["port"]
+    self["pidfile"] || "/tmp/#{APP_NAME}.port#{port}.pid"
   end
 
   # Direct access to any depth
@@ -21,7 +22,7 @@ class Settings < Settingslogic
   end
 
   def init_defaults
-    Settings['host'] ||= `hostname`.chomp.split('.').first
+    Settings["host"] ||= `hostname`.chomp.split(".").first
   end
 
   def newrelic_enabled?
@@ -30,21 +31,20 @@ class Settings < Settingslogic
 
   def init_newrelic
     # Skip if not enabled
-    return ENV['NEWRELIC_AGENT_ENABLED'] = 'false' unless Settings.newrelic_enabled?
+    return ENV["NEWRELIC_AGENT_ENABLED"] = "false" unless Settings.newrelic_enabled?
 
     # Enable module
-    ENV['NEWRELIC_AGENT_ENABLED'] = 'true'
-    ENV['NEW_RELIC_MONITOR_MODE'] = 'true'
-    #Settings['newrelic']['enabled'] = true
+    ENV["NEWRELIC_AGENT_ENABLED"] = "true"
+    ENV["NEW_RELIC_MONITOR_MODE"] = "true"
 
     # License
-    ENV['NEW_RELIC_LICENSE_KEY'] = Settings.at(:debug, :newrelic)
+    ENV["NEW_RELIC_LICENSE_KEY"] = Settings.at(:debug, :newrelic)
 
     # Appname
-    ENV['NEW_RELIC_APP_NAME'] = "#{APP_NICK}-#{Settings.host}-#{APP_ENV}"
+    ENV["NEW_RELIC_APP_NAME"] = "#{APP_NICK}-#{Settings.host}-#{APP_ENV}"
 
     # Logfile
-    ENV['NEW_RELIC_LOG'] = Settings.at(:logs, :newrelic)
+    ENV["NEW_RELIC_LOG"] = Settings.at(:logs, :newrelic)
   end
 
 end

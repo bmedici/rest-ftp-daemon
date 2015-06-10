@@ -12,7 +12,7 @@ module RestFtpDaemon
 ####### DASHBOARD - GET /
 
       # Server global status
-      get '/' do
+      get "/" do
         log_info "GET /"
 
         # Initialize Facter
@@ -40,7 +40,7 @@ module RestFtpDaemon
         output = render :dashboard
 
         # Send response
-        env['api.format'] = :html
+        env["api.format"] = :html
         format "html"
         status 200
         content_type "text/html"

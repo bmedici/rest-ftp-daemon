@@ -1,7 +1,7 @@
 # Load gem files
-load_path_libs = File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
+load_path_libs = File.expand_path(File.join(File.dirname(__FILE__), "lib"))
 $LOAD_PATH.unshift(load_path_libs) unless $LOAD_PATH.include?(load_path_libs)
-require 'rest-ftp-daemon'
+require "rest-ftp-daemon"
 
 # Create global queue
 $queue = RestFtpDaemon::JobQueue.new
@@ -17,7 +17,7 @@ end
 # Rack authent
 unless Settings.adminpwd.nil?
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
-    [username, password] == ['admin', Settings.adminpwd]
+    [username, password] == ["admin", Settings.adminpwd]
   end
 end
 

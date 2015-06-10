@@ -46,9 +46,9 @@ module RestFtpDaemon
         # Prepare query
         uri = URI(url)
         headers = {
-          'Content-Type'  => 'application/json',
-          'Accept'        => 'application/json',
-          'User-Agent'    => "#{APP_NAME} - #{APP_VER}"
+          "Content-Type"  => "application/json",
+          "Accept"        => "application/json",
+          "User-Agent"    => "#{APP_NAME} - #{APP_VER}"
            }
         data = body.to_json
         log_info "sending #{data}"

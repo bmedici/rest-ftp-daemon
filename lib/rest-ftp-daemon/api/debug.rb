@@ -4,7 +4,7 @@ module RestFtpDaemon
 
 ####### GET /debug
 
-      get '/raise' do
+      get "/raise" do
         log_info "GET /debug"
         begin
           raise RestFtpDaemon::DummyException
@@ -20,7 +20,7 @@ module RestFtpDaemon
         end
       end
 
-      get '/routes' do
+      get "/routes" do
         log_info "GET /routes"
         status 200
         return RestFtpDaemon::API::Root.routes
