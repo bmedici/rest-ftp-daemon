@@ -8,13 +8,13 @@ module RestFtpDaemon
       # Conchita configuration
       @conchita = Settings.conchita
       if !@conchita.is_a? Hash
-        return log_info 'ConchitaWorker: missing conchita.* configuration'
+        return log_info "ConchitaWorker: missing conchita.* configuration"
       elsif @conchita[:timer].nil?
-        return log_info 'ConchitaWorker: missing conchita.timer value'
+        return log_info "ConchitaWorker: missing conchita.timer value"
       end
 
       # Start main loop
-      log_info 'ConchitaWorker starting', @conchita
+      log_info "ConchitaWorker starting", @conchita
       start
     end
 
@@ -30,7 +30,7 @@ module RestFtpDaemon
 
       # Force garbage collector
       worker_status :collecting
-      GC.start if @conchita['garbage_collector']
+      GC.start if @conchita["garbage_collector"]
 
     rescue StandardError => e
       log_error "EXCEPTION: #{e.inspect}"

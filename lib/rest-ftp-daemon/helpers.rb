@@ -8,10 +8,10 @@ module RestFtpDaemon
       config
     end
 
-    def self.format_bytes number, unit='', decimals = 0
-      return '&Oslash;' if number.nil? || number.to_f.zero?
+    def self.format_bytes number, unit="", decimals = 0
+      return "&Oslash;" if number.nil? || number.to_f.zero?
 
-      units = ['', 'k', 'M', 'G', 'T', 'P' ]
+      units = ["", "k", "M", "G", "T", "P" ]
       index = ( Math.log( number ) / Math.log( 2 ) ).to_i / 10
       converted = number.to_f / ( 1024 ** index )
 
@@ -21,7 +21,7 @@ module RestFtpDaemon
     end
 
     def self.text_or_empty text
-      return '-' if text.nil? || text.empty?
+      return "-" if text.nil? || text.empty?
 
       text
     end
@@ -67,7 +67,7 @@ module RestFtpDaemon
           rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
             false
           rescue Errno::EADDRNOTAVAIL
-            'Settings.local_port_used: Errno::EADDRNOTAVAIL'
+            "Settings.local_port_used: Errno::EADDRNOTAVAIL"
           end
         end
       rescue Timeout::Error
@@ -92,17 +92,18 @@ module RestFtpDaemon
 
     # Dates and times: date with time generator
     def self.datetime_full datetime
-      return '-'  if datetime.nil?
+      return "-"  if datetime.nil?
 
-      datetime.to_datetime.strftime('%d.%m.%Y %H:%M:%S')
+      datetime.to_datetime.strftime("%d.%m.%Y %H:%M:%S")
     end
 
     def self.datetime_short datetime
-      return '-' if datetime.nil?
-      return '?' unless datetime.respond_to? :to_date
-      return datetime.to_datetime.strftime('%H:%M:%S') if datetime.to_date == Time.now.to_date
+      # return param.class
+      return "-" if datetime.nil?
+      return "?" unless datetime.respond_to? :to_date
+      return datetime.to_datetime.strftime("%H:%M:%S") if datetime.to_date == Time.now.to_date
 
-      datetime.to_datetime.strftime('%d/%m %H:%M:%S')
+      datetime.to_datetime.strftime("%d/%m %H:%M:%S")
     end
 
     def self.hide_credentials_from_url url

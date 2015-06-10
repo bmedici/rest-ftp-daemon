@@ -74,7 +74,7 @@ module RestFtpDaemon
     def process
       # Update job's status
       @error = nil
-      log_info 'Job.process starting'
+      log_info "Job.process starting"
 
       # Prepare job
       begin
@@ -112,7 +112,7 @@ module RestFtpDaemon
       else
         # Prepare done !
         newstatus :prepared
-        log_info 'Job.process notify[started]'
+        log_info "Job.process notify[started]"
         client_notify :started
       end
 
@@ -188,7 +188,7 @@ module RestFtpDaemon
       else
         # All done !
         newstatus JOB_STATUS_FINISHED
-        log_info 'Job.process notify[ended]'
+        log_info "Job.process notify[ended]"
         client_notify :ended
       end
 
@@ -313,8 +313,8 @@ module RestFtpDaemon
       @started_at = Time.now
 
       # Method assertions and init
-      raise RestFtpDaemon::JobAssertionFailed, 'transfer/1' unless @source_path
-      raise RestFtpDaemon::JobAssertionFailed, 'transfer/2' unless @target_url
+      raise RestFtpDaemon::JobAssertionFailed, "transfer/1" unless @source_path
+      raise RestFtpDaemon::JobAssertionFailed, "transfer/2" unless @target_url
       @transfer_sent = 0
       set :source_processed, 0
 
@@ -404,8 +404,8 @@ module RestFtpDaemon
       newstatus :ftp_init
 
       # Method assertions
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_init/1' if @target_method.nil?
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_init/2' if @target_url.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_init/1" if @target_method.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_init/2" if @target_url.nil?
 
       log_info "Job.ftp_init target_method [#{@target_method}]"
       case @target_method
@@ -424,13 +424,13 @@ module RestFtpDaemon
       if @ftp_debug_enabled
         # Output header to STDOUT
         puts
-        puts '-------------------- FTP SESSION STARTING --------------------'
+        puts "-------------------- FTP SESSION STARTING --------------------"
         puts "job id\t #{@id}"
         puts "source\t #{@source}"
         puts "target\t #{@target}"
         puts "host\t #{@target_url.host}"
         puts "user\t #{@target_url.user}"
-        puts '--------------------------------------------------------------'
+        puts "--------------------------------------------------------------"
 
         # Set debug mode on connection
         @ftp.debug_mode = true
@@ -443,12 +443,12 @@ module RestFtpDaemon
     def ftp_finished
       # Close FTP connexion and free up memory
       @ftp.close
-      log_info 'Job.ftp_finished closed'
+      log_info "Job.ftp_finished closed"
       @ftp = nil
 
       # FTP debug mode ?
       if @ftp_debug_enabled
-        puts '-------------------- FTP SESSION ENDED -----------------------'
+        puts "-------------------- FTP SESSION ENDED -----------------------"
       end
 
       # Update job status
@@ -467,8 +467,8 @@ module RestFtpDaemon
       # Method assertions
       host = @target_url.host
       log_info "Job.ftp_connect [#{host}]"
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_connect/1' if @ftp.nil?
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_connect/2' if @target_url.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/1" if @ftp.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_connect/2" if @target_url.nil?
 
       @ftp.connect(host)
     end
@@ -478,10 +478,10 @@ module RestFtpDaemon
       newstatus :ftp_login
 
       # Method assertions
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_login/1' if @ftp.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_login/1" if @ftp.nil?
 
       # use "anonymous" if user is empty
-      login = @target_url.user || 'anonymous'
+      login = @target_url.user || "anonymous"
       log_info "Job.ftp_login [#{login}]"
 
       @ftp.login login, @target_url.password
@@ -491,7 +491,7 @@ module RestFtpDaemon
       # Method assertions
       log_info "Job.ftp_chdir [#{path}] mkdir: #{@mkdir}"
       newstatus :ftp_chdir
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_chdir_or_buildpath/1' if path.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_chdir_or_buildpath/1" if path.nil?
 
       # Extract directory from path
       if @mkdir
@@ -544,8 +544,8 @@ module RestFtpDaemon
 # FIXME / TODO: try with nlst
 
       # Method assertions
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_presence/1' if @ftp.nil?
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_presence/2' if @target_url.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_presence/1" if @ftp.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_presence/2" if @target_url.nil?
 
       # Get file list, sometimes the response can be an empty value
       results = @ftp.list(target_name) rescue nil
@@ -560,8 +560,8 @@ module RestFtpDaemon
     def ftp_transfer source_filename, target_name = nil
       # Method assertions
       log_info "Job.ftp_transfer source: #{source_filename}"
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_transfer/1' if @ftp.nil?
-      raise RestFtpDaemon::JobAssertionFailed, 'ftp_transfer/2' if source_filename.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/1" if @ftp.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/2" if source_filename.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
       target_name ||= Helpers.extract_filename source_filename
@@ -574,11 +574,11 @@ module RestFtpDaemon
       if present
         if @overwrite
           # delete it first
-          log_info 'Job.ftp_transfer removing target file'
+          log_info "Job.ftp_transfer removing target file"
           @ftp.delete(target_name)
         else
           # won't overwrite then stop here
-          log_info 'Job.ftp_transfer failed: target file exists'
+          log_info "Job.ftp_transfer failed: target file exists"
           raise RestFtpDaemon::JobTargetFileExists
         end
       end
@@ -617,7 +617,7 @@ module RestFtpDaemon
 
       # Done
       set :source_current, nil
-      log_info 'Job.ftp_transfer finished'
+      log_info "Job.ftp_transfer finished"
     end
 
     def ftp_transfer_block block
@@ -637,9 +637,9 @@ module RestFtpDaemon
       # Log progress
       stack = []
       stack << "#{percent0} %"
-      stack << (Helpers.format_bytes @transfer_sent, 'B')
-      stack << (Helpers.format_bytes @transfer_total, 'B')
-      stack << (Helpers.format_bytes bitrate0, 'bps')
+      stack << (Helpers.format_bytes @transfer_sent, "B")
+      stack << (Helpers.format_bytes @transfer_total, "B")
+      stack << (Helpers.format_bytes bitrate0, "bps")
       stack2 = stack.map{ |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt)}.join("\t")
       log_info "Job.ftp_transfer #{stack2}"
 
