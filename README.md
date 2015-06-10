@@ -1,6 +1,10 @@
 rest-ftp-daemon
 ====================================================================================
 
+[![Gem Version](https://badge.fury.io/rb/rest-ftp-daemon.svg)](http://badge.fury.io/rb/rest-ftp-daemon)
+[![Code Climate](https://codeclimate.com/github/bmedici/rest-ftp-daemon/badges/gpa.svg)](https://codeclimate.com/github/bmedici/rest-ftp-daemon)
+[![Test Coverage](https://codeclimate.com/github/bmedici/rest-ftp-daemon/badges/coverage.svg)](https://codeclimate.com/github/bmedici/rest-ftp-daemon/coverage)
+
 
 A pretty simple FTP-client daemon, driven through a RESTful API.
 
