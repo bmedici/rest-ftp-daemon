@@ -1,5 +1,6 @@
 require "pathname"
 require "http"
+require_relative "support/request_helpers"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -47,8 +48,10 @@ RSpec.configure do |config|
   config.order = :random
   Kernel.srand config.seed
 
-  def call_server(command, config = Pathname(__dir__).join("support/config.yml"))
-    system(Pathname(__dir__).join("../bin/rest-ftp-daemon -e test -c #{config} #{command}").to_s, chdir: __dir__) or fail "Could not #{command} server"
+  include RequestHelpers
+
+  def call_server(command, config = Pathname(__dir__).join("support/config.yml"), port = RequestHelpers::PORT)
+    system(Pathname(__dir__).join("../bin/rest-ftp-daemon -e test -c #{config} #{command} -p #{port}").to_s, chdir: __dir__) or fail "Could not #{command} server"
   end
 
   config.before :suite do
