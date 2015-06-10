@@ -1,3 +1,5 @@
+require "pathname"
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -43,4 +45,17 @@ RSpec.configure do |config|
 
   config.order = :random
   Kernel.srand config.seed
+
+  def call_server(command, config = Pathname(__dir__).join("support/config.yml"))
+    system(Pathname(__dir__).join("../bin/rest-ftp-daemon -e test -c #{config} #{command}").to_s, chdir: __dir__) or fail "Could not #{command} server"
+  end
+
+  config.before :suite do
+    call_server(:start)
+    sleep 2
+  end
+
+  config.after :suite do
+    call_server(:stop)
+  end
 end
