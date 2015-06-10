@@ -7,4 +7,10 @@ RSpec::Core::RakeTask.new(:spec)
 
 # Run specs by default
 desc 'Run all tests'
-task :default => :spec
+
+require 'rubocop/rake_task'
+RuboCop::RakeTask.new(:rubocop) do |task|
+  task.fail_on_error = false
+end
+
+task :default => [:spec, :rubocop]
