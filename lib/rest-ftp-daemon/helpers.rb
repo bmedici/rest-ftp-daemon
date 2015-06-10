@@ -57,7 +57,7 @@ module RestFtpDaemon
     end
 
     def self.local_port_used? port
-      ip = '0.0.0.0'
+      ip = "127.0.0.1"
       timeout = 1
       begin
         Timeout.timeout(timeout) do
