@@ -2,9 +2,10 @@ rest-ftp-daemon
 ====================================================================================
 
 
-This is a pretty simple FTP client daemon, controlled through a RESTful API.
+A pretty simple FTP-client daemon, driven through a RESTful API.
 
 API documentation is [maintained on Apiary](http://docs.restftpdaemon.apiary.io/)
+
 
 
 

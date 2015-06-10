@@ -13,8 +13,10 @@ module RestFtpDaemon
       do_not_route_options!
 
       format :json
-  mount RestFtpDaemon::API::Jobs => "/jobs"
-  mount RestFtpDaemon::API::Dashbaord => "/"
+
+      mount RestFtpDaemon::API::Jobs => "/jobs"
+      mount RestFtpDaemon::API::Dashbaord => "/"
+
 
 
 ####### INITIALIZATION
@@ -37,12 +39,8 @@ module RestFtpDaemon
           Root.logger
         end
 
+      end
 
-        def render name, values={}
-          template = File.read("#{APP_LIBS}/views/#{name}.haml")
-          haml_engine = Haml::Engine.new(template)
-          haml_engine.render(binding, values)
-        end
 
 ####### GET /routes
 
