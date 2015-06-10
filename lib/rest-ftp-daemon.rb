@@ -44,8 +44,6 @@ require "rest-ftp-daemon/notification"
 require "rest-ftp-daemon/api/job_presenter"
 require "rest-ftp-daemon/api/jobs"
 require "rest-ftp-daemon/api/dashboard"
-require "rest-ftp-daemon/api/status"
-require "rest-ftp-daemon/api/debug"
 
 require "rest-ftp-daemon/api/root"
 
