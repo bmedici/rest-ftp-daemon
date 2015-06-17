@@ -39,7 +39,20 @@ describe "Jobs", feature: true do
         }.to change { jobs_list.size }.by(1)
       end
     end
-
   end # POST /jobs
+
+  describe "GET /jobs/:id" do
+    let(:creation_response) do
+      JSON.parse post("/jobs", json: {source: "/tmp/foo", target: "/tmp/bar"}).body
+    end
+
+    let(:job_id) { creation_response.fetch('id') }
+
+    it "is properly exposed" do
+      expect(
+        get("/jobs/#{job_id}").status
+      ).to eq 200
+    end
+  end # GET /jobs/:id
 
 end
