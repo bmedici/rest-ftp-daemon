@@ -24,8 +24,8 @@ As of today, its main features are :
 * Delegate a transfer job by `POST`'ing a simple JSON structure
 * Spawn a dedicated thread to handle this job in its own context
 * Report transfer status, progress and errors for each job in realtime
-* Parralelize jobs as soon as they arrive
 * Expose JSON status of workers on `GET /jobs/` for automated monitoring
+* Parallelize jobs as soon as they arrive
 * Handle job queues and priority as an attribute of the job
 * Allow dynamic evaluation of priorities, and change of any attribute until the job is picked
 * Provide RESTful notifications to the requesting client
@@ -37,7 +37,7 @@ As of today, its main features are :
 * Automatically clean-up jobs after a configurable amount of time (failed, finished)
 * Current bitrate on the last blocks chunk updated in the job attributes
 * Global bitrate on the whole file transfer is re-computed after the transfer finishes
-* Daemon process is tagged with its name and environement in process lists
+* Daemon process is tagged with its name and environment in process lists
 * Allow basic patterns in source filename to match multiple files (`/dir/file*.jpg`)
 
 Expected features in a short-time range :
