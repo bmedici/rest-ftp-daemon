@@ -19,6 +19,8 @@ end
 end
 puts
 
+DEFAULT_CONFIG_PATH = File.expand_path "/etc/#{APP_NAME}.yml"
+SAMPLE_CONFIG_FILE = File.expand_path("#{app_root}/rest-ftp-daemon.yml.sample")
 
 # Detect options from ARGV
 options = {}
@@ -35,10 +37,22 @@ parser = OptionParser.new do |opts|
   opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")  { |user| options["user"] = user }
   opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)"){ |group| options["group"] = group }
 
-  opts.on_tail("-h", "--help", "Show this message")                    { puts opts; exit }
+  opts.separator ""
+  opts.on_tail("-h", "--help", "Show this message")                    do
+    puts opts
+    puts TAIL_MESSAGE unless File.exists?(DEFAULT_CONFIG_PATH)
+    exit
+  end
   opts.on_tail("-v", "--version", "Show version (#{APP_VER})")         { puts APP_VER; exit }
 end
 
+TAIL_MESSAGE = <<EOD
+
+A default configuration is available here: #{SAMPLE_CONFIG_FILE}.
+You should copy it to the expected location #{DEFAULT_CONFIG_PATH}:
+
+sudo cp #{SAMPLE_CONFIG_FILE} #{DEFAULT_CONFIG_PATH}
+EOD
 
 # Parse options and check compliance
 begin

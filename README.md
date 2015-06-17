@@ -71,7 +71,11 @@ If that is not the case yet, see section [Debian install preparation](#debian-in
 Usage
 ------------------------------------------------------------------------------------
 
-You can simply start the daemon on the standard port, or on a specific port using `-p`
+You must provide a configuration file for the daemon to start, either
+explicitly using option `--config` or implicitly at `/etc/rest-ftp-daemon.yml`.
+(A sample file is provided see `--help` for more info about it.)
+
+You can then simply start the daemon on the standard port, or on a specific port using `-p`
 
 ```
 $ rest-ftp-daemon -p 3000 start
