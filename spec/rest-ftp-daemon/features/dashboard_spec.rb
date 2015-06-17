@@ -16,6 +16,12 @@ describe 'Dashboard', feature: true do
         ).to eq 200
       end
     end
+
+    it "has an HTML representation" do
+      expect(
+        get("/", accept: 'html').status
+      ).to eq 200
+    end
   end # GET /
 
 end
