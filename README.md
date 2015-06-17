@@ -21,11 +21,11 @@ As of today, its main features are :
 * Offer a basic dashboard directly within the daemon HTTP interface
 * Periodically send an update-notification with transfer status and progress
 * Allow environment-specific configuration in a YAML file
-* Delegate a transfer job by ``POST```'ing a simple JSON structure
+* Delegate a transfer job by `POST`'ing a simple JSON structure
 * Spawn a dedicated thread to handle this job in its own context
 * Report transfer status, progress and errors for each job in realtime
-* Expose JSON status of workers on ```GET /jobs/``` for automated monitoring
 * Parralelize jobs as soon as they arrive
+* Expose JSON status of workers on `GET /jobs/` for automated monitoring
 * Handle job queues and priority as an attribute of the job
 * Allow dynamic evaluation of priorities, and change of any attribute until the job is picked
 * Provide RESTful notifications to the requesting client
@@ -38,7 +38,7 @@ As of today, its main features are :
 * Current bitrate on the last blocks chunk updated in the job attributes
 * Global bitrate on the whole file transfer is re-computed after the transfer finishes
 * Daemon process is tagged with its name and environement in process lists
-* Allow basic patterns in source filename to match multiple files (/dir/file*.jpg)
+* Allow basic patterns in source filename to match multiple files (`/dir/file*.jpg`)
 
 Expected features in a short-time range :
 
@@ -57,7 +57,7 @@ Installation
 
 This project is available as a rubygem, requires Ruby 2.1 and rubygems installed.
 
-You may use ```rbenv``` and ```ruby-build``` to get the right Ruby version. If this is your case, ensure that ruby-build definitions are up-to-date and include ruby-2.1.0
+You may use `rbenv` and `ruby-build` to get the right Ruby version. If this is your case, ensure that ruby-build definitions are up-to-date and include ruby-2.1.0
 
 ```
 # apt-get install ruby-build rbenv
@@ -100,8 +100,8 @@ Configuration
 
 Most of the configuration options live in a YAML configuration file, containing two main sections:
 
-* the ``defaults`` section should be left as-is and will be used is no other environment-specific value is provided.
-* the ``production`` section can receive personnalized settings according to your environment-specific setup and paths.
+* `defaults` section should be left as-is and will be used is no other environment-specific value is provided.
+* `production` section can receive personalized settings according to your environment-specific setup and paths.
 
 Configuration priority is defined as follows (from most important to last resort):
 
@@ -110,7 +110,7 @@ Configuration priority is defined as follows (from most important to last resort
 * config file environment section
 * application internal defaults
 
-As a starting point, ``rest-ftp-daemon.yml.sample`` is an exemple config file that can be  copied into the expected location ``/etc/rest-ftp-daemon.yml``.
+As a starting point, `rest-ftp-daemon.yml.sample` is an example config file that can be  copied into the expected location ``/etc/rest-ftp-daemon.yml``.
 
 Default administrator credentials are admin/admin. Please change the password in this configuration file before starting any kind of production.
 
@@ -118,15 +118,15 @@ Default administrator credentials are admin/admin. Please change the password in
 Execution
 ------------------------------------------------------------------------------------
 
-You can simply start the daemon on the standart port, or on a specific port using ```-p```
+You can simply start the daemon on the standard port, or on a specific port using `-p`
 
 ```
 # rest-ftp-daemon -p 4000 start
 ```
 
-Check that the daemon is running and exposes a JSON status structure on ```http://localhost:3200/status```.
+Check that the daemon is running and exposes a JSON status structure on `http://localhost:3200/status`.
 
-The dashbaord will provide a gobal view on ```http://localhost:3200/```
+The dashbaord will provide a gobal view on `http://localhost:3200/`
 
 If the daemon appears to exit quickly when launched, it may be caused by logfiles that can't be written (check files permissions or owner).
 
@@ -151,7 +151,7 @@ Logging
 ------------------------------------------------------------------------------------
 
 The application will not log to any file by default, if not specified in its configuration.
-Otherwise separate logging paths can be provided for the Thin webserver, API related messages, and workers related messages. Providing and empty value will simply activate logging to ``STDOUT``.
+Otherwise separate logging paths can be provided for the Thin webserver, API related messages, and workers related messages. Providing and empty value will simply activate logging to `STDOUT`.
 
 
 Job cleanup
@@ -200,7 +200,7 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 
 * Get info about a job with ID="q89j.1"
 
-Both parameters ```q89j.1``` and ```1``` will be accepted as ID in the API. Requests below are equivalent:
+Both parameters `q89j.1` and `1` will be accepted as ID in the API. Requests below are equivalent:
 
 ```
 GET http://localhost:3100/jobs/q89j.1
