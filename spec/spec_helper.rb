@@ -1,6 +1,7 @@
 require "pathname"
 require "http"
 require_relative "support/request_helpers"
+require "pry"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
