@@ -33,6 +33,16 @@ describe "Jobs", feature: true do
         ).to eq 201
       end
 
+      it "exposes the new job id" do
+        response = JSON.parse post("/jobs", json: params)
+        expect(response['id']).not_to be_nil
+      end
+
+      it "assigns a 'queued' status" do
+        response = JSON.parse post("/jobs", json: params)
+        expect(response['status']).to eq "queued"
+      end
+
       it "creates a new job" do
         expect {
           post("/jobs", json: params)
