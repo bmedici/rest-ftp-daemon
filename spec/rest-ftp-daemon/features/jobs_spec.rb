@@ -38,9 +38,9 @@ describe "Jobs", feature: true do
         expect(response['id']).not_to be_nil
       end
 
-      it "assigns a 'queued' status" do
+      it "assigns a status" do
         response = JSON.parse post("/jobs", json: params)
-        expect(response['status']).to eq "queued"
+        expect(response['status']).to match(/^(queued|failed)$/)
       end
 
       it "creates a new job" do
