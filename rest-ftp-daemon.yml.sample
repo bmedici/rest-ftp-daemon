@@ -4,7 +4,8 @@ defaults: &defaults
   workers: 2
   user: rftpd
   group: rftpd
-  host: "myhost"
+  #host: "myhost"
+  #appname: "replay"          # appname prefix used for NewRelic reporting
 
   transfer:
     notify_after_sec: 5       # wait at least X seconds between HTTP notifications
@@ -22,6 +23,7 @@ defaults: &defaults
 
   debug:
     ftp: false
+    sftp: false
     # newrelic: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   logs:

@@ -152,6 +152,9 @@ module RestFtpDaemon
       rescue Net::FTPTempError => exception
         return oops :ended, exception, :net_temp_error
 
+      rescue Net::SFTP::StatusException => exception
+        return oops :ended, exception, :sftp_exception
+
       rescue Errno::EMFILE => exception
         return oops :ended, exception, :too_many_open_files
 
