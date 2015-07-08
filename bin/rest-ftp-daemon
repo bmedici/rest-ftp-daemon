@@ -19,8 +19,18 @@ end
 end
 puts
 
+
+# Provide default config file information
 DEFAULT_CONFIG_PATH = File.expand_path "/etc/#{APP_NAME}.yml"
 SAMPLE_CONFIG_FILE = File.expand_path("#{app_root}/rest-ftp-daemon.yml.sample")
+#SAMPLE_CONFIG_FILE = File.expand_path("#{app_root}/#{APP_NAME}.yml.sample")
+TAIL_MESSAGE = <<EOD
+
+A default configuration is available here: #{SAMPLE_CONFIG_FILE}.
+You should copy it to the expected location #{DEFAULT_CONFIG_PATH}:
+
+sudo cp #{SAMPLE_CONFIG_FILE} #{DEFAULT_CONFIG_PATH}
+EOD
 
 # Detect options from ARGV
 options = {}
@@ -46,13 +56,7 @@ parser = OptionParser.new do |opts|
   opts.on_tail("-v", "--version", "Show version (#{APP_VER})")         { puts APP_VER; exit }
 end
 
-TAIL_MESSAGE = <<EOD
 
-A default configuration is available here: #{SAMPLE_CONFIG_FILE}.
-You should copy it to the expected location #{DEFAULT_CONFIG_PATH}:
-
-sudo cp #{SAMPLE_CONFIG_FILE} #{DEFAULT_CONFIG_PATH}
-EOD
 
 # Parse options and check compliance
 begin
