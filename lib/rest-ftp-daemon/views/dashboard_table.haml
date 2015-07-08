@@ -6,7 +6,7 @@
   - presented = present job, with: RestFtpDaemon::API::Entities::JobPresenter, hide_params: true
   - bitrate = job.get :transfer_bitrate
 
-  - trclass = JOB_STYLES[job.status]
+  - trclass = DASHBOARD_JOB_STYLES[job.status]
 
   - unless job.error.nil?
     - trclass = "warning"

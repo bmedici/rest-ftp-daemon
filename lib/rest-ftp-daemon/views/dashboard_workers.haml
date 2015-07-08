@@ -12,7 +12,7 @@
     - wid = vars[:wid]
     - status = vars[:status]
     - alive = $pool.worker_alive? wid
-    - trclass = WORKER_STYLES[status]
+    - trclass = DASHBOARD_WORKER_STYLES[status]
 
     - unless alive
       - trclass = "danger"

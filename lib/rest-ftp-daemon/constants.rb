@@ -37,26 +37,26 @@ NOTIFY_IDENTIFIER_LEN   = 4
 
 
 # Dashboard row styles
-JOB_STYLES = {
+DASHBOARD_JOB_STYLES = {
   JOB_STATUS_QUEUED     => :active,
   JOB_STATUS_FAILED     => :warning,
   JOB_STATUS_FINISHED   => :success,
   JOB_STATUS_UPLOADING  => :info,
   JOB_STATUS_RENAMING   => :info,
   }
-WORKER_STYLES = {
+DASHBOARD_WORKER_STYLES = {
   waiting:              :success,
   working:              :info,
   crashed:              :danger,
   done:                 :success,
   dead:                 :danger
   }
-PAGINATE_MAX            = 30
 
 
 # Configuration defaults
 DEFAULT_WORKER_TIMEOUT  = 3600
 DEFAULT_FTP_CHUNK       = 512
+DEFAULT_PAGE_SIZE       = 40
 
 
 # Initialize defaults

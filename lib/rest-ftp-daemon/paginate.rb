@@ -18,7 +18,7 @@ module RestFtpDaemon
       @total = @data.count
 
       # Count pages
-      @pages = (@total.to_f / PAGINATE_MAX).ceil
+      @pages = (@total.to_f / DEFAULT_PAGE_SIZE).ceil
       @pages = 1 if @pages < 1
     end
 
@@ -39,7 +39,7 @@ module RestFtpDaemon
     end
 
     def subset
-      size = PAGINATE_MAX.to_i
+      size = DEFAULT_PAGE_SIZE.to_i
       offset = (@page-1) * size
       @data[offset, size]
     end
