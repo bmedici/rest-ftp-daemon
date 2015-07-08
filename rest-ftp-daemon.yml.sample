@@ -7,7 +7,6 @@ defaults: &defaults
   host: "myhost"
 
   transfer:
-    update_every_kb: 1024     # block size to transfer between counter updates
     notify_after_sec: 5       # wait at least X seconds between HTTP notifications
     mkdir: true               # build directory tree if missing
     tempfile: true            # transfer to temporary file, rename after sucessful transfer

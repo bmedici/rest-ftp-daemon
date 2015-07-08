@@ -57,17 +57,15 @@ module RestFtpDaemon
       flag_default :tempfile, false
 
       # Read source file size and parameters
-      @ftp_debug_enabled = (Settings.at :debug, :ftp) == true
-      update_every_kb = (Settings.transfer.update_every_kb rescue nil) || DEFAULT_FTP_CHUNK
       @notify_after_sec = Settings.transfer.notify_after_sec rescue nil
-      @chunk_size = update_every_kb * 1024
+      @chunk_size = DEFAULT_FTP_CHUNK * 1024
 
       # Flag current job
       @queued_at = Time.now
       @updated_at = Time.now
 
       # Send first notification
-      log_info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] update_every_kb[#{@update_every_kb}]"
+      log_info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] JOB_UPDATE_INTERVAL[#{JOB_UPDATE_INTERVAL}]"
       client_notify :queued
     end
 

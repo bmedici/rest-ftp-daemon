@@ -8,6 +8,8 @@ APP_VER = "0.222.0"
 JOB_RANDOM_LEN          = 8
 JOB_IDENT_LEN           = 4
 JOB_TEMPFILE_LEN        = 8
+JOB_UPDATE_INTERVAL     = 1
+
 JOB_STATUS_UPLOADING    = :uploading
 JOB_STATUS_RENAMING     = :renaming
 JOB_STATUS_FINISHED     = :finished
@@ -54,7 +56,7 @@ PAGINATE_MAX            = 30
 
 # Configuration defaults
 DEFAULT_WORKER_TIMEOUT  = 3600
-DEFAULT_FTP_CHUNK       = 2048
+DEFAULT_FTP_CHUNK       = 512
 
 
 # Initialize defaults

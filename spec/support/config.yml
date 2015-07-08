@@ -6,7 +6,6 @@ test:
   host: 127.0.0.1
 
   transfer:
-    update_every_kb: 1024
     notify_after_sec: 5
     mkdir: true
     tempfile: true
