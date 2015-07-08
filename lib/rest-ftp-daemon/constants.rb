@@ -12,6 +12,7 @@ JOB_UPDATE_INTERVAL     = 1
 
 JOB_STATUS_UPLOADING    = :uploading
 JOB_STATUS_RENAMING     = :renaming
+JOB_STATUS_PREPARED     = :prepared
 JOB_STATUS_FINISHED     = :finished
 JOB_STATUS_FAILED       = :failed
 JOB_STATUS_QUEUED       = :queued
