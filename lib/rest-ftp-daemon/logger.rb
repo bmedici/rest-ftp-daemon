@@ -22,9 +22,9 @@ class Logger
 
     end
 
-
     # Prepend plain message to output
-    output.unshift (prefix1 + message.strip)
+    #output.unshift (prefix1 + message.strip)
+    output.unshift (prefix1 + message)
 
     # Send all this to logger
     add context[:level], output
@@ -43,7 +43,8 @@ class Logger
 
     def build_from_array prefix, lines
       lines.map do |value|
-        text = value.to_s.strip[0..LOG_TRIM_LINE]
+        #text = value.to_s.strip[0..LOG_TRIM_LINE]
+        text = value.to_s[0..LOG_TRIM_LINE]
         "#{prefix}#{text}"
       end
     end

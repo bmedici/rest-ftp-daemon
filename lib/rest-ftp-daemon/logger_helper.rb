@@ -4,7 +4,8 @@ module RestFtpDaemon
   protected
 
     def log_info message, lines = []
-      logger.info_with_id message, log_context.merge({
+      context = log_context || {}
+      logger.info_with_id message, context.merge({
         from: self.class.to_s,
         lines: lines,
         level: Logger::INFO
@@ -12,7 +13,8 @@ module RestFtpDaemon
     end
 
     def log_error message, lines = []
-      logger.info_with_id message, log_context.merge({
+      context = log_context || {}
+      logger.info_with_id message, context.merge({
         from: self.class.to_s,
         lines: lines,
         level: Logger::ERROR
