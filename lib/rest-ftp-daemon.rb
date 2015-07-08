@@ -44,6 +44,8 @@ require "rest-ftp-daemon/notification"
 require "rest-ftp-daemon/api/job_presenter"
 require "rest-ftp-daemon/api/jobs"
 require "rest-ftp-daemon/api/dashboard"
+require_relative "rest-ftp-daemon/path"
+require_relative "rest-ftp-daemon/remote"
 
 require "rest-ftp-daemon/api/root"
 
