@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # Try to load external libs
-app_root = File.dirname(__FILE__) + "/../"
+app_root = File.expand_path File.dirname(__FILE__) + "/../"
 begin
   require "thin"
   require "optparse"
@@ -70,7 +70,8 @@ end
 
 
 # Load config, and merge options from ARGV into settings
-APP_CONF ||= File.expand_path "/etc/#{APP_NAME}.yml"
+# FIXME: file configuration detection could reside in settings.rb
+APP_CONF ||= DEFAULT_CONFIG_PATH
 abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exists? APP_CONF
 begin
   # Import settings
