@@ -30,6 +30,7 @@ LOG_FORMAT_PREFIX       = "%s %s\t%-#{LOG_PIPE_LEN.to_i}s\t"
 LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-LOG_COL_ID.to_i}s"
 LOG_NEWLINE             = "\n"
 
+
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
 NOTIFY_USERAGENT        = "#{APP_NAME} - #{APP_VER}"

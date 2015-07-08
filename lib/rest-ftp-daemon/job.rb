@@ -72,7 +72,7 @@ module RestFtpDaemon
     def process
       # Update job's status
       @error = nil
-      log_info "Job.process starting"
+      log_info "Job.process"
 
       # Prepare job
       begin
@@ -109,7 +109,7 @@ module RestFtpDaemon
 
       else
         # Prepare done !
-        newstatus :prepared
+        newstatus JOB_STATUS_PREPARED
         log_info "Job.process notify[started]"
         client_notify :started
       end
@@ -167,8 +167,11 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobTargetFileExists => exception
         return oops :ended, exception, :target_file_exists
 
-      rescue RestFtpDaemon::JobTargetShouldBeDirectory => exception
-        return oops :ended, exception, :target_not_directory
+      rescue RestFtpDaemon::JobTargetDirectoryError => exception
+        return oops :ended, exception, :target_directory_missing
+
+      rescue RestFtpDaemon::JobTargetPermissionError => exception
+        return oops :ended, exception, :target_permission_error
 
       rescue RestFtpDaemon::JobAssertionFailed => exception
         return oops :ended, exception, :assertion_failed
@@ -272,20 +275,20 @@ module RestFtpDaemon
 
     def prepare
       # Update job status
-      newstatus :preparing
+      newstatus :prepare
 
       # Init
       @source_method = :file
       @target_method = nil
       @source_path = nil
 
-      # Check source
+      # Prepare source
       raise RestFtpDaemon::JobMissingAttribute unless @source
       @source_path = expand_path @source
       set :source_path, @source_path
       set :source_method, :file
 
-      # Check target
+      # Prepare target
       raise RestFtpDaemon::JobMissingAttribute unless @target
       target_uri = expand_url @target
       set :target_uri, target_uri.to_s

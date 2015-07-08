@@ -19,7 +19,8 @@ module RestFtpDaemon
   class JobTargetUnsupported      < RestFtpDaemonException; end
   class JobTargetUnparseable      < RestFtpDaemonException; end
   class JobTargetFileExists       < RestFtpDaemonException; end
-  class JobTargetShouldBeDirectory< RestFtpDaemonException; end
+  class JobTargetDirectoryError   < RestFtpDaemonException; end
+  class JobTargetPermissionError  < RestFtpDaemonException; end
   class JobTooManyOpenFiles       < RestFtpDaemonException; end
 
 end
