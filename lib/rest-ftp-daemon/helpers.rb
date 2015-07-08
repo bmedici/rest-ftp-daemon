@@ -31,29 +31,33 @@ module RestFtpDaemon
     end
 
     def self.tokenize item
+      return unless item.is_a? String
       "[#{item}]"
     end
 
     def self.highlight_tokens path
+      return unless path.is_a? String
       path.gsub(/(\[[^\[]+\])/, '<span class="token">\1</span>')
     end
 
     def self.extract_filename path
+      return unless path.is_a? String
       # match everything that's after a slash at the end of the string
       m = path.match /\/?([^\/]+)$/
       return m[1] unless m.nil?
     end
 
     def self.extract_dirname path
+      return unless path.is_a? String
       # match all the beginning of the string up to the last slash
       m = path.match(/^(.*)\/[^\/]*$/)
       return "/#{m[1]}" unless m.nil?
     end
 
     def self.extract_parent path
-      # m = path.match(/^(.*\/)[^\/]*\/+$/)
-      m = path.match(/^(.*\/)[^\/]+\/?$/)
-      return m[1] unless m.nil?
+      return unless path.is_a? String
+      m = path.match(/^(.*)\/([^\/]+)\/?$/)
+      return m[1], m[2] unless m.nil?
     end
 
     def self.local_port_used? port
