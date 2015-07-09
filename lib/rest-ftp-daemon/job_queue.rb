@@ -187,7 +187,7 @@ module RestFtpDaemon
 
           # Ok, we have to clean it up ..
           log_info "expire [#{status.to_s}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
-          log_info "       & unqueued" if @queue.delete(job)
+          log_info "#{LOG_INDENT}unqueued" if @queue.delete(job)
 
           true
         end

@@ -76,11 +76,11 @@ module RestFtpDaemon
         # If not allowed to create path, that's over, we're stuck
         return false unless mkdir
 
-        #log_info "   upward [#{parent}]"
+        #log_info "#{LOG_INDENT}upward [#{parent}]"
         chdir_or_create parent, mkdir
 
         # Now I was able to chdir into my parent, create the current directory
-        #log_info "   mkdir [#{directory}]"
+        #log_info "#{LOG_INDENT}mkdir [#{directory}]"
         mkdir "/#{directory}"
 
         # Finally retry the chdir
