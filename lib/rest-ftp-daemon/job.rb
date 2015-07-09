@@ -100,7 +100,7 @@ module RestFtpDaemon
       else
         # Prepare done !
         newstatus JOB_STATUS_PREPARED
-        log_info "Job.process notify[started]"
+        log_info "Job.process notify [started]"
         client_notify :started
       end
 
@@ -172,7 +172,7 @@ module RestFtpDaemon
       else
         # All done !
         newstatus JOB_STATUS_FINISHED
-        log_info "Job.process notify[ended]"
+        log_info "Job.process notify [ended]"
         client_notify :ended
       end
 
@@ -458,9 +458,9 @@ module RestFtpDaemon
 
       # Start the transfer, update job status after each block transfer
       newstatus :uploading
-      @remote.push source, target, tempname do |transferred|
+      @remote.push source, target, tempname do |transferred, name|
         # Update transfer statistics
-        progress transferred
+        progress transferred, name
 
         # Touch my worker status
         worker_is_still_active
@@ -475,9 +475,8 @@ module RestFtpDaemon
       #log_info "Job.remote_push finished"
     end
 
-    def progress transferred
+    def progress transferred, name = ""
       # What's current time ?
-      #log_info "Job.progress"
       now = Time.now
 
       # Update counters
@@ -501,7 +500,7 @@ module RestFtpDaemon
         stack << (Helpers.format_bytes @transfer_total, "B")
         stack << (Helpers.format_bytes @current_bitrate.round(0), "bps")
         stack2 = stack.map{ |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt)}.join("\t")
-        log_info "Job.progress #{stack2}"
+        log_info "#{LOG_INDENT}progress #{stack2} \t#{name}"
 
         # Remember when we last did it
         @progress_at = now

@@ -22,7 +22,7 @@ module RestFtpDaemon
       @chunk_size = DEFAULT_FTP_CHUNK.to_i * 1024
 
       # Announce object
-      log_info "RemoteFTP.initialize DEFAULT_FTP_CHUNK:#{@DEFAULT_FTP_CHUNK}"
+      log_info "RemoteFTP.initialize chunk_size:#{@chunk_size}"
     end
 
     def connect
@@ -48,8 +48,10 @@ module RestFtpDaemon
     def remove! target
       log_info "RemoteFTP.remove! [#{target.name}]"
       @ftp.delete target.full
-
       rescue Net::FTPPermError
+        log_info "#{LOG_INDENT}[#{target.name}] file not found"
+      else
+        log_info "#{LOG_INDENT}[#{target.name}] removed"
     end
 
     def mkdir directory
@@ -69,7 +71,6 @@ module RestFtpDaemon
 
       # Access this directory
       begin
-        # log_info "   chdir [/#{directory}]"
         @ftp.chdir "/#{directory}"
 
       rescue Net::FTPPermError => e
@@ -99,14 +100,14 @@ module RestFtpDaemon
       destination.name = tempname if tempname
 
       # Do the transfer
-      log_info "RemoteFTP.push upload to\t[#{destination.name}]"
+      log_info "RemoteFTP.push to [#{destination.name}]"
 
       @ftp.putbinaryfile source.full, target.name, @chunk_size do |data|
         # Update the worker activity marker
         #FIXME worker_is_still_active
 
         # Update job status after this block transfer
-        yield data.bytesize
+        yield data.bytesize, destination.name
       end
 
     end

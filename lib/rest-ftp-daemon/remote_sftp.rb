@@ -46,6 +46,9 @@ module RestFtpDaemon
       @sftp.remove target.full
 
       rescue Net::SFTP::StatusException
+        log_info "#{LOG_INDENT}[#{target.name}] file not found"
+      else
+        log_info "#{LOG_INDENT}[#{target.name}] removed"
     end
 
     def mkdir directory
@@ -103,7 +106,7 @@ module RestFtpDaemon
       destination.name = tempname if tempname
 
       # Do the transfer
-      log_info "RemoteSFTP.push upload to\t[#{destination.name}] (#{destination.full})"
+      log_info "RemoteSFTP.push [#{destination.full}]"
       @sftp.upload! source.full, destination.full do |event, uploader, *args|
         case event
         when :open then
@@ -118,7 +121,7 @@ module RestFtpDaemon
           #FIXME worker_is_still_active
 
           # Update job status after this block transfer
-          yield args[2].length
+          yield args[2].length, destination.name
 
         when :close then
           # args[0] : file metadata
