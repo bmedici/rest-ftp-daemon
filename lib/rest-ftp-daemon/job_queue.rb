@@ -165,14 +165,16 @@ module RestFtpDaemon
       @waiting.size
     end
 
-    def expire status, maxage
+    def expire status, maxage, verbose = false
 # FIXME: clean both @jobs and @queue
       # Init
       return if status.nil? || maxage <= 0
 
       # Compute oldest possible birthday
       before = Time.now - maxage.to_i
-      # info "conchita_clean: SELECT status[#{status.to_s}] before[#{before}]"
+
+      # Verbose output ?
+      log_info "JobQueue.expire \t[#{status.to_s}] \tbefore \t[#{before}]" if verbose
 
       @mutex.synchronize do
         # Delete jobs from the queue when they match status and age limits

@@ -24,6 +24,7 @@ defaults: &defaults
   debug:
     ftp: false
     sftp: false
+    conchita: false
     # newrelic: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   logs:

@@ -5,6 +5,10 @@ module RestFtpDaemon
       # Generic worker initialize
       super
 
+      # Use debug ?
+      @debug = (Settings.at :debug, :conchita) == true
+      @log_worker_status_changes = @debug
+
       # Conchita configuration
       @conchita = Settings.conchita
       if !@conchita.is_a? Hash
@@ -25,12 +29,11 @@ module RestFtpDaemon
       worker_status WORKER_STATUS_CLEANING
 
       # Cleanup queues according to configured max-age
-      $queue.expire JOB_STATUS_FINISHED,  maxage(JOB_STATUS_FINISHED)
-      $queue.expire JOB_STATUS_FAILED,    maxage(JOB_STATUS_FAILED)
-      $queue.expire JOB_STATUS_QUEUED,    maxage(JOB_STATUS_QUEUED)
+      $queue.expire JOB_STATUS_FINISHED,  maxage(JOB_STATUS_FINISHED),  @debug
+      $queue.expire JOB_STATUS_FAILED,    maxage(JOB_STATUS_FAILED),    @debug
+      $queue.expire JOB_STATUS_QUEUED,    maxage(JOB_STATUS_QUEUED),    @debug
 
       # Force garbage collector
-      worker_status :collecting
       GC.start if @conchita["garbage_collector"]
 
     rescue StandardError => e
