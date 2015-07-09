@@ -97,16 +97,6 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobAssertionFailed => exception
         return oops :started, exception, :assertion_failed
 
-      # rescue RestFtpDaemon::JobTimeout => exception
-      #   info "Job.process propagate JobTimeout to Worker"
-      #   raise RestFtpDaemon::JobTimeout
-
-      # rescue RestFtpDaemon::RestFtpDaemonException => exception
-      #   return oops :started, exception, :prepare_failed, true
-
-      # rescue StandardError => exception
-      #   return oops :started, exception, :prepare_unhandled, true
-
       else
         # Prepare done !
         newstatus JOB_STATUS_PREPARED
@@ -178,16 +168,6 @@ module RestFtpDaemon
 
       rescue RestFtpDaemon::JobAssertionFailed => exception
         return oops :ended, exception, :assertion_failed
-
-      # rescue RestFtpDaemon::JobTimeout => exception
-      #   info "Job.process propagate JobTimeout to Worker"
-      #   raise RestFtpDaemon::JobTimeout
-
-      # rescue RestFtpDaemon::RestFtpDaemonException => exception
-      #   return oops :ended, exception, :transfer_failed, true
-
-      # rescue StandardError => exception
-      #   return oops :ended, exception, :transfer_unhandled, true
 
       else
         # All done !
@@ -311,7 +291,6 @@ module RestFtpDaemon
       elsif (target_uri.is_a? URI::FTPES) || (target_uri.is_a? URI::FTPS)
         log_info "Job.prepare target_method FTPES"
         set :target_method, :ftpes
-        options[:ftpes] = true
         @remote = RemoteFTP.new target_uri, log_context, ftpes: true
 
       elsif target_uri.is_a? URI::SFTP
