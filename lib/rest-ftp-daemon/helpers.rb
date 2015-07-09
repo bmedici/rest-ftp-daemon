@@ -110,8 +110,9 @@ module RestFtpDaemon
       datetime.to_datetime.strftime("%d/%m %H:%M:%S")
     end
 
-    def self.hide_credentials_from_url url
-      url.sub(/([a-z]+:\/\/[^\/]+):[^\/]+\@/, '\1@' )
+    def self.hide_credentials_from_url path
+      return unless path.is_a? String
+      path.sub(/([a-z]+:\/\/[^\/]+):[^\/]+\@/, '\1@' )
     end
 
   end
