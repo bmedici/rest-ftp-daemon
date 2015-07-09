@@ -10,6 +10,7 @@ module RestFtpDaemon
     def initialize wid
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
+      @log_worker_status_changes = true
 
       # Worker name
       @wid = wid
@@ -40,9 +41,16 @@ module RestFtpDaemon
       end
     end
 
-    def worker_status status
+    def worker_status status, extra = ""
+      # Update thread variables
       Thread.current.thread_variable_set :status, status
       Thread.current.thread_variable_set :updted_at, Time.now
+
+      # Nothin' to log if "silent"
+      return unless @log_worker_status_changes
+
+      # Log this status change
+      log_info "worker: #{status} #{extra}"
     end
 
     def worker_jid jid
