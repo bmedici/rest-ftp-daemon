@@ -83,6 +83,8 @@ module RestFtpDaemon
         #log_info "   mkdir [#{directory}]"
         mkdir "/#{directory}"
 
+        # Finally retry the chdir
+        retry
       else
         return true
       end
