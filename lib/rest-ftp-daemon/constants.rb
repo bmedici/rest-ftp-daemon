@@ -17,6 +17,13 @@ JOB_STATUS_FINISHED     = :finished
 JOB_STATUS_FAILED       = :failed
 JOB_STATUS_QUEUED       = :queued
 
+WORKER_STATUS_STARTING  = :starting
+WORKER_STATUS_WAITING   = :waiting
+WORKER_STATUS_RUNNING   = :running
+WORKER_STATUS_FINISHED  = :finished
+WORKER_STATUS_TIMEOUT   = :timeout
+WORKER_STATUS_CRASHED   = :crashed
+WORKER_STATUS_CLEANING  = :cleaning
 
 # Logging and startup
 LOG_PIPE_LEN            = 10

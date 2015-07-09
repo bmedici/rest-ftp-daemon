@@ -17,14 +17,13 @@ module RestFtpDaemon
 
     def work
       # Wait for a job to come into the queue
-      worker_status :waiting
-      log_info "waiting for a job"
+      worker_status WORKER_STATUS_WAITING
+      #log_info "waiting"
       job = $queue.pop
 
       # Prepare the job for processing
-      worker_status :working
+      worker_status WORKER_STATUS_RUNNING, "job [#{job.id}]"
       worker_jid job.id
-      log_info "working with job [#{job.id}]"
       job.wid = Thread.current.thread_variable_get :wid
 
       # Processs this job protected by a timeout
@@ -33,8 +32,7 @@ module RestFtpDaemon
       end
 
       # Processing done
-      worker_status :finished
-      log_info "finished with job [#{job.id}]"
+      worker_status WORKER_STATUS_FINISHED, "job [#{job.id}]"
       worker_jid nil
       job.wid = nil
 
@@ -43,7 +41,7 @@ module RestFtpDaemon
 
     rescue RestFtpDaemon::JobTimeout => ex
       log_error "JOB TIMED OUT", lines: ex.backtrace
-      worker_status :timeout
+      worker_status WORKER_STATUS_TIMEOUT
       worker_jid nil
       job.wid = nil
 
@@ -52,7 +50,7 @@ module RestFtpDaemon
 
     rescue StandardError => ex
       log_error "JOB UNHDNALED EXCEPTION: #{ex.message}", lines: ex.backtrace
-      worker_status :crashed
+      worker_status WORKER_STATUS_CRASHED
       job.oops_after_crash ex unless job.nil?
       sleep 1
 

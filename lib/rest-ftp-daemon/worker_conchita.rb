@@ -21,7 +21,8 @@ module RestFtpDaemon
   protected
 
     def work
-      worker_status :cleaning
+      # Announce we are working
+      worker_status WORKER_STATUS_CLEANING
 
       # Cleanup queues according to configured max-age
       $queue.expire JOB_STATUS_FINISHED,  maxage(JOB_STATUS_FINISHED)
@@ -36,8 +37,10 @@ module RestFtpDaemon
       log_error "EXCEPTION: #{e.inspect}"
       sleep 1
     else
+      # Restore previous status
+      worker_status WORKER_STATUS_WAITING
+
       # Sleep for a few seconds
-      worker_status :sleeping
       sleep @conchita[:timer]
     end
 

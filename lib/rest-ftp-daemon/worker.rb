@@ -18,7 +18,7 @@ module RestFtpDaemon
       # Set thread context
       Thread.current.thread_variable_set :wid, wid
       Thread.current.thread_variable_set :started_at, Time.now
-      worker_status :starting
+      worker_status WORKER_STATUS_STARTING
     end
 
   protected
