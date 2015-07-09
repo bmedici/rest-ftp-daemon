@@ -5,7 +5,6 @@ defaults: &defaults
   user: rftpd
   group: rftpd
   #host: "myhost"
-  #appname: "replay"          # appname prefix used for NewRelic reporting
 
   transfer:
     notify_after_sec: 5       # wait at least X seconds between HTTP notifications
@@ -21,11 +20,14 @@ defaults: &defaults
     # clean_finished: 3600
     # clean_queued: 86400
 
+  newrelic:
+    licence: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    platform: devel             # nickname used for naming app
+
   debug:
     ftp: false
     sftp: false
     conchita: false
-    # newrelic: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   logs:
     thin:    "/var/log/rftpd-environment-thin.log"

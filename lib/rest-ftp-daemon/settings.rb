@@ -26,7 +26,7 @@ class Settings < Settingslogic
   end
 
   def newrelic_enabled?
-    Settings.at(:debug, :newrelic)
+    Settings.at(:newrelic)
   end
 
   def init_newrelic
@@ -38,10 +38,11 @@ class Settings < Settingslogic
     ENV["NEW_RELIC_MONITOR_MODE"] = "true"
 
     # License
-    ENV["NEW_RELIC_LICENSE_KEY"] = Settings.at(:debug, :newrelic)
+    ENV["NEW_RELIC_LICENSE_KEY"] = Settings.at(:newrelic, :licence)
 
     # Appname
-    ENV["NEW_RELIC_APP_NAME"] = "#{APP_NICK}-#{Settings.host}-#{APP_ENV}"
+    platform = Settings.at(:newrelic, :platform) || Settings["host"]
+    ENV["NEW_RELIC_APP_NAME"] = "#{APP_NICK}-#{platform}-#{APP_ENV}"
 
     # Logfile
     ENV["NEW_RELIC_LOG"] = Settings.at(:logs, :newrelic)
