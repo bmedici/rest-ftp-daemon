@@ -22,7 +22,7 @@ module RestFtpDaemon
       verbosity = @debug ? Logger::INFO : false
 
       # Connect remote server
-      @sftp = Net::SFTP.start(@url.host, @url.user, password: @url.password, verbose: verbosity)
+      @sftp = Net::SFTP.start(@url.host, @url.user, password: @url.password, verbose: verbosity, port: @url.port)
     end
 
     def present? target
