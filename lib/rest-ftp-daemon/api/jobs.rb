@@ -92,6 +92,7 @@ module RestFtpDaemon
 
       post "/" do
         log_info "POST /jobs", params
+        log_debug params.to_json
 
         begin
 

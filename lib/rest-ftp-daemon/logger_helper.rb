@@ -11,6 +11,10 @@ module RestFtpDaemon
       log message, lines, Logger::ERROR
     end
 
+    def log_debug message, lines = []
+      log message, lines, Logger::DEBUG
+    end
+
     def log_context
       {}
     end
