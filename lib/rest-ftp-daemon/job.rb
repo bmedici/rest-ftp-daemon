@@ -371,7 +371,7 @@ module RestFtpDaemon
       source_processed = 0
       sources.each do |source|
         # Compute target filename
-        full_target = @target_path
+        full_target = @target_path.clone
 
         # Add the source file name if none found in the target path
         unless full_target.name
