@@ -40,7 +40,7 @@ module RestFtpDaemon
       $queue.counter_inc :jobs_processed
 
     rescue RestFtpDaemon::JobTimeout => ex
-      log_error "JOB TIMED OUT", lines: ex.backtrace
+      log_error "JOB TIMED OUT", ex.backtrace
       worker_status WORKER_STATUS_TIMEOUT
       worker_jid nil
       job.wid = nil
@@ -49,14 +49,13 @@ module RestFtpDaemon
       sleep 1
 
     rescue StandardError => ex
-      log_error "JOB UNHDNALED EXCEPTION: #{ex.message}", lines: ex.backtrace
+      log_error "JOB UNHDNALED EXCEPTION: #{ex.message}", ex.backtrace
       worker_status WORKER_STATUS_CRASHED
       job.oops_after_crash ex unless job.nil?
       sleep 1
 
     else
       # Clean job status
-      worker_status :free
       job.wid = nil
 
     end
