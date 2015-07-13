@@ -291,6 +291,7 @@ So,
 About
 ------------------------------------------------------------------------------------
 
-Bruno MEDICI Consultant
+Thanks to https://github.com/berkshelf/berkshelf-api for parts and ideas used in this project
 
+Bruno MEDICI Consultant
 http://bmconseil.com/
