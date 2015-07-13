@@ -1,3 +1,8 @@
+require "grape"
+require "haml"
+require "sys/cpu"
+require "facter"
+
 module RestFtpDaemon
   module API
     class Dashbaord < Grape::API

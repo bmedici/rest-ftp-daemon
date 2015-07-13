@@ -1,3 +1,5 @@
+require "logger"
+
 module RestFtpDaemon
   class LoggerPool
     include Singleton

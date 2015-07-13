@@ -1,3 +1,5 @@
+require "logger"
+
 class Logger
 
   def info_with_id message, context = {}

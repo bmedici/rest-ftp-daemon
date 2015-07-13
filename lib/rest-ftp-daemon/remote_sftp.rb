@@ -1,3 +1,5 @@
+require "net/sftp"
+
 module RestFtpDaemon
   class RemoteSFTP < Remote
     attr_reader :sftp

@@ -1,3 +1,6 @@
+require "grape"
+require "get_process_mem"
+
 module RestFtpDaemon
   module API
     class Root < Grape::API
@@ -16,7 +19,6 @@ module RestFtpDaemon
 
       mount RestFtpDaemon::API::Jobs => "/jobs"
       mount RestFtpDaemon::API::Dashbaord => "/"
-
 
 
 ####### INITIALIZATION

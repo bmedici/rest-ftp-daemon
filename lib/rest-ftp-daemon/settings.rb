@@ -1,3 +1,5 @@
+require "settingslogic"
+
 # Configuration class
 class Settings < Settingslogic
   # Read configuration

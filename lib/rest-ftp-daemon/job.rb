@@ -1,3 +1,5 @@
+require "securerandom"
+
 module RestFtpDaemon
   class Job
     include LoggerHelper

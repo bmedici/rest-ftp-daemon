@@ -1,3 +1,6 @@
+require "net/ftp"
+require "double_bag_ftps"
+
 module RestFtpDaemon
   class RemoteFTP < Remote
     attr_reader :ftp
