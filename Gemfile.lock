@@ -14,7 +14,7 @@ PATH
       settingslogic
       sys-cpu
       thin (~> 1.6)
-      timeout
+      timeout-extensions
 
 GEM
   remote: http://rubygems.org/
@@ -131,8 +131,6 @@ GEM
       rack (~> 1.0)
     thread_safe (0.3.5)
     tilt (2.0.1)
-    timeout (0.0.1)
-      timeout-extensions
     timeout-extensions (0.0.0)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
