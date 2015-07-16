@@ -2,7 +2,7 @@
 require "rubygems"
 require "json"
 require "uri"
-require "timeout-extensions"
+require "timeout"
 require "syslog"
 require "net/http"
 require "thread"

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.230.0)
+    rest-ftp-daemon (0.230.2)
       double-bag-ftps
       facter
       get_process_mem
@@ -14,7 +14,6 @@ PATH
       settingslogic
       sys-cpu
       thin (~> 1.6)
-      timeout-extensions
 
 GEM
   remote: http://rubygems.org/
@@ -131,7 +130,6 @@ GEM
       rack (~> 1.0)
     thread_safe (0.3.5)
     tilt (2.0.1)
-    timeout-extensions (0.0.0)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     unf (0.1.4)

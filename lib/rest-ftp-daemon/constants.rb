@@ -1,7 +1,7 @@
 # Terrific constants
 APP_NAME = "rest-ftp-daemon"
 APP_NICK = "rftpd"
-APP_VER = "0.230.1"
+APP_VER = "0.230.2"
 
 
 # Jobs and workers
@@ -37,9 +37,7 @@ LOG_FORMAT_TIME         = "%Y-%m-%d %H:%M:%S"
 LOG_FORMAT_PREFIX       = "%s %s\t%-#{LOG_PIPE_LEN.to_i}s\t"
 LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-LOG_COL_ID.to_i}s"
 LOG_NEWLINE             = "\n"
-
 LOG_INDENT             = "\t"
-
 
 
 # Notifications
