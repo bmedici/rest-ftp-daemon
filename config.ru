@@ -25,7 +25,7 @@ end
 GC::Profiler.enable if Settings.newrelic_enabled?
 
 # Serve static assets
-use Rack::Static, :urls => ["/css", "/images"], :root => "#{APP_LIBS}/static/"
+use Rack::Static, :urls => ["/css", "/js", "/images"], :root => "#{APP_LIBS}/static/"
 
 # Launch the main daemon
 run RestFtpDaemon::API::Root
