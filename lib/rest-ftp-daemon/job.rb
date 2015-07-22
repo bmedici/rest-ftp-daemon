@@ -60,7 +60,6 @@ module RestFtpDaemon
 
       # Read source file size and parameters
       @notify_after_sec = Settings.transfer.notify_after_sec rescue nil
-      @chunk_size = DEFAULT_FTP_CHUNK * 1024
 
       # Flag current job
       @queued_at = Time.now

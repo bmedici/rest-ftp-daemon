@@ -25,6 +25,7 @@ WORKER_STATUS_TIMEOUT   = :timeout
 WORKER_STATUS_CRASHED   = :crashed
 WORKER_STATUS_CLEANING  = :cleaning
 
+
 # Logging and startup
 LOG_PIPE_LEN            = 10
 LOG_COL_WID             = 8
@@ -37,12 +38,12 @@ LOG_FORMAT_TIME         = "%Y-%m-%d %H:%M:%S"
 LOG_FORMAT_PREFIX       = "%s %s\t%-#{LOG_PIPE_LEN.to_i}s\t"
 LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-LOG_COL_ID.to_i}s"
 LOG_NEWLINE             = "\n"
-LOG_INDENT             = "\t"
+LOG_INDENT              = "\t"
 
 
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
-NOTIFY_USERAGENT        = "#{APP_NAME} - #{APP_VER}"
+NOTIFY_USERAGENT        = "#{APP_NAME}/v#{APP_VER}"
 NOTIFY_IDENTIFIER_LEN   = 4
 
 
@@ -67,10 +68,11 @@ DASHBOARD_WORKER_STYLES = {
 DEFAULT_WORKER_TIMEOUT  = 3600
 DEFAULT_FTP_CHUNK       = 512
 DEFAULT_PAGE_SIZE       = 40
+DEFAULT_WORKERS         = 1
 
 
 # Initialize defaults
 APP_STARTED = Time.now
 APP_LIBS = File.dirname(__FILE__)
-APP_WORKERS = 1
+
 

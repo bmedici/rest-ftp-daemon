@@ -62,7 +62,7 @@ module RestFtpDaemon
       headers = {
         "Content-Type"  => "application/json",
         "Accept"        => "application/json",
-        "User-Agent"    => "#{APP_NAME} - #{APP_VER}"
+        "User-Agent"    => NOTIFY_USERAGENT
          }
       data = flags.to_json
 

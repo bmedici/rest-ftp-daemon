@@ -51,7 +51,7 @@ module RestFtpDaemon
 
     def create_threads
       # Read configuration
-      number_threads = (Settings.workers || APP_WORKERS)
+      number_threads = (Settings.workers || DEFAULT_WORKERS)
 
       if number_threads < 1
         log_error "create_threads: one worker is the minimum possible number (#{number_threads} configured)"
