@@ -97,12 +97,12 @@ module RestFtpDaemon
       end
     end
 
-  protected
 
-    if Settings.newrelic_enabled?
-      add_transaction_tracer :create_conchita_thread,     category: :task
-      add_transaction_tracer :create_worker_thread,       category: :task
-    end
+
+  if Settings.newrelic_enabled?
+    add_transaction_tracer :create_conchita_thread,     category: :task
+    add_transaction_tracer :create_worker_thread,       category: :task
+  end
 
   end
 end

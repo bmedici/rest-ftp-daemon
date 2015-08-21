@@ -138,7 +138,7 @@ module RestFtpDaemon
 
     def pop non_block=false
       @mutex.synchronize do
-        while true
+        loop do
           if @queue.empty?
             # info "JobQueue.pop: empty"
             raise ThreadError, "queue empty" if non_block
