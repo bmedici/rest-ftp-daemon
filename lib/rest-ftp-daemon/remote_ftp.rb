@@ -135,7 +135,7 @@ module RestFtpDaemon
       @ftp = DoubleBagFTPS.new
       @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(verify_mode: OpenSSL::SSL::VERIFY_NONE)
       @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
-    end
+   end
 
 
   end

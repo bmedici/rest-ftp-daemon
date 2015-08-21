@@ -14,7 +14,7 @@ module RestFtpDaemon
       @url.user ||= "anonymous"
 
       # Annnounce object
-      log_info "Remote.initialize [#{url.to_s}]"
+      log_info "Remote.initialize [#{url}]"
     end
 
     def connect
