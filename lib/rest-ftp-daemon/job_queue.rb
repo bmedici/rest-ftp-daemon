@@ -174,7 +174,7 @@ module RestFtpDaemon
       before = Time.now - maxage.to_i
 
       # Verbose output ?
-      log_info "JobQueue.expire \t[#{status.to_s}] \tbefore \t[#{before}]" if verbose
+      log_info "JobQueue.expire \t[#{status}] \tbefore \t[#{before}]" if verbose
 
       @mutex.synchronize do
         # Delete jobs from the queue when they match status and age limits
@@ -186,7 +186,7 @@ module RestFtpDaemon
           next if job.updated_at > before
 
           # Ok, we have to clean it up ..
-          log_info "expire [#{status.to_s}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
+          log_info "expire [#{status}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
           log_info "#{LOG_INDENT}unqueued" if @queue.delete(job)
 
           true
