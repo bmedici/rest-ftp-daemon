@@ -85,9 +85,7 @@ module RestFtpDaemon
       # Handle exceptions
       rescue StandardError => ex
         log_error "EXCEPTION: #{ex.inspect}"
-
     end
-
 
     def log_context
       {

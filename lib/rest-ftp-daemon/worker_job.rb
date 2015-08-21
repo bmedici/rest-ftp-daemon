@@ -57,7 +57,6 @@ module RestFtpDaemon
     else
       # Clean job status
       job.wid = nil
-
     end
 
 

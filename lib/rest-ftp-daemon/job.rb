@@ -176,7 +176,6 @@ module RestFtpDaemon
         log_info "Job.process notify [ended]"
         client_notify :ended
       end
-
     end
 
     def get attribute

@@ -72,7 +72,6 @@ module RestFtpDaemon
 
     rescue StandardError => ex
       log_error "UNHDNALED EXCEPTION: #{ex.message}", ex.backtrace
-
     end
 
     def create_worker_thread wid

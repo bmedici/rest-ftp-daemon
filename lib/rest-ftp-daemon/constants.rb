@@ -98,4 +98,3 @@ DEFAULT_WORKERS         = 1
 APP_STARTED = Time.now
 APP_LIBS = File.dirname(__FILE__)
 
-

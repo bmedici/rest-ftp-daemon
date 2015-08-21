@@ -191,7 +191,6 @@ module RestFtpDaemon
 
           true
         end
-
       end
 
     end
