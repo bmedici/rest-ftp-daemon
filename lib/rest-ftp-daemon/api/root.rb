@@ -73,9 +73,19 @@ module RestFtpDaemon
           status: $queue.counts_by_status,
           workers: $pool.worker_variables,
           jobs_count: $queue.jobs_count,
-          jobs_queued: $queue.queued_ids,
-          config: Helpers.get_censored_config
+          jobs_queued: $queue.queued_ids
           }
+      end
+
+
+####### GET /config
+
+      # Server config
+      get "/config" do
+        log_info "GET /config"
+
+        status 200
+        return Helpers.get_censored_config
       end
 
 
