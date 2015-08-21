@@ -3,6 +3,21 @@ APP_NAME = "rest-ftp-daemon"
 APP_NICK = "rftpd"
 APP_VER = "0.230.3"
 
+# Provide default config file information
+APP_LIB = File.expand_path File.dirname(__FILE__)
+APP_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../")
+
+DEFAULT_CONFIG_PATH = File.expand_path "/etc/#{APP_NAME}.yml"
+SAMPLE_CONFIG_FILE = File.expand_path(File.join File.dirname(__FILE__), "/../../rest-ftp-daemon.yml.sample")
+
+#SAMPLE_CONFIG_FILE = File.expand_path("#{app_root}/#{APP_NAME}.yml.sample")
+TAIL_MESSAGE = <<EOD
+
+A default configuration is available here: #{SAMPLE_CONFIG_FILE}.
+You should copy it to the expected location #{DEFAULT_CONFIG_PATH}:
+
+sudo cp #{SAMPLE_CONFIG_FILE} #{DEFAULT_CONFIG_PATH}
+EOD
 
 # Jobs and workers
 JOB_RANDOM_LEN          = 8
