@@ -25,7 +25,7 @@ module RestFtpDaemon
 
     def extract_filename path
       # match everything that's after a slash at the end of the string
-      m = path.match /\/?([^\/]+)$/
+      m = path.match(/\/?([^\/]+)$/)
       return m[1].to_s unless m.nil?
     end
 
