@@ -50,7 +50,7 @@ parser = OptionParser.new do |opts|
   opts.separator ""
   opts.on_tail("-h", "--help", "Show this message")                    do
     puts opts
-    puts TAIL_MESSAGE unless File.exists?(DEFAULT_CONFIG_PATH)
+    puts TAIL_MESSAGE unless File.exist?(DEFAULT_CONFIG_PATH)
     exit
   end
   opts.on_tail("-v", "--version", "Show version (#{APP_VER})")         { puts APP_VER; exit }
@@ -72,7 +72,7 @@ end
 # Load config, and merge options from ARGV into settings
 # FIXME: file configuration detection could reside in settings.rb
 APP_CONF ||= DEFAULT_CONFIG_PATH
-abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exists? APP_CONF
+abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exist? APP_CONF
 begin
   # Import settings
   require File.expand_path("#{app_root}/lib/rest-ftp-daemon/settings")

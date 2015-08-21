@@ -18,7 +18,7 @@ module RestFtpDaemon
     end
 
     def size
-      File.size full if File.exists? full
+      File.size full if File.exist? full
     end
 
   private
