@@ -43,7 +43,7 @@ module RestFtpDaemon
     def self.extract_filename path
       return unless path.is_a? String
       # match everything that's after a slash at the end of the string
-      m = path.match(\/?([^\/]+)$/)
+      m = path.match(/\/?([^\/]+)$/)
       return m[1] unless m.nil?
     end
 
