@@ -61,12 +61,10 @@ module RestFtpDaemon
     end
 
     def self.local_port_used? port
-      ip = "127.0.0.1"
-      timeout = 1
       begin
-        Timeout.timeout(timeout) do
+        Timeout.timeout(BIND_PORT_TIMEOUT) do
           begin
-            TCPSocket.new(ip, port).close
+            TCPSocket.new(BIND_PORT_LOCALHOST, port).close
             true
           rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
             false

@@ -55,6 +55,10 @@ LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-L
 LOG_NEWLINE             = "\n"
 LOG_INDENT              = "\t"
 
+BIND_PORT_TIMEOUT       = 3
+BIND_PORT_LOCALHOST     = '127.0.0.1'
+
+
 
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
@@ -77,6 +81,10 @@ DASHBOARD_WORKER_STYLES = {
   done:                 :success,
   dead:                 :danger
   }
+
+
+# API server
+# API_LISTEN_HOST = "0.0.0.0"
 
 
 # Configuration defaults
