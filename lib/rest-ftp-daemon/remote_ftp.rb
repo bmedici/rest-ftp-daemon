@@ -74,7 +74,7 @@ module RestFtpDaemon
       begin
         @ftp.chdir "/#{directory}"
 
-      rescue Net::FTPPermError => e
+      rescue Net::FTPPermError => _e
         # If not allowed to create path, that's over, we're stuck
         return false unless mkdir
 
