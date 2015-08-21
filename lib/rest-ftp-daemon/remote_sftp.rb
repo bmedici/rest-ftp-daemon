@@ -31,10 +31,10 @@ module RestFtpDaemon
       log_info "RemoteSFTP.present? [#{target.name}]"
       stat = @sftp.stat! target.full
 
-      rescue Net::SFTP::StatusException
-        return false
-      else
-        return stat.size
+    rescue Net::SFTP::StatusException
+      return false
+    else
+      return stat.size
     end
 
     # def remove target

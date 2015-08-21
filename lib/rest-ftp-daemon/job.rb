@@ -439,7 +439,6 @@ module RestFtpDaemon
       if @tempfile
         tempname = "#{target.name}.temp-#{Helpers.identifier(JOB_TEMPFILE_LEN)}"
         #log_info "Job.remote_push tempname [#{tempname}]"
-      else
       end
 
       # Remove any existing version if expected, or test its presence

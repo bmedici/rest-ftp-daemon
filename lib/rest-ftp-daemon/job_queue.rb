@@ -103,7 +103,7 @@ module RestFtpDaemon
       log_info "find_by_id (#{id}, #{prefixed}) > #{id}"
 
       # Search in jobs queues
-      @jobs.select { |item| item.id == id }.last
+      @jobs.reverse.find { |item| item.id == id }
     end
 
     def push job

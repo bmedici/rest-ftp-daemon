@@ -110,7 +110,6 @@ module RestFtpDaemon
         # Update job status after this block transfer
         yield data.bytesize, destination.name
       end
-
     end
 
     def close
