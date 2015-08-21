@@ -81,15 +81,15 @@ module RestFtpDaemon
         optional :overwrite,
           type: Boolean,
           desc: "Overwrites files at target server",
-          default: Settings.transfer[:overwrite]
+          default: Settings.at(:transfer, :overwrite)
         optional :mkdir,
           type: Boolean,
           desc: "Create missing directories on target server",
-          default: Settings.transfer[:mkdir]
+          default: Settings.at(:transfer, :mkdir)
         optional :tempfile,
           type: Boolean,
           desc: "Upload to a temp file before renaming it to the target filename",
-          default: Settings.transfer[:tempfile]
+          default: Settings.at(:transfer, :tempfile)
       end
 
       post "/" do

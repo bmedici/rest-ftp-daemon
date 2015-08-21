@@ -59,7 +59,7 @@ module RestFtpDaemon
       flag_default :tempfile, false
 
       # Read source file size and parameters
-      @notify_after_sec = Settings.transfer.notify_after_sec rescue nil
+      @notify_after_sec = Settings.at(:transfer, :notify_after_sec) rescue nil
 
       # Flag current job
       @queued_at = Time.now
