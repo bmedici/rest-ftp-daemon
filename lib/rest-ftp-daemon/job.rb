@@ -536,7 +536,7 @@ module RestFtpDaemon
 
     rescue StandardError => ex
       log_error "Job.client_notify EXCEPTION: #{ex.inspect}"
-     end
+    end
 
     def get_bitrate delta_data, delta_time
       return nil if delta_time.nil? || delta_time.zero?

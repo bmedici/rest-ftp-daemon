@@ -30,7 +30,6 @@ module RestFtpDaemon
     def present? target
       log_info "RemoteSFTP.present? [#{target.name}]"
       stat = @sftp.stat! target.full
-      size = "?"
 
       rescue Net::SFTP::StatusException
         return false
@@ -64,14 +63,14 @@ module RestFtpDaemon
     def chdir_or_create directory, mkdir = false
       # Init, extract my parent name and my own name
       log_info "RemoteSFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
-      parent, current = Helpers.extract_parent(directory)
+      parent, _current = Helpers.extract_parent(directory)
 
       # Access this directory
       begin
         # log_info "   chdir [/#{directory}]"
-        handle = @sftp.opendir! "./#{directory}"
+        @sftp.opendir! "./#{directory}"
 
-      rescue Net::SFTP::StatusException => e
+      rescue Net::SFTP::StatusException => _e
         # If not allowed to create path, that's over, we're stuck
         return false unless mkdir
 

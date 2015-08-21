@@ -68,9 +68,7 @@ module RestFtpDaemon
     def chdir_or_create directory, mkdir = false
       # Init, extract my parent name and my own name
       log_info "RemoteFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
-      parent, current = Helpers.extract_parent(directory)
-
-      fulldir = "/#{directory}"
+      parent, _current = Helpers.extract_parent(directory)
 
       # Access this directory
       begin
