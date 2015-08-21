@@ -3,8 +3,8 @@ require "settingslogic"
 # Configuration class
 class Settings < Settingslogic
   # Read configuration
-  namespace (defined?(APP_ENV) ? APP_ENV : "production")
-  source ((File.exists? APP_CONF) ? APP_CONF : Hash.new)
+  namespace defined?(APP_ENV) ? APP_ENV : "production"
+  source File.exists? APP_CONF) ? APP_CONF : Hash.new
   suppress_errors true
 
   # Compute my PID filename
