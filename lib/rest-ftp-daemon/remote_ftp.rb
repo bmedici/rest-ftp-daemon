@@ -41,20 +41,20 @@ module RestFtpDaemon
       size = @ftp.size target.full
       log_info "RemoteFTP.present? [#{target.name}]"
 
-      rescue Net::FTPPermError
-        # log_info "RemoteFTP.present? [#{target.name}] NOT_FOUND"
-        return false
-      else
-        return size
+    rescue Net::FTPPermError
+      # log_info "RemoteFTP.present? [#{target.name}] NOT_FOUND"
+      return false
+    else
+      return size
     end
 
     def remove! target
       log_info "RemoteFTP.remove! [#{target.name}]"
       @ftp.delete target.full
-      rescue Net::FTPPermError
-        log_info "#{LOG_INDENT}[#{target.name}] file not found"
-      else
-        log_info "#{LOG_INDENT}[#{target.name}] removed"
+    rescue Net::FTPPermError
+      log_info "#{LOG_INDENT}[#{target.name}] file not found"
+    else
+      log_info "#{LOG_INDENT}[#{target.name}] removed"
     end
 
     def mkdir directory

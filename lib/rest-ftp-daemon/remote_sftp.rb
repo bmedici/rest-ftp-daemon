@@ -46,10 +46,10 @@ module RestFtpDaemon
       log_info "RemoteSFTP.remove! [#{target.name}]"
       @sftp.remove target.full
 
-      rescue Net::SFTP::StatusException
-        log_info "#{LOG_INDENT}[#{target.name}] file not found"
-      else
-        log_info "#{LOG_INDENT}[#{target.name}] removed"
+    rescue Net::SFTP::StatusException
+      log_info "#{LOG_INDENT}[#{target.name}] file not found"
+    else
+      log_info "#{LOG_INDENT}[#{target.name}] removed"
     end
 
     def mkdir directory
