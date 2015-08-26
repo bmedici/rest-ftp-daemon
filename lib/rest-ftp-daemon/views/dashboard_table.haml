@@ -3,9 +3,7 @@
   - source_count = job.get(:source_count) || 0
   - source_processed = job.get(:source_processed) || 0
   - source_current = job.get(:source_current)
-  - job_presented = entity_representation_for(RestFtpDaemon::API::Entities::JobPresenter, job, {})
   - bitrate = job.get :transfer_bitrate
-
 
   - trclass = DASHBOARD_JOB_STYLES[job.status]
 
@@ -13,7 +11,7 @@
     - trclass = "warning"
 
   %tr{class: trclass.to_s}
-    %td{title: job_presented.to_json}
+    %td
       %b= job.id
 
     %td= job.label
