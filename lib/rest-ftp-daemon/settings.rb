@@ -26,7 +26,7 @@ class Settings < Settingslogic
     Settings["host"] ||= `hostname`.chomp.split(".").first
 
     # Init PID file name if missing
-    Settings["pidfile"] ||= "/tmp/#{APP_NAME}-#{Settings['host']}-#{Settings['port']}.pid"
+    Settings["pidfile"] ||= "/tmp/#{APP_NICK}-#{Settings['host']}-#{Settings['port']}.pid"
 
     # Init NEWRELIC env
     if Settings.newrelic_enabled?
