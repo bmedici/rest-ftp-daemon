@@ -7,12 +7,6 @@ class Settings < Settingslogic
   source File.exist?(APP_CONF) ? APP_CONF : Hash.new
   suppress_errors true
 
-  # Compute my PID filename
-  def pidfile
-    port = self["port"]
-    self["pidfile"] || "/tmp/#{APP_NAME}.port#{port}.pid"
-  end
-
   # Direct access to any depth
   def at *path
     path.reduce(Settings) { |m, key| m && m[key.to_s] }
@@ -23,31 +17,42 @@ class Settings < Settingslogic
     to_hash.to_yaml(indent: 4, useheader: true, useversion: false )
   end
 
-  def init_defaults
-    Settings["host"] ||= `hostname`.chomp.split(".").first
-  end
-
   def newrelic_enabled?
     Settings.at(:newrelic)
   end
 
-  def init_newrelic
-    # Skip if not enabled
-    return ENV["NEWRELIC_AGENT_ENABLED"] = "false" unless Settings.newrelic_enabled?
+  def init_defaults
+    # Init host if missing
+    Settings["host"] ||= `hostname`.chomp.split(".").first
 
-    # Enable module
-    ENV["NEWRELIC_AGENT_ENABLED"] = "true"
-    ENV["NEW_RELIC_MONITOR_MODE"] = "true"
+    # Init PID file name if missing
+    Settings["pidfile"] ||= "/tmp/#{APP_NAME}-#{Settings['host']}-#{Settings['port']}.pid"
 
-    # License
-    ENV["NEW_RELIC_LICENSE_KEY"] = Settings.at(:newrelic, :licence)
+    # Init NEWRELIC env
+    if Settings.newrelic_enabled?
+      # Enable module
+      ENV["NEWRELIC_AGENT_ENABLED"] = "true"
+      ENV["NEW_RELIC_MONITOR_MODE"] = "true"
 
-    # Appname
-    platform = Settings.at(:newrelic, :platform) || Settings["host"]
-    ENV["NEW_RELIC_APP_NAME"] = "#{APP_NICK}-#{platform}-#{APP_ENV}"
+      # License
+      ENV["NEW_RELIC_LICENSE_KEY"] = Settings.at(:newrelic, :licence)
 
-    # Logfile
-    ENV["NEW_RELIC_LOG"] = Settings.at(:logs, :newrelic)
+      # Appname
+      platform = Settings.newrelic[:platform] || Settings["host"]
+      Settings.newrelic[:app_name] ||= "#{APP_NICK}-#{platform}-#{Settings.namespace}"
+      ENV["NEW_RELIC_APP_NAME"] = Settings.newrelic[:app_name]
+
+      # Logfile
+      ENV["NEW_RELIC_LOG"] = Settings.at(:logs, :newrelic)
+    else
+      ENV["NEWRELIC_AGENT_ENABLED"] = "false"
+    end
+
+    # That's it!
+  end
+
+  def overwrite options
+    Settings.merge!(options) if options.is_a? Enumerable
   end
 
 end
