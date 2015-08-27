@@ -26,7 +26,7 @@ module RestFtpDaemon
     def log_context
       {
       wid: @wid,
-      tag_1_worker_object: true
+      jid: Thread.current.thread_variable_get(:jid),
       }
     end
 
@@ -41,7 +41,7 @@ module RestFtpDaemon
       end
     end
 
-    def worker_status status, extra = ""
+    def worker_status status, job = nil
       # Update thread variables
       Thread.current.thread_variable_set :status, status
       Thread.current.thread_variable_set :updted_at, Time.now
@@ -50,7 +50,11 @@ module RestFtpDaemon
       return unless @log_worker_status_changes
 
       # Log this status change
-      log_info "worker: #{status} #{extra}"
+      if job.is_a?(Job)
+        log_info "#{status} - job[#{job.id}] status[#{job.status}] error[#{job.error}]"
+      else
+        log_info "#{status}"
+      end
     end
 
     def worker_jid jid

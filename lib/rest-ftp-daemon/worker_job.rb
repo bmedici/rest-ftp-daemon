@@ -23,20 +23,21 @@ module RestFtpDaemon
       # Work on this job
       work_on_job job
 
-      # Clean job and worker statuses
+      # Clean job status and sleep for 1s
       job.wid = nil
-      worker_jid nil
 
       # If job status requires a retry, just restack it
       #@queue.requeue job
 
       # Sleep for 1s
       sleep 1
+      # Clean worker status
+      worker_jid nil
     end
 
     def work_on_job job
       # Prepare job and worker for processing
-      worker_status WORKER_STATUS_RUNNING, "job [#{job.id}]"
+      worker_status WORKER_STATUS_RUNNING, job
       worker_jid job.id
       job.wid = Thread.current.thread_variable_get :wid
 
@@ -46,7 +47,7 @@ module RestFtpDaemon
       end
 
       # Processing done
-      worker_status WORKER_STATUS_FINISHED, "job [#{job.id}]"
+      worker_status WORKER_STATUS_FINISHED, job
 
       # Increment total processed jobs count
       $queue.counter_inc :jobs_processed
