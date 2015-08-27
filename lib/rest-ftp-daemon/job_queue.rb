@@ -201,7 +201,7 @@ module RestFtpDaemon
 
     def sort_queue!
       @mutex_counters.synchronize do
-        @queue.sort_by! { |job| [-job.runs, job.weight, -job.queued_at.to_f] }
+        @queue.sort_by!(&:weight)
       end
     end
 

@@ -191,7 +191,11 @@ module RestFtpDaemon
     end
 
     def weight
-      @weight = [@priority.to_i, -@queued_at.to_i]
+      @weight = [
+        - @runs.to_i,
+        + @priority.to_i,
+        - @queued_at.to_i
+        ]
     end
 
     def exectime
