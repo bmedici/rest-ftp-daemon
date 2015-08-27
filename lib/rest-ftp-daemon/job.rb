@@ -9,7 +9,7 @@ module RestFtpDaemon
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     end
 
-    FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir, :tempfile]
+    FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir, :tempfile, :runs]
 
     attr_accessor :wid
 
@@ -212,12 +212,12 @@ module RestFtpDaemon
       oops :ended, exception, :timeout
     end
 
-  protected
-
     def age
       return nil if @queued_at.nil?
       (Time.now - @queued_at).round(2)
     end
+
+  protected
 
     def set attribute, value
       @mutex.synchronize do
