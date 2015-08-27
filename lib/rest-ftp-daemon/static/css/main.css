@@ -68,15 +68,18 @@ a.class {
 }
 
 
-
-
-
 /* Header styles
 -------------------------------------------------- */
 .header-indicators {
   /*border: 1px solid red;*/
   margin-top: 20px;
   margin-bottom: 4px;
+}
+
+
+.paginate {
+  padding-left: 7px !important;
+  padding-right: 7px !important;
 }
 
 

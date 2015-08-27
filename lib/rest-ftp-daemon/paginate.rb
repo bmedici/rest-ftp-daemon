@@ -49,7 +49,7 @@ module RestFtpDaemon
     def link p
       klass = (p == @page)? " btn-info" : ""
 
-      "<a class='page btn btn-default%s' href='?only=%s&page=%d'>%p</a>" % [
+      "<a class='paginate btn btn-default%s' href='?only=%s&page=%d'>%p</a>" % [
         klass,
         @only,
         p,

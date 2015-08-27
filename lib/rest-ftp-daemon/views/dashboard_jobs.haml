@@ -4,7 +4,7 @@
 
 .row
 
-  .col-md-5
+  .col-md-4
     .btn-group.btn-group-sm
       - klass = @only.empty? ? "btn-info" : ""
       %a.btn.btn-default{href: "?only=", class: klass}
@@ -15,7 +15,7 @@
         %a.btn.btn-default{href: "?only=#{status}", class: klass}
           #{status} (#{count})
 
-  .col-md-7
+  .col-md-8
     .btn-group.btn-group-sm
       = @paginate.browser
 
