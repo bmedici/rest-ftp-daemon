@@ -16,6 +16,7 @@ module RestFtpDaemon
     attr_reader :id
     attr_reader :error
     attr_reader :status
+    attr_reader :runs
 
     attr_reader :queued_at
     attr_reader :updated_at
@@ -40,6 +41,7 @@ module RestFtpDaemon
       @finished_at = nil
       @error = nil
       @status = nil
+      @runs = 0
       @wid = nil
 
       # Logger
@@ -262,6 +264,7 @@ module RestFtpDaemon
     def prepare
       # Update job status
       newstatus :prepare
+      @runs += 1
 
       # Init
       @source_method = :file

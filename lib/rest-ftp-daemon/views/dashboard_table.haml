@@ -63,13 +63,22 @@
           = Helpers.format_bytes(bitrate, "bps")
 
     %td
+      - unless job.wid.nil?
+        .label.label-warning.flag.worker-label= job.wid
+
+    %td
+      - unless job.priority.nil?
+        .label.label-default.flag.worker-label= job.priority
+
+    %td
+      - unless job.runs.nil? || job.runs.zero?
+        .label.label-info.flag.worker-label= job.runs
+
+    -#%td
       - unless job.priority.nil?
         .label.label-default.flag.worker-label= job.priority
 
       - unless job.wid.nil?
         .label.label-warning.flag.worker-label= job.wid
-
-
-
 
 
