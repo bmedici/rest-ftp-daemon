@@ -9,7 +9,7 @@ module RestFtpDaemon
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     end
 
-    FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir, :tempfile, :runs]
+    FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir, :tempfile]
 
     attr_accessor :wid
 
