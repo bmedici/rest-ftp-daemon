@@ -57,10 +57,12 @@ RSpec.configure do |config|
 
   config.before :suite do
     call_server(:start)
-    sleep 2
+    puts ">> waiting for server to bootup"
+    sleep 5
   end
 
   config.after :suite do
+    puts ">> shutting sown server"
     call_server(:stop)
   end
 end

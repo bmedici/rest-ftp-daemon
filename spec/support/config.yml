@@ -3,7 +3,7 @@ test:
   port: 5678
   workers: 2
   adminpwd: "admin"
-  host: 127.0.0.1
+  host: local
 
   transfer:
     notify_after_sec: 5
@@ -16,10 +16,10 @@ test:
     ftp: false
 
   logs:
-    thin:     "./tmp/log/rftpd-environment-thin.log"
-    queue:    "./tmp/log/rftpd-environment-core.log"
-    api:      "./tmp/log/rftpd-environment-core.log"
-    workers:  "./tmp/log/rftpd-environment-work.log"
-    jobs:     "./tmp/log/rftpd-environment-work.log"
-    notify:   "./tmp/log/rftpd-environment-work.log"
-    newrelic: "/var/log/rftpd-environment-newrelic.log"
+    thin:     "/tmp/rftpd-tests-thin.log"
+    queue:    "/tmp/rftpd-tests-core.log"
+    api:      "/tmp/rftpd-tests-core.log"
+    workers:  "/tmp/rftpd-tests-work.log"
+    jobs:     "/tmp/rftpd-tests-work.log"
+    notify:   "/tmp/rftpd-tests-work.log"
+    newrelic: "/tmp/rftpd-tests-newrelic.log"
