@@ -63,7 +63,7 @@ module RestFtpDaemon
 
         status 200
         return  {
-          hostname: `hostname`.chomp,
+          hostname: `hostname`.to_s.chomp,
           version: APP_VER,
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),

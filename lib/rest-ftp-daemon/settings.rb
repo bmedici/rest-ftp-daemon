@@ -23,7 +23,7 @@ class Settings < Settingslogic
 
   def init_defaults
     # Init host if missing
-    Settings["host"] ||= `hostname`.chomp.split(".").first
+    Settings["host"] ||= `hostname`.to_s.chomp.split(".").first
 
     # Init PID file name if missing
     Settings["pidfile"] ||= "/tmp/#{APP_NICK}-#{Settings['host']}-#{Settings['port']}.pid"
