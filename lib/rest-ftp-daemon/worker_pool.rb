@@ -71,7 +71,7 @@ module RestFtpDaemon
       @conchita = create_conchita_thread
 
     rescue StandardError => ex
-      log_error "UNHDNALED EXCEPTION: #{ex.message}", ex.backtrace
+      log_error "UNHANDLED EXCEPTION: #{ex.message}", ex.backtrace
     end
 
     def create_worker_thread wid
@@ -80,7 +80,7 @@ module RestFtpDaemon
           worker = JobWorker.new wid
           log_info "JobWorker [#{wid}]: #{worker}"
         rescue StandardError => ex
-          log_error "EXCEPTION: #{ex.message}"
+          log_error "JobWorker EXCEPTION: #{ex.message}"
         end
       end
     end
@@ -91,12 +91,10 @@ module RestFtpDaemon
           worker = ConchitaWorker.new :conchita
           log_info "ConchitaWorker: #{worker}"
         rescue StandardError => ex
-          log_error "EXCEPTION: #{ex.message}"
+          log_error "ConchitaWorker EXCEPTION: #{ex.message}"
         end
       end
     end
-
-
 
   if Settings.newrelic_enabled?
     add_transaction_tracer :create_conchita_thread,     category: :task

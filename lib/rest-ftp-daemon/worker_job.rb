@@ -59,7 +59,7 @@ module RestFtpDaemon
       job.oops_you_stop_now ex unless job.nil?
 
     rescue StandardError => ex
-      log_error "JOB UNHDNALED EXCEPTION: #{ex.message}", ex.backtrace
+      log_error "JOB UNHANDLED EXCEPTION: #{ex.message}", ex.backtrace
       worker_status WORKER_STATUS_CRASHED
 
       # Inform the job

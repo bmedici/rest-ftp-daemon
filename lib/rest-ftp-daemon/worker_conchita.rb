@@ -37,7 +37,7 @@ module RestFtpDaemon
       GC.start if @conchita["garbage_collector"]
 
     rescue StandardError => e
-      log_error "EXCEPTION: #{e.inspect}"
+      log_error "CONCHITA EXCEPTION: #{e.inspect}"
       sleep 1
     else
       # Restore previous status
