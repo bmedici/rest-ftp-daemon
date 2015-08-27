@@ -88,6 +88,19 @@ module RestFtpDaemon
         return Helpers.get_censored_config
       end
 
+      # Server config
+      post "/config/reload" do
+        log_info "POST /config/reload"
+
+        if Settings.at(:api, :allow_reload)==true
+          Settings.reload!
+          status 200
+          return Helpers.get_censored_config
+        else
+          status 403
+          return "Config reload not permitted"
+        end
+      end
 
     end
   end
