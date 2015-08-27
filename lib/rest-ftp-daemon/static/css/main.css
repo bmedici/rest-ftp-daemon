@@ -21,8 +21,8 @@ body, table tr td, .fixed {
 
 .label {
   font-size: 1em;
-  padding: 3px 3px 1px 3px;
-  margin-bottom: 1px  ;
+  padding: 2px 3px 2px 3px;
+  margin-bottom: 1px;
   font-weight: normal;
   display: inline-block;
   font-family: sans-serif;
