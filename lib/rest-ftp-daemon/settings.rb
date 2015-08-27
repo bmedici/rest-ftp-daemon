@@ -3,7 +3,7 @@ require "settingslogic"
 # Configuration class
 class Settings < Settingslogic
   # Read configuration
-  namespace defined?(APP_ENV) ? APP_ENV : "production"
+  namespace APP_ENV
   source File.exist?(APP_CONF) ? APP_CONF : Hash.new
   suppress_errors true
 

@@ -45,7 +45,6 @@ parser = OptionParser.new do |opts|
 end
 
 
-
 # Parse options and check compliance
 begin
   parser.order!(ARGV)
@@ -60,6 +59,7 @@ end
 # Load config, and merge options from ARGV into settings
 # FIXME: file configuration detection could reside in settings.rb
 APP_CONF ||= DEFAULT_CONFIG_PATH
+APP_ENV  ||= "production"
 abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exist? APP_CONF
 begin
   # Import settings
