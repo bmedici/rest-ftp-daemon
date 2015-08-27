@@ -106,17 +106,18 @@ module RestFtpDaemon
       @jobs.reverse.find { |item| item.id == id }
     end
 
+
     def push job
       # Check that item responds to "priorty" method
       raise "JobQueue.push: job should respond to priority method" unless job.respond_to? :priority
       raise "JobQueue.push: job should respond to id method" unless job.respond_to? :id
 
       @mutex.synchronize do
-        # Push job into the queue
-        @queue.push job
+        # Store the job into the global jobs list, if not already inside
+        @jobs.push(job) unless @jobs.include?(job)
 
-        # Store the job into the global jobs list
-        @jobs.push job
+        # Push job into the queue, if not already inside
+        @queue.push(job) unless @queue.include?(job)
 
         # Inform the job that it's been queued
         job.set_queued if job.respond_to? :set_queued
@@ -133,8 +134,9 @@ module RestFtpDaemon
         end
       end
     end
-    alias << push
-    alias enq push
+    alias <<      push
+    alias enq     push
+    alias requeue push
 
     def pop non_block=false
       @mutex.synchronize do
