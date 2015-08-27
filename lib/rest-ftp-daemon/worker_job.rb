@@ -21,18 +21,40 @@ module RestFtpDaemon
       job = $queue.pop
 
       # Work on this job
-      work_on_job job
+      work_on_job(job)
 
       # Clean job status and sleep for 1s
       job.wid = nil
+      sleep 1
 
       # If job status requires a retry, just restack it
-      #@queue.requeue job
+      on_errors = Settings.at(:retry, :on_errors)
+      max_age = Settings.at(:retry, :max_age)
+      max_runs = Settings.at(:retry, :max_runs)
 
-      # Sleep for 1s
-      sleep 1
+      if !job.error
+        #log_info "job succeeded"
+
+      elsif !(on_errors.is_a?(Enumerable) && on_errors.include?(job.error.to_s))
+        log_error "not retrying: error not eligible"
+
+      elsif max_age && (job.age >= max_age)
+        log_error "not retrying: too old (max_age: #{max_age})"
+
+      elsif max_runs && (job.runs >= max_runs)
+        log_error "not retrying: too many runs (max_runs: #{max_runs})"
+
+      else
+        log_info "retrying job: requeued"
+        $queue.requeue job
+      end
+
       # Clean worker status
       worker_jid nil
+
+    rescue StandardError => ex
+      log_error "WORKER UNHANDLED EXCEPTION: #{ex.message}", ex.backtrace
+      worker_status WORKER_STATUS_CRASHED
     end
 
     def work_on_job job
