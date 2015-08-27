@@ -39,7 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "settingslogic"
   spec.add_runtime_dependency "haml"
   spec.add_runtime_dependency "json"
-  spec.add_runtime_dependency "net-ssh", "~> 2.10.1.rc1"
+  #spec.add_runtime_dependency "net-ssh", "~> 2.10.1.rc1"
   spec.add_runtime_dependency "net-sftp"
   spec.add_runtime_dependency "double-bag-ftps"
   spec.add_runtime_dependency "facter"

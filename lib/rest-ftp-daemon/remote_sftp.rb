@@ -29,7 +29,7 @@ module RestFtpDaemon
           verbose: verbosity,
           port: @url.port,
           non_interactive: true,
-          #timeout: 3
+          timeout: DEFAULT_SFTP_TIMEOUT
           )
     end
 

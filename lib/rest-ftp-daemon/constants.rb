@@ -93,6 +93,8 @@ DEFAULT_FTP_CHUNK       = 512
 DEFAULT_PAGE_SIZE       = 40
 DEFAULT_WORKERS         = 1
 
+DEFAULT_SFTP_TIMEOUT    = 30
+
 
 # Initialize defaults
 APP_STARTED = Time.now
