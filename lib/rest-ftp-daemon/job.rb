@@ -146,6 +146,9 @@ module RestFtpDaemon
       rescue Net::SFTP::StatusException => exception
         return oops :ended, exception, :sftp_exception
 
+      rescue Net::SSH::AuthenticationFailed => exception
+        return oops :ended, exception, :sftp_auth_failed
+
       rescue Errno::EMFILE => exception
         return oops :ended, exception, :too_many_open_files
 
