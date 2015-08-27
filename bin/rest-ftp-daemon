@@ -92,12 +92,13 @@ end
 
 
 # ARGV: build final
+thin_logs = Settings.at(:logs, :thin)
 argv = []
 argv << ["-e", Settings.namespace]
 argv << ["-p", Settings.port.to_s] if Settings.port
 argv << ["--pid", Settings.pidfile]
 argv << ["--tag", "'#{APP_NAME}/#{Settings.namespace}'"]
-argv << ["--log", Settings.at(:logs, :thin)]
+argv << ["--log", thin_logs] unless !thin_logs
 argv << ["--daemonize"] if [1, true].include? Settings.daemonize
 
 
