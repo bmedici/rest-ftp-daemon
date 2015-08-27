@@ -29,7 +29,7 @@ module RestFtpDaemon
 
         # Check that Queue and Pool are available
         raise RestFtpDaemon::MissingQueue unless defined? $queue
-        raise RestFtpDaemon::MissingQueue unless defined? $pool
+        raise RestFtpDaemon::MissingPool unless defined? $pool
       end
 
 
