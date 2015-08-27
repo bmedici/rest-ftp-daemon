@@ -30,8 +30,7 @@ defaults: &defaults
     sftp: false
     conchita: false
 
-  api:
-    allow_reload: false
+    # allow_reload: false
 
   logs:
     thin:    "/var/log/rftpd-environment-thin.log"
