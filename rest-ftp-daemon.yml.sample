@@ -7,11 +7,16 @@ defaults: &defaults
   #host: "myhost"
 
   transfer:
-    notify_after_sec: 5       # wait at least X seconds between HTTP notifications
-    mkdir: true               # build directory tree if missing
-    tempfile: true            # transfer to temporary file, rename after sucessful transfer
-    overwrite: false          # overwrite any target file with the same name
-    timeout: 1800             # jobs running for longer than X seconds will be killed
+    # notify_after_sec: 5       # wait at least X seconds between HTTP notifications
+    # mkdir: true               # build directory tree if missing
+    # tempfile: true            # transfer to temporary file, rename after sucessful transfer
+    # overwrite: false          # overwrite any target file with the same name
+    # timeout: 1800             # jobs running for longer than X seconds will be killed
+
+  retry:
+    # on_errors: ["net_temp_error", "conn_reset_by_peer", "conn_timed_out", "conn_refused"]
+    # max_runs: 5
+    # max_age: 1800
 
   conchita:
     # timer: 60
@@ -26,10 +31,9 @@ defaults: &defaults
     app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
 
   debug:
-    ftp: false
-    sftp: false
-    conchita: false
-
+    # ftp: false
+    # sftp: false
+    # conchita: false
     # allow_reload: false
 
   logs:
