@@ -18,14 +18,15 @@
       - trclass = "danger"
       - status = "DEAD"
 
-    - if vars[:updted_at].is_a? Time
-      - no_news_for = (Time.now - vars[:updted_at]).round(0)
-    - else
-      - no_news_for = "?"
 
     %tr{class: trclass.to_s}
       %td= wid
       %td= status
       %td= vars[:jid]
       %td.text-right
-        = "#{no_news_for} s"
+
+        - if vars[:updted_at].is_a? Time
+          - no_news_for = (Time.now - vars[:updted_at]).round(0)
+          = Helpers.formatted_duration no_news_for
+        - else
+          = "?"

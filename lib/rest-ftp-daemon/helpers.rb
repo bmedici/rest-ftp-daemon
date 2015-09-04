@@ -113,5 +113,19 @@ module RestFtpDaemon
       path.sub(/([a-z]+:\/\/[^\/]+):[^\/]+\@/, '\1@' )
     end
 
+    def self.formatted_duration duration
+    out = []
+
+    hours = duration / (60 * 60)
+    minutes = (duration / 60) % 60
+    seconds = duration % 60
+
+    out << "#{hours}h" if hours>0
+    out << "#{minutes}mn" if (minutes>0) || (hours>0)
+    out << "#{seconds}s"
+
+    out.join(' ')
+  end
+
   end
 end
