@@ -15,8 +15,11 @@ body, table tr td, .fixed {
 
 .token {
   display: inline-block;
-  background-color: #f8f8f8;
-  padding: 0 2px;
+  background-color: #fefefe;
+  padding: 0 3px;
+  margin: 0 2px;
+  border: 1px solid silver;
+  border-radius: 0.25em;
   }
 
 .label {

@@ -37,7 +37,7 @@ module RestFtpDaemon
 
     def self.highlight_tokens path
       return unless path.is_a? String
-      path.gsub(/(\[[^\[]+\])/, '<span class="token">\1</span>')
+      path.gsub(/\[([^\[]+)\]/, '<span class="token">\1</span>')
     end
 
     def self.extract_filename path

@@ -31,16 +31,16 @@
           %th ID
           %th label
           %th source
-          %th <=>
+          %th mode
           %th target
           %th queued
           %th.error status
           %th{"min-width" => 120} error
-          %th.text-right size
+          %th.text-right filesize
           %th.text-right bitrate
-          %th W
-          %th P
-          %th R
+          %th{title: "Worker ID"} W
+          %th{title: "Priority"} P
+          %th{title: "Runs count"} R
 
         - unless @queue.empty?
           %tbody.jobs
