@@ -28,7 +28,7 @@ module RestFtpDaemon
           password: @url.password.to_s,
           verbose: verbosity,
           port: @url.port,
-          non_interactive: true,
+          #non_interactive: true,
           timeout: DEFAULT_SFTP_TIMEOUT
           )
     end
