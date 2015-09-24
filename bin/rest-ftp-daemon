@@ -122,7 +122,7 @@ puts "Host         \t #{Settings.host}"
 puts "Namespace    \t #{Settings.namespace}"
 puts "Network port \t #{Settings.port}"
 puts "User:group   \t #{Settings.user}:#{Settings.group}" if (Settings.user || Settings.group)
-puts "Newrelic     \t #{Settings.newrelic_enabled? ? Settings.at(:debug, :newrelic) : "no"}"
+puts "Newrelic     \t #{Settings.newrelic_enabled? ? Settings.at(:newrelic, :licence) : "no"}"
 # puts Settings.dump
 puts
 puts "--- Thin ARGV"
