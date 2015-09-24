@@ -13,7 +13,13 @@
 
   %tr{class: trclass.to_s}
     %td
-      %b= job.id
+
+
+      %a{href: Helpers.dashboard_job_link(job)}
+        %b= job.id
+
+
+
 
     %td= job.label
 

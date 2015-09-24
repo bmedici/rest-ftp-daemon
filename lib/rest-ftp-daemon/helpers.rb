@@ -125,7 +125,11 @@ module RestFtpDaemon
     out << "#{seconds}s"
 
     out.join(' ')
-  end
+    end
+
+    def self.dashboard_job_link job
+      "/jobs/#{job.id}" if job.respond_to? :id
+    end
 
   end
 end
