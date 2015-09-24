@@ -7,20 +7,21 @@ module RestFtpDaemon
 ####### HELPERS
 
       helpers do
-
         def logger
           Root.logger
         end
-
       end
 
 
-####### GET /jobs/:id
 ####### Common request logging
     before do
       log_info "HTTP #{request.request_method} #{request.fullpath}", params
     end
 
+
+####### READ ONE JOB
+
+      desc "Read job with ID"
       params do
         requires :id, type: String, desc: "ID of the Job to read", regexp: /[^\/]+/
       end
@@ -47,10 +48,9 @@ module RestFtpDaemon
       end
 
 
-####### GET /jobs/
+####### READ ALL JOBS
 
       desc "List all Jobs"
-
       get "/" do
         begin
           # Get jobs to display
@@ -68,10 +68,9 @@ module RestFtpDaemon
       end
 
 
-####### POST /jobs/
+####### CREATE A JOB
 
       desc "Create a new job"
-
       params do
         requires :source, type: String, desc: "Source file pattern"
         requires :target, type: String, desc: "Target remote path"
@@ -91,11 +90,9 @@ module RestFtpDaemon
           desc: "Upload to a temp file before renaming it to the target filename",
           default: Settings.at(:transfer, :tempfile)
       end
-
       post "/" do
         # log_debug params.to_json
         begin
-
           # Create a new job
           job_id = $queue.generate_id
           job = Job.new(job_id, params)

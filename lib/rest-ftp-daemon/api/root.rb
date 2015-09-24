@@ -36,36 +36,32 @@ module RestFtpDaemon
 ####### HELPERS
 
       helpers do
-
         def logger
           Root.logger
         end
-
       end
 
 
-####### GET /routes
 ####### Common request logging
     before do
       log_info "HTTP #{request.request_method} #{request.fullpath}", params
     end
 
 
+####### SHOW ROUTES
 
-      desc "show application routes"
+      desc "Show application routes"
       get "/routes" do
         status 200
         return RestFtpDaemon::API::Root.routes
       end
 
 
-####### GET /status
+####### SHOW STATUS
 
-      # Server global status
+      desc "Show daemon status"
       get "/status" do
-        log_info "GET /status"
         mem = GetProcessMem.new
-
         status 200
         return  {
           hostname: `hostname`.to_s.chomp,
@@ -83,17 +79,19 @@ module RestFtpDaemon
       end
 
 
-####### GET /config
+####### SHOW CONFIG
 
-      # Server config
+      desc "Show daemon config"
       get "/config" do
         status 200
         return Helpers.get_censored_config
       end
 
-      # Server config
-      post "/config/reload" do
 
+####### RELOAD CONFIG
+
+      desc "Reload daemon config"
+      post "/config/reload" do
         if Settings.at(:debug, :allow_reload)==true
           Settings.reload!
           status 200
