@@ -123,6 +123,7 @@ puts "Namespace    \t #{Settings.namespace}"
 puts "Network port \t #{Settings.port}"
 puts "User:group   \t #{Settings.user}:#{Settings.group}" if (Settings.user || Settings.group)
 puts "Newrelic     \t #{Settings.newrelic_enabled? ? Settings.at(:newrelic, :licence) : "no"}"
+puts "Started at   \t #{APP_STARTED.to_s}"
 # puts Settings.dump
 puts
 puts "--- Thin ARGV"
@@ -140,6 +141,8 @@ rescue Thin::PidFileExist
   puts "FAILED: daemon was already running (Thin::PidFileExist)"
 rescue Thin::PidFileNotFound
   puts "FAILED: daemon was not running (Thin::PidFileNotFound)"
+rescue Errno::ENOENT => e
+  puts "FAILED: daemon cannot access files: #{e.message}"
 rescue SystemExit
   # Leave some time for the daemon to launch
   pidfile = Settings.pidfile
