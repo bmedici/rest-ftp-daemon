@@ -25,10 +25,13 @@ module RestFtpDaemon
 
 
 ####### DASHBOARD - GET /
+####### Common request logging
+    before do
+      log_info "HTTP #{request.request_method} #{request.fullpath}", params
+    end
 
       # Server global status
       get "/" do
-        log_info "GET /"
 
         # Initialize Facter
         Facter.loadfacts

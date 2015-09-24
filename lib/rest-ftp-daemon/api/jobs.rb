@@ -16,13 +16,15 @@ module RestFtpDaemon
 
 
 ####### GET /jobs/:id
+####### Common request logging
+    before do
+      log_info "HTTP #{request.request_method} #{request.fullpath}", params
+    end
 
       params do
         requires :id, type: String, desc: "ID of the Job to read", regexp: /[^\/]+/
       end
       get "/*id" do
-        log_info "GET /jobs/#{params[:id]}"
-
         begin
           # Get job to display
           raise RestFtpDaemon::JobNotFound if params[:id].nil?
@@ -50,8 +52,6 @@ module RestFtpDaemon
       desc "List all Jobs"
 
       get "/" do
-        log_info "GET /jobs"
-
         begin
           # Get jobs to display
           jobs = $queue.jobs
@@ -93,9 +93,7 @@ module RestFtpDaemon
       end
 
       post "/" do
-        log_info "POST /jobs", params
-        log_debug params.to_json
-
+        # log_debug params.to_json
         begin
 
           # Create a new job

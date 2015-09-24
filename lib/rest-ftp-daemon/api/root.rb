@@ -45,10 +45,15 @@ module RestFtpDaemon
 
 
 ####### GET /routes
+####### Common request logging
+    before do
+      log_info "HTTP #{request.request_method} #{request.fullpath}", params
+    end
+
+
 
       desc "show application routes"
       get "/routes" do
-        log_info "GET /routes"
         status 200
         return RestFtpDaemon::API::Root.routes
       end
@@ -82,15 +87,12 @@ module RestFtpDaemon
 
       # Server config
       get "/config" do
-        log_info "GET /config"
-
         status 200
         return Helpers.get_censored_config
       end
 
       # Server config
       post "/config/reload" do
-        log_info "POST /config/reload"
 
         if Settings.at(:debug, :allow_reload)==true
           Settings.reload!
