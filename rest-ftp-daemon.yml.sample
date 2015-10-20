@@ -17,6 +17,7 @@ defaults: &defaults
     # on_errors: ["net_temp_error", "conn_reset_by_peer", "conn_timed_out", "conn_refused", "sftp_auth_failed", "conn_host_is_down", "conn_unreachable", "conn_failed", "conn_openssl_error"]
     # max_runs: 5
     # max_age: 1800
+    # delay: 10
 
   conchita:
     # timer: 60

@@ -31,6 +31,7 @@ module RestFtpDaemon
       on_errors = Settings.at(:retry, :on_errors)
       max_age = Settings.at(:retry, :max_age)
       max_runs = Settings.at(:retry, :max_runs)
+      delay = Settings.at(:retry, :delay)
 
       if !job.error
         #log_info "job succeeded"
@@ -39,13 +40,21 @@ module RestFtpDaemon
         log_error "not retrying: error not eligible"
 
       elsif max_age && (job.age >= max_age)
-        log_error "not retrying: too old (max_age: #{max_age})"
+        log_error "not retrying: max_age reached (#{max_age} s)"
 
       elsif max_runs && (job.runs >= max_runs)
-        log_error "not retrying: too many runs (max_runs: #{max_runs})"
+        log_error "not retrying: max_runs reached (#{max_runs} tentatives)"
 
       else
-        log_info "retrying job: requeued"
+        # Delay cannot be negative, and will be 1s minimum
+        retry_after = [delay || DEFAULT_RETRY_DELAY, 1].max
+        log_info "retrying job: waiting for #{retry_after} seconds"
+
+        # Wait !
+        sleep retry_after
+        log_info "retrying job: requeued after delay"
+
+        # Now, requeue this job
         $queue.requeue job
       end
 
