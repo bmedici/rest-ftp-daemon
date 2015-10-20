@@ -148,6 +148,9 @@ module RestFtpDaemon
       rescue Net::SFTP::StatusException => exception
         return oops :ended, exception, :sftp_exception
 
+      rescue Net::SSH::HostKeyMismatch => exception
+        return oops :ended, exception, :sftp_key_mismatch
+
       rescue Net::SSH::AuthenticationFailed => exception
         return oops :ended, exception, :sftp_auth_failed
 
