@@ -17,42 +17,45 @@ be notified of their completion, watch their status on a dedicated dashboard.
 Features
 ------------------------------------------------------------------------------------
 
-As of today, its main features are :
+* System and process features
+  * environment-aware configuration in a YAML file
+  * daemon process is tagged with its name and environment in process lists
+  * global dashboard directly served within the daemon HTTP interface
 
-* Offer a basic dashboard directly within the daemon HTTP interface
-* Periodically send an update-notification with transfer status and progress
-* Allow environment-specific configuration in a YAML file
-* Delegate a transfer job by `POST`'ing a simple JSON structure
-* Spawn a dedicated thread to handle this job in its own context
-* Report transfer status, progress and errors for each job in realtime
-* Expose JSON status of workers on `GET /jobs/` for automated monitoring
-* Parallelize jobs as soon as they arrive
-* Handle job queues and priority as an attribute of the job
-* Allow dynamic evaluation of priorities, and change of any attribute until the job is picked
-* Provide RESTful notifications to the requesting client
-* Allow authentication in FTP target in a standard URI-format
-* Allow configuration-based path templates to abstract local mounts or remote FTPs (endpoint tokens)
-* Allow to specify random remote/local source/target
-* Remote supported protocols: FTP and FTPs
-* Allow main file transfer protocols: sFTP, FTPs / FTPes
-* Automatically clean-up jobs after a configurable amount of time (failed, finished)
-* Current bitrate on the last blocks chunk updated in the job attributes
-* Global bitrate on the whole file transfer is re-computed after the transfer finishes
-* Daemon process is tagged with its name and environment in process lists
-* Allow basic patterns in source filename to match multiple files (`/dir/file*.jpg`)
 
-Expected features in a short-time range :
+* File management ans transferts
+  * allow authentication in FTP target in a standard URI-format
+  * static path pointers in configuration to abstract local mounts or remote FTPs (endpoint tokens)
+  * local source path and local/remote target path can use patterns to match multiple files (`/dir/file*.jpg`)
+  * several file transfer protocols supported: FTPs, FTPes, sFTP
 
-* Allow fallback file source when first file path is unavailable (failover)
-* Provide swagger-style API documentation
-* Authenticate API clients
-* Allow more transfer protocols (sFTP, HTTP POST etc)
+* Job management
+  * highly parrallel job processing using dedicated worker threads with their own context
+  * jobs are taken into account as soon as they are submitted
+  * each job carry its own attributes: build subdirectories (mkdir), overwrite target file, priority weight
+  * dynamic evaluation of priorities, honoring any change on context until the job is picked
+  * automatically clean-up jobs after a configurable amount of time (failed, finished)
+
+* Realtime status reporting
+  * realtime transfer status reporting, with progress and errors
+  * periodic update notifications sent along with transfer status and progress to an arbitrary URL (JSON resource POSTed)
+
+
 
 Status
 ------------------------------------------------------------------------------------
 
-Though lacking testing, this gem has been used successfully in production for
-a while without glitches.
+Though it may need more robust tests, this gem has been used successfully in production for
+a while without glitches at France Télévisions.
+
+Expected features in a short-time range :
+
+* Provide swagger-style API documentation
+* Authenticate API clients
+* Allow more transfer protocols (sFTP, HTTP POST etc)
+* Expose JSON status of workers on `GET /jobs/` for automated monitoring
+
+
 
 
 Installation
@@ -176,19 +179,21 @@ Default administrator credentials are `admin/admin`. Please change the password 
 Logging
 ------------------------------------------------------------------------------------
 
-The application will not log to any file by default, if not specified in its configuration.
-Otherwise separate logging paths can be provided for the Thin webserver, API related messages, and workers related messages. Providing and empty value will simply activate logging to `STDOUT`.
+The application will log to paths specified in the configuration file, if any.
+Separate logging paths can be provided for the Thin webserver, API related messages, and workers related messages.
+Providing empty values as paths, will simply activate logging to `STDOUT`.
 
 
 Job cleanup
 ------------------------------------------------------------------------------------
 
-Job can be cleanup up after a certain delay, when they are on one of these status:
+Job queue can be set to automatically cleanup after a certain delay. Entries are removed from the queue when they have been idle (updated_at) for more than X seconds, and in any of the following statuses:
 
-- "failed", cleaned up after conchita.clean_failed seconds
-- "finished", cleaned up after conchita.clean_finished seconds
+- failed (conchita.clean_failed)
+- finished (conchita.clean_finished)
+- queued, (conchita.clean_queued)
 
-Cleanup is done on a regular basis, every X seconds (X = conchita.timer)
+Cleanup is done on a regular basis, every (conchita.timer) seconds.
 
 
 TODO for this document
@@ -200,7 +205,6 @@ TODO for this document
 * Update Apiary documentation !
 * Document /status
 * Document /routes
-* Document multiple-files upload
 * Document mkdir and overwrite options
 * Document counters
 
@@ -299,5 +303,8 @@ About
 
 Thanks to https://github.com/berkshelf/berkshelf-api for parts and ideas used in this project
 
-Bruno MEDICI Consultant
-http://bmconseil.com/
+This project has been initiated and originally written by
+Bruno MEDICI Consultant (http://bmconseil.com/)
+
+
+
