@@ -9,11 +9,6 @@ $queue = RestFtpDaemon::JobQueue.new
 # Initialize workers and conchita subsystem
 $pool = RestFtpDaemon::WorkerPool.new
 
-# Rack reloader
-unless Settings.namespace == "production"
-  use Rack::Reloader, 0
-end
-
 # Rack authent
 unless Settings.adminpwd.nil?
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
@@ -26,6 +21,12 @@ GC::Profiler.enable if Settings.newrelic_enabled?
 
 # Serve static assets
 use Rack::Static, :urls => ["/css", "/js", "/images"], :root => "#{APP_LIBS}/static/"
+
+# Rack reloader and mini-profiler
+unless Settings.namespace == "production"
+  use Rack::Reloader, 0
+  # use Rack::MiniProfiler
+end
 
 # Launch the main daemon
 run RestFtpDaemon::API::Root

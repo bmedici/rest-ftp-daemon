@@ -10,6 +10,14 @@ require "singleton"
 require "newrelic_rpm"
 
 
+# Development libs      /?pp=flamegraph
+# unless Settings.namespace == "production"
+#   require 'rack-mini-profiler'
+#   # require 'stackprof'
+#   require 'flamegraph'
+# end
+
+
 # Project's libs
 require_relative "rest-ftp-daemon/constants"
 require_relative "rest-ftp-daemon/settings"
