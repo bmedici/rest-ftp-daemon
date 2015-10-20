@@ -13,13 +13,8 @@
 
   %tr{class: trclass.to_s}
     %td
-
-
       %a{href: Helpers.dashboard_job_link(job)}
         %b= job.id
-
-
-
 
     %td= job.label
 
@@ -78,8 +73,14 @@
         .label.label-default.flag.worker-label= job.priority
 
     %td
-      - unless job.runs.nil? || job.runs.zero?
-        .label.label-info.flag.worker-label= job.runs
+      - if job.runs.nil?
+        .label.label-info.flag.worker-label= "-"
+      - elsif job.runs == 1
+        .label.label-default.flag.worker-label= job.runs
+      - elsif job.runs == 2
+        .label.label-warning.flag.worker-label= job.runs
+      - elsif job.runs > 2
+        .label.label-danger.flag.worker-label= job.runs
 
     -#%td
       - unless job.priority.nil?
