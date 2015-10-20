@@ -1,6 +1,8 @@
 module RestFtpDaemon
   class Paginate
 
+    attr_writer :only
+
     def initialize data
       # Defaults
       @pages = 0
@@ -20,10 +22,6 @@ module RestFtpDaemon
       # Count pages
       @pages = (@total.to_f / DEFAULT_PAGE_SIZE).ceil
       @pages = 1 if @pages < 1
-    end
-
-    def only= raw_only
-      @only = raw_only
     end
 
     def page= raw_page
