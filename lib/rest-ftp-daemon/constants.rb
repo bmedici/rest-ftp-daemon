@@ -19,12 +19,24 @@ You should copy it to the expected location #{DEFAULT_CONFIG_PATH}:
 sudo cp #{SAMPLE_CONFIG_FILE} #{DEFAULT_CONFIG_PATH}
 EOD
 
-# Jobs and workers
+
+# Configuration defaults
+DEFAULT_WORKERS         = 2
+DEFAULT_WORKER_TIMEOUT  = 3600  # 1h
+DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
+DEFAULT_FTP_CHUNK       = 1024  # 1 MB
+DEFAULT_PAGE_SIZE       = 50    # 50 lines
+DEFAULT_RETRY_DELAY     = 10    # 10s
+
+
+# Internal job constants
 JOB_RANDOM_LEN          = 8
 JOB_IDENT_LEN           = 4
 JOB_TEMPFILE_LEN        = 8
 JOB_UPDATE_INTERVAL     = 1
 
+
+# Jobs and workers statuses
 JOB_STATUS_UPLOADING    = :uploading
 JOB_STATUS_RENAMING     = :renaming
 JOB_STATUS_PREPARED     = :prepared
@@ -54,10 +66,8 @@ LOG_FORMAT_PREFIX       = "%s %s\t%-#{LOG_PIPE_LEN.to_i}s\t"
 LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-LOG_COL_ID.to_i}s"
 LOG_NEWLINE             = "\n"
 LOG_INDENT              = "\t"
-
 BIND_PORT_TIMEOUT       = 3
 BIND_PORT_LOCALHOST     = '127.0.0.1'
-
 
 
 # Notifications
@@ -83,21 +93,6 @@ DASHBOARD_WORKER_STYLES = {
   }
 
 
-# API server
-# API_LISTEN_HOST = "0.0.0.0"
-
-
-# Configuration defaults
-DEFAULT_WORKER_TIMEOUT  = 3600
-DEFAULT_FTP_CHUNK       = 1024
-DEFAULT_PAGE_SIZE       = 40
-DEFAULT_WORKERS         = 2
-DEFAULT_RETRY_DELAY     = 10
-
-DEFAULT_SFTP_TIMEOUT    = 30
-
-
 # Initialize defaults
 APP_STARTED = Time.now
 APP_LIBS = File.dirname(__FILE__)
-
