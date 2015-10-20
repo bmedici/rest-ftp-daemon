@@ -253,6 +253,12 @@ Known bugs
 
 * As this project is based on SettingsLogic, which in turns uses Syck YAML parser, configuration merge from "defaults" section and environment-specific section is broken. A sub-tree defined for a specific environment, will overwrite the corresponding subtree from "defaults".
 
+* If you get ```fatal error: 'openssl/ssl.h' file not found when installing ```eventmachine``` on OSX El Capitan, you can try with:
+```
+gem install eventmachine -v '1.0.8' -- --with-cppflags=-I/usr/local/opt/openssl/include
+bundle install
+```
+
 
 Contributing
 ------------------------------------------------------------------------------------
