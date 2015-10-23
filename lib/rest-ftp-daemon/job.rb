@@ -389,23 +389,31 @@ module RestFtpDaemon
       end
     end
 
-    def worker_is_still_active
-       Thread.current.thread_variable_set :updted_at, Time.now
+    def touch_job
+      now = Time.now
+      @updated_at = now
+      Thread.current.thread_variable_set :updated_at, now
+    end
+
     def set_info attribute, value
       @mutex.synchronize do
         @infos || {}
         @infos[attribute] = value.to_s.encode("UTF-8")
+        touch_job
       end
     end
 
     def set_error value
       @mutex.synchronize do
         @error = value.to_s.encode("UTF-8")
+        touch_job
       end
     end
+
     def set_status value
       @mutex.synchronize do
         @status = value.to_s.encode("UTF-8")
+        touch_job
       end
     end
 
@@ -475,7 +483,7 @@ module RestFtpDaemon
         progress transferred, name
 
         # Touch my worker status
-        touch_worker
+        touch_job
       end
 
       # Compute final bitrate
