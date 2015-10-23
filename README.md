@@ -136,7 +136,7 @@ Those tokens will be expanded when the job is run:
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
-'{"source":"~/file.dmg","priority":"3", target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
+'{"source":"~/file.dmg","priority":"3","target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
 
 

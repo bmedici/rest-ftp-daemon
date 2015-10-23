@@ -29,8 +29,8 @@ unless Settings.namespace == "production"
 end
 
 # Set up encodings
-Encoding.default_internal = "utf-8"
-Encoding.default_external = "utf-8"
+# Encoding.default_internal = "utf-8"
+# Encoding.default_external = "utf-8"
 
 # Launch the main daemon
 run RestFtpDaemon::API::Root

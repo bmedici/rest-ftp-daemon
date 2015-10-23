@@ -45,7 +45,7 @@ module RestFtpDaemon
         log_error "not retrying: max_age reached (#{max_age} s)"
 
       elsif max_runs && (job.runs >= max_runs)
-        log_error "not retrying: max_runs reached (#{max_runs} tentatives)"
+        log_error "not retrying: max_runs reached (#{max_runs} tries)"
 
       else
         # Delay cannot be negative, and will be 1s minimum
