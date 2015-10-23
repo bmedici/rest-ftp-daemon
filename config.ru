@@ -28,6 +28,10 @@ unless Settings.namespace == "production"
   # use Rack::MiniProfiler
 end
 
+# Set up encodings
+Encoding.default_internal = 'utf-8'
+Encoding.default_external = 'utf-8'
+
 # Launch the main daemon
 run RestFtpDaemon::API::Root
 #run Rack::Cascade.new [RestFtpDaemon::API::Root]

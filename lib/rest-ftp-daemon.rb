@@ -1,6 +1,7 @@
 # Global libs
 require "rubygems"
 require "json"
+require "haml"
 require "uri"
 require "timeout"
 require "syslog"
@@ -16,7 +17,6 @@ require "newrelic_rpm"
 #   # require 'stackprof'
 #   require 'flamegraph'
 # end
-
 
 # Project's libs
 require_relative "rest-ftp-daemon/constants"
@@ -45,3 +45,6 @@ require_relative "rest-ftp-daemon/api/job_presenter"
 require_relative "rest-ftp-daemon/api/jobs"
 require_relative "rest-ftp-daemon/api/dashboard"
 require_relative "rest-ftp-daemon/api/root"
+
+# Haml monkey-patching
+require_relative "rest-ftp-daemon/patch_haml"
