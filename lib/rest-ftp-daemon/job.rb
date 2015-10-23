@@ -81,7 +81,7 @@ module RestFtpDaemon
 
       # Prepare job
       begin
-        newstatus :prepare
+        set_status :prepare
         prepare
 
       rescue RestFtpDaemon::JobMissingAttribute => exception
@@ -104,14 +104,14 @@ module RestFtpDaemon
 
       else
         # Prepare done !
-        newstatus JOB_STATUS_PREPARED
+        set_status JOB_STATUS_PREPARED
         log_info "Job.process notify [started]"
         client_notify :started
       end
 
       # Process job
       begin
-        newstatus :starting
+        set_status :starting
         transfer
 
       rescue SocketError => exception
@@ -182,7 +182,7 @@ module RestFtpDaemon
 
       else
         # All done !
-        newstatus JOB_STATUS_FINISHED
+        set_status JOB_STATUS_FINISHED
         log_info "Job.process notify [ended]"
         client_notify :ended
       end
@@ -210,7 +210,7 @@ module RestFtpDaemon
 
     def set_queued
       # Update job status
-      newstatus JOB_STATUS_QUEUED
+      set_status JOB_STATUS_QUEUED
     end
 
     def oops_after_crash exception
@@ -272,7 +272,7 @@ module RestFtpDaemon
 
     def prepare
       # Update job status
-      newstatus :prepare
+      set_status :prepare
       @runs += 1
 
       # Init
@@ -295,7 +295,7 @@ module RestFtpDaemon
       #puts "@target_path: #{@target_path.inspect}"
 
       # Prepare remote
-      newstatus :remote_init
+      set_status :remote_init
       #FIXME: use a "case" statement on @target_url.class
 
       if target_uri.is_a? URI::FTP
@@ -331,7 +331,7 @@ module RestFtpDaemon
       set :source_processed, 0
 
       # Guess source files from disk
-      newstatus :checking_source
+      set_status :checking_source
       sources = find_local @source_path
       set :source_count, sources.count
       set :source_files, sources.collect(&:full)
@@ -342,11 +342,11 @@ module RestFtpDaemon
       raise RestFtpDaemon::JobTargetDirectoryError if @target_path.name && sources.count>1
 
       # Connect to remote server and login
-      newstatus :remote_connect
+      set_status :remote_connect
       @remote.connect
 
       # Prepare target path or build it if asked
-      newstatus :remote_chdir
+      set_status :remote_chdir
       @remote.chdir_or_create @target_path.dir, @mkdir
 
       # Compute total files size
@@ -401,9 +401,15 @@ module RestFtpDaemon
        Thread.current.thread_variable_set :updted_at, Time.now
     end
 
-    def newstatus name
-      @status = name
-      worker_is_still_active
+    def set_error value
+      @mutex.synchronize do
+        @error = value.to_s.encode("UTF-8")
+      end
+    end
+    def set_status value
+      @mutex.synchronize do
+        @status = value.to_s.encode("UTF-8")
+      end
     end
 
     def flag_default name, default
@@ -426,7 +432,7 @@ module RestFtpDaemon
       @remote = nil
 
       # Update job status
-      newstatus :disconnecting
+      set_status :disconnecting
       @finished_at = Time.now
 
       # Update counters
@@ -463,16 +469,16 @@ module RestFtpDaemon
       transfer_started_at = Time.now
       @progress_at = 0
       @notified_at = transfer_started_at
-      newstatus JOB_STATUS_UPLOADING
+      set_status JOB_STATUS_UPLOADING
 
       # Start the transfer, update job status after each block transfer
-      newstatus :uploading
+      set_status :uploading
       @remote.push source, target, tempname do |transferred, name|
         # Update transfer statistics
         progress transferred, name
 
         # Touch my worker status
-        worker_is_still_active
+        touch_worker
       end
 
       # Compute final bitrate
@@ -568,7 +574,9 @@ module RestFtpDaemon
 
     def oops event, exception, error = nil, include_backtrace = false
       # Log this error
+      # error = exception.class.to_s.encoding.to_s if error.nil?
       error = exception.class if error.nil?
+      # error = "DEF #{exception.class}" if error.nil?
 
       message = "Job.oops event[#{event}] error[#{error}] ex[#{exception.class}] #{exception.message}"
       if include_backtrace
@@ -581,10 +589,10 @@ module RestFtpDaemon
       @remote.close unless @remote.nil? || !@remote.connected?
 
       # Update job's internal status
-      newstatus JOB_STATUS_FAILED
-      @error = error
       set :error_exception, exception.class.to_s
       set :error_message, exception.message
+      set_status JOB_STATUS_FAILED
+      set_error error
 
       # Build status stack
       notif_status = nil
