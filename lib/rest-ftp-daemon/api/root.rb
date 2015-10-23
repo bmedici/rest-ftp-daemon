@@ -14,6 +14,7 @@ module RestFtpDaemon
       do_not_route_options!
 
       format :json
+      content_type :json, 'application/json; charset=utf-8'
 
       mount RestFtpDaemon::API::Jobs => "/jobs"
       mount RestFtpDaemon::API::Dashbaord => "/"
