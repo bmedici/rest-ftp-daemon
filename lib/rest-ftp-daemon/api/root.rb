@@ -96,11 +96,10 @@ module RestFtpDaemon
 
         jobs.each do |job|
           # here = out[job.id] = {}
-          me = encodings[job.id] = {
-            id: job.id,
-            error: job.error.to_s.encoding.to_s,
-            status: job.status.to_s.encoding.to_s,
-          }
+          me = encodings[job.id] = {}
+
+          me[:error] = job.error.encoding.to_s unless job.error.nil?
+          me[:status] = job.status.encoding.to_s unless job.status.nil?
 
           Job::FIELDS.each do |name|
             value = job.send(name)

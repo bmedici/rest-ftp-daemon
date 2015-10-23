@@ -398,23 +398,28 @@ module RestFtpDaemon
     def set_info attribute, value
       @mutex.synchronize do
         @infos || {}
-        @infos[attribute] = value.to_s.encode("UTF-8")
+        @infos[attribute] = utf8_if_string value
         touch_job
       end
     end
 
     def set_error value
       @mutex.synchronize do
-        @error = value.to_s.encode("UTF-8")
+        @error = utf8_if_string value
         touch_job
       end
     end
 
     def set_status value
       @mutex.synchronize do
-        @status = value.to_s.encode("UTF-8")
+        @status = utf8_if_string value
         touch_job
       end
+    end
+
+    def utf8_if_string value
+      return value unless (value.is_a? String) || (value.is_a? Symbol)
+      return value.to_s.encode("UTF-8")
     end
 
     def flag_default name, default
