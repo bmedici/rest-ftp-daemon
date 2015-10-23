@@ -13,8 +13,11 @@ module RestFtpDaemon
     end
 
     def full
-      return @name if @dir.nil? || @dir.empty?
-      return File.join @dir, @name
+      if @dir.nil? || @dir.empty?
+        return @name
+      else
+        return File.join @dir, @name
+      end
     end
 
     def size

@@ -20,7 +20,7 @@ end
 GC::Profiler.enable if Settings.newrelic_enabled?
 
 # Serve static assets
-use Rack::Static, :urls => ["/css", "/js", "/images"], :root => "#{APP_LIBS}/static/"
+use Rack::Static, urls: ["/css", "/js", "/images"], root: "#{APP_LIBS}/static/"
 
 # Rack reloader and mini-profiler
 unless Settings.namespace == "production"
@@ -29,9 +29,8 @@ unless Settings.namespace == "production"
 end
 
 # Set up encodings
-Encoding.default_internal = 'utf-8'
-Encoding.default_external = 'utf-8'
+Encoding.default_internal = "utf-8"
+Encoding.default_external = "utf-8"
 
 # Launch the main daemon
 run RestFtpDaemon::API::Root
-#run Rack::Cascade.new [RestFtpDaemon::API::Root]

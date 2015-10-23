@@ -1,6 +1,8 @@
 require "securerandom"
 
 module RestFtpDaemon
+
+  # Reprensents work to be done along with parameters to process it
   class Job
     include LoggerHelper
     attr_reader :logger
@@ -29,7 +31,7 @@ module RestFtpDaemon
       attr_reader name
     end
 
-    def initialize job_id, params={}
+    def initialize job_id, params = {}
       # Call super
       # super()
 
@@ -68,7 +70,7 @@ module RestFtpDaemon
       @updated_at = Time.now
 
       # Send first notification
-      log_info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] JOB_UPDATE_INTERVAL[#{JOB_UPDATE_INTERVAL}]"
+      log_info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] interval[#{JOB_UPDATE_INTERVAL}]"
       client_notify :queued
     end
 
@@ -197,12 +199,12 @@ module RestFtpDaemon
       @weight = [
         - @runs.to_i,
         + @priority.to_i,
-        - @queued_at.to_i
+        - @queued_at.to_i,
         ]
     end
 
     def exectime
-      return nil if (@started_at.nil? || @finished_at.nil?)
+      return nil if @started_at.nil? || @finished_at.nil?
       (@finished_at - @started_at).round(2)
     end
 
@@ -242,7 +244,7 @@ module RestFtpDaemon
       URI.parse replace_tokens(path)
     end
 
-    def contains_brackets(item)
+    def contains_brackets item
       /\[.*\]/.match(item)
     end
 
@@ -320,7 +322,6 @@ module RestFtpDaemon
 
     def transfer
       # Update job status
-      #log_info "Job.transfer starting"
       @started_at = Time.now
 
       # Method assertions and init
@@ -335,7 +336,6 @@ module RestFtpDaemon
       set :source_count, sources.count
       set :source_files, sources.collect(&:full)
       log_info "Job.transfer sources #{sources.collect(&:name)}"
-      #log_info "Job.transfer target #{target.full}"
       raise RestFtpDaemon::JobSourceNotFound if sources.empty?
 
       # Guess target file name, and fail if present while we matched multiple sources
@@ -343,11 +343,9 @@ module RestFtpDaemon
 
       # Connect to remote server and login
       newstatus :remote_connect
-      #log_info "Job.remote_connect" # [#{host}] [#{login}]"
       @remote.connect
 
       # Prepare target path or build it if asked
-      #log_info "Job.remote_chdir"
       newstatus :remote_chdir
       @remote.chdir_or_create @target_path.dir, @mkdir
 
@@ -371,7 +369,6 @@ module RestFtpDaemon
         end
 
         # Do the transfer, for each file
-        #log_info "Job.remote_push"
         remote_push source, full_target
 
         # Update counters
@@ -387,8 +384,8 @@ module RestFtpDaemon
 
     def log_context
       {
-      wid: @wid,
-      jid: @id
+        wid: @wid,
+        jid: @id,
       }
     end
 
@@ -484,7 +481,6 @@ module RestFtpDaemon
 
       # Done
       set :source_current, nil
-      #log_info "Job.remote_push finished"
     end
 
     def progress transferred, name = ""
@@ -511,7 +507,7 @@ module RestFtpDaemon
         stack << (Helpers.format_bytes @transfer_sent, "B")
         stack << (Helpers.format_bytes @transfer_total, "B")
         stack << (Helpers.format_bytes @current_bitrate.round(0), "bps")
-        stack2 = stack.map{ |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt)}.join("\t")
+        stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
         log_info "#{LOG_INDENT}progress #{stack2} \t#{name}"
 
         # Remember when we last did it
@@ -526,7 +522,7 @@ module RestFtpDaemon
           progress: percent0,
           transfer_sent: @transfer_sent,
           transfer_total: @transfer_total,
-          transfer_bitrate: @current_bitrate
+          transfer_bitrate: @current_bitrate,
           }
         client_notify :progress, status: notif_status
 

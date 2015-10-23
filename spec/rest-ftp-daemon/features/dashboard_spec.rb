@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe 'Dashboard', feature: true do
+describe "Dashboard", feature: true do
 
   describe "GET /" do
     context 'without a password' do
@@ -9,8 +9,8 @@ describe 'Dashboard', feature: true do
       end
     end
 
-    context 'with a password' do
-      it 'can be accessed' do
+    context "with a password" do
+      it "can be accessed" do
         expect(
             get("/").status
         ).to eq 200

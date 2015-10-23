@@ -38,7 +38,7 @@ RSpec.configure do |config|
     # Use the documentation formatter for detailed output,
     # unless a formatter has already been configured
     # (e.g. via a command-line flag).
-    config.default_formatter = 'doc'
+    config.default_formatter = "doc"
   end
 
   # Print the 10 slowest examples and example groups at the
@@ -51,8 +51,8 @@ RSpec.configure do |config|
 
   include RequestHelpers
 
-  def call_server(command, config = Pathname(__dir__).join("support/config.yml"), port = RequestHelpers::PORT)
-    system(Pathname(__dir__).join("../bin/rest-ftp-daemon -e test -c #{config} #{command} -p #{port}").to_s, chdir: __dir__) or fail "Could not #{command} server"
+  def call_server command, config = Pathname(__dir__).join("support/config.yml"), port = RequestHelpers::PORT
+    system(Pathname(__dir__).join("../bin/rest-ftp-daemon -e test -c #{config} #{command} -p #{port}").to_s, chdir: __dir__) || fail("Could not #{command} server")
   end
 
   config.before :suite do

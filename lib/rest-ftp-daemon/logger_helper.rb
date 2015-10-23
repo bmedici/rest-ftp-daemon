@@ -28,7 +28,7 @@ module RestFtpDaemon
       logger.info_with_id message, context.merge({
         from: self.class.to_s,
         lines: lines,
-        level: level
+        level: level,
         })
     end
 

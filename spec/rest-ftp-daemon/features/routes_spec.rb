@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe 'Routes', feature: true do
+describe "Routes", feature: true do
 
   let!(:response) { get "/routes" }
 

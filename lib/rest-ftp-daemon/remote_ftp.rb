@@ -2,6 +2,7 @@ require "net/ftp"
 require "double_bag_ftps"
 
 module RestFtpDaemon
+  # Handles FTP and FTPeS transfers for Remote class
   class RemoteFTP < Remote
     attr_reader :ftp
 
@@ -77,12 +78,9 @@ module RestFtpDaemon
       rescue Net::FTPPermError => _e
         # If not allowed to create path, that's over, we're stuck
         return false unless mkdir
-
-        #log_info "#{LOG_INDENT}upward [#{parent}]"
         chdir_or_create parent, mkdir
 
         # Now I was able to chdir into my parent, create the current directory
-        #log_info "#{LOG_INDENT}mkdir [#{directory}]"
         mkdir "/#{directory}"
 
         # Finally retry the chdir
@@ -105,7 +103,7 @@ module RestFtpDaemon
 
       @ftp.putbinaryfile source.full, target.name, @chunk_size do |data|
         # Update the worker activity marker
-        #FIXME worker_is_still_active
+        # FIXME: worker_is_still_active
 
         # Update job status after this block transfer
         yield data.bytesize, destination.name
@@ -130,11 +128,11 @@ module RestFtpDaemon
       @ftp = Net::FTP.new
     end
 
-   def prepare_ftpes
+    def prepare_ftpes
       @ftp = DoubleBagFTPS.new
       @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(verify_mode: OpenSSL::SSL::VERIFY_NONE)
       @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
-   end
+    end
 
 
   end

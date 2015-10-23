@@ -1,7 +1,6 @@
 # coding: utf-8
 
 # Libs
-#require "settingslogic"
 app_root = File.dirname(__FILE__)
 require File.expand_path("#{app_root}/lib/rest-ftp-daemon/constants")
 
@@ -17,32 +16,31 @@ Gem::Specification.new do |spec|
   spec.licenses = ["MIT"]
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f == 'dashboard.png'
+    f == "dashboard.png"
   end
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
   spec.version       = APP_VER
 
-  #spec.required_ruby_version = '>= 1.9.3'
-  spec.required_ruby_version = ">= 2.1"
+  spec.required_ruby_version = ">= 2.1.7"
 
+  # spec.add_development_dependency "rack-mini-profiler"
+  # spec.add_development_dependency "stackprof"
+  # spec.add_development_dependency "flamegraph"
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec", "~> 3.1"
   spec.add_development_dependency "http", "~> 0.8"
   spec.add_development_dependency "rubocop", "~> 0.32.0"
   spec.add_development_dependency "pry"
-  # spec.add_development_dependency "rack-mini-profiler"
-  # spec.add_development_dependency "stackprof"
-  # spec.add_development_dependency "flamegraph"
 
+  # spec.add_runtime_dependency "net-ssh", "~> 2.10.1.rc1"
   spec.add_runtime_dependency "thin", "~> 1.6"
   spec.add_runtime_dependency "grape"
   spec.add_runtime_dependency "grape-entity"
   spec.add_runtime_dependency "settingslogic"
   spec.add_runtime_dependency "haml"
   spec.add_runtime_dependency "json"
-  #spec.add_runtime_dependency "net-ssh", "~> 2.10.1.rc1"
   spec.add_runtime_dependency "net-sftp"
   spec.add_runtime_dependency "double-bag-ftps"
   spec.add_runtime_dependency "facter"

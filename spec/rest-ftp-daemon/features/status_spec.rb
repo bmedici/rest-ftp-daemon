@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe 'Status', feature: true do
+describe "Status", feature: true do
 
   let!(:response) { get "/status" }
 

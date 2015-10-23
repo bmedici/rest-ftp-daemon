@@ -23,24 +23,24 @@ describe "Jobs", feature: true do
       let(:params) do
         {
           source: "/tmp/foo",
-          target: "/tmp/bar"
+          target: "/tmp/bar",
         }
       end
 
       it "issues a 201 response" do
         expect(
-          post("/jobs", json: params).status
+          post("/jobs", json: params).status,
         ).to eq 201
       end
 
       it "exposes the new job id" do
         response = JSON.parse post("/jobs", json: params)
-        expect(response['id']).not_to be_nil
+        expect(response["id"]).not_to be_nil
       end
 
       it "assigns a status" do
         response = JSON.parse post("/jobs", json: params)
-        expect(response['status']).to match(/^(queued|failed)$/)
+        expect(response["status"]).to match(/^(queued|failed)$/)
       end
 
       it "creates a new job" do
@@ -53,14 +53,14 @@ describe "Jobs", feature: true do
 
   describe "GET /jobs/:id" do
     let(:creation_response) do
-      JSON.parse post("/jobs", json: {source: "/tmp/foo", target: "/tmp/bar"}).body
+      JSON.parse post("/jobs", json: { source: "/tmp/foo", target: "/tmp/bar" }).body
     end
 
-    let(:job_id) { creation_response.fetch('id') }
+    let(:job_id) { creation_response.fetch("id") }
 
     it "is properly exposed" do
       expect(
-        get("/jobs/#{job_id}").status
+        get("/jobs/#{job_id}").status,
       ).to eq 200
     end
   end # GET /jobs/:id

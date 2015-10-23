@@ -1,4 +1,6 @@
 module RestFtpDaemon
+
+  # Queue that stores all the Jobs waiting to be processed or fully processed
   class JobQueue
     include LoggerHelper
     attr_reader :logger
@@ -134,7 +136,7 @@ module RestFtpDaemon
     alias enq     push
     alias requeue push
 
-    def pop non_block=false
+    def pop non_block = false
       @mutex.synchronize do
         loop do
           if @queue.empty?

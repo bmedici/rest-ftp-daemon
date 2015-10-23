@@ -1,6 +1,7 @@
 require "net/sftp"
 
 module RestFtpDaemon
+  # Handles sFTP transfers for Remote class
   class RemoteSFTP < Remote
     attr_reader :sftp
 
@@ -81,11 +82,9 @@ module RestFtpDaemon
         return false unless mkdir
 
         # Recurse upward
-        #log_info "#{LOG_INDENT}upward [#{parent}]"
         chdir_or_create parent, mkdir
 
         # Now I was able to chdir into my parent, create the current directory
-        #log_info "#{LOG_INDENT}mkdir [#{directory}]"
         mkdir directory
 
         # Finally retry the chdir
@@ -114,7 +113,7 @@ module RestFtpDaemon
 
       # Do the transfer
       log_info "RemoteSFTP.push [#{destination.full}]"
-      @sftp.upload! source.full, destination.full do |event, uploader, *args|
+      @sftp.upload! source.full, destination.full do |event, _uploader, *args|
         case event
         when :open then
           # args[0] : file metadata
@@ -125,7 +124,7 @@ module RestFtpDaemon
           # puts "writing #{args[2].length} bytes to #{args[0].remote} starting at #{args[1]}"
 
           # Update the worker activity marker
-          #FIXME worker_is_still_active
+          # FIXME: worker_is_still_active
 
           # Update job status after this block transfer
           yield args[2].length, destination.name

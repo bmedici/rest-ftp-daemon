@@ -1,6 +1,8 @@
 require "logger"
 
 module RestFtpDaemon
+
+  # Logger interface class to access logger though symbolic names
   class LoggerPool
     include Singleton
 
@@ -27,7 +29,7 @@ module RestFtpDaemon
         prefix = LOG_FORMAT_PREFIX % [
           datetime.strftime(LOG_FORMAT_TIME),
           severity,
-          progname
+          progname,
         ]
 
         # If we have a bunch of lines, prefix them and send them together

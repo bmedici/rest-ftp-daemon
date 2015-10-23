@@ -9,7 +9,7 @@ class Logger
 
     # Build prefixes depending on this context
     prefix1 = build_prefix(context)
-    prefix2 = build_prefix() + "   | "
+    prefix2 = build_prefix + "   | "
 
     lines = context[:lines]
 
@@ -36,25 +36,25 @@ class Logger
       context[:wid].to_s,
       context[:jid].to_s,
       context[:id].to_s,
-      context[:level].to_i+1
+      context[:level].to_i + 1,
     ]
   end
 
   protected
 
-    def build_from_array prefix, lines
-      lines.map do |value|
-        #text = value.to_s.strip[0..LOG_TRIM_LINE]
-        text = value.to_s[0..LOG_TRIM_LINE]
-        "#{prefix}#{text}"
-      end
+  def build_from_array prefix, lines
+    lines.map do |value|
+      #text = value.to_s.strip[0..LOG_TRIM_LINE]
+      text = value.to_s[0..LOG_TRIM_LINE]
+      "#{prefix}#{text}"
     end
+  end
 
-    def build_from_hash prefix, lines
-      lines.map do |name, value|
-        text = value.to_s.strip[0..LOG_TRIM_LINE]
-        "#{prefix}#{name}: #{text}"
-      end
+  def build_from_hash prefix, lines
+    lines.map do |name, value|
+      text = value.to_s.strip[0..LOG_TRIM_LINE]
+      "#{prefix}#{name}: #{text}"
     end
+  end
 
 end

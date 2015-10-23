@@ -2,15 +2,15 @@
 require "bundler/gem_tasks"
 require "rubygems"
 
-require 'rspec/core/rake_task'
+require "rspec/core/rake_task"
 RSpec::Core::RakeTask.new(:spec)
 
 # Run specs by default
-desc 'Run all tests'
+desc "Run all tests"
 
-require 'rubocop/rake_task'
+require "rubocop/rake_task"
 RuboCop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = false
 end
 
-task :default => [:spec, :rubocop]
+task default: [:spec, :rubocop]

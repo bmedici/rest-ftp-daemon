@@ -1,4 +1,6 @@
 module RestFtpDaemon
+
+  # Handles transfers for Job class
   class Remote
     include LoggerHelper
     attr_reader :logger
@@ -41,11 +43,7 @@ module RestFtpDaemon
       # Output header to STDOUT
       puts
       puts "-------------------- SESSION STARTING -------------------------"
-      #puts "job id\t #{@id}"
-      #puts "source\t #{@source}"
-      #puts "target\t #{@target}"
       puts "class\t #{myname}"
-      #puts "class\t #{myname}"
       puts "host\t #{@url.host}"
       puts "user\t #{@url.user}"
       puts "port\t #{@url.port}"

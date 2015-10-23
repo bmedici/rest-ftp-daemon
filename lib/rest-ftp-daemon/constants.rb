@@ -10,7 +10,6 @@ APP_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../")
 DEFAULT_CONFIG_PATH = File.expand_path "/etc/#{APP_NAME}.yml"
 SAMPLE_CONFIG_FILE = File.expand_path(File.join File.dirname(__FILE__), "/../../rest-ftp-daemon.yml.sample")
 
-#SAMPLE_CONFIG_FILE = File.expand_path("#{app_root}/#{APP_NAME}.yml.sample")
 TAIL_MESSAGE = <<EOD
 
 A default configuration is available here: #{SAMPLE_CONFIG_FILE}.
@@ -56,7 +55,7 @@ WORKER_STATUS_CLEANING  = :cleaning
 # Logging and startup
 LOG_PIPE_LEN            = 10
 LOG_COL_WID             = 8
-LOG_COL_JID             = JOB_IDENT_LEN+3+2
+LOG_COL_JID             = JOB_IDENT_LEN + 3 + 2
 LOG_COL_ID              = 6
 LOG_TRIM_LINE           = 80
 LOG_DUMPS               = File.dirname(__FILE__) + "/../../log/"
@@ -67,7 +66,7 @@ LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-L
 LOG_NEWLINE             = "\n"
 LOG_INDENT              = "\t"
 BIND_PORT_TIMEOUT       = 3
-BIND_PORT_LOCALHOST     = '127.0.0.1'
+BIND_PORT_LOCALHOST     = "127.0.0.1"
 
 
 # Notifications
@@ -89,7 +88,7 @@ DASHBOARD_WORKER_STYLES = {
   working:              :info,
   crashed:              :danger,
   done:                 :success,
-  dead:                 :danger
+  dead:                 :danger,
   }
 
 

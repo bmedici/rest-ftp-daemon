@@ -5,14 +5,17 @@ require "facter"
 
 module RestFtpDaemon
   module API
+
+    # Offers an HTML dashboard through the Grape API (hum...)
     class Dashbaord < Grape::API
 
-####### HELPERS
+      ### HELPERS
 
       helpers do
         def logger
           Root.logger
         end
+
         def render name, values={}
           template = File.read("#{APP_LIBS}/views/#{name}.haml")
           haml_engine = Haml::Engine.new(template)
@@ -21,13 +24,14 @@ module RestFtpDaemon
       end
 
 
-####### Common request logging
-    before do
-      log_info "HTTP #{request.request_method} #{request.fullpath}", params
-    end
+      ### Common request logging
+
+      before do
+        log_info "HTTP #{request.request_method} #{request.fullpath}", params
+      end
 
 
-####### DASHBOARD
+      ### DASHBOARD
 
       get "/" do
         # Initialize Facter

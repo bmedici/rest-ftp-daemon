@@ -25,8 +25,8 @@ module RestFtpDaemon
 
     def log_context
       {
-      wid: @wid,
-      jid: Thread.current.thread_variable_get(:jid),
+        wid: @wid,
+        jid: Thread.current.thread_variable_get(:jid),
       }
     end
 

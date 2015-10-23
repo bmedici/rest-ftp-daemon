@@ -110,7 +110,7 @@ module RestFtpDaemon
 
     def self.hide_credentials_from_url path
       return unless path.is_a? String
-      path.sub(/([a-z]+:\/\/[^\/]+):[^\/]+\@/, '\1@' )
+      path.sub(/([a-z]+:\/\/[^\/]+):[^\/]+\@/, '\1@')
     end
 
     def self.formatted_duration duration
@@ -120,11 +120,11 @@ module RestFtpDaemon
     minutes = (duration / 60) % 60
     seconds = duration % 60
 
-    out << "#{hours}h" if hours>0
-    out << "#{minutes}mn" if (minutes>0) || (hours>0)
+    out << "#{hours}h" if hours > 0
+    out << "#{minutes}mn" if (minutes > 0) || (hours > 0)
     out << "#{seconds}s"
 
-    out.join(' ')
+    out.join(" ")
     end
 
     def self.dashboard_job_link job

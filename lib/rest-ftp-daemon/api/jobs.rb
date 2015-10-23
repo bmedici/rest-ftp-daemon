@@ -4,7 +4,7 @@ module RestFtpDaemon
   module API
     class Jobs < Grape::API
 
-####### HELPERS
+      ### HELPERS
 
       helpers do
         def logger
@@ -13,13 +13,13 @@ module RestFtpDaemon
       end
 
 
-####### Common request logging
-    before do
-      log_info "HTTP #{request.request_method} #{request.fullpath}", params
-    end
+      ### Common request logging
+      before do
+        log_info "HTTP #{request.request_method} #{request.fullpath}", params
+      end
 
 
-####### READ ONE JOB
+      ### READ ONE JOB
 
       desc "Read job with ID"
       params do
@@ -34,11 +34,11 @@ module RestFtpDaemon
 
         rescue RestFtpDaemon::JobNotFound => exception
           log_error "JobNotFound: #{exception.message}"
-          error!({error: :api_job_not_found, message: exception.message}, 404)
+          error!({ error: :api_job_not_found, message: exception.message }, 404)
 
         rescue StandardError => exception
           log_error "Exception: #{exception.message}"
-          error!({error: :api_exception, message: exception.message}, 500)
+          error!({ error: :api_exception, message: exception.message }, 500)
 
         else
           status 200
@@ -48,7 +48,7 @@ module RestFtpDaemon
       end
 
 
-####### READ ALL JOBS
+      ### READ ALL JOBS
 
       desc "List all Jobs"
       get "/" do
@@ -58,7 +58,7 @@ module RestFtpDaemon
 
         rescue StandardError => exception
           log_error "Exception: #{exception.message}"
-          error!({error: :api_exception, message: exception.message}, 500)
+          error!({ error: :api_exception, message: exception.message }, 500)
 
         else
           status 200
@@ -68,7 +68,7 @@ module RestFtpDaemon
       end
 
 
-####### CREATE A JOB
+      ### CREATE A JOB
 
       desc "Create a new job"
       params do

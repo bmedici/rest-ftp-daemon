@@ -27,6 +27,7 @@ AllCops:
   Exclude:
     - 'vendor/**/*'
     - 'DOC/**/*'
+    - '**/actors/*'
   # By default, the rails cops are not run. Override in project or home
   # directory .rubocop.yml files, or by giving the -R/--rails option.
   RunRailsCops: false
@@ -380,6 +381,7 @@ Style/FileName:
   # File names listed in AllCops:Include are excluded by default. Add extra
   # excludes here.
   Exclude: []
+  Enabled: false
 
 Style/FirstParameterIndentation:
   EnforcedStyle: special_for_inner_method_call_in_parentheses
@@ -413,7 +415,7 @@ Style/FormatString:
 
 # Built-in global variables are allowed by default.
 Style/GlobalVars:
-  AllowedVariables: []
+  AllowedVariables: ["$queue", "$pool"]
 
 # `MinBodyLength` defines the number of lines of the a body of an if / unless
 # needs to have to trigger this cop
@@ -490,7 +492,7 @@ Style/NonNilCheck:
   IncludeSemanticChanges: false
 
 Style/MethodDefParentheses:
-  EnforcedStyle: require_parentheses
+  EnforcedStyle: require_no_parentheses
   SupportedStyles:
     - require_parentheses
     - require_no_parentheses
@@ -660,7 +662,7 @@ Style/TrailingComma:
   # last item of a list, but only for lists where each item is on its own line.
   # If EnforcedStyleForMultiline is consistent_comma, the cop requires a comma
   # after the last item of a list, for all lists.
-  EnforcedStyleForMultiline: no_comma
+  EnforcedStyleForMultiline: comma
   SupportedStyles:
     - comma
     - consistent_comma
@@ -715,7 +717,7 @@ Style/VariableName:
     - camelCase
 
 Style/WhileUntilModifier:
-  MaxLineLength: 80
+  MaxLineLength: 120
 
 Style/WordArray:
   MinSize: 0
@@ -742,10 +744,10 @@ Metrics/ModuleLength:
 
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
-  Max: 6
+  Max: 10
 
 Metrics/LineLength:
-  Max: 80
+  Max: 120
   # To make it possible to copy or click on URIs in the code, we allow lines
   # contaning a URI to be longer than Max.
   AllowURI: true
@@ -755,14 +757,14 @@ Metrics/LineLength:
 
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
-  Max: 10
+  Max: 20
 
 Metrics/ParameterLists:
   Max: 5
   CountKeywordArgs: true
 
 Metrics/PerceivedComplexity:
-  Max: 7
+  Max: 10
 
 ##################### Lint ##################################
 

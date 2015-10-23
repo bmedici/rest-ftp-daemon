@@ -5,11 +5,9 @@ module RestFtpDaemon
   module API
     class Root < Grape::API
 
-
-####### CLASS CONFIG
+      ### CLASS CONFIG
 
       helpers RestFtpDaemon::LoggerHelper
-
       logger RestFtpDaemon::LoggerPool.instance.get :api
 
       do_not_route_head!
@@ -21,7 +19,7 @@ module RestFtpDaemon
       mount RestFtpDaemon::API::Dashbaord => "/"
 
 
-####### INITIALIZATION
+      ### INITIALIZATION
 
       def initialize
         # Call daddy
@@ -33,7 +31,7 @@ module RestFtpDaemon
       end
 
 
-####### HELPERS
+      ### HELPERS
 
       helpers do
         def logger
@@ -42,13 +40,14 @@ module RestFtpDaemon
       end
 
 
-####### Common request logging
-    before do
-      log_info "HTTP #{request.request_method} #{request.fullpath}", params
-    end
+      ### Common request logging
+
+      before do
+        log_info "HTTP #{request.request_method} #{request.fullpath}", params
+      end
 
 
-####### SHOW ROUTES
+      ### SHOW ROUTES
 
       desc "Show application routes"
       get "/routes" do
@@ -57,7 +56,7 @@ module RestFtpDaemon
       end
 
 
-####### SHOW STATUS
+      ### SHOW STATUS
 
       desc "Show daemon status"
       get "/status" do
@@ -74,12 +73,12 @@ module RestFtpDaemon
           status: $queue.counts_by_status,
           workers: $pool.worker_variables,
           jobs_count: $queue.jobs_count,
-          jobs_queued: $queue.queued_ids
+          jobs_queued: $queue.queued_ids,
           }
       end
 
 
-####### SHOW CONFIG
+      ### SHOW CONFIG
 
       desc "Show daemon config"
       get "/config" do
@@ -88,7 +87,7 @@ module RestFtpDaemon
       end
 
 
-####### RELOAD CONFIG
+      ### RELOAD CONFIG
 
       desc "Reload daemon config"
       post "/config/reload" do

@@ -23,17 +23,17 @@ puts
 # Detect options from ARGV
 options = {}
 parser = OptionParser.new do |opts|
-  opts.banner = "Usage: #{File.basename $0} [options] start|stop"
-  opts.on("-c", "--config CONFIGFILE")                                 { |config| APP_CONF = config }
-  opts.on("-e", "--environment ENV")                                   { |env| APP_ENV = env }
-  opts.on("",   "--dev")                                               { APP_ENV = "development" }
-  opts.on("-p", "--port PORT", "use PORT")                             { |port| options["port"] = port.to_i }
-  opts.on("-w", "--workers COUNT", "Use COUNT worker threads")         { |count| options["workers"] = count.to_i }
-  opts.on("-d", "--daemonize", "Run daemonized in the background")     { |bool| options["daemonize"] = true }
-  opts.on("-f", "--foreground", "Run in the foreground")               { |bool| options["daemonize"] = false }
-  opts.on("-P", "--pid FILE", "File to store PID")                     { |file| options["pidfile"] = file }
-  opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")  { |user| options["user"] = user }
-  opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)"){ |group| options["group"] = group }
+  opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
+  opts.on("-c", "--config CONFIGFILE")                                  { |config| APP_CONF = config }
+  opts.on("-e", "--environment ENV")                                    { |env| APP_ENV = env }
+  opts.on("",   "--dev")                                                { APP_ENV = "development" }
+  opts.on("-p", "--port PORT", "use PORT")                              { |port| options["port"] = port.to_i }
+  opts.on("-w", "--workers COUNT", "Use COUNT worker threads")          { |count| options["workers"] = count.to_i }
+  opts.on("-d", "--daemonize", "Run daemonized in the background")      { options["daemonize"] = true }
+  opts.on("-f", "--foreground", "Run in the foreground")                { options["daemonize"] = false }
+  opts.on("-P", "--pid FILE", "File to store PID")                      { |file| options["pidfile"] = file }
+  opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")   { |user| options["user"] = user }
+  opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)") { |group| options["group"] = group }
 
   opts.separator ""
   opts.on_tail("-h", "--help", "Show this message")                    do
@@ -41,9 +41,8 @@ parser = OptionParser.new do |opts|
     puts TAIL_MESSAGE unless File.exist?(DEFAULT_CONFIG_PATH)
     exit
   end
-  opts.on_tail("-v", "--version", "Show version (#{APP_VER})")         { puts APP_VER; exit }
+  opts.on_tail("-v", "--version", "Show version (#{APP_VER})")         { puts(APP_VER) && exit }
 end
-
 
 # Parse options and check compliance
 begin
@@ -119,9 +118,9 @@ puts "Daemonize    \t #{Settings.daemonize ? "YES" : "no (PID: #{Process.pid})"}
 puts "Host         \t #{Settings.host}"
 puts "Namespace    \t #{Settings.namespace}"
 puts "Network port \t #{Settings.port}"
-puts "User:group   \t #{Settings.user}:#{Settings.group}" if (Settings.user || Settings.group)
+puts "User:group   \t #{Settings.user}:#{Settings.group}" if Settings.user || Settings.group
 puts "Newrelic     \t #{Settings.newrelic_enabled? ? Settings.at(:newrelic, :licence) : "no"}"
-puts "Started at   \t #{APP_STARTED.to_s}"
+puts "Started at   \t #{APP_STARTED}"
 # puts Settings.dump
 puts
 puts "--- Thin ARGV"
@@ -132,7 +131,7 @@ puts
 # Start Thin with this rackup configuration, changing to app_root first
 begin
   Dir.chdir app_root
-  r = Thin::Runner.new(argv.flatten).run!
+  Thin::Runner.new(argv.flatten).run!
 rescue RuntimeError => e
   puts "FAILED: RuntimeError: #{e.message}"
 rescue Thin::PidFileExist
@@ -144,8 +143,8 @@ rescue Errno::ENOENT => e
 rescue SystemExit
   # Leave some time for the daemon to launch
   pidfile = Settings.pidfile
-    print "Waiting for pidfile"
-  while !File.file?(pidfile) do
+  print "Waiting for pidfile"
+  until File.file?(pidfile) do
     print "."
     sleep 0.25
   end
@@ -157,9 +156,9 @@ rescue SystemExit
     Process.kill(0, pid)
     puts "Process ##{pid} is running"
   rescue Errno::EPERM                            # changed uid
-    puts "No permission to query process ##{pid}!";
+    puts "No permission to query process ##{pid}!"
   rescue Errno::ESRCH
-    puts "Process ##{pid} is NOT running.";      # or zombied
+    puts "Process ##{pid} is NOT running."       # or zombied
   rescue
     puts "Unable to determine status for ##{pid}: #{$!}"
   end
