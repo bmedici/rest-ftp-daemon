@@ -88,6 +88,38 @@ module RestFtpDaemon
       end
 
 
+      desc "List all Jobs params encodings"
+      get "/encodings" do
+        # Get jobs to display
+        encodings = {}
+        jobs = $queue.jobs
+
+        jobs.each do |job|
+          # here = out[job.id] = {}
+          me = encodings[job.id] = {
+            id: job.id,
+            error: job.error.to_s.encoding.to_s,
+            status: job.status.to_s.encoding.to_s,
+          }
+
+          Job::FIELDS.each do |name|
+            value = job.send(name)
+            me[name] = value.encoding.to_s if value.is_a? String
+          end
+
+          job.infos.each do |name, value|
+            me["infos_#{name}"] = value.encoding.to_s if value.is_a? String
+          end
+
+          # # Computed fields
+          # expose :age
+          # expose :exectime
+        end
+
+        encodings
+      end
+
+
       ### RELOAD CONFIG
 
       desc "Reload daemon config"
