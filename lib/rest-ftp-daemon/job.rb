@@ -25,7 +25,7 @@ module RestFtpDaemon
     attr_reader :started_at
     attr_reader :finished_at
 
-    attr_reader :params
+    attr_reader :infos
 
     FIELDS.each do |name|
       attr_reader name
@@ -37,7 +37,7 @@ module RestFtpDaemon
 
       # Init context
       @id = job_id.to_s
-      @params = {}
+      @infos = {}
       @updated_at = nil
       @started_at = nil
       @finished_at = nil
@@ -190,8 +190,8 @@ module RestFtpDaemon
 
     def get attribute
       @mutex.synchronize do
-        @params || {}
-        @params[attribute]
+        @infos || {}
+        @infos[attribute]
       end
     end
 
@@ -227,14 +227,6 @@ module RestFtpDaemon
     end
 
   protected
-
-    def set attribute, value
-      @mutex.synchronize do
-        @params || {}
-        @updated_at = Time.now
-        @params[attribute] = value
-      end
-    end
 
     def expand_path path
       File.expand_path replace_tokens(path)
@@ -283,13 +275,13 @@ module RestFtpDaemon
       # Prepare source
       raise RestFtpDaemon::JobMissingAttribute unless @source
       @source_path = expand_path @source
-      set :source_path, @source_path
-      set :source_method, :file
+      set_info :source_path, @source_path
+      set_info :source_method, :file
 
       # Prepare target
       raise RestFtpDaemon::JobMissingAttribute unless @target
       target_uri = expand_url @target
-      set :target_uri, target_uri.to_s
+      set_info :target_uri, target_uri.to_s
       @target_path = Path.new target_uri.path, true
 
       #puts "@target_path: #{@target_path.inspect}"
@@ -300,17 +292,17 @@ module RestFtpDaemon
 
       if target_uri.is_a? URI::FTP
         log_info "Job.prepare target_method FTP"
-        set :target_method, :ftp
+        set_info :target_method, :ftp
         @remote = RemoteFTP.new target_uri, log_context
 
       elsif (target_uri.is_a? URI::FTPES) || (target_uri.is_a? URI::FTPS)
         log_info "Job.prepare target_method FTPES"
-        set :target_method, :ftpes
+        set_info :target_method, :ftpes
         @remote = RemoteFTP.new target_uri, log_context, ftpes: true
 
       elsif target_uri.is_a? URI::SFTP
         log_info "Job.prepare target_method SFTP"
-        set :target_method, :sftp
+        set_info :target_method, :sftp
         @remote = RemoteSFTP.new target_uri, log_context
 
       else
@@ -328,13 +320,13 @@ module RestFtpDaemon
       raise RestFtpDaemon::JobAssertionFailed, "transfer/1" unless @source_path
       raise RestFtpDaemon::JobAssertionFailed, "transfer/2" unless @target_path
       @transfer_sent = 0
-      set :source_processed, 0
+      set_info :source_processed, 0
 
       # Guess source files from disk
       set_status :checking_source
       sources = find_local @source_path
-      set :source_count, sources.count
-      set :source_files, sources.collect(&:full)
+      set_info :source_count, sources.count
+      set_info :source_files, sources.collect(&:full)
       log_info "Job.transfer sources #{sources.collect(&:name)}"
       raise RestFtpDaemon::JobSourceNotFound if sources.empty?
 
@@ -351,7 +343,7 @@ module RestFtpDaemon
 
       # Compute total files size
       @transfer_total = sources.collect(&:size).sum
-      set :transfer_total, @transfer_total
+      set_info :transfer_total, @transfer_total
 
       # Reset counters
       @last_data = 0
@@ -372,7 +364,7 @@ module RestFtpDaemon
         remote_push source, full_target
 
         # Update counters
-        set :source_processed, source_processed += 1
+        set_info :source_processed, source_processed += 1
       end
 
       # FTP transfer finished
@@ -399,6 +391,11 @@ module RestFtpDaemon
 
     def worker_is_still_active
        Thread.current.thread_variable_set :updted_at, Time.now
+    def set_info attribute, value
+      @mutex.synchronize do
+        @infos || {}
+        @infos[attribute] = value.to_s.encode("UTF-8")
+      end
     end
 
     def set_error value
@@ -448,7 +445,7 @@ module RestFtpDaemon
 
       # Use source filename if target path provided none (typically with multiple sources)
       log_info "Job.remote_push [#{source.name}]: [#{source.full}] > [#{target.full}]"
-      set :source_current, source.name
+      set_info :source_current, source.name
 
       # Compute temp target name
       tempname = nil
@@ -483,10 +480,10 @@ module RestFtpDaemon
 
       # Compute final bitrate
       global_transfer_bitrate = get_bitrate @transfer_total, (Time.now - transfer_started_at)
-      set :transfer_bitrate, global_transfer_bitrate.round(0)
+      set_info :transfer_bitrate, global_transfer_bitrate.round(0)
 
       # Done
-      set :source_current, nil
+      set_info :source_current, nil
     end
 
     def progress transferred, name = ""
@@ -495,17 +492,17 @@ module RestFtpDaemon
 
       # Update counters
       @transfer_sent += transferred
-      set :transfer_sent, @transfer_sent
+      set_info :transfer_sent, @transfer_sent
 
       # Update job info
       percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
-      set :progress, percent0
+      set_info :progress, percent0
 
       # Update job status after each NOTIFY_UPADE_STATUS
       progressed_ago = (now.to_f - @progress_at.to_f)
       if (!JOB_UPDATE_INTERVAL.to_f.zero?) && (progressed_ago > JOB_UPDATE_INTERVAL.to_f)
         @current_bitrate = running_bitrate @transfer_sent
-        set :transfer_bitrate, @current_bitrate.round(0)
+        set_info :transfer_bitrate, @current_bitrate.round(0)
 
         # Log progress
         stack = []
@@ -589,15 +586,15 @@ module RestFtpDaemon
       @remote.close unless @remote.nil? || !@remote.connected?
 
       # Update job's internal status
-      set :error_exception, exception.class.to_s
-      set :error_message, exception.message
       set_status JOB_STATUS_FAILED
       set_error error
+      set_info :error_exception, exception.class.to_s
+      set_info :error_message, exception.message
 
       # Build status stack
       notif_status = nil
       if include_backtrace
-        set :error_backtrace, exception.backtrace
+        set_info :error_backtrace, exception.backtrace
         notif_status = {
           backtrace: exception.backtrace,
           }

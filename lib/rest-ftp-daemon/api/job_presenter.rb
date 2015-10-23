@@ -26,7 +26,7 @@ module RestFtpDaemon
         expose :exectime
 
         # Params
-        expose :params, unless: :hide_params
+        expose :infos, unless: :hide_infos
 
       end
 
