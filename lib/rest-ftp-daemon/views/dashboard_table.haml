@@ -32,7 +32,7 @@
 
     %td
       %span.push-status
-        = job.status
+        = job.status_utf8
 
       - if (job.status != JOB_STATUS_FINISHED) && (source_processed < source_count)
         = " (#{source_processed}/#{source_count})"
@@ -54,7 +54,7 @@
 
       - else
         .error{title: job.get(:error_message)}
-          = Helpers.text_or_empty(job.error)
+          = Helpers.text_or_empty(job.error_utf8)
 
     %td.nobr.text-right
       = Helpers.format_bytes(job.get(:transfer_total), "B")

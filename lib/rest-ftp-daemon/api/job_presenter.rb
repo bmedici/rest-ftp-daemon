@@ -14,8 +14,9 @@ module RestFtpDaemon
         # Technical fields
         expose :wid, unless: lambda { |object, _options| object.wid.nil? }
 
-        expose :error
-        expose :status
+        # expose :error
+        expose :error_utf8, :as => :error
+        expose :status_utf8, :as => :status
         expose :queued_at
         expose :updated_at
         expose :started_at

@@ -226,6 +226,15 @@ module RestFtpDaemon
       (Time.now - @queued_at).round(2)
     end
 
+    def status_utf8
+      utf8 @status
+    end
+
+    def error_utf8
+      utf8 @error
+    end
+
+
   protected
 
     def expand_path path
@@ -372,6 +381,7 @@ module RestFtpDaemon
     end
 
 
+
   private
 
     def log_context
@@ -403,23 +413,30 @@ module RestFtpDaemon
       end
     end
 
+    def utf8 value
+      value.to_s.encode("UTF-8")
+    end
+
     def set_error value
-      @mutex.synchronize do
-        @error = utf8_if_string value
-        touch_job
-      end
+      @error = value
+      touch_job
     end
 
     def set_status value
-      @mutex.synchronize do
-        @status = utf8_if_string value
-        touch_job
-      end
+      @status = value
+      touch_job
     end
+
+    # def set_status value
+    #   @mutex.synchronize do
+    #     @status = utf8_if_string value
+    #     touch_job
+    #   end
+    # end
 
     def utf8_if_string value
       return value unless (value.is_a? String) || (value.is_a? Symbol)
-      return value.to_s.encode("UTF-8")
+      return utf8 value
     end
 
     def flag_default name, default
