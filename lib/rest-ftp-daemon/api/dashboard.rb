@@ -54,6 +54,7 @@ module RestFtpDaemon
         @paginate = Paginate.new result
         @paginate.only = params["only"]
         @paginate.page = params["page"]
+        @paginate.all = params.keys.include? "all"
 
         # Compile haml template
         output = render :dashboard
