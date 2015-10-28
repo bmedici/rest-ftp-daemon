@@ -109,6 +109,7 @@ module RestFtpDaemon
       # Check that item responds to "priorty" method
       raise "JobQueue.push: job should respond to priority method" unless job.respond_to? :priority
       raise "JobQueue.push: job should respond to id method" unless job.respond_to? :id
+      raise "JobQueue.push: job should respond to reset" unless job.respond_to? :reset
 
       @mutex.synchronize do
         # Store the job into the global jobs list, if not already inside
@@ -117,8 +118,8 @@ module RestFtpDaemon
         # Push job into the queue, if not already inside
         @queue.push(job) unless @queue.include?(job)
 
-        # Inform the job that it's been queued
-        job.set_queued if job.respond_to? :set_queued
+        # Inform the job that it's been queued / reset it
+        job.reset
 
         # Refresh queue order
         sort_queue!

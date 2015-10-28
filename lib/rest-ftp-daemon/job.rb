@@ -37,12 +37,12 @@ module RestFtpDaemon
 
       # Init context
       @id = job_id.to_s
-      @infos = {}
-      @updated_at = nil
+      # @infos = {}
+      #@updated_at = nil
       @started_at = nil
       @finished_at = nil
-      @error = nil
-      @status = nil
+      # @error = nil
+      # @status = nil
       @runs = 0
       @wid = nil
 
@@ -57,13 +57,18 @@ module RestFtpDaemon
         instance_variable_set "@#{name}", params[name]
       end
 
+      # Set job queue, thus reset
+      reset
+
+      # Read source file size and parameters
+      @notify_after_sec = Settings.at(:transfer, :notify_after_sec) rescue nil
+    end
+
+    def reset
       # Set super-default flags
       flag_default :mkdir, false
       flag_default :overwrite, false
       flag_default :tempfile, false
-
-      # Read source file size and parameters
-      @notify_after_sec = Settings.at(:transfer, :notify_after_sec) rescue nil
 
       # Flag current job
       @queued_at = Time.now
@@ -72,6 +77,11 @@ module RestFtpDaemon
       # Send first notification
       log_info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] interval[#{JOB_UPDATE_INTERVAL}]"
       client_notify :queued
+
+      # Update job status
+      set_status JOB_STATUS_QUEUED
+      set_error nil
+      @infos = {}
     end
 
     def process
@@ -206,11 +216,6 @@ module RestFtpDaemon
     def exectime
       return nil if @started_at.nil? || @finished_at.nil?
       (@finished_at - @started_at).round(2)
-    end
-
-    def set_queued
-      # Update job status
-      set_status JOB_STATUS_QUEUED
     end
 
     def oops_after_crash exception
