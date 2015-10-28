@@ -61,7 +61,7 @@ Expected features in a short-time range :
 Installation
 ------------------------------------------------------------------------------------
 
-With Ruby (version 2.1 or higher) and rubygems properly installed, you only
+With Ruby (version 2.2 or higher) and rubygems properly installed, you only
 need to issue :
 
 ```
@@ -213,17 +213,17 @@ TODO for this document
 Debian install preparation
 ------------------------------------------------------------------------------------
 
-This project is available as a rubygem, requires Ruby 2.1 and rubygems installed.
+This project is available as a rubygem, requires Ruby 2.2 and rubygems installed.
 
-You may use `rbenv` and `ruby-build` to get the right Ruby version. If this is your case, ensure that ruby-build definitions are up-to-date and include ruby-2.1.0
+You may use `rbenv` and `ruby-build` to get the right Ruby version. If this is your case, ensure that ruby-build definitions are up-to-date and include ruby-2.2.0
 
 ```
 # apt-get install ruby-build rbenv
-# ruby-build --definitions | grep '2.1'
+# ruby-build --definitions | grep '2.2'
 ```
 
-Otherwise, you way have to update ruby-build to include Ruby 2.1.0 definitions.
-On Debian, 2.1.0 is not included in Wheezy and appears in Jessie's version of the package.
+Otherwise, you way have to update ruby-build to include Ruby 2.2.0 definitions.
+On Debian, 2.2.0 is not included in Wheezy and appears in Jessie's version of the package.
 
 Use a dedicated user for the daemon, switch to this user and enable rbenv
 
