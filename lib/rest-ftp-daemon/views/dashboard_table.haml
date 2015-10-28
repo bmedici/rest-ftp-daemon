@@ -5,8 +5,9 @@
   - source_processed = job.get(:source_processed) || 0
   - source_current = job.get(:source_current)
   - bitrate = job.get :transfer_bitrate
-
   - trclass = DASHBOARD_JOB_STYLES[job.status]
+  - runs = job.runs.to_i
+
 
   - unless job.error.nil?
     - trclass = "warning"
@@ -47,7 +48,8 @@
           %b= source_current unless source_current.nil?
 
     %td
-      - unless job.error || job.status == JOB_STATUS_FINISHED
+      -# unless job.error || job.status == JOB_STATUS_FINISHED
+      - if job.status == JOB_STATUS_UPLOADING
         .progress
           .progress-bar{style:"width: #{progress}%;"}
             = Helpers.format_bytes(job.get(:transfer_sent), "B")
@@ -73,14 +75,8 @@
         .label.label-default.flag.worker-label= job.priority
 
     %td
-      - if job.runs.nil?
-        .label.label-info.flag.worker-label= "-"
-      - elsif job.runs == 1
-        .label.label-default.flag.worker-label= job.runs
-      - elsif job.runs == 2
-        .label.label-warning.flag.worker-label= job.runs
-      - elsif job.runs > 2
-        .label.label-danger.flag.worker-label= job.runs
+
+      .label.flag.worker-label{class: Helpers.job_runs_style(runs)}= runs
 
     -#%td
       - unless job.priority.nil?

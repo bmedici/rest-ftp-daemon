@@ -92,6 +92,13 @@ module RestFtpDaemon
       "<div class=\"transfer-method label #{klass}\">#{method.upcase}</div>"
     end
 
+    def self.job_runs_style runs
+      return  "label-outline"     if runs <= 0
+      return  "label-info"  if runs == 1
+      return  "label-warning"  if runs == 2
+      return  "label-danger"   if runs > 2
+    end
+
     # Dates and times: date with time generator
     def self.datetime_full datetime
       return "-"  if datetime.nil?
