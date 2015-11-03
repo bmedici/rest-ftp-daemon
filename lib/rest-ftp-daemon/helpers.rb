@@ -12,8 +12,8 @@ module RestFtpDaemon
       return "&Oslash;" if number.nil? || number.to_f.zero?
 
       units = ["", "k", "M", "G", "T", "P" ]
-      index = ( Math.log( number ) / Math.log( 2 ) ).to_i / 10
-      converted = number.to_f / ( 1024 ** index )
+      index = ( Math.log(number) / Math.log(2) ).to_i / 10
+      converted = number.to_f / (1024 ** index)
 
       truncated = converted.round(decimals)
 
@@ -61,20 +61,18 @@ module RestFtpDaemon
     end
 
     def self.local_port_used? port
-      begin
-        Timeout.timeout(BIND_PORT_TIMEOUT) do
-          begin
-            TCPSocket.new(BIND_PORT_LOCALHOST, port).close
-            true
-          rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
-            false
-          rescue Errno::EADDRNOTAVAIL
-            "Settings.local_port_used: Errno::EADDRNOTAVAIL"
-          end
+      Timeout.timeout(BIND_PORT_TIMEOUT) do
+        begin
+          TCPSocket.new(BIND_PORT_LOCALHOST, port).close
+          true
+        rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+          false
+        rescue Errno::EADDRNOTAVAIL
+          "Settings.local_port_used: Errno::EADDRNOTAVAIL"
         end
-      rescue Timeout::Error
-        false
       end
+    rescue Timeout::Error
+      false
     end
 
     def self.job_method_label method

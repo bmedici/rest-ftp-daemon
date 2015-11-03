@@ -578,7 +578,6 @@ module RestFtpDaemon
       end
     end
 
-
     def client_notify event, payload = {}
       # Skip if no URL given
       return unless @notify

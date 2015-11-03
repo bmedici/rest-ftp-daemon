@@ -432,7 +432,7 @@ Style/HashSyntax:
   UseHashRocketsWithSymbolValues: false
 
 Style/IfUnlessModifier:
-  MaxLineLength: 120
+  MaxLineLength: 160
 
 Style/IndentationConsistency:
   # The difference between `rails` and `normal` is that the `rails` style
