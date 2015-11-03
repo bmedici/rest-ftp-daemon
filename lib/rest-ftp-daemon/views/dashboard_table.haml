@@ -23,7 +23,8 @@
       = Helpers.highlight_tokens job.source
 
     %td
-      = Helpers.job_method_label (job.get :target_method)
+      =# Helpers.job_method_label (job.get :target_method)
+      = Helpers.job_method_label job.target_method
 
     %td{title: job.get(:target_url)}
       = Helpers.highlight_tokens job.target

@@ -19,6 +19,8 @@ module RestFtpDaemon
     attr_reader :error
     attr_reader :status
     attr_reader :runs
+    attr_reader :target_method
+
 
     attr_reader :queued_at
     attr_reader :updated_at
@@ -235,6 +237,10 @@ module RestFtpDaemon
       utf8 @status
     end
 
+    def target_method_utf8
+      utf8 @target_method
+    end
+
     def error_utf8
       utf8 @error
     end
@@ -306,17 +312,20 @@ module RestFtpDaemon
 
       if target_uri.is_a? URI::FTP
         log_info "Job.prepare target_method FTP"
-        set_info :target_method, :ftp
+        # set_info :target_method, :ftp
+        @target_method = :ftp
         @remote = RemoteFTP.new target_uri, log_context
 
       elsif (target_uri.is_a? URI::FTPES) || (target_uri.is_a? URI::FTPS)
         log_info "Job.prepare target_method FTPES"
-        set_info :target_method, :ftpes
+        # set_info :target_method, :ftpes
+        @target_method = :ftpes
         @remote = RemoteFTP.new target_uri, log_context, ftpes: true
 
       elsif target_uri.is_a? URI::SFTP
         log_info "Job.prepare target_method SFTP"
-        set_info :target_method, :sftp
+        # set_info :target_method, :sftp
+        @target_method = :sftp
         @remote = RemoteSFTP.new target_uri, log_context
 
       else
