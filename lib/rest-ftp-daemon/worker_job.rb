@@ -38,7 +38,7 @@ module RestFtpDaemon
       if !job.error
         #log_info "job succeeded"
 
-      elsif !(on_errors.is_a?(Enumerable) && on_errors.include?(job.error.to_s))
+      elsif !(on_errors.is_a?(Enumerable) && on_errors.include?(job.error))
         log_error "not retrying: error not eligible"
 
       elsif max_age && (job.age >= max_age)
@@ -93,7 +93,7 @@ module RestFtpDaemon
       job.oops_you_stop_now ex unless job.nil?
 
     rescue StandardError => ex
-      log_error "JOB UNHANDLED EXCEPTION: #{ex.message}", ex.backtrace
+      log_error "JOB UNHANDLED EXCEPTION ex[#{ex.class}] #{ex.message}", ex.backtrace
       worker_status WORKER_STATUS_CRASHED
 
       # Inform the job
