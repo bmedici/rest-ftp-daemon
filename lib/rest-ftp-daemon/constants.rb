@@ -36,9 +36,15 @@ JOB_UPDATE_INTERVAL     = 1
 
 
 # Jobs and workers statuses
+JOB_STATUS_PREPARING    = :preparing
+JOB_STATUS_RUNNING      = :running
+JOB_STATUS_CHECKING_SRC = :checking_source
+JOB_STATUS_CONNECTING   = :remote_connect
+JOB_STATUS_CHDIR        = :remote_chdir
 JOB_STATUS_UPLOADING    = :uploading
 JOB_STATUS_RENAMING     = :renaming
 JOB_STATUS_PREPARED     = :prepared
+JOB_STATUS_DISCONNECTING= :remote_disconnect
 JOB_STATUS_FINISHED     = :finished
 JOB_STATUS_FAILED       = :failed
 JOB_STATUS_QUEUED       = :queued

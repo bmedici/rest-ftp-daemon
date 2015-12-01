@@ -21,7 +21,6 @@ module RestFtpDaemon
     attr_reader :runs
     attr_reader :target_method
 
-
     attr_reader :queued_at
     attr_reader :updated_at
     attr_reader :started_at
@@ -93,7 +92,6 @@ module RestFtpDaemon
 
       # Prepare job
       begin
-        set_status :prepare
         prepare
 
       rescue RestFtpDaemon::JobMissingAttribute => exception
@@ -123,7 +121,6 @@ module RestFtpDaemon
 
       # Process job
       begin
-        set_status :starting
         transfer
 
       rescue SocketError => exception
@@ -284,7 +281,7 @@ module RestFtpDaemon
 
     def prepare
       # Update job status
-      set_status :prepare
+      set_status JOB_STATUS_PREPARING
       @runs += 1
 
       # Init
@@ -307,7 +304,6 @@ module RestFtpDaemon
       #puts "@target_path: #{@target_path.inspect}"
 
       # Prepare remote
-      set_status :remote_init
       #FIXME: use a "case" statement on @target_url.class
 
       if target_uri.is_a? URI::FTP
@@ -337,6 +333,7 @@ module RestFtpDaemon
 
     def transfer
       # Update job status
+      set_status JOB_STATUS_RUNNING
       @started_at = Time.now
 
       # Method assertions and init
@@ -346,7 +343,7 @@ module RestFtpDaemon
       set_info :source_processed, 0
 
       # Guess source files from disk
-      set_status :checking_source
+      set_status JOB_STATUS_CHECKING_SRC
       sources = find_local @source_path
       set_info :source_count, sources.count
       set_info :source_files, sources.collect(&:full)
@@ -357,11 +354,11 @@ module RestFtpDaemon
       raise RestFtpDaemon::JobTargetDirectoryError if @target_path.name && sources.count>1
 
       # Connect to remote server and login
-      set_status :remote_connect
+      set_status JOB_STATUS_CONNECTING
       @remote.connect
 
       # Prepare target path or build it if asked
-      set_status :remote_chdir
+      set_status JOB_STATUS_CHDIR
       @remote.chdir_or_create @target_path.dir, @mkdir
 
       # Compute total files size
@@ -393,8 +390,6 @@ module RestFtpDaemon
       # FTP transfer finished
       finalize
     end
-
-
 
   private
 
@@ -437,20 +432,8 @@ module RestFtpDaemon
     end
 
     def set_status value
-      @status = value
+      @status = utf8(value.to_s)
       touch_job
-    end
-
-    # def set_status value
-    #   @mutex.synchronize do
-    #     @status = utf8_if_string value
-    #     touch_job
-    #   end
-    # end
-
-    def utf8_if_string value
-      return value unless (value.is_a? String) || (value.is_a? Symbol)
-      return utf8 value
     end
 
     def flag_default name, default
@@ -473,7 +456,7 @@ module RestFtpDaemon
       @remote = nil
 
       # Update job status
-      set_status :disconnecting
+      set_status JOB_STATUS_DISCONNECTING
       @finished_at = Time.now
 
       # Update counters
@@ -510,10 +493,9 @@ module RestFtpDaemon
       transfer_started_at = Time.now
       @progress_at = 0
       @notified_at = transfer_started_at
-      set_status JOB_STATUS_UPLOADING
 
       # Start the transfer, update job status after each block transfer
-      set_status :uploading
+      set_status JOB_STATUS_UPLOADING
       @remote.push source, target, tempname do |transferred, name|
         # Update transfer statistics
         progress transferred, name
