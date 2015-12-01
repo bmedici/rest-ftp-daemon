@@ -25,7 +25,7 @@ class Logger
     end
 
     # Prepend plain message to output
-    output.unshift prefix1 + message
+    output.unshift prefix1 + message.force_encoding(Encoding::UTF_8)
 
     # Send all this to logger
     add context[:level], output
