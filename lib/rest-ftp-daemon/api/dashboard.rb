@@ -18,7 +18,9 @@ module RestFtpDaemon
 
         def render name, values={}
           template = File.read("#{APP_LIBS}/views/#{name}.haml")
-          haml_engine = Haml::Engine.new(template)
+
+          haml_engine = Haml::Engine.new(template, encoding: Encoding::UTF_8)
+              #:encoding => Encoding::ASCII_8BIT
           haml_engine.render(binding, values)
         end
       end
