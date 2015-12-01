@@ -417,7 +417,18 @@ module RestFtpDaemon
     def set_info attribute, value
       @mutex.synchronize do
         @infos || {}
-        @infos[attribute] = utf8_if_string value
+
+        # Force strings to UTF8
+        if value.is_a? Symbol
+          @infos[attribute] = value.to_s.force_encoding(Encoding::UTF_8)
+        elsif value.is_a? String
+          # @infos[attribute] = utf8(value)
+          @infos[attribute] = value.force_encoding(Encoding::UTF_8)
+        else
+          @infos[attribute] = value
+        end
+
+        # Mark the job as updated
         touch_job
       end
     end
@@ -427,7 +438,7 @@ module RestFtpDaemon
     end
 
     def set_error value
-      @error = value
+      @error = utf8(value.to_s)
       touch_job
     end
 
