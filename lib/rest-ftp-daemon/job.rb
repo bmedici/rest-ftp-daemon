@@ -121,7 +121,7 @@ module RestFtpDaemon
 
       # Process job
       begin
-        transfer
+        start
 
       rescue SocketError => exception
         return oops :ended, exception, :conn_socket_error
@@ -331,14 +331,14 @@ module RestFtpDaemon
       end
     end
 
-    def transfer
+    def run
       # Update job status
       set_status JOB_STATUS_RUNNING
       @started_at = Time.now
 
       # Method assertions and init
-      raise RestFtpDaemon::JobAssertionFailed, "transfer/1" unless @source_path
-      raise RestFtpDaemon::JobAssertionFailed, "transfer/2" unless @target_path
+      raise RestFtpDaemon::JobAssertionFailed, "run/1" unless @source_path
+      raise RestFtpDaemon::JobAssertionFailed, "run/2" unless @target_path
       @transfer_sent = 0
       set_info :source_processed, 0
 
@@ -347,7 +347,7 @@ module RestFtpDaemon
       sources = find_local @source_path
       set_info :source_count, sources.count
       set_info :source_files, sources.collect(&:full)
-      log_info "Job.transfer sources #{sources.collect(&:name)}"
+      log_info "Job.run sources #{sources.collect(&:name)}"
       raise RestFtpDaemon::JobSourceNotFound if sources.empty?
 
       # Guess target file name, and fail if present while we matched multiple sources
@@ -477,9 +477,9 @@ module RestFtpDaemon
 
     def remote_push source, target
       # Method assertions
-      raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/1" if @remote.nil?
-      raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/2" if source.nil?
-      raise RestFtpDaemon::JobAssertionFailed, "ftp_transfer/3" if target.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "remote_push/1" if @remote.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "remote_push/2" if source.nil?
+      raise RestFtpDaemon::JobAssertionFailed, "remote_push/3" if target.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
       log_info "Job.remote_push [#{source.name}]: [#{source.full}] > [#{target.full}]"
@@ -647,7 +647,7 @@ module RestFtpDaemon
 
     if Settings.newrelic_enabled?
       add_transaction_tracer :prepare,        category: :task
-      add_transaction_tracer :transfer,       category: :task
+      add_transaction_tracer :run,            category: :task
       add_transaction_tracer :client_notify,  category: :task
       add_transaction_tracer :initialize,     category: :task
     end
