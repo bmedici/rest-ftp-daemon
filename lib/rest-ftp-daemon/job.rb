@@ -106,11 +106,11 @@ module RestFtpDaemon
       rescue RestFtpDaemon::JobTargetUnsupported => exception
         return oops :started, exception, :target_unsupported
 
-      rescue URI::InvalidURIError => exception
-        return oops :started, exception, :target_invalid
-
       rescue RestFtpDaemon::JobAssertionFailed => exception
         return oops :started, exception, :assertion_failed
+
+      rescue URI::InvalidURIError => exception
+        return oops :started, exception, :target_invalid
 
       else
         # Prepare done !
@@ -121,6 +121,7 @@ module RestFtpDaemon
 
       # Process job
       begin
+        #raise Net::FTPTempError, '451 Téléchargement avorté. Input/output error'.force_encoding("ASCII-8BIT")
         start
 
       rescue SocketError => exception
@@ -170,6 +171,9 @@ module RestFtpDaemon
 
       rescue Errno::EINVAL => exception
         return oops :ended, exception, :invalid_argument, true
+
+      rescue Encoding::UndefinedConversionError => exception
+        return oops :ended, exception, :encoding_error, true
 
       rescue RestFtpDaemon::JobSourceNotFound => exception
         return oops :ended, exception, :source_not_found
