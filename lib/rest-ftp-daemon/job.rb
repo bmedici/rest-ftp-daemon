@@ -122,7 +122,7 @@ module RestFtpDaemon
       # Process job
       begin
         #raise Net::FTPTempError, '451 Téléchargement avorté. Input/output error'.force_encoding("ASCII-8BIT")
-        start
+        run
 
       rescue SocketError => exception
         return oops :ended, exception, :conn_socket_error
