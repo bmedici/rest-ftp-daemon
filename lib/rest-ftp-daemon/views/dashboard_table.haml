@@ -8,7 +8,6 @@
   - trclass = DASHBOARD_JOB_STYLES[job.status]
   - runs = job.runs.to_i
 
-
   - unless job.error.nil?
     - trclass = "warning"
 
@@ -34,7 +33,7 @@
 
     %td
       %span.push-status
-        = job.status_utf8
+        = job.status
 
       - if (job.status != JOB_STATUS_FINISHED) && (source_processed < source_count)
         = " (#{source_processed}/#{source_count})"
@@ -57,7 +56,7 @@
 
       - else
         .error{title: job.get(:error_message)}
-          = Helpers.text_or_empty(job.error_utf8)
+          = Helpers.text_or_empty(job.error)
 
     %td.nobr.text-right
       = Helpers.format_bytes(job.get(:transfer_total), "B")

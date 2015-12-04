@@ -15,9 +15,9 @@ module RestFtpDaemon
         expose :wid, unless: lambda { |object, _options| object.wid.nil? }
 
         # expose :error
-        expose :error_utf8, as: :error
-        expose :status_utf8, as: :status
-        expose :target_method_utf8, as: :target_method
+        expose :json_error, as: :error
+        expose :json_status, as: :status
+        expose :json_target, as: :target_method
 
         expose :queued_at
         expose :updated_at

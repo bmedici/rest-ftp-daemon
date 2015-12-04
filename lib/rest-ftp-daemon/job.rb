@@ -42,8 +42,8 @@ module RestFtpDaemon
       #@updated_at = nil
       @started_at = nil
       @finished_at = nil
-      # @error = nil
-      # @status = nil
+      @error = nil
+      @status = nil
       @runs = 0
       @wid = nil
 
@@ -87,7 +87,6 @@ module RestFtpDaemon
 
     def process
       # Update job's status
-      @error = nil
       log_info "Job.process"
 
       # Prepare job
@@ -234,18 +233,17 @@ module RestFtpDaemon
       (Time.now - @queued_at).round(2)
     end
 
-    def status_utf8
-      utf8 @status
-    end
-
-    def target_method_utf8
+    def json_target
       utf8 @target_method
     end
 
-    def error_utf8
-      utf8 @error
+    def json_error
+      utf8 @error unless @error.nil?
     end
 
+    def json_status
+      utf8 @status unless @error.nil?
+    end
 
   protected
 
@@ -442,12 +440,12 @@ module RestFtpDaemon
     end
 
     def set_error value
-      @error = utf8(value.to_s)
+      @error = value
       touch_job
     end
 
     def set_status value
-      @status = utf8(value.to_s)
+      @status = value
       touch_job
     end
 
