@@ -242,7 +242,7 @@ module RestFtpDaemon
     end
 
     def json_status
-      utf8 @status unless @error.nil?
+      utf8 @status unless @status.nil?
     end
 
   protected
