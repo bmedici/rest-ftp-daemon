@@ -20,7 +20,8 @@ EOD
 
 
 # Configuration defaults
-DEFAULT_WORKERS         = 2
+# DEFAULT_WORKERS         = 2
+DEFAULT_POOL            = "default"
 DEFAULT_WORKER_TIMEOUT  = 3600  # 1h
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_FTP_CHUNK       = 1024  # 1 MB

@@ -2,8 +2,9 @@ module RestFtpDaemon
 
   # Worker used to process Jobs
   class JobWorker < Worker
+    #attr_reader :pool
 
-    def initialize wid
+    def initialize wid, pool
       # Generic worker initialize
       super
 
@@ -11,7 +12,7 @@ module RestFtpDaemon
       @timeout = (Settings.transfer.timeout rescue nil) || DEFAULT_WORKER_TIMEOUT
 
       # Start main loop
-      log_info "JobWorker starting", ["timeout: #{@timeout}"]
+      log_info "JobWorker initializing", ["wid: #{wid}", "pool: #{pool}", "timeout: #{@timeout}"]
       start
     end
 
@@ -20,7 +21,7 @@ module RestFtpDaemon
     def work
       # Wait for a job to be available in the queue
       worker_status WORKER_STATUS_WAITING
-      job = $queue.pop
+      job = $queue.pop @pool
 
       # Work on this job
       work_on_job(job)

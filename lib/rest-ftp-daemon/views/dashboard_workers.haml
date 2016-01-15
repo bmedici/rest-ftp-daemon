@@ -5,6 +5,7 @@
 
   %tr
     %th ID
+    %th pool
     %th status
     %th job
     %th.text-right seen
@@ -22,6 +23,7 @@
 
     %tr{class: trclass.to_s}
       %td= wid
+      %td= vars[:pool]
       %td= status
       %td= vars[:jid]
       %td.text-right

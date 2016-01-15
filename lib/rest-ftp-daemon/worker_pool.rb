@@ -4,7 +4,6 @@ module RestFtpDaemon
   class WorkerPool
     include LoggerHelper
     attr_reader :logger
-
     attr_reader :wid
 
     if Settings.newrelic_enabled?
@@ -53,34 +52,38 @@ module RestFtpDaemon
 
     def create_threads
       # Read configuration
-      number_threads = (Settings.workers || DEFAULT_WORKERS)
+      pools = (Settings.pools || {})
 
-      if number_threads < 1
-        log_error "create_threads: one worker is the minimum possible number (#{number_threads} configured)"
-        raise InvalidWorkerNumber
+      # Minimum one worker on DEFAULT_POOL
+      if !(pools.is_a? Hash)
+        log_error "create_threads: one worker is the minimum possible number (#{pools.inspect}"
       end
+      pools[DEFAULT_POOL] ||= 1
 
       # Create workers
-      log_info "WorkerPool creating #{number_threads}x JobWorker, 1x ConchitaWorker"
-
-      # Start worker threads
-      number_threads.times do
-        wid = generate_id
-        @workers[wid] = create_worker_thread wid
+      log_info "WorkerPool creating JobWorker's #{pools.inspect} + ConchitaWorker"
+      pools.each do |pool, count|
+        # Start worker threads for each pool
+        log_info "WorkerPool creating JobWorker [#{pool}] x#{count}"
+        count.times do
+          wid = generate_id
+          @workers[wid] = create_worker_thread wid, pool
+        end
       end
 
       # Start conchita thread
+      log_info "WorkerPool creating ConchitaWorker"
       @conchita = create_conchita_thread
 
     rescue StandardError => ex
       log_error "UNHANDLED EXCEPTION: #{ex.message}", ex.backtrace
     end
 
-    def create_worker_thread wid
+    def create_worker_thread wid, pool
       Thread.new wid do
         begin
-          worker = JobWorker.new wid
-          log_info "JobWorker [#{wid}]: #{worker}"
+          worker = JobWorker.new wid, pool
+          log_info "JobWorker [#{wid}][#{pool}]: #{worker}"
         rescue StandardError => ex
           log_error "JobWorker EXCEPTION: #{ex.message}"
         end

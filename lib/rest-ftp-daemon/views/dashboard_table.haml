@@ -18,6 +18,8 @@
 
     %td= job.label
 
+    %td= job.pool
+
     %td{title: job.get(:source_path)}
       = Helpers.highlight_tokens job.source
 

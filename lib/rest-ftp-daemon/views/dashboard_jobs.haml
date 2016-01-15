@@ -32,6 +32,7 @@
         %tr
           %th ID
           %th label
+          %th pool
           %th source
           %th mode
           %th target
@@ -44,15 +45,20 @@
           %th{title: "Priority"} P
           %th{title: "Runs count"} R
 
-        - unless @queue.empty?
-          %tbody.jobs
-            = render :dashboard_table, {jobs: @queue}
 
-            %thead
-              %tr
-                %td{colspan: 13}
-                  %br
+        - @jobs_queued.each do |pool, jobs|
+          - unless jobs.empty?
+            %tbody.jobs
+              = render :dashboard_table, {jobs: jobs}
+
+              %thead
+                %tr
+                  %td{colspan: 14}
+                    %br
 
         - unless jobs.empty?
           %tbody.jobs
             = render :dashboard_table, {jobs: jobs}
+
+
+

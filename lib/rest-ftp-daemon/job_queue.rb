@@ -5,7 +5,7 @@ module RestFtpDaemon
     include LoggerHelper
     attr_reader :logger
 
-    attr_reader :queue
+    #attr_reader :queues
     attr_reader :jobs
 
     if Settings.newrelic_enabled?
@@ -14,11 +14,17 @@ module RestFtpDaemon
 
     def initialize
       # Instance variables
-      @queue = []
+      @queues = {}
+      @waitings = {}
+
+      # @queue = []
+      # @waiting = []
+
       @jobs = []
-      @waiting = []
-      @queue.taint          # enable tainted communication
-      @waiting.taint
+
+      @queues.taint          # enable tainted communication
+      @waitings.taint
+
       taint
       @mutex = Mutex.new
 
@@ -65,7 +71,11 @@ module RestFtpDaemon
       end
     end
 
-    def filter_jobs status
+    def jobs_queued
+      @queues
+    end
+
+    def jobs_with_status status
       # No status filter: return all execept queued
       if status.empty?
         @jobs.reject { |job| job.status == JOB_STATUS_QUEUED }
@@ -88,7 +98,7 @@ module RestFtpDaemon
     end
 
     def queued_ids
-      @queue.collect(&:id)
+      @queues.collect{|pool, jobs| jobs.collect(&:id)}
     end
 
     def jobs_ids
@@ -101,7 +111,8 @@ module RestFtpDaemon
       log_info "find_by_id (#{id}, #{prefixed}) > #{id}"
 
       # Search in jobs queues
-      @jobs.reverse.find { |item| item.id == id }
+      #@jobs.reverse.find { |item| item.id == id }
+      @jobs.find { |item| item.id == id }
     end
 
 
@@ -109,24 +120,31 @@ module RestFtpDaemon
       # Check that item responds to "priorty" method
       raise "JobQueue.push: job should respond to priority method" unless job.respond_to? :priority
       raise "JobQueue.push: job should respond to id method" unless job.respond_to? :id
+      raise "JobQueue.push: job should respond to pool method" unless job.respond_to? :pool
       raise "JobQueue.push: job should respond to reset" unless job.respond_to? :reset
 
       @mutex.synchronize do
+        # Get this job's pool @ prepare queue of this pool
+        pool = job.pool
+        myqueue = (@queues[pool] ||= [])
+
         # Store the job into the global jobs list, if not already inside
         @jobs.push(job) unless @jobs.include?(job)
 
         # Push job into the queue, if not already inside
-        @queue.push(job) unless @queue.include?(job)
+        myqueue.push(job) unless myqueue.include?(job)
 
         # Inform the job that it's been queued / reset it
         job.reset
 
         # Refresh queue order
-        sort_queue!
+        #sort_queue!(pool)
+        myqueue.sort_by!(&:weight)
 
         # Try to wake a worker up
         begin
-          t = @waiting.shift
+          @waitings[pool] ||= []
+          t = @waitings[pool].shift
           t.wakeup if t
         rescue ThreadError
           retry
@@ -137,16 +155,18 @@ module RestFtpDaemon
     alias enq     push
     alias requeue push
 
-    def pop non_block = false
+    def pop pool, non_block = false
       @mutex.synchronize do
+        myqueue = (@queues[pool] ||= [])
+        @waitings[pool] ||= []
         loop do
-          if @queue.empty?
-            # info "JobQueue.pop: empty"
+          if myqueue.empty?
+            #puts "JobQueue.pop(#{pool}): empty"
             raise ThreadError, "queue empty" if non_block
-            @waiting.push Thread.current
+            @waitings[pool].push Thread.current
             @mutex.sleep
           else
-            return @queue.pop
+            return myqueue.pop
           end
         end
       end
@@ -202,19 +222,11 @@ module RestFtpDaemon
       "#{@prefix}.#{id}"
     end
 
-    def sort_queue!
-      @mutex_counters.synchronize do
-        @queue.sort_by!(&:weight)
-      end
-    end
-
     if Settings.newrelic_enabled?
       add_transaction_tracer :push,             category: :task
       add_transaction_tracer :pop,              category: :task
-      add_transaction_tracer :sort_queue!,      category: :task
       add_transaction_tracer :expire,           category: :task
       add_transaction_tracer :counts_by_status, category: :task
-      add_transaction_tracer :filter_jobs,      category: :task
     end
 
   end

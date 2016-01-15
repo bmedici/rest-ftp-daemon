@@ -11,7 +11,7 @@ module RestFtpDaemon
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     end
 
-    FIELDS = [:source, :target, :label, :priority, :notify, :overwrite, :mkdir, :tempfile]
+    FIELDS = [:source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]
 
     attr_accessor :wid
 
@@ -27,6 +27,7 @@ module RestFtpDaemon
     attr_reader :finished_at
 
     attr_reader :infos
+    attr_reader :pool
 
     FIELDS.each do |name|
       attr_reader name
@@ -56,6 +57,15 @@ module RestFtpDaemon
       # Import query params
       FIELDS.each do |name|
         instance_variable_set "@#{name}", params[name]
+      end
+
+      # Set pool
+      pools = (Settings.pools || {})
+      # Check if pool name exists
+      if (pools.keys.include? params[:pool])
+        @pool = params[:pool].to_s
+      else
+        @pool = DEFAULT_POOL
       end
 
       # Set job queue, thus reset

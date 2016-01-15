@@ -43,17 +43,20 @@ module RestFtpDaemon
         @only = params["only"].to_s
 
         # Get jobs for this view, order jobs by their weights
-        result = $queue.filter_jobs(@only).reverse
+        jobs_with_status = $queue.jobs_with_status(@only).reverse
 
         # Provide queue only if no filtering set
-        @queue = []
-        @queue = $queue.queue.reverse if @only.empty?
+        if @only.empty?
+          @jobs_queued = $queue.jobs_queued
+        else
+          @jobs_queued = []
+        end
 
         # Get workers status
         @worker_variables = $pool.worker_variables
 
         # Build paginator
-        @paginate = Paginate.new result
+        @paginate = Paginate.new jobs_with_status
         @paginate.only = params["only"]
         @paginate.page = params["page"]
         @paginate.all = params.keys.include? "all"

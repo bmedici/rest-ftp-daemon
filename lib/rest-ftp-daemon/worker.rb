@@ -7,15 +7,17 @@ module RestFtpDaemon
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     end
 
-    def initialize wid
+    def initialize wid, pool = nil
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
       @log_worker_status_changes = true
 
       # Worker name
-      @wid = wid
+      #@wid = wid
+      @pool = pool
 
       # Set thread context
+      Thread.current.thread_variable_set :pool, pool
       Thread.current.thread_variable_set :wid, wid
       Thread.current.thread_variable_set :started_at, Time.now
       worker_status WORKER_STATUS_STARTING
@@ -25,7 +27,7 @@ module RestFtpDaemon
 
     def log_context
       {
-        wid: @wid,
+        wid: Thread.current.thread_variable_get(:wid),
         jid: Thread.current.thread_variable_get(:jid),
       }
     end
