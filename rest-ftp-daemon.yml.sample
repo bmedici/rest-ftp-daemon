@@ -1,10 +1,12 @@
 defaults: &defaults
   daemonize: true
   port: 3000
-  workers: 2
   user: rftpd
   group: rftpd
   #host: "myhost"
+
+  pools:
+    default: 2
 
   transfer:
     # notify_after_sec: 5       # wait at least X seconds between HTTP notifications
