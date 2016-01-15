@@ -26,9 +26,9 @@ module RestFtpDaemon
       # Work on this job
       work_on_job(job)
 
-      # Clean job status and sleep for 1s
+      # Clean job status
       job.wid = nil
-      sleep 1
+      #sleep 1
 
       # If job status requires a retry, just restack it
       on_errors = Settings.at(:retry, :on_errors)
