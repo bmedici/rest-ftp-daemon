@@ -28,7 +28,6 @@ parser = OptionParser.new do |opts|
   opts.on("-e", "--environment ENV")                                    { |env| APP_ENV = env }
   opts.on("",   "--dev")                                                { APP_ENV = "development" }
   opts.on("-p", "--port PORT", "use PORT")                              { |port| options["port"] = port.to_i }
-  opts.on("-w", "--workers COUNT", "Use COUNT worker threads")          { |count| options["workers"] = count.to_i }
   opts.on("-d", "--daemonize", "Run daemonized in the background")      { options["daemonize"] = true }
   opts.on("-f", "--foreground", "Run in the foreground")                { options["daemonize"] = false }
   opts.on("-P", "--pid FILE", "File to store PID")                      { |file| options["pidfile"] = file }

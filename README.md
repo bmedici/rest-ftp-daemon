@@ -21,7 +21,7 @@ Features
   * environment-aware configuration in a YAML file
   * daemon process is tagged with its name and environment in process lists
   * global dashboard directly served within the daemon HTTP interface
-
+  * support pooling of worker to separate capacity among jobs
 
 * File management ans transferts
   * allow authentication in FTP target in a standard URI-format
@@ -97,7 +97,6 @@ Launcher options :
 | -p      | --port        | (automatic)   | Port to listen for API requests                             |
 | -e      |               | production    | Environment name                                            |
 |         | --dev         |               | Equivalent to -e development                                |
-| -w      | --workers     | 1             | Number of workers spawned at launch                         |
 | -d      | --daemonize   | false         | Wether to send the daemon to background                     |
 | -f      | --foreground  | false         | Wether to keep the daemon running in the shell              |
 | -P      | --pid         | (automatic)   | Path of the file containing the PID                         |
@@ -138,6 +137,15 @@ Those tokens will be expanded when the job is run:
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"source":"~/file.dmg","priority":"3","target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
+
+
+#### Start a job with a specific pool name
+
+```
+curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
+'{"pool": "maxxxxx",source":"~/file.iso",target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
+```
+This job will be handled by the "maxxxxx" workers only, or by the default worker is this pool is not declared.
 
 
 #### Get info about a job with ID="q89j.1"
