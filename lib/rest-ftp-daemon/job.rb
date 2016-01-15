@@ -104,22 +104,22 @@ module RestFtpDaemon
         prepare
 
       rescue RestFtpDaemon::JobMissingAttribute => exception
-        return oops :started, exception, :missing_attribute
+        return oops :started, exception, "missing_attribute"
 
       rescue RestFtpDaemon::JobUnresolvedTokens => exception
-        return oops :started, exception, :unresolved_tokens
+        return oops :started, exception, "unresolved_tokens"
 
       rescue RestFtpDaemon::JobTargetUnparseable => exception
-        return oops :started, exception, :target_unparseable
+        return oops :started, exception, "target_unparseable"
 
       rescue RestFtpDaemon::JobTargetUnsupported => exception
-        return oops :started, exception, :target_unsupported
+        return oops :started, exception, "target_unsupported"
 
       rescue RestFtpDaemon::JobAssertionFailed => exception
-        return oops :started, exception, :assertion_failed
+        return oops :started, exception, "assertion_failed"
 
       rescue URI::InvalidURIError => exception
-        return oops :started, exception, :target_invalid
+        return oops :started, exception, "target_invalid"
 
       else
         # Prepare done !
@@ -130,77 +130,77 @@ module RestFtpDaemon
 
       # Process job
       begin
-        #raise Net::FTPTempError, '451 Téléchargement avorté. Input/output error'.force_encoding("ASCII-8BIT")
+        #return oops :ended, Exception.new, "ftp_perm_error"
         run
 
       rescue SocketError => exception
-        return oops :ended, exception, :conn_socket_error
+        return oops :ended, exception, "conn_socket_error"
 
       rescue EOFError => exception
-        return oops :ended, exception, :conn_eof
+        return oops :ended, exception, "conn_eof"
 
       rescue Errno::EHOSTDOWN => exception
-        return oops :ended, exception, :conn_host_is_down
+        return oops :ended, exception, "conn_host_is_down"
 
       rescue Errno::ENETUNREACH => exception
-        return oops :ended, exception, :conn_unreachable
+        return oops :ended, exception, "conn_unreachable"
 
       rescue Errno::ECONNRESET => exception
-        return oops :ended, exception, :conn_reset_by_peer
+        return oops :ended, exception, "conn_reset_by_peer"
 
       rescue Errno::ENOTCONN => exception
-        return oops :ended, exception, :conn_failed
+        return oops :ended, exception, "conn_failed"
 
       rescue Errno::ECONNREFUSED => exception
-        return oops :ended, exception, :conn_refused
+        return oops :ended, exception, "conn_refused"
 
       rescue Timeout::Error, Errno::ETIMEDOUT, Net::ReadTimeout => exception
-        return oops :ended, exception, :conn_timed_out
+        return oops :ended, exception, "conn_timed_out"
 
       rescue OpenSSL::SSL::SSLError => exception
-        return oops :ended, exception, :conn_openssl_error
+        return oops :ended, exception, "conn_openssl_error"
 
       rescue Net::FTPPermError => exception
-        return oops :ended, exception, :ftp_perm_error
+        return oops :ended, exception, "ftp_perm_error"
 
       rescue Net::FTPTempError => exception
-        return oops :ended, exception, :net_temp_error
+        return oops :ended, exception, "net_temp_error"
 
       rescue Net::SFTP::StatusException => exception
-        return oops :ended, exception, :sftp_exception
+        return oops :ended, exception, "sftp_exception"
 
       rescue Net::SSH::HostKeyMismatch => exception
-        return oops :ended, exception, :sftp_key_mismatch
+        return oops :ended, exception, "sftp_key_mismatch"
 
       rescue Net::SSH::AuthenticationFailed => exception
-        return oops :ended, exception, :sftp_auth_failed
+        return oops :ended, exception, "sftp_auth_failed"
 
       rescue Errno::EMFILE => exception
-        return oops :ended, exception, :too_many_open_files
+        return oops :ended, exception, "too_many_open_files"
 
       rescue Errno::EINVAL => exception
-        return oops :ended, exception, :invalid_argument, true
+        return oops :ended, exception, "invalid_argument", true
 
       rescue Encoding::UndefinedConversionError => exception
-        return oops :ended, exception, :encoding_error, true
+        return oops :ended, exception, "encoding_error", true
 
       rescue RestFtpDaemon::JobSourceNotFound => exception
-        return oops :ended, exception, :source_not_found
+        return oops :ended, exception, "source_not_found"
 
       rescue RestFtpDaemon::JobSourceNotReadable => exception
-        return oops :ended, exception, :source_not_readable
+        return oops :ended, exception, "source_not_readable"
 
       rescue RestFtpDaemon::JobTargetFileExists => exception
-        return oops :ended, exception, :target_file_exists
+        return oops :ended, exception, "target_file_exists"
 
       rescue RestFtpDaemon::JobTargetDirectoryError => exception
-        return oops :ended, exception, :target_directory_missing
+        return oops :ended, exception, "target_directory_missing"
 
       rescue RestFtpDaemon::JobTargetPermissionError => exception
-        return oops :ended, exception, :target_permission_error
+        return oops :ended, exception, "target_permission_error"
 
       rescue RestFtpDaemon::JobAssertionFailed => exception
-        return oops :ended, exception, :assertion_failed
+        return oops :ended, exception, "assertion_failed"
 
       else
         # All done !
@@ -231,11 +231,11 @@ module RestFtpDaemon
     end
 
     def oops_after_crash exception
-      oops :ended, exception, :crashed
+      oops :ended, exception, "crashed"
     end
 
     def oops_you_stop_now exception
-      oops :ended, exception, :timeout
+      oops :ended, exception, "timeout"
     end
 
     def age
