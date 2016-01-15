@@ -92,7 +92,7 @@ DASHBOARD_JOB_STYLES = {
   }
 DASHBOARD_WORKER_STYLES = {
   waiting:              :success,
-  working:              :info,
+  running:              :info,
   crashed:              :danger,
   done:                 :success,
   dead:                 :danger,
