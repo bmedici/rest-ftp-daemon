@@ -24,9 +24,6 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.2"
 
-  # spec.add_development_dependency "rack-mini-profiler"
-  # spec.add_development_dependency "stackprof"
-  # spec.add_development_dependency "flamegraph"
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec", "~> 3.1"
@@ -34,7 +31,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop", "~> 0.32.0"
   spec.add_development_dependency "pry"
 
-  # spec.add_runtime_dependency "net-ssh", "~> 2.10.1.rc1"
   spec.add_runtime_dependency "thin", "~> 1.6"
   spec.add_runtime_dependency "grape"
   spec.add_runtime_dependency "grape-entity"
