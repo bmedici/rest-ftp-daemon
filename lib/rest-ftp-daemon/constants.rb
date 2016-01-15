@@ -84,18 +84,17 @@ NOTIFY_IDENTIFIER_LEN   = 4
 
 # Dashboard row styles
 DASHBOARD_JOB_STYLES = {
-  JOB_STATUS_QUEUED     => :active,
-  JOB_STATUS_FAILED     => :warning,
-  JOB_STATUS_FINISHED   => :success,
-  JOB_STATUS_UPLOADING  => :info,
-  JOB_STATUS_RENAMING   => :info,
+  JOB_STATUS_QUEUED      => :active,
+  JOB_STATUS_FAILED      => :warning,
+  JOB_STATUS_FINISHED    => :success,
+  JOB_STATUS_UPLOADING   => :info,
+  JOB_STATUS_RENAMING    => :info,
   }
 DASHBOARD_WORKER_STYLES = {
-  waiting:              :success,
-  running:              :info,
-  crashed:              :danger,
-  done:                 :success,
-  dead:                 :danger,
+  WORKER_STATUS_WAITING  => :success,
+  WORKER_STATUS_RUNNING  => :info,
+  WORKER_STATUS_CRASHED  => :danger,
+  WORKER_STATUS_FINISHED => :success,
   }
 
 
