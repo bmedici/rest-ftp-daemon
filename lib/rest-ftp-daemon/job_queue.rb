@@ -82,7 +82,7 @@ module RestFtpDaemon
 
       # Status filtering: only those jobs
       else
-        @jobs.select { |job| job.status == status.to_sym }
+        @jobs.select { |job| job.status.to_s == status.to_s }
 
       end
     end
