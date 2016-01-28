@@ -17,7 +17,7 @@ module RestFtpDaemon
       content_type :json, 'application/json; charset=utf-8'
 
       mount RestFtpDaemon::API::Jobs => "/jobs"
-      mount RestFtpDaemon::API::Dashbaord => "/"
+      mount RestFtpDaemon::API::Dashbaord => "/board"
 
 
       ### INITIALIZATION
@@ -45,6 +45,13 @@ module RestFtpDaemon
 
       before do
         log_info "HTTP #{request.request_method} #{request.fullpath}", params
+      end
+
+
+      ### ROOT URL ACCESS
+
+      get "/" do
+        redirect Helpers.dashboard_filter_url()
       end
 
 
