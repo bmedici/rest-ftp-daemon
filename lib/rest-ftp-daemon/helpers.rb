@@ -133,11 +133,11 @@ module RestFtpDaemon
     end
 
     def self.dashboard_job_url job
-      "/jobs/#{job.id}" if job.respond_to? :id
+      "#{MOUNT_JOBS}/#{job.id}" if job.respond_to? :id
     end
 
     def self.dashboard_filter_url filter = ''
-      "/board/#{filter}"
+      "#{MOUNT_BOARD}/#{filter}"
     end
 
   end

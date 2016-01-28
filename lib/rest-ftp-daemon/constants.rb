@@ -75,6 +75,9 @@ LOG_INDENT              = "\t"
 BIND_PORT_TIMEOUT       = 3
 BIND_PORT_LOCALHOST     = "127.0.0.1"
 ENV_PRODUCTION          = "production"
+MOUNT_JOBS               = "/jobs"
+MOUNT_BOARD              = "/board"
+
 
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
