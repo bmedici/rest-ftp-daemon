@@ -8,13 +8,13 @@
 
   .col-md-4
     .btn-group.btn-group-sm
-      - klass = @only.empty? ? "btn-info" : ""
-      %a.btn.btn-default{href: "?only=", class: klass}
+      - klass = @filter.empty? ? "btn-info" : ""
+      %a.btn.btn-default{href: Helpers.dashboard_filter_url(), class: klass}
         ALL (#{counts_all})
     .btn-group.btn-group-sm
       - counts_by_status.each do |status, count|
-        - klass = (status.to_s == @only) ? "btn-info" : ""
-        %a.btn.btn-default{href: "?only=#{status}", class: klass}
+        - klass = (status.to_s == @filter) ? "btn-info" : ""
+        %a.btn.btn-default{href: Helpers.dashboard_filter_url(status), class: klass}
           #{status} (#{count})
 
   .col-md-8

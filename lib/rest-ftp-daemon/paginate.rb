@@ -1,7 +1,7 @@
 module RestFtpDaemon
   class Paginate
 
-    attr_writer :only
+    attr_writer :filter
     attr_accessor :all
 
     def initialize data
@@ -9,7 +9,7 @@ module RestFtpDaemon
       @pages = 0
       @total = 0
       @data = []
-      @only = nil
+      @filter = ''
       @page = 1
       @pages = 1
       @all = false
@@ -53,9 +53,11 @@ module RestFtpDaemon
     def link p
       klass = (p == @page)? " btn-info" : ""
 
-      "<a class='paginate btn btn-default%s' href='?only=%s&page=%d'>%p</a>" % [
+      url = Helpers.dashboard_filter_url(@filter)
+
+      "<a class='paginate btn btn-default%s' href='%s?page=%d'>%p</a>" % [
         klass,
-        @only,
+        @filter,
         p,
         p
       ]
