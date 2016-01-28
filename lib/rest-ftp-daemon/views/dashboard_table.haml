@@ -5,7 +5,7 @@
   - source_processed = job.get(:source_processed) || 0
   - source_current = job.get(:source_current)
   - bitrate = job.get :transfer_bitrate
-  - trclass = DASHBOARD_JOB_STYLES[job.status]
+  - trclass = JOB_STYLES[job.status]
   - runs = job.runs.to_i
 
   - unless job.error.nil?

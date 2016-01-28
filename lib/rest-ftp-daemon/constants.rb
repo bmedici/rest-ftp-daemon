@@ -36,7 +36,7 @@ JOB_TEMPFILE_LEN        = 8
 JOB_UPDATE_INTERVAL     = 1
 
 
-# Jobs and workers statuses
+# Jobs statuses
 JOB_STATUS_PREPARING    = "preparing"
 JOB_STATUS_RUNNING      = "running"
 JOB_STATUS_CHECKING_SRC = "checking_source"
@@ -49,7 +49,15 @@ JOB_STATUS_DISCONNECTING= "remote_disconnect"
 JOB_STATUS_FINISHED     = "finished"
 JOB_STATUS_FAILED       = "failed"
 JOB_STATUS_QUEUED       = "queued"
+JOB_STYLES = {
+  JOB_STATUS_QUEUED      => :active,
+  JOB_STATUS_FAILED      => :warning,
+  JOB_STATUS_FINISHED    => :success,
+  JOB_STATUS_UPLOADING   => :info,
+  JOB_STATUS_RENAMING    => :info,
+  }
 
+# Worker statuses
 WORKER_STATUS_STARTING  = "starting"
 WORKER_STATUS_WAITING   = "waiting"
 WORKER_STATUS_RUNNING   = "running"
@@ -57,6 +65,12 @@ WORKER_STATUS_FINISHED  = "finished"
 WORKER_STATUS_TIMEOUT   = "timeout"
 WORKER_STATUS_CRASHED   = "crashed"
 WORKER_STATUS_CLEANING  = "cleaning"
+WORKER_STYLES = {
+  WORKER_STATUS_WAITING  => :success,
+  WORKER_STATUS_RUNNING  => :info,
+  WORKER_STATUS_CRASHED  => :danger,
+  WORKER_STATUS_FINISHED => :success,
+  }
 
 
 # Logging and startup
@@ -74,7 +88,8 @@ LOG_NEWLINE             = "\n"
 LOG_INDENT              = "\t"
 BIND_PORT_TIMEOUT       = 3
 BIND_PORT_LOCALHOST     = "127.0.0.1"
-ENV_PRODUCTION          = "production"
+
+ENV_PRODUCTION           = "production"
 MOUNT_JOBS               = "/jobs"
 MOUNT_BOARD              = "/board"
 
@@ -83,22 +98,6 @@ MOUNT_BOARD              = "/board"
 NOTIFY_PREFIX           = "rftpd"
 NOTIFY_USERAGENT        = "#{APP_NAME}/v#{APP_VER}"
 NOTIFY_IDENTIFIER_LEN   = 4
-
-
-# Dashboard row styles
-DASHBOARD_JOB_STYLES = {
-  JOB_STATUS_QUEUED      => :active,
-  JOB_STATUS_FAILED      => :warning,
-  JOB_STATUS_FINISHED    => :success,
-  JOB_STATUS_UPLOADING   => :info,
-  JOB_STATUS_RENAMING    => :info,
-  }
-DASHBOARD_WORKER_STYLES = {
-  WORKER_STATUS_WAITING  => :success,
-  WORKER_STATUS_RUNNING  => :info,
-  WORKER_STATUS_CRASHED  => :danger,
-  WORKER_STATUS_FINISHED => :success,
-  }
 
 
 # Initialize defaults
