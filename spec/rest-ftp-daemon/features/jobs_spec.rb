@@ -24,6 +24,8 @@ describe "Jobs", feature: true do
         {
           source: "/tmp/foo",
           target: "/tmp/bar",
+          priority: 6,
+          pool: "pool666",
         }
       end
 
@@ -41,6 +43,16 @@ describe "Jobs", feature: true do
       it "assigns a status" do
         response = JSON.parse post("/jobs", json: params)
         expect(response["status"]).to match(/^(queued|failed)$/)
+      end
+
+      it "assigns a pool" do
+        response = JSON.parse post("/jobs", json: params)
+        expect(response["pool"]).to match(/^(default|pool666)$/)
+      end
+
+      it "assigns a priority" do
+        response = JSON.parse post("/jobs", json: params)
+        expect(response["priority"]).to eq 6
       end
 
       it "creates a new job" do
