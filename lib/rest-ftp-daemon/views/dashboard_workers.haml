@@ -28,8 +28,8 @@
       %td= vars[:jid]
       %td.text-right
 
-        - if vars[:updted_at].is_a? Time
-          - no_news_for = (Time.now - vars[:updted_at]).round(0)
+        - if vars[:updated_at].is_a? Time
+          - no_news_for = (Time.now - vars[:updated_at]).round(0)
           = Helpers.formatted_duration no_news_for
         - else
           = "?"

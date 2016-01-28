@@ -46,7 +46,7 @@ module RestFtpDaemon
     def worker_status status, job = nil
       # Update thread variables
       Thread.current.thread_variable_set :status, status
-      Thread.current.thread_variable_set :updted_at, Time.now
+      Thread.current.thread_variable_set :updated_at, Time.now
 
       # Nothin' to log if "silent"
       return unless @log_worker_status_changes
@@ -61,7 +61,7 @@ module RestFtpDaemon
 
     def worker_jid jid
       Thread.current.thread_variable_set :jid, jid
-      Thread.current.thread_variable_set :updted_at, Time.now
+      Thread.current.thread_variable_set :updated_at, Time.now
     end
 
   end
