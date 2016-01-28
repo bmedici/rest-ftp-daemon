@@ -23,8 +23,8 @@ GC::Profiler.enable if Settings.newrelic_enabled?
 use Rack::Static, urls: ["/css", "/js", "/images"], root: "#{APP_LIBS}/static/"
 
 # Rack reloader and mini-profiler
-unless Settings.namespace == "production"
-  use Rack::Reloader, 0
+unless Settings.namespace == ENV_PRODUCTION
+  use Rack::Reloader, 1
   # use Rack::MiniProfiler
 end
 

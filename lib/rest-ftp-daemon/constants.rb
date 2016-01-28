@@ -74,7 +74,7 @@ LOG_NEWLINE             = "\n"
 LOG_INDENT              = "\t"
 BIND_PORT_TIMEOUT       = 3
 BIND_PORT_LOCALHOST     = "127.0.0.1"
-
+ENV_PRODUCTION          = "production"
 
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
