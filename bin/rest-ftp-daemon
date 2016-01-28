@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-# Try to load external libs
-app_root = File.expand_path File.dirname(__FILE__) + "/../"
+# Try to load external libs, helpers and constants
 begin
   require "thin"
   require "optparse"
@@ -11,11 +10,8 @@ begin
 rescue LoadError
   raise "EXITING: some of basic libs were not found: thin, optparse, socket, settingslogic"
 end
-
-
-# Load helpers and constants
 [:constants, :helpers].each do |lib|
-  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/#{lib}")
+  require_relative "../lib/rest-ftp-daemon/#{lib}"
 end
 puts
 
@@ -61,7 +57,8 @@ APP_ENV ||= ENV_PRODUCTION
 abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exist? APP_CONF
 begin
   # Import settings
-  require File.expand_path("#{app_root}/lib/rest-ftp-daemon/settings")
+  # require File.expand_path("#{app_root}/lib/rest-ftp-daemon/settings")
+  require_relative "../lib/rest-ftp-daemon/settings"
 
   # Set defaults
   Settings.init_defaults
@@ -129,6 +126,7 @@ puts
 
 # Start Thin with this rackup configuration, changing to app_root first
 begin
+  app_root = File.expand_path(File.dirname(__FILE__) + "/../")
   Dir.chdir app_root
   Thin::Runner.new(argv.flatten).run!
 rescue RuntimeError => e

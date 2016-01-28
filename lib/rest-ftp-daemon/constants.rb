@@ -4,7 +4,7 @@ APP_NICK = "rftpd"
 APP_VER = "0.245.1"
 
 # Provide default config file information
-APP_LIB = File.expand_path File.dirname(__FILE__)
+APP_LIB = File.expand_path(File.dirname(__FILE__))
 APP_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../")
 
 DEFAULT_CONFIG_PATH = File.expand_path "/etc/#{APP_NAME}.yml"

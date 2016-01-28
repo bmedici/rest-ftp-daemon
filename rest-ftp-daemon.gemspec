@@ -1,8 +1,8 @@
 # coding: utf-8
 
 # Libs
-app_root = File.dirname(__FILE__)
-require File.expand_path("#{app_root}/lib/rest-ftp-daemon/constants")
+require_relative "lib/rest-ftp-daemon/constants"
+
 
 # Gemspec
 Gem::Specification.new do |spec|
