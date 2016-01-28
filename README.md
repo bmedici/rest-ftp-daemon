@@ -21,7 +21,7 @@ Features
   * environment-aware configuration in a YAML file
   * daemon process is tagged with its name and environment in process lists
   * global dashboard directly served within the daemon HTTP interface
-  * support pooling of worker to separate capacity among jobs
+  * support pooling of worker to dedicate workers to groups of jobs
 
 * File management ans transferts
   * allow authentication in FTP target in a standard URI-format
@@ -46,23 +46,21 @@ Status
 ------------------------------------------------------------------------------------
 
 Though it may need more robust tests, this gem has been used successfully in production for
-a while without glitches at France Télévisions.
+a while without any glitches at France Télévisions.
 
 Expected features in a short-time range :
 
 * Provide swagger-style API documentation
 * Authenticate API clients
-* Allow more transfer protocols (sFTP, HTTP POST etc)
+* Allow more transfer protocols (HTTP POST etc)
 * Expose JSON status of workers on `GET /jobs/` for automated monitoring
-
 
 
 
 Installation
 ------------------------------------------------------------------------------------
 
-With Ruby (version 2.2 or higher) and rubygems properly installed, you only
-need to issue :
+With Ruby (version 2.3 or higher) and rubygems properly installed, you only need :
 
 ```
 gem install rest-ftp-daemon
@@ -74,19 +72,19 @@ If that is not the case yet, see section [Debian install preparation](#debian-in
 Usage
 ------------------------------------------------------------------------------------
 
-You must provide a configuration file for the daemon to start, either
-explicitly using option `--config` or implicitly at `/etc/rest-ftp-daemon.yml`.
-(A sample file is provided see `--help` for more info about it.)
+You must provide a configuration file for the daemon to start, either explicitly using
+option `--config` or implicitly at `/etc/rest-ftp-daemon.yml`. A sample file is provided, issue
+`--help` to get more info.
 
-You can then simply start the daemon on the standard port, or on a specific port using `-p`
+You then simply start the daemon on its standard port, or on a specific port using `-p`
 
 ```
 $ rest-ftp-daemon -p 3000 start
 ```
 
-Check that the daemon is running and exposes a JSON status structure on `http://localhost:3000/status`.
+Check that the daemon is running and exposes a JSON status structure at `http://localhost:3000/status`.
 
-The dashboard will provide a global view on `http://localhost:3000/`
+The dashboard will provide an overview at `http://localhost:3000/`
 
 If the daemon appears to exit quickly when launched, it may be caused by logfiles that can't be written (check files permissions or owner).
 
@@ -106,7 +104,7 @@ Launcher options :
 | -v      | --version     |               | Show the current version                                    |
 
 
-Examples
+Usage and examples
 ------------------------------------------------------------------------------------
 
 #### Start a job to transfer a file named "file.iso" to a local FTP server
@@ -141,11 +139,13 @@ curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 
 #### Start a job with a specific pool name
 
+The daemon spawns groups of workers (worker pools) to work on groups of jobs (job pools). Any ```pool``` attribute not declared in configuration will land into the ```"default"``` pool.
+
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
 '{"pool": "maxxxxx",source":"~/file.iso",target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
 ```
-This job will be handled by the "maxxxxx" workers only, or by the default worker is this pool is not declared.
+This job will be handled by the "maxxxxx" workers only, or by the ```"default"``` worker is this pool is not declared.
 
 
 #### Get info about a job with ID="q89j.1"
@@ -221,27 +221,33 @@ TODO for this document
 Debian install preparation
 ------------------------------------------------------------------------------------
 
-This project is available as a rubygem, requires Ruby 2.2 and rubygems installed.
+This project is available as a rubygem, requires Ruby 2.3 and rubygems installed.
 
-You may use `rbenv` and `ruby-build` to get the right Ruby version. If this is your case, ensure that ruby-build definitions are up-to-date and include ruby-2.2.0
+#### Using rbenv and ruby-build
+
+You may use `rbenv` and `ruby-build` to get the right Ruby version. If this is your case, ensure that ruby-build definitions are up-to-date and include the right Ruby version.
 
 ```
-# apt-get install ruby-build rbenv
-# ruby-build --definitions | grep '2.2'
+# git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+# git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+# echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+# echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+# ruby-build --definitions | grep '2.3'
 ```
 
-Otherwise, you way have to update ruby-build to include Ruby 2.2.0 definitions.
-On Debian, 2.2.0 is not included in Wheezy and appears in Jessie's version of the package.
+Otherwise, you way have to update ruby-build to include Ruby 2.3.0 definitions.
+On Debian, 2.3.0 is not included in Wheezy and appears in Jessie's version of the package.
+
+#### Dedicated user
 
 Use a dedicated user for the daemon, switch to this user and enable rbenv
 
 ```
 # adduser --disabled-password --gecos "" rftpd
 # su rftpd -l
-# echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-# echo 'eval "$(rbenv init -)"' >> ~/.bashrc
 ```
 
+#### Ruby version
 
 Install the right ruby version and activate it
 
@@ -250,6 +256,8 @@ Install the right ruby version and activate it
 # rbenv local 2.1.0
 # rbenv rehash
 ```
+
+#### Daemon installation
 
 Update RubyGems and install the gem from rubygems.org
 
