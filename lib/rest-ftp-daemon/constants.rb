@@ -25,7 +25,7 @@ DEFAULT_POOL            = "default"
 DEFAULT_WORKER_TIMEOUT  = 1800  # 1h
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_FTP_CHUNK       = 1024  # 1 MB
-DEFAULT_PAGE_SIZE       = 50    # 50 lines
+DEFAULT_PAGE_SIZE       = 80    # 50 lines
 DEFAULT_RETRY_DELAY     = 10    # 10s
 
 
