@@ -23,9 +23,9 @@ module RestFtpDaemon
 
       desc "Read job with ID"
       params do
-        requires :id, type: String, desc: "ID of the Job to read", regexp: /[^\/]+/
+        requires :id, type: String, desc: "ID of the Job to read"
       end
-      get "/*id" do
+      get "/:id", requirements: { id: /.*/ } do
         begin
           # Get job to display
           raise RestFtpDaemon::JobNotFound if params[:id].nil?
