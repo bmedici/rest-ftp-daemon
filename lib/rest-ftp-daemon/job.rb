@@ -142,6 +142,9 @@ module RestFtpDaemon
       rescue Errno::EHOSTDOWN => exception
         return oops :ended, exception, "conn_host_is_down"
 
+      rescue Errno::EPIPE=> exception
+        return oops :ended, exception, "conn_broken_pipe"
+
       rescue Errno::ENETUNREACH => exception
         return oops :ended, exception, "conn_unreachable"
 
