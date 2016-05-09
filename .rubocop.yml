@@ -28,9 +28,6 @@ AllCops:
     - 'vendor/**/*'
     - 'DOC/**/*'
     - '**/actors/*'
-  # By default, the rails cops are not run. Override in project or home
-  # directory .rubocop.yml files, or by giving the -R/--rails option.
-  RunRailsCops: false
   # Cop names are not displayed in offense messages by default. Change behavior
   # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
   # option.
@@ -618,7 +615,7 @@ Style/SpaceAroundEqualsInParameterDefault:
     - no_space
 
 Style/SpaceAroundOperators:
-  MultiSpaceAllowedForOperators:
+  AllowForAlignment:
     - '='
     - '=>'
 
@@ -657,7 +654,7 @@ Style/TrailingBlankLines:
     - final_newline
     - final_blank_line
 
-Style/TrailingComma:
+Style/TrailingCommaInLiteral:
   # If EnforcedStyleForMultiline is comma, the cop requires a comma after the
   # last item of a list, but only for lists where each item is on its own line.
   # If EnforcedStyleForMultiline is consistent_comma, the cop requires a comma
@@ -795,67 +792,3 @@ Lint/DefEndAlignment:
     - start_of_line
     - def
   AutoCorrect: false
-
-##################### Rails ##################################
-
-Rails/ActionFilter:
-  EnforcedStyle: action
-  SupportedStyles:
-    - action
-    - filter
-  Include:
-    - app/controllers/**/*.rb
-
-Rails/Date:
-  # The value `always` disallows usage of `Date.today`, `Date.current`,
-  # `Date#to_time` etc.
-  # The value `acceptable` allows usage of `Date.current`, `Date.yesterday`, etc
-  # (but not `Date.today`) which are overriden by ActiveSupport to handle current
-  # time zone.
-  EnforcedStyle: always
-  SupportedStyles:
-    - always
-    - acceptable
-
-Rails/DefaultScope:
-  Include:
-    - app/models/**/*.rb
-
-Rails/FindBy:
-  Include:
-    - app/models/**/*.rb
-
-Rails/FindEach:
-  Include:
-    - app/models/**/*.rb
-
-Rails/HasAndBelongsToMany:
-  Include:
-    - app/models/**/*.rb
-
-Rails/Output:
-  Include:
-    - app/**/*.rb
-    - config/**/*.rb
-    - db/**/*.rb
-    - lib/**/*.rb
-
-Rails/ReadWriteAttribute:
-  Include:
-    - app/models/**/*.rb
-
-Rails/ScopeArgs:
-  Include:
-    - app/models/**/*.rb
-
-Rails/TimeZone:
-  # The value `always` means that `Time` should be used with `zone`.
-  # The value `acceptable` allows usage of `in_time_zone` instead of `zone`.
-  EnforcedStyle: always
-  SupportedStyles:
-    - always
-    - acceptable
-
-Rails/Validation:
-  Include:
-    - app/models/**/*.rb
