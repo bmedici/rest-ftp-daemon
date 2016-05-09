@@ -23,13 +23,21 @@ module RestFtpDaemon
 
       desc "Read job with ID"
       params do
-        requires :id, type: String, desc: "ID of the Job to read", regexp: /[^\/]+/
+        requires :id, type: String, desc: "ID of the Job to read"#, regexp: /[^\/]+$//
       end
       get "/*id" do
         begin
           # Get job to display
           raise RestFtpDaemon::JobNotFound if params[:id].nil?
-          job = $queue.find_by_id(params[:id]) || $queue.find_by_id(params[:id], true)
+
+          # Find using matched parts
+          if params[:format]
+            job = $queue.find_by_id("#{params[:id]}.#{params[:format]}", false)
+          else
+            job = $queue.find_by_id(params[:id], true)
+          end
+
+          # Fail if none found
           raise RestFtpDaemon::JobNotFound if job.nil?
 
         rescue RestFtpDaemon::JobNotFound => exception
