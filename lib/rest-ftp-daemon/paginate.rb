@@ -51,11 +51,11 @@ module RestFtpDaemon
   private
 
     def link p
-      klass = (p == @page)? " btn-info" : ""
+      klass = (p == @page)? "primary" : "default"
 
       url = Helpers.dashboard_filter_url(@filter)
 
-      "<a class='paginate btn btn-default%s' href='%s?page=%d'>%p</a>" % [
+      "<a class='btn btn-%s' href='%s?page=%d'>%p</a>" % [
         klass,
         @filter,
         p,

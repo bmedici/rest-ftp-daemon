@@ -81,11 +81,27 @@ a.class {
   margin-bottom: 4px;
 }
 
+.paginator, .filters {
+  padding-bottom: 5px;
+}
 
-.paginate {
+.paginator .btn, .filters .btn {
+  margin-bottom: 2px !important;
+}
+
+.filters {
+  padding-right: 5px;
+}
+
+.paginator {
+  padding-left: 20px;
+}
+
+.paginator .btn {
   padding-left: 7px !important;
   padding-right: 7px !important;
 }
+
 
 
 /* Footer styles

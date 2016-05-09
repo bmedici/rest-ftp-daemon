@@ -3,24 +3,23 @@
 - counts_all = $queue.jobs_count
 - jobs = @paginate.subset
 
+.btn-group.btn-group-xs.filters
+  - klass = @filter.empty? ? "btn-info" : ""
+  %a.btn.btn-default{href: Helpers.dashboard_filter_url(), class: klass}
+    ALL (#{counts_all})
 
-.row
+.btn-group.btn-group-xs.filters
+  - counts_by_status.each do |status, count|
+    - klass = (status.to_s == @filter) ? "btn-info" : ""
+    %a.btn.btn-default{href: Helpers.dashboard_filter_url(status), class: klass}
+      #{status} (#{count})
 
-  .col-md-4
-    .btn-group.btn-group-sm
-      - klass = @filter.empty? ? "btn-info" : ""
-      %a.btn.btn-default{href: Helpers.dashboard_filter_url(), class: klass}
-        ALL (#{counts_all})
-    .btn-group.btn-group-sm
-      - counts_by_status.each do |status, count|
-        - klass = (status.to_s == @filter) ? "btn-info" : ""
-        %a.btn.btn-default{href: Helpers.dashboard_filter_url(status), class: klass}
-          #{status} (#{count})
 
-  .col-md-8
-    .btn-group.btn-group-sm
-      = @paginate.browser
 
+.btn-group.btn-group-xs.paginator
+  = @paginate.browser
+
+%br
 %br
 
 .row
