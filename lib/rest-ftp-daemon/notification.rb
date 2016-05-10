@@ -75,8 +75,9 @@ module RestFtpDaemon
       # Post notification, handle server response / multi-lines
       log_info "sending #{data}"
       response = http.post uri.path, data, headers
-      response_lines = response.body.lines
 
+      # Log reponse body
+      response_lines = response.body.lines
       if response_lines.size > 1
         human_size = Helpers.format_bytes(response.body.bytesize, "B")
         log_info "received [#{response.code}] #{human_size} (#{response_lines.size} lines)", response_lines
@@ -85,8 +86,14 @@ module RestFtpDaemon
       end
 
       # Handle exceptions
+      rescue Net::OpenTimeout => ex
+        log_error "Net::OpenTimeout: #{ex.inspect}"
+
+      rescue SocketError => ex
+        log_error "SocketError: #{ex.inspect}"
+
       rescue StandardError => ex
-        log_error "NOTIFICATION EXCEPTION: #{ex.inspect}"
+        log_error "UNHANDLED EXCEPTION: #{ex.inspect}"
     end
 
     def log_context
