@@ -202,7 +202,7 @@ module RestFtpDaemon
         @jobs.delete_if do |job|
 
           # Skip if wrong status, updated_at invalid, or too young
-          next unless job.status == status.to_sym
+          next unless job.status == status
           next if job.updated_at.nil?
           next if job.updated_at > before
 
