@@ -206,8 +206,12 @@ module RestFtpDaemon
           next if job.updated_at >= time_limit
 
           # Ok, we have to clean it up ..
-          log_info "#{LOG_INDENT}unqueued" if @queue.delete(job)
           log_info "expire [#{status}]: job [#{job.id}] updated_at [#{job.updated_at}]"
+
+          # From any queues, remove it
+          @queues.each do |pool, jobs|
+            log_info "#{LOG_INDENT}unqueued from [#{pool}]" if jobs.delete(job)
+          end
 
           # Remember we have to delete the original job !
           true
