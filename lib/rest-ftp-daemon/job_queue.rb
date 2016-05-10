@@ -191,25 +191,25 @@ module RestFtpDaemon
       # Init
       return if status.nil? || maxage <= 0
 
-      # Compute oldest possible birthday
-      before = Time.now - maxage.to_i
-
-      # Verbose output ?
-      log_info "JobQueue.expire \t[#{status}] \tbefore \t[#{before}]" if verbose
+      # Compute oldest limit
+      time_limit = Time.now - maxage.to_i
+      log_info "JobQueue.expire limit [#{time_limit}] status [#{status}]" if verbose
 
       @mutex.synchronize do
         # Delete jobs from the queue when they match status and age limits
         @jobs.delete_if do |job|
+          # log_info "testing job [#{job.id}] updated_at [#{job.updated_at}]"
 
-          # Skip if wrong status, updated_at invalid, or too young
+          # Skip if wrong status, updated_at invalid, or updated since time_limit
           next unless job.status == status
           next if job.updated_at.nil?
-          next if job.updated_at > before
+          next if job.updated_at >= time_limit
 
           # Ok, we have to clean it up ..
-          log_info "expire [#{status}] [#{maxage}] > [#{job.id}] [#{job.updated_at}]"
           log_info "#{LOG_INDENT}unqueued" if @queue.delete(job)
+          log_info "expire [#{status}]: job [#{job.id}] updated_at [#{job.updated_at}]"
 
+          # Remember we have to delete the original job !
           true
         end
       end
