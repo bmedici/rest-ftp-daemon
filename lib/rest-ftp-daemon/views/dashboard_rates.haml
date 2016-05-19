@@ -13,20 +13,17 @@
     %thead
       %tr
         %th= group_title
-        %th.text-right=JOB_STATUS_FINISHED
-        %th.text-right=JOB_STATUS_UPLOADING
+        %th.text-right bitrate
 
     %tbody
       - rates_by_status.each do |group, rates|
         - next if group.nil?
 
         %tr.info
-          %td= group
+          %td
+            = group
           %td.text-right
-            = Helpers.format_bytes(rates[JOB_STATUS_FINISHED], "bps")
-          %td.text-right
-            = Helpers.format_bytes(rates[JOB_STATUS_UPLOADING], "bps")
-          -# %td= rates.inspect
+            = Helpers.format_bytes(rates, "bps")
 
     %thead
       %tr

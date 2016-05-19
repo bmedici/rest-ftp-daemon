@@ -52,22 +52,34 @@ module RestFtpDaemon
     # Statistics on average rates
     def rate_by method_name
       # Init
-      rates = {}
+      result = {}
       return unless Job.new(0, {}).respond_to? method_name
 
-      # Group jobs by method_name
-      jobs_grouped = @jobs.group_by do |job|
-        job.send(method_name)
-      end
+      # Select only running jobs
+      @jobs.select do |job|
 
-      # Inside each group, sum up rates for interesting statuses
-      jobs_grouped.map do |group, jobs|
-        # Store their sum
-        rates[group] = rates_by_status (jobs)
+        job.status == JOB_STATUS_UPLOADING
+
+      # Group them by method_name
+      end.group_by do |job|
+
+        job.send(method_name)
+
+      # Inside each group, sum up rates
+      end.map do |group, jobs|
+
+        # Collect their rates
+        rates = jobs.collect do |job|
+          job.get(:transfer_bitrate)
+        end
+
+        # And summ that up !
+        # result[group] = rates.inspect
+        result[group] = rates.reject(&:nil?).sum
       end
 
       # Return the rate
-      rates
+      result
     end
 
     # Queue infos
@@ -176,7 +188,7 @@ module RestFtpDaemon
 
       # Status filtering: only those jobs
       else
-        @jobs.select { |job| job.status.to_s == status.to_s }
+        @jobs.select { |job| job.status == status.to_s }
 
       end
     end
@@ -220,26 +232,6 @@ module RestFtpDaemon
 
     def prefixed_id id
       "#{@prefix}.#{id}"
-    end
-
-    def rates_by_status jobs
-      rates = {}
-
-      # Sub-group by status
-      jobs.group_by(&:status).each do |status, jobset|
-
-        # Extract bitrate values
-        bitrates = jobset.collect do |job|
-          job.get(:transfer_bitrate)
-        end
-
-        # Store their sum
-        rates[status] = bitrates.reject(&:nil?).sum
-        # rates["#{status}_ids"] = jobset.collect(&:id).join(', ')
-      end
-
-      # Return rates
-      rates
     end
 
     if Settings.newrelic_enabled?
