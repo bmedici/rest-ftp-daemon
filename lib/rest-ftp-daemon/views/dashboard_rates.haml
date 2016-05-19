@@ -3,7 +3,7 @@
 - groups = {pool: "pool", targethost: "target host"}
 
 
-%h2 Rates
+%h2 Transfer rates
 
 %table.table.table-striped.table-hover.table-condensed
 
@@ -18,6 +18,8 @@
 
     %tbody
       - rates_by_status.each do |group, rates|
+        - next if group.nil?
+
         %tr.info
           %td= group
           %td.text-right
