@@ -15,7 +15,7 @@ module RestFtpDaemon
         # expose :error
         expose :json_error, as: :error
         expose :json_status, as: :status
-        expose :json_target, as: :target_method
+        #expose :json_target, as: :target_method
 
         expose :queued_at
         expose :updated_at

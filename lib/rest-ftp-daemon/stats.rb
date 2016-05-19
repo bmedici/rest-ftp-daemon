@@ -22,7 +22,7 @@ module RestFtpDaemon
 
     def get group, name
       @mutex_stats.synchronize do
-        @stats[group][name] if @stats[group]
+        @stats[group][name] if @stats[group].is_a? Hash
       end
     end
 
