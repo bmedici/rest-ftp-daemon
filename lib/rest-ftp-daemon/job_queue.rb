@@ -70,7 +70,7 @@ module RestFtpDaemon
 
         # Collect their rates
         rates = jobs.collect do |job|
-          job.get(:transfer_bitrate)
+          job.get_info :transfer, :bitrate
         end
 
         # And summ that up !

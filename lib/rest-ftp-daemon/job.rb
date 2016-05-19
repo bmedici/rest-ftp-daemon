@@ -19,7 +19,6 @@ module RestFtpDaemon
     attr_reader :error
     attr_reader :status
     attr_reader :runs
-    attr_reader :target_method
 
     attr_reader :queued_at
     attr_reader :updated_at
@@ -213,13 +212,6 @@ module RestFtpDaemon
       end
     end
 
-    def get attribute
-      @mutex.synchronize do
-        @infos || {}
-        @infos[attribute]
-      end
-    end
-
     def weight
       @weight = [
         - @runs.to_i,
@@ -247,12 +239,12 @@ module RestFtpDaemon
     end
 
     def targethost
-      get(:target_host)
+      get_info :target, :host
     end
 
-    def json_target
-      utf8 @target_method
-    end
+    # def json_target
+    #   utf8 get_info(:target, :method)
+    # end
 
     def json_error
       utf8 @error unless @error.nil?
@@ -260,6 +252,13 @@ module RestFtpDaemon
 
     def json_status
       utf8 @status unless @status.nil?
+    end
+
+    def get_info level1, level2
+      @mutex.synchronize do
+        @infos || {}
+        @infos[level1][level2] if @infos[level1].is_a? Hash
+      end
     end
 
   protected
@@ -304,21 +303,19 @@ module RestFtpDaemon
       @runs += 1
 
       # Init
-      @source_method = :file
-      @target_method = nil
       @source_path = nil
 
       # Prepare source
       raise RestFtpDaemon::JobMissingAttribute unless @source
       @source_path = expand_path @source
-      set_info :source_path, @source_path
-      set_info :source_method, :file
+      set_info :source, :path, @source_path
+      set_info :source, :method, JOB_METHOD_FILE
 
       # Prepare target
       raise RestFtpDaemon::JobMissingAttribute unless @target
       target_uri = expand_url @target
-      set_info :target_uri, target_uri.to_s
-      set_info :target_host, target_uri.host
+      set_info :target, :uri, target_uri.to_s
+      set_info :target, :host, target_uri.host
       @target_path = Path.new target_uri.path, true
 
       #puts "@target_path: #{@target_path.inspect}"
@@ -328,20 +325,20 @@ module RestFtpDaemon
 
       if target_uri.is_a? URI::FTP
         log_info "Job.prepare target_method FTP"
-        # set_info :target_method, :ftp
-        @target_method = :ftp
+        # set_info :target, :method, :ftp
+        #@target_method = :ftp
         @remote = RemoteFTP.new target_uri, log_context
 
       elsif (target_uri.is_a? URI::FTPES) || (target_uri.is_a? URI::FTPS)
         log_info "Job.prepare target_method FTPES"
-        # set_info :target_method, :ftpes
-        @target_method = :ftpes
+        # set_info :target, :method, :ftpes
+        # @target_method = :ftpes
         @remote = RemoteFTP.new target_uri, log_context, ftpes: true
 
       elsif target_uri.is_a? URI::SFTP
         log_info "Job.prepare target_method SFTP"
-        # set_info :target_method, :sftp
-        @target_method = :sftp
+        # set_info :target, :method, :sftp
+        # @target_method = :sftp
         @remote = RemoteSFTP.new target_uri, log_context
 
       else
@@ -360,13 +357,13 @@ module RestFtpDaemon
       raise RestFtpDaemon::JobAssertionFailed, "run/1" unless @source_path
       raise RestFtpDaemon::JobAssertionFailed, "run/2" unless @target_path
       @transfer_sent = 0
-      set_info :source_processed, 0
+      set_info :source, :processed, 0
 
       # Guess source files from disk
       set_status JOB_STATUS_CHECKING_SRC
       sources = find_local @source_path
-      set_info :source_count, sources.count
-      set_info :source_files, sources.collect(&:full)
+      set_info :source, :count, sources.count
+      set_info :source, :files, sources.collect(&:full)
       log_info "Job.run sources #{sources.collect(&:name)}"
       raise RestFtpDaemon::JobSourceNotFound if sources.empty?
 
@@ -383,7 +380,7 @@ module RestFtpDaemon
 
       # Compute total files size
       @transfer_total = sources.collect(&:size).sum
-      set_info :transfer_total, @transfer_total
+      set_info :transfer, :total, @transfer_total
 
       # Reset counters
       @last_data = 0
@@ -404,7 +401,7 @@ module RestFtpDaemon
         remote_push source, full_target
 
         # Update counters
-        set_info :source_processed, source_processed += 1
+        set_info :source, :processed, source_processed += 1
       end
 
       # FTP transfer finished
@@ -434,18 +431,18 @@ module RestFtpDaemon
       Thread.current.thread_variable_set :updated_at, now
     end
 
-    def set_info attribute, value
+    def set_info level1, level2, value
       @mutex.synchronize do
         @infos || {}
+        @infos[level1] ||= {}
 
         # Force strings to UTF8
         if value.is_a? Symbol
-          @infos[attribute] = value.to_s.force_encoding(Encoding::UTF_8)
+          @infos[level1][level2] = value.to_s.force_encoding(Encoding::UTF_8)
         elsif value.is_a? String
-          # @infos[attribute] = utf8(value)
-          @infos[attribute] = value.force_encoding(Encoding::UTF_8)
+          @infos[level1][level2] = value.force_encoding(Encoding::UTF_8)
         else
-          @infos[attribute] = value
+          @infos[level1][level2] = value
         end
 
         # Mark the job as updated
@@ -503,7 +500,7 @@ module RestFtpDaemon
 
       # Use source filename if target path provided none (typically with multiple sources)
       log_info "Job.remote_push [#{source.name}]: [#{source.full}] > [#{target.full}]"
-      set_info :source_current, source.name
+      set_info :source, :current, source.name
 
       # Compute temp target name
       tempname = nil
@@ -537,10 +534,10 @@ module RestFtpDaemon
 
       # Compute final bitrate
       global_transfer_bitrate = get_bitrate @transfer_total, (Time.now - transfer_started_at)
-      set_info :transfer_bitrate, global_transfer_bitrate.round(0)
+      set_info :transfer, :bitrate, global_transfer_bitrate.round(0)
 
       # Done
-      set_info :source_current, nil
+      set_info :source, :current, nil
     end
 
     def progress transferred, name = ""
@@ -549,17 +546,17 @@ module RestFtpDaemon
 
       # Update counters
       @transfer_sent += transferred
-      set_info :transfer_sent, @transfer_sent
+      set_info :transfer, :sent, @transfer_sent
 
       # Update job info
       percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
-      set_info :progress, percent0
+      set_info :transfer, :progress, percent0
 
       # Update job status after each NOTIFY_UPADE_STATUS
       progressed_ago = (now.to_f - @progress_at.to_f)
       if (!JOB_UPDATE_INTERVAL.to_f.zero?) && (progressed_ago > JOB_UPDATE_INTERVAL.to_f)
         @current_bitrate = running_bitrate @transfer_sent
-        set_info :transfer_bitrate, @current_bitrate.round(0)
+        set_info :transfer, :bitrate, @current_bitrate.round(0)
 
         # Log progress
         stack = []
@@ -644,13 +641,13 @@ module RestFtpDaemon
       # Update job's internal status
       set_status JOB_STATUS_FAILED
       set_error error
-      set_info :error_exception, exception.class.to_s
-      set_info :error_message, exception.message
+      set_info :error, :exception, exception.class.to_s
+      set_info :error, :message, exception.message
 
       # Build status stack
       notif_status = nil
       if include_backtrace
-        set_info :error_backtrace, exception.backtrace
+        set_info :error, :backtrace, exception.backtrace
         notif_status = {
           backtrace: exception.backtrace,
           }

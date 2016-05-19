@@ -1,10 +1,10 @@
 -# coding: utf-8
 - jobs.each do |job|
-  - progress = job.get :progress
-  - source_count = job.get(:source_count) || 0
-  - source_processed = job.get(:source_processed) || 0
-  - source_current = job.get(:source_current)
-  - bitrate = job.get :transfer_bitrate
+  - progress = job.get_info(:transfer, :progress)
+  - source_count = job.get_info(:source, :count) || 0
+  - source_processed = job.get_info(:source, :processed) || 0
+  - source_current = job.get_info(:source, :current)
+  - bitrate = job.get_info(:transfer, :bitrate)
   - trclass = JOB_STYLES[job.status]
   - runs = job.runs.to_i
 
@@ -20,14 +20,14 @@
 
     %td= job.pool
 
-    %td{title: job.get(:source_path)}
+    %td{title: job.get_info(:source, :path)}
       = Helpers.highlight_tokens job.source
 
     %td
-      =# Helpers.job_method_label (job.get :target_method)
-      = Helpers.job_method_label job.target_method
+      = Helpers.job_method_label (job.get_info :target, :method)
+      =# Helpers.job_method_label job.target_method
 
-    %td{title: job.get(:target_url)}
+    %td{title: job.get_info(:target, :url)}
       = Helpers.highlight_tokens job.target
 
     %td
@@ -54,14 +54,14 @@
       - if job.status == JOB_STATUS_UPLOADING
         .progress
           .progress-bar{style:"width: #{progress}%;"}
-            = Helpers.format_bytes(job.get(:transfer_sent), "B")
+            = Helpers.format_bytes(job.get_info(:transfer, :sent), "B")
 
       - else
-        .error{title: job.get(:error_message)}
+        .error{title: job.get_info(:error, :message)}
           = Helpers.text_or_empty(job.error)
 
     %td.nobr.text-right
-      = Helpers.format_bytes(job.get(:transfer_total), "B")
+      = Helpers.format_bytes(job.get_info(:transfer, :total), "B")
 
     %td.nobr.text-right{title: "time: #{job.exectime} s"}
       - if bitrate

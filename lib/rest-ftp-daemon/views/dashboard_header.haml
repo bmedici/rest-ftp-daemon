@@ -3,7 +3,7 @@
 - info_load = Sys::CPU.load_avg.first.to_f
 - info_norm = info_procs.zero? ? "N/A" : (100 * info_load / info_procs).round(1)
 - info_trans = $stats.get :global, :transferred
-- info_processed = $stats.get(:global, :processed)
+- info_processed = $stats.get :global, :processed
 - mem = GetProcessMem.new
 
 
