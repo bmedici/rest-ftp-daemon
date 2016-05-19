@@ -35,10 +35,6 @@ module RestFtpDaemon
       @last_id = 0
       @prefix = Helpers.identifier JOB_IDENT_LEN
       log_info "JobQueue initialized (prefix: #{@prefix})"
-
-      # Mutex for counters
-      @counters = {}
-      @mutex_counters = Mutex.new
     end
 
     def generate_id
@@ -46,56 +42,6 @@ module RestFtpDaemon
         @last_id += 1
       end
       prefixed_id @last_id
-    end
-
-    # Counters handling
-
-    def counter_add name, value
-      @mutex_counters.synchronize do
-        @counters[name] ||= 0
-        @counters[name] += value
-      end
-    end
-
-    def counter_inc name
-      counter_add name, 1
-    end
-
-    # def counter_add_new group, name, value
-    #   @mutex_counters.synchronize do
-    #     @counters[group] ||= {}
-    #     @counters[group][name] ||= 0
-    #     @counters[group][name] += value
-    #   end
-    # end
-
-    # def counter_set_new group, name, value
-    #   @mutex_counters.synchronize do
-    #     @counters[group] ||= {}
-    #     @counters[group][name] = value
-    #   end
-    # end
-
-    # def counter_inc_new group, name
-    #   counter_add_new group, name, 1
-    # end
-
-    def counter_get name
-      @mutex_counters.synchronize do
-        @counters[name]
-      end
-    end
-
-    def counter_get_new group, name
-      @mutex_counters.synchronize do
-        @counters[group][name] if @counters[group]
-      end
-    end
-
-    def counters
-      @mutex_counters.synchronize do
-        @counters
-      end
     end
 
     def jobs_queued
@@ -124,7 +70,7 @@ module RestFtpDaemon
       rates
     end
 
-    # Queue stats ans infos
+    # Queue infos
     def jobs_count
       @jobs.length
     end

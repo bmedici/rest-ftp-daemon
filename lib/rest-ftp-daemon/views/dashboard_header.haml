@@ -1,9 +1,9 @@
 -# coding: utf-8
-- trans = $queue.counter_get :transferred
 - info_procs = (Facter.value :processorcount).to_i
 - info_load = Sys::CPU.load_avg.first.to_f
 - info_norm = info_procs.zero? ? "N/A" : (100 * info_load / info_procs).round(1)
-- info_processed = $queue.counter_get(:jobs_processed)
+- info_trans = $stats.get :global, :transferred
+- info_processed = $stats.get(:global, :processed)
 - mem = GetProcessMem.new
 
 
@@ -35,6 +35,6 @@
 
   .btn-group.btn-group-sm
     .btn.btn-default.btn-success Transferred
-    .btn.btn-default= Helpers.format_bytes(trans, "B", 1)
+    .btn.btn-default= Helpers.format_bytes(info_trans, "B", 1)
 
 

@@ -6,6 +6,9 @@ require "rest-ftp-daemon"
 # Create global queue
 $queue = RestFtpDaemon::JobQueue.new
 
+# Create global stats
+$stats = RestFtpDaemon::Stats.new
+
 # Initialize workers and conchita subsystem
 $pool = RestFtpDaemon::WorkerPool.new
 

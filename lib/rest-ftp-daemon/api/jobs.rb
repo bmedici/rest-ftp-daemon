@@ -77,7 +77,7 @@ module RestFtpDaemon
           $queue.push job
 
           # Increment a counter
-          $queue.counter_inc :jobs_received
+          $stats.increment :jobs, :received
 
         rescue JSON::ParserError => exception
           log_error "JSON::ParserError: #{exception.message}"

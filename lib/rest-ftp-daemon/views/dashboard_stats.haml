@@ -1,0 +1,21 @@
+-# coding: utf-8
+%h2 Stats
+
+%table.table.table-striped.table-hover.table-condensed
+
+  %thead
+    %tr
+      %th group
+      %th name
+      %th.text-right value
+
+  %tbody
+
+    - $stats.stats.each do |group, values|
+
+      - values.each do |name, value|
+        %tr
+          %td= group
+          %td= name
+          %td.text-right= value
+
