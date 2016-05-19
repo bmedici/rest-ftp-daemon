@@ -40,6 +40,7 @@ module RestFtpDaemon
       format :json
       content_type :json, 'application/json; charset=utf-8'
 
+      mount RestFtpDaemon::API::Status => MOUNT_STATUS
       mount RestFtpDaemon::API::Jobs => MOUNT_JOBS
       mount RestFtpDaemon::API::Dashbaord => MOUNT_BOARD
       mount RestFtpDaemon::API::Config => MOUNT_CONFIG
@@ -70,28 +71,6 @@ module RestFtpDaemon
       get "/routes" do
         status 200
         return RestFtpDaemon::API::Root.routes
-      end
-
-
-      ### SHOW STATUS
-
-      desc "Show daemon status"
-      get "/status" do
-        mem = GetProcessMem.new
-        status 200
-        return  {
-          hostname: `hostname`.to_s.chomp,
-          version: APP_VER,
-          started: APP_STARTED,
-          uptime: (Time.now - APP_STARTED).round(1),
-          counters: $queue.counters,
-          memory_bytes: mem.bytes.to_i,
-          memory_mb: mem.mb.round(0),
-          status: $queue.counts_by_status,
-          workers: $pool.worker_variables,
-          jobs_count: $queue.jobs_count,
-          jobs_queued: $queue.queued_ids,
-          }
       end
 
 

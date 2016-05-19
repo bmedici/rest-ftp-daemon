@@ -92,6 +92,7 @@ BIND_PORT_LOCALHOST     = "127.0.0.1"
 ENV_PRODUCTION           = "production"
 MOUNT_JOBS               = "/jobs"
 MOUNT_BOARD              = "/board"
+MOUNT_STATUS             = "/status"
 MOUNT_CONFIG             = "/config"
 
 
