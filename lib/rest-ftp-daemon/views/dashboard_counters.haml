@@ -3,13 +3,15 @@
 
 %table.table.table-striped.table-hover.table-condensed
 
-  %tr
-    %th name
-    %th.text-right value
-
-  - $queue.counters.each do |name, value|
-
+  %thead
     %tr
-      %td= name
-      %td.text-right= value
+      %th name
+      %th.text-right value
+
+  %tbody
+
+    - $queue.counters.each do |name, value|
+      %tr
+        %td= name
+        %td.text-right= value
 

@@ -3,11 +3,13 @@
 
 %table.table.table-striped.table-hover.table-condensed
 
-  %tr
-    %th token
-    %th value
-
-  - tokens.each do |token, value|
+  %thead
     %tr
-      %td= Helpers.tokenize token
-      %td= Helpers.hide_credentials_from_url value
+      %th token
+      %th value
+
+  %tbody
+    - tokens.each do |token, value|
+      %tr
+        %td= Helpers.tokenize token
+        %td= Helpers.hide_credentials_from_url value

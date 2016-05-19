@@ -3,33 +3,35 @@
 
 %table.table.table-striped.table-hover.table-condensed
 
-  %tr
-    %th ID
-    %th pool
-    %th status
-    %th job
-    %th.text-right seen
+  %thead
+    %tr
+      %th ID
+      %th pool
+      %th status
+      %th job
+      %th.text-right seen
 
-  - @worker_variables.each do |vars|
-    - wid = vars[:wid]
-    - status = vars[:status]
-    - alive = $pool.worker_alive? wid
-    - trclass = WORKER_STYLES[status]
+  %tbody
+    - @worker_variables.each do |vars|
+      - wid = vars[:wid]
+      - status = vars[:status]
+      - alive = $pool.worker_alive? wid
+      - trclass = WORKER_STYLES[status]
 
-    - unless alive
-      - trclass = "danger"
-      - status = "DEAD"
+      - unless alive
+        - trclass = "danger"
+        - status = "DEAD"
 
 
-    %tr{class: trclass.to_s}
-      %td= wid
-      %td= vars[:pool]
-      %td= status
-      %td= vars[:jid]
-      %td.text-right
+      %tr{class: trclass.to_s}
+        %td= wid
+        %td= vars[:pool]
+        %td= status
+        %td= vars[:jid]
+        %td.text-right
 
-        - if vars[:updated_at].is_a? Time
-          - no_news_for = (Time.now - vars[:updated_at]).round(0)
-          = Helpers.formatted_duration no_news_for
-        - else
-          = "?"
+          - if vars[:updated_at].is_a? Time
+            - no_news_for = (Time.now - vars[:updated_at]).round(0)
+            = Helpers.formatted_duration no_news_for
+          - else
+            = "?"

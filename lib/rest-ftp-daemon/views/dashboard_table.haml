@@ -77,14 +77,6 @@
         .label.label-default.flag.worker-label= job.priority
 
     %td
-
       .label.flag.worker-label{class: Helpers.job_runs_style(runs)}= runs
-
-    -#%td
-      - unless job.priority.nil?
-        .label.label-default.flag.worker-label= job.priority
-
-      - unless job.wid.nil?
-        .label.label-warning.flag.worker-label= job.wid
 
 
