@@ -93,6 +93,7 @@ ENV_PRODUCTION           = "production"
 MOUNT_JOBS               = "/jobs"
 MOUNT_BOARD              = "/board"
 MOUNT_STATUS             = "/status"
+MOUNT_DEBUG              = "/debug"
 MOUNT_CONFIG             = "/config"
 
 
