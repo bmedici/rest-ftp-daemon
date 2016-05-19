@@ -59,9 +59,34 @@ module RestFtpDaemon
       counter_add name, 1
     end
 
+    # def counter_add_new group, name, value
+    #   @mutex_counters.synchronize do
+    #     @counters[group] ||= {}
+    #     @counters[group][name] ||= 0
+    #     @counters[group][name] += value
+    #   end
+    # end
+
+    # def counter_set_new group, name, value
+    #   @mutex_counters.synchronize do
+    #     @counters[group] ||= {}
+    #     @counters[group][name] = value
+    #   end
+    # end
+
+    # def counter_inc_new group, name
+    #   counter_add_new group, name, 1
+    # end
+
     def counter_get name
       @mutex_counters.synchronize do
         @counters[name]
+      end
+    end
+
+    def counter_get_new group, name
+      @mutex_counters.synchronize do
+        @counters[group][name] if @counters[group]
       end
     end
 
@@ -226,11 +251,32 @@ module RestFtpDaemon
       "#{@prefix}.#{id}"
     end
 
+    def rates_by_status jobs
+      rates = {}
+
+      # Sub-group by status
+      jobs.group_by(&:status).each do |status, jobset|
+
+        # Extract bitrate values
+        bitrates = jobset.collect do |job|
+          job.get(:transfer_bitrate)
+        end
+
+        # Store their sum
+        rates[status] = bitrates.reject(&:nil?).sum
+        # rates["#{status}_ids"] = jobset.collect(&:id).join(', ')
+      end
+
+      # Return rates
+      rates
+    end
+
     if Settings.newrelic_enabled?
       add_transaction_tracer :push,             category: :task
       add_transaction_tracer :pop,              category: :task
       add_transaction_tracer :expire,           category: :task
       add_transaction_tracer :counts_by_status, category: :task
+      add_transaction_tracer :rate_by, category: :task
     end
 
   end
