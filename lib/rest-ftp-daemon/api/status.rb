@@ -22,7 +22,10 @@ module RestFtpDaemon
           status: $queue.jobs_count_by_status,
 
           # jobs_finished: $queue.jobs_finished,
-          jobs_rate_by_pool: $queue.jobs_rate_by_pool,
+          #rate_by_pool1: $queue.rate_by_pool,
+          rate_by_pool: $queue.rate_by(:pool),
+          rate_by_targethost: $queue.rate_by(:targethost),
+          jobs_by_status: $queue.jobs_by_status,
 
           #rates_per_host: $queue.rates_per_host,
 
