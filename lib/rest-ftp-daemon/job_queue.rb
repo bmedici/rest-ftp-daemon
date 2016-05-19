@@ -44,7 +44,7 @@ module RestFtpDaemon
       prefixed_id @last_id
     end
 
-    def jobs_queued
+      def jobs_queued
       @queues
       #@queues.map { |status, jobs| jobs.size }
     end

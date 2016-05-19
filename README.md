@@ -214,7 +214,7 @@ TODO for this document
 * Document /status
 * Document /routes
 * Document mkdir and overwrite options
-* Document counters
+* Document stats
 
 
 
