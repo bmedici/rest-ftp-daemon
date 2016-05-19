@@ -48,6 +48,8 @@ module RestFtpDaemon
       prefixed_id @last_id
     end
 
+    # Counters handling
+
     def counter_add name, value
       @mutex_counters.synchronize do
         @counters[name] ||= 0
@@ -98,38 +100,56 @@ module RestFtpDaemon
 
     def jobs_queued
       @queues
+      #@queues.map { |status, jobs| jobs.size }
     end
 
-    def jobs_with_status status
-      # No status filter: return all execept queued
-      if status.empty?
-        @jobs.reject { |job| job.status == JOB_STATUS_QUEUED }
+    # Statistics on average rates
+    def rate_by method_name
+      # Init
+      rates = {}
+      return unless Job.new(0, {}).respond_to? method_name
 
-      # Status filtering: only those jobs
-      else
-        @jobs.select { |job| job.status.to_s == status.to_s }
-
+      # Group jobs by method_name
+      jobs_grouped = @jobs.group_by do |job|
+        job.send(method_name)
       end
+
+      # Inside each group, sum up rates for interesting statuses
+      jobs_grouped.map do |group, jobs|
+        # Store their sum
+        rates[group] = rates_by_status (jobs)
+      end
+
+      # Return the rate
+      rates
     end
 
-    def counts_by_status
-      statuses = {}
-      @jobs.group_by { |job| job.status }.map { |status, jobs| statuses[status] = jobs.size }
-      statuses
-    end
-
+    # Queue stats ans infos
     def jobs_count
       @jobs.length
     end
 
-    def queued_ids
-      @queues.collect{|pool, jobs| jobs.collect(&:id)}
+    def jobs_by_status
+      statuses = {}
+      @jobs.group_by { |job| job.status }.map { |status, jobs| statuses[status] = jobs.size }
+      statuses
     end
+    alias jobs_count_by_status jobs_by_status
 
     def jobs_ids
       @jobs.collect(&:id)
     end
 
+    def empty?
+      @queue.empty?
+    end
+
+    def num_waiting
+      @waiting.size
+    end
+
+
+    # Queue access
     def find_by_id id, prefixed = false
       # Build a prefixed id if expected
       id = prefixed_id(id) if prefixed
@@ -139,7 +159,6 @@ module RestFtpDaemon
       #@jobs.reverse.find { |item| item.id == id }
       @jobs.find { |item| item.id == id }
     end
-
 
     def push job
       # Check that item responds to "priorty" method
@@ -199,18 +218,24 @@ module RestFtpDaemon
     alias shift pop
     alias deq pop
 
-    def empty?
-      @queue.empty?
-    end
-
     def clear
       @queue.clear
     end
 
-    def num_waiting
-      @waiting.size
+    # Jobs acess and searching
+    def jobs_with_status status
+      # No status filter: return all execept queued
+      if status.empty?
+        @jobs.reject { |job| job.status == JOB_STATUS_QUEUED }
+
+      # Status filtering: only those jobs
+      else
+        @jobs.select { |job| job.status.to_s == status.to_s }
+
+      end
     end
 
+    # Jobs cleanup
     def expire status, maxage, verbose = false
 # FIXME: clean both @jobs and @queue
       # Init
@@ -272,11 +297,11 @@ module RestFtpDaemon
     end
 
     if Settings.newrelic_enabled?
-      add_transaction_tracer :push,             category: :task
-      add_transaction_tracer :pop,              category: :task
-      add_transaction_tracer :expire,           category: :task
-      add_transaction_tracer :counts_by_status, category: :task
+      add_transaction_tracer :push,                 category: :task
+      add_transaction_tracer :pop,                  category: :task
+      add_transaction_tracer :expire,               category: :task
       add_transaction_tracer :rate_by, category: :task
+      add_transaction_tracer :jobs_count_by_status, category: :task
     end
 
   end
