@@ -1,25 +1,6 @@
-require "grape"
-
 module RestFtpDaemon
   module API
     class Jobs < Grape::API
-
-      ### HELPERS
-
-      helpers do
-        def logger
-          Root.logger
-        end
-      end
-
-
-      ### Common request logging
-      before do
-        log_info "HTTP #{request.request_method} #{request.fullpath}", params
-      end
-
-
-      ### READ ONE JOB
 
       desc "Read job with ID"
       params do

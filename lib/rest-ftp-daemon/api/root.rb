@@ -1,9 +1,33 @@
-require "grape"
 require "get_process_mem"
 
 module RestFtpDaemon
   module API
     class Root < Grape::API
+
+      ### LOGGING & HELPERS
+
+      helpers do
+        def logger
+          Root.logger
+        end
+
+        def log_request
+          if env.nil?
+            puts "HTTP_ENV_IS_NIL: #{env.inspect}"
+            return
+          end
+
+          request_method = env['REQUEST_METHOD']
+          request_path   = env['REQUEST_PATH']
+          request_uri    = env['REQUEST_URI']
+          log_info "HTTP #{request_method} #{request_uri}", params
+        end
+      end
+
+      before do
+        log_request
+      end
+
 
       ### CLASS CONFIG
 
@@ -29,22 +53,6 @@ module RestFtpDaemon
         # Check that Queue and Pool are available
         raise RestFtpDaemon::MissingQueue unless defined? $queue
         raise RestFtpDaemon::MissingPool unless defined? $pool
-      end
-
-
-      ### HELPERS
-
-      helpers do
-        def logger
-          Root.logger
-        end
-      end
-
-
-      ### Common request logging
-
-      before do
-        log_info "HTTP #{request.request_method} #{request.fullpath}", params
       end
 
 

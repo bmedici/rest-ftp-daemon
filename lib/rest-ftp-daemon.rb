@@ -10,6 +10,7 @@ require "net/http"
 require "thread"
 require "singleton"
 require "newrelic_rpm"
+require "grape"
 
 # Project's libs
 require_relative "rest-ftp-daemon/constants"
