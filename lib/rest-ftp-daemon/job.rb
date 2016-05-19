@@ -246,6 +246,10 @@ module RestFtpDaemon
       (Time.now - @queued_at).round(2)
     end
 
+    def targethost
+      get(:target_host)
+    end
+
     def json_target
       utf8 @target_method
     end
@@ -314,6 +318,7 @@ module RestFtpDaemon
       raise RestFtpDaemon::JobMissingAttribute unless @target
       target_uri = expand_url @target
       set_info :target_uri, target_uri.to_s
+      set_info :target_host, target_uri.host
       @target_path = Path.new target_uri.path, true
 
       #puts "@target_path: #{@target_path.inspect}"
