@@ -39,6 +39,7 @@ require_relative "rest-ftp-daemon/remote_sftp"
 require_relative "rest-ftp-daemon/api/job_presenter"
 require_relative "rest-ftp-daemon/api/jobs"
 require_relative "rest-ftp-daemon/api/dashboard"
+require_relative "rest-ftp-daemon/api/config"
 require_relative "rest-ftp-daemon/api/root"
 
 # Haml monkey-patching

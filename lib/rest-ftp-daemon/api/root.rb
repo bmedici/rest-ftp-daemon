@@ -42,6 +42,7 @@ module RestFtpDaemon
 
       mount RestFtpDaemon::API::Jobs => MOUNT_JOBS
       mount RestFtpDaemon::API::Dashbaord => MOUNT_BOARD
+      mount RestFtpDaemon::API::Config => MOUNT_CONFIG
 
 
       ### INITIALIZATION
@@ -94,15 +95,6 @@ module RestFtpDaemon
       end
 
 
-      ### SHOW CONFIG
-
-      desc "Show daemon config"
-      get "/config" do
-        status 200
-        return Helpers.get_censored_config
-      end
-
-
       desc "List all Jobs params encodings"
       get "/encodings" do
         # Get jobs to display
@@ -131,21 +123,6 @@ module RestFtpDaemon
         end
 
         encodings
-      end
-
-
-      ### RELOAD CONFIG
-
-      desc "Reload daemon config"
-      post "/config/reload" do
-        if Settings.at(:debug, :allow_reload)==true
-          Settings.reload!
-          status 200
-          return Helpers.get_censored_config
-        else
-          status 403
-          return "Config reload not permitted"
-        end
       end
 
     end
