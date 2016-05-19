@@ -1,10 +1,10 @@
 require "spec_helper"
 
-describe "Routes", feature: true do
+describe "Debug", feature: true do
 
-  let!(:response) { get "/routes" }
+  let!(:response) { get MOUNT_DEBUG }
 
-  describe "GET /routes" do
+  describe "GET #{MOUNT_DEBUG}" do
 
     it "responds successfully" do
       expect(response.status).to eq 200

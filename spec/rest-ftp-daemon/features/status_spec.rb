@@ -2,9 +2,9 @@ require "spec_helper"
 
 describe "Status", feature: true do
 
-  let!(:response) { get "/status" }
+  let!(:response) { get MOUNT_STATUS }
 
-  describe "GET /status" do
+  describe "GET #{MOUNT_DEBUG}" do
 
     it "responds successfully" do
       expect(response.status).to eq 200
