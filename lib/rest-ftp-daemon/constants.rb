@@ -57,6 +57,14 @@ JOB_STYLES = {
   JOB_STATUS_RENAMING    => :info,
   }
 
+
+# Jobs statuses
+JOB_METHOD_FTP           = "ftp"
+JOB_METHOD_FTPS          = "ftps"
+JOB_METHOD_SFTP          = "sftp"
+JOB_METHOD_FILE          = "file"
+
+
 # Worker statuses
 WORKER_STATUS_STARTING  = "starting"
 WORKER_STATUS_WAITING   = "waiting"

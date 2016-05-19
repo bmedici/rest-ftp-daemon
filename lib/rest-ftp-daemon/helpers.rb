@@ -78,11 +78,11 @@ module RestFtpDaemon
     def self.job_method_label method
       return if method.nil?
       klass = case method
-      when :file
+      when JOB_METHOD_FILE
         "label-primary"
-      when :ftp
+      when JOB_METHOD_FTP
         "label-warning"
-      when :ftps, :ftpes
+      when JOB_METHOD_FTPS
         "label-success"
       else
         "label-default"
