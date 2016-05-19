@@ -28,9 +28,6 @@ module RestFtpDaemon
         end
       end
 
-
-      ### READ ALL JOBS
-
       desc "List all Jobs"
       get "/" do
         begin
@@ -47,9 +44,6 @@ module RestFtpDaemon
 
         end
       end
-
-
-      ### CREATE A JOB
 
       desc "Create a new job"
       params do

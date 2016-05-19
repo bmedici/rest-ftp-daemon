@@ -1,5 +1,3 @@
-require "get_process_mem"
-
 module RestFtpDaemon
   module API
     class Root < Grape::API
@@ -33,10 +31,9 @@ module RestFtpDaemon
 
       helpers RestFtpDaemon::LoggerHelper
       logger RestFtpDaemon::LoggerPool.instance.get :api
-
       do_not_route_head!
       do_not_route_options!
-
+      # version 'v1'
       format :json
       content_type :json, 'application/json; charset=utf-8'
 

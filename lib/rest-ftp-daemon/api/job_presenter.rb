@@ -1,5 +1,3 @@
-require "grape-entity"
-
 module RestFtpDaemon
   module API
     module Entities

@@ -11,6 +11,7 @@ require "thread"
 require "singleton"
 require "newrelic_rpm"
 require "grape"
+require "grape-entity"
 
 # Project's libs
 require_relative "rest-ftp-daemon/constants"

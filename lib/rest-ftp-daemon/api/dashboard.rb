@@ -1,11 +1,11 @@
 require "haml"
 require "sys/cpu"
+require "get_process_mem"
 require "facter"
 
 module RestFtpDaemon
   module API
 
-    # Offers an HTML dashboard through the Grape API (hum...)
     class Dashbaord < Grape::API
 
       ### HELPERS
