@@ -443,7 +443,7 @@ module RestFtpDaemon
         if value.is_a? Symbol
           @infos[level1][level2] = value.to_s.force_encoding(Encoding::UTF_8)
         elsif value.is_a? String
-          @infos[level1][level2] = value.force_encoding(Encoding::UTF_8)
+          @infos[level1][level2] = value.dup.force_encoding(Encoding::UTF_8)
         else
           @infos[level1][level2] = value
         end
