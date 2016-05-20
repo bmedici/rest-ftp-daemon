@@ -8,6 +8,20 @@ module RestFtpDaemon
       get "/" do
         mem = GetProcessMem.new
         status 200
+
+        # Get counters
+        counters = $counters.stats
+
+        # Amend counters with legacy attributes
+        if counters[:jobs].is_a? Hash
+          counters[:jobs_finished] = counters[:jobs][:finished] || 0
+          counters[:jobs_failed]   = counters[:jobs][:failed] || 0
+        end
+        if counters[:data].is_a? Hash
+          counters[:transferred] = counters[:data][:transferred] || 0
+        end
+
+        # Generate sutrcture
         return  {
           hostname: `hostname`.to_s.chomp,
           version: APP_VER,
@@ -21,7 +35,7 @@ module RestFtpDaemon
           status: $queue.jobs_by_status,
           jobs_count: $queue.jobs_count,
 
-          counters: $counters.stats,
+          counters: counters,
 
           rate_by_pool: $queue.rate_by(:pool),
           rate_by_targethost: $queue.rate_by(:targethost),
