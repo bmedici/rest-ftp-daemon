@@ -1,4 +1,6 @@
 -# coding: utf-8
+-  variables = $pool.worker_variables
+
 %h2 Workers
 
 %table.table.table-striped.table-hover.table-condensed
@@ -12,7 +14,7 @@
       %th.text-right seen
 
   %tbody
-    - @worker_variables.each do |vars|
+    - variables.each do |vars|
       - wid = vars[:wid]
       - status = vars[:status]
       - alive = $pool.worker_alive? wid

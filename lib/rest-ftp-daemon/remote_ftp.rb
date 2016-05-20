@@ -43,7 +43,6 @@ module RestFtpDaemon
       log_info "RemoteFTP.present? [#{target.name}]"
 
     rescue Net::FTPPermError
-      # log_info "RemoteFTP.present? [#{target.name}] NOT_FOUND"
       return false
     else
       return size
@@ -102,9 +101,6 @@ module RestFtpDaemon
       log_info "RemoteFTP.push to [#{destination.name}]"
 
       @ftp.putbinaryfile source.full, target.name, @chunk_size do |data|
-        # Update the worker activity marker
-        # FIXME: worker_is_still_active
-
         # Update job status after this block transfer
         yield data.bytesize, destination.name
       end
@@ -133,7 +129,6 @@ module RestFtpDaemon
       @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(verify_mode: OpenSSL::SSL::VERIFY_NONE)
       @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
     end
-
 
   end
 end

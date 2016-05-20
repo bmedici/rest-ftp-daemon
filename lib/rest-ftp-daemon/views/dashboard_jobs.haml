@@ -44,7 +44,6 @@
           %th{title: "Priority"} P
           %th{title: "Runs count"} R
 
-
         - @jobs_queued.each do |pool, jobs|
           - unless jobs.empty?
             %tbody.jobs
@@ -58,6 +57,4 @@
         - unless jobs.empty?
           %tbody.jobs
             = render :dashboard_table, {jobs: jobs}
-
-
 

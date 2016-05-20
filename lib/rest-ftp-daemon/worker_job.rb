@@ -35,8 +35,6 @@ module RestFtpDaemon
       max_age = Settings.at(:retry, :max_age)
       max_runs = Settings.at(:retry, :max_runs)
       delay = Settings.at(:retry, :delay)
-      # log_error "on_errors: #{on_errors.inspect} (#{on_errors.first.class})"
-      # log_error "job.error: #{job.error} (#{job.error.class})"
 
       if !job.error
         #log_info "job succeeded"

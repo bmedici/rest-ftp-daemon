@@ -31,10 +31,6 @@ module RestFtpDaemon
 
   private
 
-    # def log_context
-    #   @log_context
-    # end
-
     def myname
       self.class.to_s
     end

@@ -123,9 +123,6 @@ module RestFtpDaemon
           # args[2] : data being written (as string)
           # puts "writing #{args[2].length} bytes to #{args[0].remote} starting at #{args[1]}"
 
-          # Update the worker activity marker
-          # FIXME: worker_is_still_active
-
           # Update job status after this block transfer
           yield args[2].length, destination.name
 
@@ -154,8 +151,6 @@ module RestFtpDaemon
     def close
       # Close init
       super
-
-      # @sftp.close
     end
 
     def connected?

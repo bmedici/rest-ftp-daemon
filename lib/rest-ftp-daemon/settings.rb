@@ -48,7 +48,6 @@ class Settings < Settingslogic
       ENV["NEWRELIC_AGENT_ENABLED"] = "false"
     end
 
-    # That's it!
   end
 
   def overwrite options

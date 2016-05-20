@@ -16,16 +16,13 @@ module RestFtpDaemon
       # Instance variables
       @queues = {}
       @waitings = {}
-
-      # @queue = []
-      # @waiting = []
-
       @jobs = []
 
       @queues.taint          # enable tainted communication
       @waitings.taint
-
       taint
+
+      # Global mutex for the queue
       @mutex = Mutex.new
 
       # Logger
@@ -44,43 +41,9 @@ module RestFtpDaemon
       prefixed_id @last_id
     end
 
-      def jobs_queued
+    def jobs_queued
       @queues
-      #@queues.map { |status, jobs| jobs.size }
     end
-
-    # Statistics on average rates
-    # def rate_by method_name
-    #   # Init
-    #   result = {}
-    #   return unless Job.new(0, {}).respond_to? method_name
-
-    #   # Select only running jobs
-    #   @jobs.select do |job|
-
-    #     job.status == JOB_STATUS_UPLOADING
-
-    #   # Group them by method_name
-    #   end.group_by do |job|
-
-    #     job.send(method_name)
-
-    #   # Inside each group, sum up rates
-    #   end.map do |group, jobs|
-
-    #     # Collect their rates
-    #     rates = jobs.collect do |job|
-    #       job.get_info :transfer, :bitrate
-    #     end
-
-    #     # And summ that up !
-    #     # result[group] = rates.inspect
-    #     result[group] = rates.reject(&:nil?).sum
-    #   end
-
-    #   # Return the rate
-    #   result
-    # end
 
     def rate_by method_name
       # Init
@@ -127,18 +90,17 @@ module RestFtpDaemon
       statuses
     end
 
-    def jobs_ids
-      @jobs.collect(&:id)
-    end
+    # def jobs_ids
+    #   @jobs.collect(&:id)
+    # end
 
     def empty?
       @queue.empty?
     end
 
-    def num_waiting
-      @waiting.size
-    end
-
+    # def num_waiting
+    #   @waiting.size
+    # end
 
     # Queue access
     def find_by_id id, prefixed = false

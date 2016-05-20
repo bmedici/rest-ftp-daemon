@@ -37,9 +37,6 @@ module RestFtpDaemon
             @jobs_queued = []
           end
 
-          # Get workers status
-          @worker_variables = $pool.worker_variables
-
           # Build paginator
           @paginate = Paginate.new jobs_with_status
           @paginate.filter = filter

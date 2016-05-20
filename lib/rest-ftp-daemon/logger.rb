@@ -15,13 +15,10 @@ class Logger
 
     if lines.is_a? Hash
       output = build_from_hash prefix2, lines
-
     elsif lines.is_a? Array
       output = build_from_array prefix2, lines
-
     else
       output = []
-
     end
 
     # Prepend plain message to output

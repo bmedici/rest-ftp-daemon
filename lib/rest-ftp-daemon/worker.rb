@@ -13,7 +13,6 @@ module RestFtpDaemon
       @log_worker_status_changes = true
 
       # Worker name
-      #@wid = wid
       @pool = pool
 
       # Set thread context
