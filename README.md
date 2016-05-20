@@ -4,7 +4,7 @@ rest-ftp-daemon
 [![Gem Version](https://badge.fury.io/rb/rest-ftp-daemon.svg)](http://badge.fury.io/rb/rest-ftp-daemon)
 [![Code Climate](https://codeclimate.com/github/bmedici/rest-ftp-daemon/badges/gpa.svg)](https://codeclimate.com/github/bmedici/rest-ftp-daemon)
 [![Test Coverage](https://codeclimate.com/github/bmedici/rest-ftp-daemon/badges/coverage.svg)](https://codeclimate.com/github/bmedici/rest-ftp-daemon/coverage)
-
+[ ![Codeship](https://codeship.com/projects/46492fd0-00a4-0134-6639-66759d382560/status?branch=master)](https://codeship.com/projects/153245)
 
 A pretty simple but configurable and efficient FTP-client daemon, driven
 through a RESTful API. Create transfer jobs by POSTing a simple JSON structure,
