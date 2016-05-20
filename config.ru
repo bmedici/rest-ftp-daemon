@@ -27,7 +27,7 @@ use Rack::Static, urls: ["/css", "/js", "/images"], root: "#{APP_LIBS}/static/"
 
 # Rack reloader and mini-profiler
 unless Settings.namespace == ENV_PRODUCTION
-  use Rack::Reloader, 1
+  # use Rack::Reloader, 1
   # use Rack::MiniProfiler
 end
 
