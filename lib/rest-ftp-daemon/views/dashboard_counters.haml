@@ -12,9 +12,14 @@
   %tbody
 
     - $counters.stats.each do |group, values|
-      - next unless values.is_a? Enumerable
-      - values.each do |name, value|
+      - if values.is_a? Enumerable
+        - values.each do |name, value|
+          %tr
+            %td= group
+            %td= name
+            %td.text-right= value
+      - else
         %tr
+          %td
           %td= group
-          %td= name
-          %td.text-right= value
+          %td.text-right= values
