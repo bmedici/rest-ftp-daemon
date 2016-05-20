@@ -1,7 +1,7 @@
 # Terrific constants
 APP_NAME = "rest-ftp-daemon"
 APP_NICK = "rftpd"
-APP_VER = "0.250.0"
+APP_VER = "0.250.2"
 
 # Provide default config file information
 APP_LIB = File.expand_path(File.dirname(__FILE__))
