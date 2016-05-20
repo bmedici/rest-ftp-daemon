@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.250.3)
+    rest-ftp-daemon (0.250.4)
       double-bag-ftps
       facter
       get_process_mem
