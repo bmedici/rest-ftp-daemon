@@ -1,5 +1,5 @@
 -# coding: utf-8
-%h2 Stats
+%h2 Counters
 
 %table.table.table-striped.table-hover.table-condensed
 
@@ -11,7 +11,7 @@
 
   %tbody
 
-    - $stats.stats.each do |group, values|
+    - $counters.stats.each do |group, values|
 
       - values.each do |name, value|
         %tr

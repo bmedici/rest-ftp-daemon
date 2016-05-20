@@ -490,9 +490,9 @@ module RestFtpDaemon
       set_status JOB_STATUS_DISCONNECTING
       @finished_at = Time.now
 
-      # Update stats
-      $stats.increment :jobs, :finished
-      $stats.add :global, :transferred, @transfer_total
+      # Update counters
+      $counters.increment :jobs, :finished
+      $counters.add :data, :transferred, @transfer_total
     end
 
     def remote_push source, target
@@ -657,8 +657,8 @@ module RestFtpDaemon
       end
 
       # Increment counter for this error
-      $stats.increment :errors, error
-      $stats.increment :jobs, :failed
+      $counters.increment :errors, error
+      $counters.increment :jobs, :failed
 
       # Prepare notification if signal given
       return unless event

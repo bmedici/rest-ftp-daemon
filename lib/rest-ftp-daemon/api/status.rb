@@ -18,10 +18,12 @@ module RestFtpDaemon
           memory_bytes: mem.bytes.to_i,
           memory_mb: mem.mb.round(0),
 
-          stats: $stats.stats,
-
+          status: $queue.jobs_by_status,
           jobs_count: $queue.jobs_count,
-          status: $queue.jobs_count_by_status,
+
+          counters: $counters.stats,
+
+
 
           # jobs_finished: $queue.jobs_finished,
           #rate_by_pool1: $queue.rate_by_pool,

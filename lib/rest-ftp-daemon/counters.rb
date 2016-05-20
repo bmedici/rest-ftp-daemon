@@ -1,7 +1,7 @@
 module RestFtpDaemon
 
   # Queue that stores all the Jobs waiting to be processed or fully processed
-  class Stats
+  class Counters
     attr_reader :stats
 
     if Settings.newrelic_enabled?
