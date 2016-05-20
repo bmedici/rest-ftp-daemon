@@ -28,6 +28,7 @@ Features
   * static path pointers in configuration to abstract local mounts or remote FTPs (endpoint tokens)
   * local source path and local/remote target path can use patterns to match multiple files (`/dir/file*.jpg`)
   * several file transfer protocols supported: FTPs, FTPes, sFTP
+  * display bitrate to any pool or any FTP destination currently transferring (API and dashboard)
 
 * Job management
   * highly parrallel job processing using dedicated worker threads with their own context
