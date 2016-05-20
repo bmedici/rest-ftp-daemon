@@ -16,18 +16,17 @@
         %th.text-right bitrate
 
     %tbody
-      - rates_by_status.each do |group, rates|
+      - rates_by_status.each do |group, rate|
         - next if group.nil?
+        - trclass = (rate.nil? ? "" : "info")
 
-        %tr.info
+        %tr{class: trclass}
           %td
             = group
           %td.text-right
-            = Helpers.format_bytes(rates, "bps")
+            = Helpers.format_bytes(rate, "bps")
 
     %thead
       %tr
         %td{colspan: 3}
           %br
-
-    -# JOB_STATUS_UPLOADING

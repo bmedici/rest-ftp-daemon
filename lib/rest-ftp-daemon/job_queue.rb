@@ -50,32 +50,66 @@ module RestFtpDaemon
     end
 
     # Statistics on average rates
+    # def rate_by method_name
+    #   # Init
+    #   result = {}
+    #   return unless Job.new(0, {}).respond_to? method_name
+
+    #   # Select only running jobs
+    #   @jobs.select do |job|
+
+    #     job.status == JOB_STATUS_UPLOADING
+
+    #   # Group them by method_name
+    #   end.group_by do |job|
+
+    #     job.send(method_name)
+
+    #   # Inside each group, sum up rates
+    #   end.map do |group, jobs|
+
+    #     # Collect their rates
+    #     rates = jobs.collect do |job|
+    #       job.get_info :transfer, :bitrate
+    #     end
+
+    #     # And summ that up !
+    #     # result[group] = rates.inspect
+    #     result[group] = rates.reject(&:nil?).sum
+    #   end
+
+    #   # Return the rate
+    #   result
+    # end
+
     def rate_by method_name
       # Init
       result = {}
       return unless Job.new(0, {}).respond_to? method_name
 
       # Select only running jobs
-      @jobs.select do |job|
+      @jobs.each do |job|
 
-        job.status == JOB_STATUS_UPLOADING
+        # Compute jobs's group
+        group = job.send(method_name)
 
-      # Group them by method_name
-      end.group_by do |job|
+        # Initialize rate entry
+        #log_info "rate_by2:#{method_name}/#{group} result[group]:#{result[group].class}:#{result[group]} #{result.inspect}"
+        result[group] ||= nil
 
-        job.send(method_name)
+        # If job is not uploading, next !
+        next unless job.status == JOB_STATUS_UPLOADING
 
-      # Inside each group, sum up rates
-      end.map do |group, jobs|
+        # Extract current rate, next if not available
+        rate = job.get_info :transfer, :bitrate
+        next if rate.nil?
 
-        # Collect their rates
-        rates = jobs.collect do |job|
-          job.get_info :transfer, :bitrate
-        end
-
-        # And summ that up !
-        # result[group] = rates.inspect
-        result[group] = rates.reject(&:nil?).sum
+        # Add its current rate
+        #log_info "  1: #{result.inspect}"
+        result[group] ||= 0
+        #log_info "  2: #{result.inspect} (rate: #{rate})"
+        result[group] += rate
+        #log_info "  3: #{result.inspect}"
       end
 
       # Return the rate
