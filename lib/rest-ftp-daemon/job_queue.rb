@@ -126,7 +126,6 @@ module RestFtpDaemon
       @jobs.group_by { |job| job.status }.map { |status, jobs| statuses[status] = jobs.size }
       statuses
     end
-    alias jobs_count_by_status jobs_by_status
 
     def jobs_ids
       @jobs.collect(&:id)
