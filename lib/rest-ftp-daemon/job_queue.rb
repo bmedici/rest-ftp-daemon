@@ -53,11 +53,11 @@ module RestFtpDaemon
       # Select only running jobs
       @jobs.each do |job|
 
-        # Compute jobs's group
+        # Compute jobs's group, next if empty
         group = job.send(method_name)
+        next if group.nil?
 
         # Initialize rate entry
-        #log_info "rate_by2:#{method_name}/#{group} result[group]:#{result[group].class}:#{result[group]} #{result.inspect}"
         result[group] ||= nil
 
         # If job is not uploading, next !
@@ -67,8 +67,8 @@ module RestFtpDaemon
         rate = job.get_info :transfer, :bitrate
         next if rate.nil?
 
+
         # Add its current rate
-        #log_info "  1: #{result.inspect}"
         result[group] ||= 0
         #log_info "  2: #{result.inspect} (rate: #{rate})"
         result[group] += rate
