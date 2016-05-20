@@ -10,7 +10,7 @@ module RestFtpDaemon
         status 200
 
         # Get counters
-        counters = $counters.stats
+        counters = $counters.stats.dup
 
         # Amend counters with legacy attributes
         if counters[:jobs].is_a? Hash
