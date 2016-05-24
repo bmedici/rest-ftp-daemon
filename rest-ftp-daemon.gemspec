@@ -2,28 +2,29 @@
 
 # Libs
 require_relative "lib/rest-ftp-daemon/constants"
-
-
-# Gemspec
 Gem::Specification.new do |spec|
   spec.name = APP_NAME
-  spec.date = Time.now.strftime("%Y-%m-%d")
-  spec.authors = ["Bruno MEDICI"]
-  spec.email = "rest-ftp-daemon@bmconseil.com"
-  spec.description = "This is a pretty simple FTP client daemon, controlled through a RESTful API"
-  spec.summary = "RESTful FTP client daemon"
-  spec.homepage = "http://github.com/bmedici/rest-ftp-daemon"
-  spec.licenses = ["MIT"]
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f == "dashboard.png"
-  end
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
   spec.version       = APP_VER
+  # Project version
 
+  # Project description
+  spec.authors      = ["Bruno MEDICI"]
+  spec.email        = "rest-ftp-daemon@bmconseil.com"
+  spec.description  = "This is a pretty simple FTP client daemon, controlled through a RESTful API"
+  spec.summary      = "RESTful FTP client daemon"
+  spec.homepage     = "http://github.com/bmedici/rest-ftp-daemon"
+  spec.licenses     = ["MIT"]
+  spec.date         = Time.now.strftime("%Y-%m-%d")
+
+  # List files and executables
+  spec.files        = `git ls-files -z`.split("\x0").reject{ |f| f == "dashboard.png"}
+  spec.executables  = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.require_paths        = ["lib"]
   spec.required_ruby_version = ">= 2.2"
 
+
+  # Development dependencies
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
@@ -31,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop", "~> 0.32.0"
   spec.add_development_dependency "pry"
 
+  # Runtime dependencies
   spec.add_runtime_dependency "thin", "~> 1.6"
   spec.add_runtime_dependency "grape"
   spec.add_runtime_dependency "grape-entity"
