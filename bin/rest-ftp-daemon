@@ -2,6 +2,7 @@
 
 # Try to load external libs, helpers and constants
 begin
+  require "rubygems"
   require "thin"
   require "optparse"
   require "socket"
@@ -10,9 +11,11 @@ begin
 rescue LoadError
   raise "EXITING: some of basic libs were not found: thin, optparse, socket, settingslogic"
 end
-[:constants, :helpers].each do |lib|
-  require_relative "../lib/rest-ftp-daemon/#{lib}"
-end
+
+
+# Load constants (Gemspec infos, APP_ROOT, APP_SPEC) and helpers
+require_relative "../lib/rest-ftp-daemon/boot"
+require_relative "../lib/rest-ftp-daemon/helpers"
 puts
 
 
@@ -22,7 +25,7 @@ parser = OptionParser.new do |opts|
   opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
   opts.on("-c", "--config CONFIGFILE")                                  { |config| APP_CONF = config }
   opts.on("-e", "--environment ENV")                                    { |env| APP_ENV = env }
-  opts.on("",   "--dev")                                                { APP_ENV = "development" }
+  opts.on("",   "--dev")                                                { APP_ENV = ENV_DEVELOPMENT }
   opts.on("-p", "--port PORT", "use PORT")                              { |port| options["port"] = port.to_i }
   opts.on("-d", "--daemonize", "Run daemonized in the background")      { options["daemonize"] = true }
   opts.on("-f", "--foreground", "Run in the foreground")                { options["daemonize"] = false }
@@ -36,7 +39,7 @@ parser = OptionParser.new do |opts|
     puts TAIL_MESSAGE unless File.exist?(DEFAULT_CONFIG_PATH)
     exit
   end
-  opts.on_tail("-v", "--version", "Show version (#{APP_VER})")         { puts(APP_VER) && exit }
+  opts.on_tail("-v", "--version", "Show version (#{APP_SPEC.version})")         { puts(APP_SPEC.version) && exit }
 end
 
 # Parse options and check compliance
@@ -91,7 +94,7 @@ argv = []
 argv << ["-e", Settings.namespace]
 argv << ["-p", Settings.port.to_s] if Settings.port
 argv << ["--pid", Settings.pidfile]
-argv << ["--tag", "'#{APP_NAME}/#{Settings.namespace}'"]
+argv << ["--tag", "'#{APP_SPEC.name}/#{Settings.namespace}'"]
 argv << ["--daemonize"] if [1, true].include? Settings.daemonize
 
 
@@ -107,7 +110,7 @@ argv << command unless command.nil?
 
 
 # Display final configuration
-puts "--- #{APP_NAME} #{APP_VER}"
+puts "--- #{APP_SPEC.version} #{APP_SPEC.version}"
 puts "Config file  \t #{APP_CONF}"
 puts "PID file     \t #{Settings.pidfile}"
 puts "Daemonize    \t #{Settings.daemonize ? "YES" : "no (PID: #{Process.pid})"}"
@@ -126,8 +129,7 @@ puts
 
 # Start Thin with this rackup configuration, changing to app_root first
 begin
-  app_root = File.expand_path(File.dirname(__FILE__) + "/../")
-  Dir.chdir app_root
+  Dir.chdir APP_ROOT
   Thin::Runner.new(argv.flatten).run!
 rescue RuntimeError => e
   puts "FAILED: RuntimeError: #{e.message}"

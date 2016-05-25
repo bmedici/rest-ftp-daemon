@@ -1,12 +1,8 @@
 # coding: utf-8
-
-# Libs
-require_relative "lib/rest-ftp-daemon/constants"
 Gem::Specification.new do |spec|
-  spec.name = APP_NAME
 
-  spec.version       = APP_VER
   # Project version
+  spec.version      = "0.250.6"
 
   # Project description
   spec.authors      = ["Bruno MEDICI"]
@@ -16,6 +12,7 @@ Gem::Specification.new do |spec|
   spec.homepage     = "http://github.com/bmedici/rest-ftp-daemon"
   spec.licenses     = ["MIT"]
   spec.date         = Time.now.strftime("%Y-%m-%d")
+  spec.name                   = "rest-ftp-daemon"
 
   # List files and executables
   spec.files        = `git ls-files -z`.split("\x0").reject{ |f| f == "dashboard.png"}

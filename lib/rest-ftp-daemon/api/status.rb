@@ -24,7 +24,7 @@ module RestFtpDaemon
         # Generate sutrcture
         return  {
           hostname: `hostname`.to_s.chomp,
-          version: APP_VER,
+          version: APP_SPEC.version,
 
           started: APP_STARTED,
           uptime: (Time.now - APP_STARTED).round(1),

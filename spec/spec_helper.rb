@@ -2,8 +2,8 @@ require "pathname"
 require "http"
 require "pry"
 
+require_relative "../lib/rest-ftp-daemon/boot"
 require_relative "support/request_helpers"
-require_relative "../lib/rest-ftp-daemon/constants"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

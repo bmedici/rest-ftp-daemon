@@ -1,31 +1,10 @@
-# Terrific constants
-APP_NAME = "rest-ftp-daemon"
-APP_NICK = "rftpd"
-APP_VER = "0.250.5"
-
-# Provide default config file information
-APP_LIB = File.expand_path(File.dirname(__FILE__))
-APP_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../")
-
-DEFAULT_CONFIG_PATH = File.expand_path "/etc/#{APP_NAME}.yml"
-SAMPLE_CONFIG_FILE = File.expand_path(File.join File.dirname(__FILE__), "/../../rest-ftp-daemon.yml.sample")
-
-TAIL_MESSAGE = <<EOD
-
-A default configuration is available here: #{SAMPLE_CONFIG_FILE}.
-You should copy it to the expected location #{DEFAULT_CONFIG_PATH}:
-
-sudo cp #{SAMPLE_CONFIG_FILE} #{DEFAULT_CONFIG_PATH}
-EOD
-
-
 # Configuration defaults
 # DEFAULT_WORKERS         = 2
 DEFAULT_POOL            = "default"
 DEFAULT_WORKER_TIMEOUT  = 1800  # 1h
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_FTP_CHUNK       = 1024  # 1 MB
-DEFAULT_PAGE_SIZE       = 80    # 50 lines
+DEFAULT_PAGE_SIZE       = 50    # 50 lines
 DEFAULT_RETRY_DELAY     = 10    # 10s
 
 
@@ -94,8 +73,6 @@ LOG_FORMAT_PREFIX       = "%s %s\t%-#{LOG_PIPE_LEN.to_i}s\t"
 LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-LOG_COL_ID.to_i}s"
 LOG_NEWLINE             = "\n"
 LOG_INDENT              = "\t"
-BIND_PORT_TIMEOUT       = 3
-BIND_PORT_LOCALHOST     = "127.0.0.1"
 
 ENV_PRODUCTION           = "production"
 MOUNT_JOBS               = "/jobs"
@@ -107,10 +84,6 @@ MOUNT_CONFIG             = "/config"
 
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
-NOTIFY_USERAGENT        = "#{APP_NAME}/v#{APP_VER}"
+NOTIFY_USERAGENT        = "#{APP_SPEC.name}/v#{APP_SPEC.version}"
 NOTIFY_IDENTIFIER_LEN   = 4
 
-
-# Initialize defaults
-APP_STARTED = Time.now
-APP_LIBS = File.dirname(__FILE__)
