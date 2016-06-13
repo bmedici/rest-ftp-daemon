@@ -6,10 +6,6 @@ module RestFtpDaemon
     attr_reader :logger
     attr_reader :wid
 
-    if Settings.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    end
-
     def initialize
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
@@ -101,7 +97,9 @@ module RestFtpDaemon
       end
     end
 
+    # NewRelic instrumentation
     if Conf.newrelic_enabled?
+      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
       add_transaction_tracer :create_conchita_thread,     category: :task
       add_transaction_tracer :create_worker_thread,       category: :task
     end

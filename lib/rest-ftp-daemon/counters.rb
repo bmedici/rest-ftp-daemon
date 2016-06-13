@@ -4,10 +4,6 @@ module RestFtpDaemon
   class Counters
     attr_reader :stats
 
-    if Settings.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    end
-
     def initialize
       @stats = {}
       @mutex_stats = Mutex.new

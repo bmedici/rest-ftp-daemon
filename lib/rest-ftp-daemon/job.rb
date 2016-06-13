@@ -7,10 +7,6 @@ module RestFtpDaemon
     include LoggerHelper
     attr_reader :logger
 
-    if Settings.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    end
-
     FIELDS = [:source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]
 
     attr_accessor :wid
@@ -665,7 +661,9 @@ module RestFtpDaemon
       client_notify event, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
 
+    # NewRelic instrumentation
     if Conf.newrelic_enabled?
+      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
       add_transaction_tracer :prepare,        category: :task
       add_transaction_tracer :run,            category: :task
       add_transaction_tracer :client_notify,  category: :task

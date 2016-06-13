@@ -4,13 +4,7 @@ module RestFtpDaemon
   class JobQueue
     include LoggerHelper
     attr_reader :logger
-
-    #attr_reader :queues
     attr_reader :jobs
-
-    if Settings.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    end
 
     def initialize
       # Instance variables
@@ -229,7 +223,11 @@ module RestFtpDaemon
       "#{@prefix}.#{id}"
     end
 
+  private
+
+    # NewRelic instrumentation
     if Conf.newrelic_enabled?
+      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
       add_transaction_tracer :push,                 category: :task
       add_transaction_tracer :pop,                  category: :task
       add_transaction_tracer :expire,               category: :task

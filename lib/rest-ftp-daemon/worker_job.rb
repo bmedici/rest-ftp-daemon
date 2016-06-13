@@ -101,7 +101,11 @@ module RestFtpDaemon
       job.oops_after_crash ex unless job.nil?
     end
 
+  private
+
+    # NewRelic instrumentation
     if Conf.newrelic_enabled?
+      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
       add_transaction_tracer :work,       category: :task
     end
 

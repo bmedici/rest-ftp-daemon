@@ -3,10 +3,6 @@ module RestFtpDaemon
     include LoggerHelper
     attr_reader :logger
 
-    if Settings.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    end
-
     def initialize wid, pool = nil
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
