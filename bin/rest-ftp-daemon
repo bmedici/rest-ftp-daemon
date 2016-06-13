@@ -7,120 +7,125 @@ begin
   require "optparse"
   require "socket"
   # require "timeout"
-  require "settingslogic"
 rescue LoadError
   raise "EXITING: some of basic libs were not found: thin, optparse, socket, settingslogic"
+  require_relative "../lib/rest-ftp-daemon/launcher_helpers"
 end
 
 
 # Load constants (Gemspec infos, APP_ROOT, APP_SPEC) and helpers
 require_relative "../lib/rest-ftp-daemon/boot"
 require_relative "../lib/rest-ftp-daemon/helpers"
-puts
 
 
-# Detect options from ARGV
-options = {}
-parser = OptionParser.new do |opts|
-  opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
-  opts.on("-c", "--config CONFIGFILE")                                  { |config| APP_CONF = config }
-  opts.on("-e", "--environment ENV")                                    { |env| APP_ENV = env }
-  opts.on("",   "--dev")                                                { APP_ENV = ENV_DEVELOPMENT }
-  opts.on("-p", "--port PORT", "use PORT")                              { |port| options["port"] = port.to_i }
-  opts.on("-d", "--daemonize", "Run daemonized in the background")      { options["daemonize"] = true }
-  opts.on("-f", "--foreground", "Run in the foreground")                { options["daemonize"] = false }
-  opts.on("-P", "--pid FILE", "File to store PID")                      { |file| options["pidfile"] = file }
-  opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")   { |user| options["user"] = user }
-  opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)") { |group| options["group"] = group }
 
-  opts.separator ""
-  opts.on_tail("-h", "--help", "Show this message")                    do
-    puts opts
-    puts TAIL_MESSAGE unless File.exist?(DEFAULT_CONFIG_PATH)
-    exit
-  end
-  opts.on_tail("-v", "--version", "Show version (#{APP_SPEC.version})")         { puts(APP_SPEC.version) && exit }
-end
-
-# Parse options and check compliance
+# Handle configuration
 begin
-  parser.order!(ARGV)
+  # Defaults
+  cmd_config = nil
+  cmd_pidfile = nil
+  cmd_port = nil
+  cmd_user = nil
+  cmd_group = nil
+  cmd_daemonize = nil
+
+  # Init Chamber-based configuration from Gemspec
+  Conf.init
+  Conf.app_env = "production"
+
+  # Parse options and check compliance
+  thinopts = {}
+  parser = OptionParser.new do |opts|
+    opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
+    opts.on("-c", "--config CONFIGFILE")     { |value| cmd_config = File.expand_path(value)}
+    opts.on("-e", "--environment ENV")       { |value| Conf.app_env = value }
+    opts.on("",   "--dev")                   { Conf.app_env = "development" }
+    opts.on("-p", "--port PORT", "use PORT")                              { |value| cmd_port = value.to_i }
+    opts.on("-d", "--daemonize", "Run daemonized in the background")      { cmd_daemonize = true }
+    opts.on("-f", "--foreground", "Run in the foreground")                { cmd_daemonize = false }
+    opts.on("-P", "--pid FILE", "File to store PID")                      { |value| cmd_pidfile = value }
+    opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")   { |value| cmd_user = value }
+    opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)") { |value| cmd_group = value }
+
+    opts.separator ""
+    opts.on_tail("-h", "--help", "Show this message")                    do
+      puts opts
+      puts TAIL_MESSAGE unless File.exist?(DEFAULT_CONFIG_PATH)
+      exit
+    end
+    opts.on_tail("-v", "--version", "Show version (#{Conf.app_ver})")         { puts(Conf.app_ver) && exit }
+
+  end.order!(ARGV)
+
+  # Load Chamber-based configuration
+  Conf.prepare config: cmd_config, logfile: nil
+
+  # Extract command from command line
   command = ARGV.shift
+
 rescue OptionParser::InvalidOption => e
-  abort "EXITING: option parser: #{e.message}"
+  abort "EXITING: InvalidOption: #{e.message} \n #{e.backtrace.to_yaml}"
+rescue ConfigParseError => e
+  abort "EXITING: ConfigParseError: #{e.message} \n #{e.backtrace.to_yaml}"
+rescue StandardError => e
+  abort "EXITING: StandardError: #{e.message} \n #{e.backtrace.to_yaml}"
 else
   abort parser.to_s unless ["start", "stop"].include? command
 end
 
 
-# Load config, and merge options from ARGV into settings
-# FIXME: file configuration detection could reside in settings.rb
-APP_CONF ||= DEFAULT_CONFIG_PATH
-APP_ENV ||= ENV_PRODUCTION
-abort "EXITING: cannot read configuration file: #{APP_CONF}" unless File.exist? APP_CONF
-begin
-  # Import settings
-  # require File.expand_path("#{app_root}/lib/rest-ftp-daemon/settings")
-  require_relative "../lib/rest-ftp-daemon/settings"
-
-  # Set defaults
-  Settings.init_defaults
-
-  # Overwrite with commandline options
-  Settings.merge!(options)
-
-  # Init NewRelic
-  Settings.init_newrelic
-
-rescue Psych::SyntaxError => e
-  abort "EXITING: config file syntax error: #{e.message}"
-rescue StandardError => e
-  abort "EXITING: unknow error loading settings  #{e.inspect}"
-end
-
-
 # Validate network configuration
 if command == "start"
-  if !Settings.port
+  if !Conf[:port]
     abort "ABORTING: Network port is missing"
-  elsif RestFtpDaemon::Helpers.local_port_used? Settings.port
-    abort "ABORTING: Network port #{Settings.port} is already in use"
+  elsif RestFtpDaemon::LauncherHelpers.local_port_used? Conf[:port]
+    abort "ABORTING: Network port #{Conf[:port]} is already in use"
   end
 end
 
 
-# ARGV: build final
+# Thin: cmdline overriden options
+Conf[:daemonize]    = cmd_daemonize  unless cmd_daemonize.nil?
+Conf[:port]         = cmd_port       unless cmd_port.nil?
+Conf[:user]         = cmd_user       unless cmd_user.nil?
+Conf[:group]        = cmd_group      unless cmd_group.nil?
+Conf[:pidfile]      = cmd_pidfile    unless cmd_pidfile.nil?
+
+# Thin: basic options
+thin_logfile = Conf.at(:logs, :thin)
 argv = []
-argv << ["-e", Settings.namespace]
-argv << ["-p", Settings.port.to_s] if Settings.port
-argv << ["--pid", Settings.pidfile]
-argv << ["--tag", "'#{APP_SPEC.name}/#{Settings.namespace}'"]
-argv << ["--daemonize"] if [1, true].include? Settings.daemonize
+argv << ["-e",          Conf.app_env]
+argv << ["-p",          Conf[:port].to_s]
+argv << ["--pid",       Conf[:pidfile].to_s]
+argv << ["--tag",       "#{Conf.app_name}/#{Conf.app_env}"]
+argv << ["--daemonize"] if ([1, true].include? Conf[:daemonize])
+argv << ["--log",       thin_logfile] if thin_logfile
 
+# Thin: user and group
+if Conf[:user] && Conf[:group]
+  argv << ["--user", Conf[:user].to_s]
+  argv << ["--group", Conf[:group].to_s]
+end
 
-# ARGV: logging, user and group, command
-if (logfile = Settings.at :logs, :thin)
-  argv << ["--log", logfile] if logfile
-end
-if Settings.user && Settings.group
-  argv << ["--user", Settings.user]
-  argv << ["--group", Settings.group]
-end
+# Thin: command
 argv << command unless command.nil?
 
 
-# Display final configuration
-puts "--- #{APP_SPEC.version} #{APP_SPEC.version}"
-puts "Config file  \t #{APP_CONF}"
-puts "PID file     \t #{Settings.pidfile}"
-puts "Daemonize    \t #{Settings.daemonize ? "YES" : "no (PID: #{Process.pid})"}"
-puts "Host         \t #{Settings.host}"
-puts "Namespace    \t #{Settings.namespace}"
-puts "Network port \t #{Settings.port}"
-puts "User:group   \t #{Settings.user}:#{Settings.group}" if Settings.user || Settings.group
-puts "Newrelic     \t #{Settings.newrelic_enabled? ? Settings.at(:newrelic, :licence) : "no"}"
-puts "Started at   \t #{APP_STARTED}"
-# puts Settings.dump
+# Display final configuration, quit if config dump requested
+puts "--- #{Conf.app_name} #{Conf.app_ver}"
+puts "Environment     \t #{Conf.app_env}"
+puts "Config files    \t #{Conf.files}"
+puts "Started at      \t #{Conf.app_started}"
+puts "Loging to file  \t #{Conf[:log][:file]}" if Conf[:log].is_a? Enumerable
+puts "Host            \t #{Conf.host}"
+puts
+puts "Daemonize       \t #{Conf[:daemonize]}"
+puts "Network port    \t #{Conf[:port]}"
+puts "User:group      \t #{Conf[:user]}:#{Conf[:group]}" if Conf[:user] && Conf[:group]
+puts "Newrelic        \t #{Conf.newrelic_enabled? ? Conf.at(:newrelic, :licence) : "no"}"
+puts "PID file        \t #{Conf[:pidfile]}"
+puts
+puts Conf.dump
 puts
 puts "--- Thin ARGV"
 puts argv.flatten.join(" ")
@@ -129,7 +134,7 @@ puts
 
 # Start Thin with this rackup configuration, changing to app_root first
 begin
-  Dir.chdir APP_ROOT
+  Dir.chdir Conf.app_root
   Thin::Runner.new(argv.flatten).run!
 rescue RuntimeError => e
   puts "FAILED: RuntimeError: #{e.message}"
@@ -139,18 +144,19 @@ rescue Thin::PidFileNotFound
   puts "FAILED: daemon was not running (Thin::PidFileNotFound)"
 rescue Errno::ENOENT => e
   puts "FAILED: daemon cannot access files: #{e.message}"
+rescue ArgumentError => e
+  puts "FAILED: argument error: #{e.message}"
 rescue SystemExit
   # Leave some time for the daemon to launch
-  pidfile = Settings.pidfile
   print "Waiting for pidfile"
-  until File.file?(pidfile) do
+  until File.file?(Conf[:pidfile]) do
     print "."
     sleep 0.25
   end
   puts
 
   # Check that this process is running
-  pid = File.read(pidfile).to_i
+  pid = File.read(Conf[:pidfile]).to_i
   begin
     Process.kill(0, pid)
     puts "Process ##{pid} is running"

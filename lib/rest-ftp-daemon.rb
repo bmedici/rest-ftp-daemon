@@ -16,7 +16,6 @@ require "grape-entity"
 # Project's libs
 require_relative "rest-ftp-daemon/constants"
 require_relative "rest-ftp-daemon/array"
-require_relative "rest-ftp-daemon/settings"
 require_relative "rest-ftp-daemon/exceptions"
 require_relative "rest-ftp-daemon/helpers"
 require_relative "rest-ftp-daemon/logger_helper"
