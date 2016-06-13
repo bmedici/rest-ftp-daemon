@@ -60,21 +60,6 @@ module RestFtpDaemon
       return m[1], m[2] unless m.nil?
     end
 
-    def self.local_port_used? port
-      Timeout.timeout(BIND_PORT_TIMEOUT) do
-        begin
-          TCPSocket.new(BIND_PORT_LOCALHOST, port).close
-          true
-        rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
-          false
-        rescue Errno::EADDRNOTAVAIL
-          "Settings.local_port_used: Errno::EADDRNOTAVAIL"
-        end
-      end
-    rescue Timeout::Error
-      false
-    end
-
     def self.job_method_label method
       return if method.nil?
       klass = case method

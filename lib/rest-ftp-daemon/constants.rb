@@ -74,7 +74,6 @@ LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-L
 LOG_NEWLINE             = "\n"
 LOG_INDENT              = "\t"
 
-ENV_PRODUCTION           = "production"
 MOUNT_JOBS               = "/jobs"
 MOUNT_BOARD              = "/board"
 MOUNT_STATUS             = "/status"

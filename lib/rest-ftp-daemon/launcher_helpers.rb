@@ -1,3 +1,6 @@
+BIND_PORT_TIMEOUT       = 3
+BIND_PORT_LOCALHOST     = "127.0.0.1"
+
 module RestFtpDaemon
   class LauncherHelpers
 

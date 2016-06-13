@@ -7,16 +7,20 @@ begin
   require "optparse"
   require "socket"
   # require "timeout"
-rescue LoadError
-  raise "EXITING: some of basic libs were not found: thin, optparse, socket, settingslogic"
   require_relative "../lib/rest-ftp-daemon/launcher_helpers"
+  require_relative "../lib/rest-ftp-daemon/conf"
 end
 
+# Constants
+DEFAULT_CONFIG_PATH = File.expand_path "/etc/rest-ftp-daemon.yml"
+SAMPLE_CONFIG_FILE = File.expand_path(File.join File.dirname(__FILE__), "/../../rest-ftp-daemon.yml.sample")
+TAIL_MESSAGE = <<EOD
 
-# Load constants (Gemspec infos, APP_ROOT, APP_SPEC) and helpers
-require_relative "../lib/rest-ftp-daemon/boot"
-require_relative "../lib/rest-ftp-daemon/helpers"
+A default configuration is available here: #{SAMPLE_CONFIG_FILE}.
+You should copy it to the expected location #{DEFAULT_CONFIG_PATH}:
 
+sudo cp #{SAMPLE_CONFIG_FILE} #{DEFAULT_CONFIG_PATH}
+EOD
 
 
 # Handle configuration
