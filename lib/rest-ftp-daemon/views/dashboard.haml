@@ -6,7 +6,7 @@
     %link{ href:"/css/bootstrap.css" , rel: "stylesheet"}
     %link{ href:"/css/main.css" , rel: "stylesheet"}
     -# %link{ href:"http://fonts.googleapis.com/css?family=Inconsolata:400,700" , rel: "stylesheet"}
-    %title="#{Settings.host} [#{Settings.namespace}] #{APP_SPEC.name}"
+    %title="#{Conf.host} [#{Conf.app_env}] #{Conf.app_name}"
 
   %body
 
@@ -21,7 +21,7 @@
 
       .row
         #box-tokens.col-md-6
-          = render :dashboard_tokens, {tokens: Settings.endpoints || {}}
+          = render :dashboard_tokens, {tokens: Conf[:endpoints] || {}}
 
         #box-workers.col-md-3
           = render :dashboard_workers

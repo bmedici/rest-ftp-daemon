@@ -16,7 +16,7 @@ module RestFtpDaemon
 
     def create pipe
       # Compute file path / STDERR
-      logfile = Settings.logs[pipe] if Settings.logs.is_a? Hash
+      logfile = Conf[:logs][pipe] if Conf[:logs].is_a? Hash
       logfile ||= STDERR
 
       # Create the logger and return it

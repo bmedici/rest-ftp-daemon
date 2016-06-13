@@ -59,7 +59,7 @@ module RestFtpDaemon
       end
 
       # Set pool
-      pools = (Settings.pools || {})
+      pools = (Conf[:pools] || {})
       # Check if pool name exists
       if (pools.keys.include? params[:pool])
         @pool = params[:pool].to_s
@@ -71,7 +71,7 @@ module RestFtpDaemon
       reset
 
       # Read source file size and parameters
-      @notify_after_sec = Settings.at(:transfer, :notify_after_sec) rescue nil
+      @notify_after_sec = Conf.at(:transfer, :notify_after_sec) rescue nil
     end
 
     def reset
@@ -277,8 +277,8 @@ module RestFtpDaemon
 
     def replace_tokens path
       # Ensure endpoints are not a nil value
-      return path unless Settings.endpoints.is_a? Enumerable
-      vectors = Settings.endpoints.clone
+      return path unless Conf[:endpoints].is_a? Enumerable
+      vectors = Conf[:endpoints].clone
 
       # Stack RANDOM into tokens
       vectors["RANDOM"] = SecureRandom.hex(JOB_RANDOM_LEN)
@@ -665,7 +665,7 @@ module RestFtpDaemon
       client_notify event, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
 
-    if Settings.newrelic_enabled?
+    if Conf.newrelic_enabled?
       add_transaction_tracer :prepare,        category: :task
       add_transaction_tracer :run,            category: :task
       add_transaction_tracer :client_notify,  category: :task

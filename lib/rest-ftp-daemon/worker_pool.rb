@@ -52,7 +52,7 @@ module RestFtpDaemon
 
     def create_threads
       # Read configuration
-      pools = (Settings.pools || {})
+      pools = (Conf[:pools] || {})
 
       # Minimum one worker on DEFAULT_POOL
       if !(pools.is_a? Hash)
@@ -101,7 +101,7 @@ module RestFtpDaemon
       end
     end
 
-    if Settings.newrelic_enabled?
+    if Conf.newrelic_enabled?
       add_transaction_tracer :create_conchita_thread,     category: :task
       add_transaction_tracer :create_worker_thread,       category: :task
     end

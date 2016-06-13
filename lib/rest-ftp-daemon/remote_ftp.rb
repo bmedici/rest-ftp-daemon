@@ -11,7 +11,7 @@ module RestFtpDaemon
       super
 
       # Use debug ?
-      @debug = (Settings.at :debug, :ftp) == true
+      @debug = (Conf.at :debug, :ftp) == true
 
       # Create FTP object
       if options[:ftpes]

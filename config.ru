@@ -17,20 +17,20 @@ $counters = RestFtpDaemon::Counters.new
 $pool = RestFtpDaemon::WorkerPool.new
 
 # Rack authent
-unless Settings.adminpwd.nil?
+unless Conf[:adminpwd].nil?
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
-    [username, password] == ["admin", Settings.adminpwd]
+    [username, password] == ["admin", Conf[:adminpwd]]
   end
 end
 
 # NewRelic profiling
-GC::Profiler.enable if Settings.newrelic_enabled?
+# GC::Profiler.enable if Conf.newrelic_enabled?
 
 # Serve static assets
-use Rack::Static, urls: ["/css", "/js", "/images"], root: "#{APP_LIB}/static/"
+use Rack::Static, urls: ["/css", "/js", "/images"], root: "#{Conf.app_libs}/static/"
 
 # Rack reloader and mini-profiler
-unless Settings.namespace == ENV_PRODUCTION
+unless Conf.app_env == "production"
   # use Rack::Reloader, 1
   # use Rack::MiniProfiler
 end

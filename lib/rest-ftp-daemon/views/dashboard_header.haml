@@ -10,9 +10,9 @@
 .navbar-header
 
   %h1
-    = APP_SPEC.name
+    = Conf.app_name
     %small
-      = "v#{APP_SPEC.version} [#{Settings.namespace}]"
+      = "v#{Conf.app_ver} [#{Conf.app_env}]"
 
 
 .header-indicators.navbar-header.pull-right

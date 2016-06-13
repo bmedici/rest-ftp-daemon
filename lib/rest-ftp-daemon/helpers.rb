@@ -2,9 +2,9 @@ module RestFtpDaemon
   class Helpers
 
     def self.get_censored_config
-      config = Settings.to_hash
-      config[:users] = Settings.users.keys if Settings.users
-      config[:endpoints] = Settings.endpoints.keys if Settings.endpoints
+      config = Conf.to_hash
+      config[:users] = Conf[:users].keys if Conf[:users]
+      config[:endpoints] = Conf[:endpoints].keys if Conf[:endpoints]
       config
     end
 

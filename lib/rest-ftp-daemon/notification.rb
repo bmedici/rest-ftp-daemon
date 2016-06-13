@@ -47,7 +47,7 @@ module RestFtpDaemon
         id:       @params[:id].to_s,
         signal:   "#{NOTIFY_PREFIX}.#{@params[:event]}",
         error:    @params[:error],
-        host:     Settings.host.to_s,
+        host:     Conf.host.to_s,
         }
       flags[:status] = @params[:status] if @params[:status].is_a? Enumerable
       flags[:message] = @params[:message].to_s unless @params[:message].nil?
@@ -64,7 +64,7 @@ module RestFtpDaemon
       headers = {
         "Content-Type"  => "application/json",
         "Accept"        => "application/json",
-        "User-Agent"    => NOTIFY_USERAGENT
+        "User-Agent"    => "#{Conf.app_name}/v#{Conf.app_ver}"
          }
       data = flags.to_json
 

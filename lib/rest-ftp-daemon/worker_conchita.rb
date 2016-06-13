@@ -8,11 +8,11 @@ module RestFtpDaemon
       super
 
       # Use debug ?
-      @debug = (Settings.at :debug, :conchita) == true
+      @debug = (Conf.at :debug, :conchita) == true
       @log_worker_status_changes = @debug
 
       # Conchita configuration
-      @conchita = Settings.conchita
+      @conchita = Conf[:conchita]
       if !@conchita.is_a? Hash
         return log_info "ConchitaWorker: missing conchita.* configuration"
       elsif @conchita[:timer].nil?
@@ -54,7 +54,7 @@ module RestFtpDaemon
     end
 
 
-    if Settings.newrelic_enabled?
+    if Conf.newrelic_enabled?
       add_transaction_tracer :work,       category: :task
     end
 

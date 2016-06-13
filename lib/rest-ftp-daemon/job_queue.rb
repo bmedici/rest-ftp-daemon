@@ -229,7 +229,7 @@ module RestFtpDaemon
       "#{@prefix}.#{id}"
     end
 
-    if Settings.newrelic_enabled?
+    if Conf.newrelic_enabled?
       add_transaction_tracer :push,                 category: :task
       add_transaction_tracer :pop,                  category: :task
       add_transaction_tracer :expire,               category: :task

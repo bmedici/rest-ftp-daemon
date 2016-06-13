@@ -12,7 +12,7 @@ module RestFtpDaemon
 
       helpers do
         def render name, values={}
-          template = File.read("#{APP_LIB}/views/#{name}.haml")
+          template = File.read("#{Conf.app_libs}/views/#{name}.haml")
 
           haml_engine = Haml::Engine.new(template, encoding: Encoding::UTF_8)
               #:encoding => Encoding::ASCII_8BIT

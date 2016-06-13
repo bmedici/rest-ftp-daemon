@@ -10,7 +10,7 @@ module RestFtpDaemon
       super
 
       # Use debug ?
-      @debug = (Settings.at :debug, :sftp) == true
+      @debug = (Conf.at :debug, :sftp) == true
 
       # Announce object
       log_info "RemoteSFTP.initialize"

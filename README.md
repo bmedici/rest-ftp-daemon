@@ -272,7 +272,9 @@ Update RubyGems and install the gem from rubygems.org
 Known bugs
 ------------------------------------------------------------------------------------
 
-* As this project is based on SettingsLogic, which in turns uses Syck YAML parser, configuration merge from "defaults" section and environment-specific section is broken. A sub-tree defined for a specific environment, will overwrite the corresponding subtree from "defaults".
+* As this project is based on the Psyck YAML parser, configuration merge from "defaults" section and environment-specific section are broken. A sub-tree defined for a specific environment, will overwrite the corresponding subtree from "defaults". Please repeat whole sections from "defaults".
+
+* As this project is based on Chamber, and it considers hyphens in filename as namespaces, the global /etc/rest-ftp-daemon.yml config file is not parsed (and thus, ignored). Until this is worked around, please specify a config filename on the commandline.
 
 * If you get ```fatal error: 'openssl/ssl.h' file not found when installing ```eventmachine``` on OSX El Capitan, you can try with:
 ```

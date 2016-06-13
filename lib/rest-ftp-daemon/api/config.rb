@@ -10,7 +10,7 @@ module RestFtpDaemon
 
       desc "Reload daemon config"
       post "/reload" do
-        if Settings.at(:debug, :allow_reload)==true
+        if Conf.at(:debug, :allow_reload)==true
           Settings.reload!
           status 200
           return Helpers.get_censored_config

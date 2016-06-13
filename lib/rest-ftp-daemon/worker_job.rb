@@ -9,7 +9,7 @@ module RestFtpDaemon
       super
 
       # Timeout config
-      @timeout = (Settings.transfer.timeout rescue nil) || DEFAULT_WORKER_TIMEOUT
+      @timeout = (Conf.at(:transfer, :timeout) rescue nil)
 
       # Start main loop
       log_info "JobWorker initializing", ["wid: #{wid}", "pool: #{pool}", "timeout: #{@timeout}"]
@@ -31,10 +31,10 @@ module RestFtpDaemon
       #sleep 1
 
       # If job status requires a retry, just restack it
-      on_errors = Settings.at(:retry, :on_errors)
-      max_age = Settings.at(:retry, :max_age)
-      max_runs = Settings.at(:retry, :max_runs)
-      delay = Settings.at(:retry, :delay)
+      on_errors = Conf.at(:retry, :on_errors)
+      max_age = Conf.at(:retry, :max_age)
+      max_runs = Conf.at(:retry, :max_runs)
+      delay = Conf.at(:retry, :delay)
 
       if !job.error
         #log_info "job succeeded"
@@ -101,7 +101,7 @@ module RestFtpDaemon
       job.oops_after_crash ex unless job.nil?
     end
 
-    if Settings.newrelic_enabled?
+    if Conf.newrelic_enabled?
       add_transaction_tracer :work,       category: :task
     end
 
