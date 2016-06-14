@@ -62,7 +62,7 @@ class Conf
     add_extra_config args[:config]
 
     # Load configuration files
-    load files: @files, namespaces: { environment: @app_env }
+    load_files
 
     # Init New Relic
     prepare_newrelic self[:newrelic], self.at(:logs, :newrelic)
@@ -79,6 +79,10 @@ class Conf
     fail ConfigOtherError, "#{e.message} \n #{e.backtrace.to_yaml}"
   end
 
+  def self.reload!
+    load_files
+  end
+
   def self.dump
     to_hash.to_yaml(indent: 4, useheader: true, useversion: false )
   end
@@ -93,6 +97,10 @@ class Conf
   end
 
 protected
+
+  def self.load_files
+    load files: @files, namespaces: { environment: @app_env }
+  end
 
   def self.add_default_config
     @files << "#{@app_root}/defaults.yml" if @app_root
