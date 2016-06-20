@@ -26,6 +26,9 @@ LOG_PREFIX_JID           = JOB_IDENT_LEN + 3 + 2
 LOG_PREFIX_ID            = 6
 LOG_PREFIX_FORMAT        = "W:%#{-LOG_PREFIX_WID.to_i}sJ:%#{-LOG_PREFIX_JID.to_i}sID:%#{-LOG_PREFIX_ID.to_i}s"
 
+# Constants: logger to be cleaned up
+LOG_PIPE_LEN            = 10
+LOG_INDENT              = "\t"
 
 
 
@@ -82,16 +85,6 @@ WORKER_STYLES = {
   }
 
 
-# Logging and startup
-LOG_COL_WID             = 8
-LOG_COL_JID             = JOB_IDENT_LEN + 3 + 2
-LOG_COL_ID              = 6
-LOG_TRIM_LINE           = 200
-LOG_DUMPS               = File.dirname(__FILE__) + "/../../log/"
-LOG_FORMAT_TIME         = "%Y-%m-%d %H:%M:%S"
-LOG_FORMAT_PREFIX       = "%s %s\t%-#{LOG_PIPE_LEN.to_i}s\t"
-LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-LOG_COL_ID.to_i}s"
-LOG_NEWLINE             = "\n"
 MOUNT_JOBS               = "/jobs"
 MOUNT_BOARD              = "/board"
 MOUNT_STATUS             = "/status"

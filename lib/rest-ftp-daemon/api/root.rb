@@ -26,10 +26,9 @@ module RestFtpDaemon
         log_request
       end
 
-
       ### CLASS CONFIG
 
-      helpers RestFtpDaemon::LoggerHelper
+      helpers Shared::LoggerHelper
       logger RestFtpDaemon::LoggerPool.instance.get :api
       do_not_route_head!
       do_not_route_options!

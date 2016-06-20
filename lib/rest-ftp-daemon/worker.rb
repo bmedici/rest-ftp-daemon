@@ -20,11 +20,12 @@ module RestFtpDaemon
 
   protected
 
-    def log_context
-      {
-        wid: Thread.current.thread_variable_get(:wid),
-        jid: Thread.current.thread_variable_get(:jid),
-      }
+    def log_prefix
+     [
+      Thread.current.thread_variable_get(:wid),
+      Thread.current.thread_variable_get(:jid),
+      nil
+      ]
     end
 
     def start

@@ -96,11 +96,8 @@ module RestFtpDaemon
         log_error "UNHANDLED EXCEPTION: #{ex.inspect}"
     end
 
-    def log_context
-      {
-      id: @id,
-      jid: @jid
-      }
+    def log_prefix
+     [nil, @jid, @id]
     end
 
   end

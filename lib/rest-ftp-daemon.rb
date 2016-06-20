@@ -16,6 +16,7 @@ require "grape-entity"
 
 # Shared libs
 require_relative "shared/logger_formatter"
+require_relative "shared/logger_helper"
 
 
 # Project's libs
@@ -23,7 +24,6 @@ require_relative "rest-ftp-daemon/constants"
 require_relative "rest-ftp-daemon/array"
 require_relative "rest-ftp-daemon/exceptions"
 require_relative "rest-ftp-daemon/helpers"
-require_relative "rest-ftp-daemon/logger_helper"
 require_relative "rest-ftp-daemon/logger_pool"
 require_relative "rest-ftp-daemon/logger"
 require_relative "rest-ftp-daemon/paginate"

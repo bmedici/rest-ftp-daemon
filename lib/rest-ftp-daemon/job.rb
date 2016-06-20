@@ -409,11 +409,8 @@ module RestFtpDaemon
 
   private
 
-    def log_context
-      {
-        wid: @wid,
-        jid: @id,
-      }
+    def log_prefix
+     [@wid, @id, nil]
     end
 
     def find_local path
