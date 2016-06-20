@@ -2,7 +2,6 @@ module RestFtpDaemon
 
   # Worker used to process Jobs
   class JobWorker < Worker
-    #attr_reader :pool
 
     def initialize wid, pool
       # Generic worker initialize

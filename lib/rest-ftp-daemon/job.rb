@@ -502,14 +502,14 @@ module RestFtpDaemon
       tempname = nil
       if @tempfile
         tempname = "#{target.name}.temp-#{Helpers.identifier(JOB_TEMPFILE_LEN)}"
-        #log_info "Job.remote_push tempname [#{tempname}]"
+        log_debug "Job.remote_push tempname [#{tempname}]"
       end
 
       # Remove any existing version if expected, or test its presence
       if @overwrite
         @remote.remove! target
       elsif size = @remote.present?(target)
-        log_info "Job.remote_push existing (#{Helpers.format_bytes size, 'B'})"
+        log_debug "Job.remote_push existing (#{Helpers.format_bytes size, 'B'})"
         raise RestFtpDaemon::JobTargetFileExists
       end
 
@@ -561,7 +561,7 @@ module RestFtpDaemon
         stack << (Helpers.format_bytes @transfer_total, "B")
         stack << (Helpers.format_bytes @current_bitrate.round(0), "bps")
         stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
-        log_info "#{LOG_INDENT}progress #{stack2} \t#{name}"
+        log_debug "Job.progress #{stack2} \t#{name}"
 
         # Remember when we last did it
         @progress_at = now

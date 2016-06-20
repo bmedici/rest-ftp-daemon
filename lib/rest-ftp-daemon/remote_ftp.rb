@@ -26,7 +26,7 @@ module RestFtpDaemon
       @chunk_size = DEFAULT_FTP_CHUNK.to_i * 1024
 
       # Announce object
-      log_info "RemoteFTP.initialize chunk_size:#{@chunk_size}"
+      log_debug "RemoteFTP.initialize chunk_size:#{@chunk_size}"
     end
 
     def connect
@@ -40,7 +40,7 @@ module RestFtpDaemon
 
     def present? target
       size = @ftp.size target.full
-      log_info "RemoteFTP.present? [#{target.name}]"
+      log_debug "RemoteFTP.present? [#{target.name}]"
 
     rescue Net::FTPPermError
       return false
@@ -49,16 +49,16 @@ module RestFtpDaemon
     end
 
     def remove! target
-      log_info "RemoteFTP.remove! [#{target.name}]"
+      log_debug "RemoteFTP.remove! [#{target.name}]"
       @ftp.delete target.full
     rescue Net::FTPPermError
-      log_info "#{LOG_INDENT}[#{target.name}] file not found"
+      log_debug "#{LOG_INDENT}[#{target.name}] file not found"
     else
-      log_info "#{LOG_INDENT}[#{target.name}] removed"
+      log_debug "#{LOG_INDENT}[#{target.name}] removed"
     end
 
     def mkdir directory
-      log_info "RemoteFTP.mkdir [#{directory}]"
+      log_debug "RemoteFTP.mkdir [#{directory}]"
       @ftp.mkdir directory
 
       rescue
@@ -67,7 +67,7 @@ module RestFtpDaemon
 
     def chdir_or_create directory, mkdir = false
       # Init, extract my parent name and my own name
-      log_info "RemoteFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
+      log_debug "RemoteFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
       parent, _current = Helpers.extract_parent(directory)
 
       # Access this directory
@@ -98,7 +98,7 @@ module RestFtpDaemon
       destination.name = tempname if tempname
 
       # Do the transfer
-      log_info "RemoteFTP.push to [#{destination.name}]"
+      log_debug "RemoteFTP.push to [#{destination.name}]"
 
       @ftp.putbinaryfile source.full, target.name, @chunk_size do |data|
         # Update job status after this block transfer

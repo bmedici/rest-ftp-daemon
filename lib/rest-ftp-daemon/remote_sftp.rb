@@ -13,13 +13,13 @@ module RestFtpDaemon
       @debug = (Conf.at :debug, :sftp) == true
 
       # Announce object
-      log_info "RemoteSFTP.initialize"
+      log_debug "RemoteSFTP.initialize"
     end
 
     def connect
       # Connect init
       super
-      log_info "RemoteSFTP.connect [#{@url.user}]@[#{@url.host}]:[#{@url.port}]"
+      log_debug "RemoteSFTP.connect [#{@url.user}]@[#{@url.host}]:[#{@url.port}]"
 
       # Debug level
       verbosity = @debug ? Logger::INFO : false
@@ -35,7 +35,7 @@ module RestFtpDaemon
     end
 
     def present? target
-      log_info "RemoteSFTP.present? [#{target.name}]"
+      log_debug "RemoteSFTP.present? [#{target.name}]"
       stat = @sftp.stat! target.full
 
     rescue Net::SFTP::StatusException
@@ -44,23 +44,18 @@ module RestFtpDaemon
       return stat.size
     end
 
-    # def remove target
-    #   log_info "RemoteSFTP.remove [#{target.name}]"
-    #   @sftp.remove target.full
-    # end
-
     def remove! target
-      log_info "RemoteSFTP.remove! [#{target.name}]"
+      log_debug "RemoteSFTP.remove! [#{target.name}]"
       @sftp.remove target.full
 
     rescue Net::SFTP::StatusException
-      log_info "#{LOG_INDENT}[#{target.name}] file not found"
+      log_debug "#{LOG_INDENT}[#{target.name}] file not found"
     else
-      log_info "#{LOG_INDENT}[#{target.name}] removed"
+      log_debug "#{LOG_INDENT}[#{target.name}] removed"
     end
 
     def mkdir directory
-      log_info "RemoteSFTP.mkdir [#{directory}]"
+      log_debug "RemoteSFTP.mkdir [#{directory}]"
       @sftp.mkdir! directory
 
       rescue
@@ -69,12 +64,12 @@ module RestFtpDaemon
 
     def chdir_or_create directory, mkdir = false
       # Init, extract my parent name and my own name
-      log_info "RemoteSFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
+      log_debug "RemoteSFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
       parent, _current = Helpers.extract_parent(directory)
 
       # Access this directory
       begin
-        # log_info "   chdir [/#{directory}]"
+        log_debug "chdir [/#{directory}]"
         @sftp.opendir! "./#{directory}"
 
       rescue Net::SFTP::StatusException => _e
@@ -97,12 +92,6 @@ module RestFtpDaemon
       raise JobTargetShouldBeDirectory
     end
 
-    # def dir_contents directory
-    #   # Access this directory
-    #   handle = @sftp.opendir! directory
-    #   @sftp.readdir! handle
-    # end
-
     def push source, target, tempname = nil, &callback
       # Push init
       raise RestFtpDaemon::JobAssertionFailed, "push/1" if @sftp.nil?
@@ -112,7 +101,7 @@ module RestFtpDaemon
       destination.name = tempname if tempname
 
       # Do the transfer
-      log_info "RemoteSFTP.push [#{destination.full}]"
+      log_debug "RemoteSFTP.push [#{destination.full}]"
       @sftp.upload! source.full, destination.full do |event, _uploader, *args|
         case event
         when :open then
@@ -140,7 +129,7 @@ module RestFtpDaemon
 
       # Rename if needed
       if tempname
-        log_info "RemoteSFTP.push rename to\t[#{target.name}]"
+        log_debug "RemoteSFTP.push rename to\t[#{target.name}]"
         @sftp.rename! destination.full, target.full, flags
       end
 

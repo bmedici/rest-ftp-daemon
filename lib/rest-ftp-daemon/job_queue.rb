@@ -64,9 +64,7 @@ module RestFtpDaemon
 
         # Add its current rate
         result[group] ||= 0
-        #log_info "  2: #{result.inspect} (rate: #{rate})"
         result[group] += rate
-        #log_info "  3: #{result.inspect}"
       end
 
       # Return the rate
@@ -103,7 +101,6 @@ module RestFtpDaemon
       log_info "find_by_id (#{id}, #{prefixed}) > #{id}"
 
       # Search in jobs queues
-      #@jobs.reverse.find { |item| item.id == id }
       @jobs.find { |item| item.id == id }
     end
 
@@ -195,7 +192,7 @@ module RestFtpDaemon
       @mutex.synchronize do
         # Delete jobs from the queue when they match status and age limits
         @jobs.delete_if do |job|
-          # log_info "testing job [#{job.id}] updated_at [#{job.updated_at}]"
+          # log_debug "testing job [#{job.id}] updated_at [#{job.updated_at}]"
 
           # Skip if wrong status, updated_at invalid, or updated since time_limit
           next unless job.status == status
@@ -207,7 +204,7 @@ module RestFtpDaemon
 
           # From any queues, remove it
           @queues.each do |pool, jobs|
-            log_info "#{LOG_INDENT}unqueued from [#{pool}]" if jobs.delete(job)
+            log_debug "#{LOG_INDENT}unqueued from [#{pool}]" if jobs.delete(job)
           end
 
           # Remember we have to delete the original job !

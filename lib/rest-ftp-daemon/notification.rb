@@ -35,10 +35,10 @@ module RestFtpDaemon
     def process
       # Check context
       if @url.nil?
-        log_info "skipping (missing url): #{@params.inspect}"
+        log_error "skipping (missing url)", params
         return
       elsif @params[:event].nil?
-        log_info "skipping (missing event): #{@params.inspect}"
+        log_error "skipping (missing event)", params
         return
       end
 
