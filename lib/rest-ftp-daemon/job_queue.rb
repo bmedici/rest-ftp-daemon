@@ -42,7 +42,7 @@ module RestFtpDaemon
     def rate_by method_name
       # Init
       result = {}
-      return unless Job.new(0, {}).respond_to? method_name
+      #return unless Job.new(0, {}).respond_to? method_name
 
       # Select only running jobs
       @jobs.each do |job|
