@@ -37,6 +37,12 @@ module RestFtpDaemon
       @workers[wid] && @workers[wid].alive?
     end
 
+  protected
+
+    def log_prefix
+     [nil, nil, nil]
+    end
+
   private
 
     def generate_id
