@@ -2,7 +2,7 @@ module RestFtpDaemon
 
   # Handles a pool of Worker objects
   class WorkerPool
-    include LoggerHelper
+    include Shared::LoggerHelper
     attr_reader :logger
     attr_reader :wid
 

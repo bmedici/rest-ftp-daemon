@@ -4,7 +4,7 @@ module RestFtpDaemon
 
   # Reprensents work to be done along with parameters to process it
   class Job
-    include LoggerHelper
+    include Shared::LoggerHelper
     attr_reader :logger
 
     FIELDS = [:source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]

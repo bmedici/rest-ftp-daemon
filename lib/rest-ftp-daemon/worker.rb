@@ -1,6 +1,6 @@
 module RestFtpDaemon
   class Worker
-    include LoggerHelper
+    include Shared::LoggerHelper
     attr_reader :logger
 
     def initialize wid, pool = nil

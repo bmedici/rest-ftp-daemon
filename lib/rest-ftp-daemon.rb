@@ -15,6 +15,7 @@ require "grape-entity"
 
 
 # Shared libs
+require_relative "shared/logger_formatter"
 
 
 # Project's libs
