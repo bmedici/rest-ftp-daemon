@@ -8,8 +8,10 @@ begin
   require "socket"
   # require "timeout"
   require_relative "../lib/rest-ftp-daemon/launcher_helpers"
-  require_relative "../lib/rest-ftp-daemon/conf"
+  require_relative "../lib/shared/conf"
 end
+include Shared
+
 
 # Constants
 DEFAULT_CONFIG_PATH = File.expand_path "/etc/rest-ftp-daemon.yml"
