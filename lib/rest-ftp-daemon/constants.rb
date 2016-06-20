@@ -20,7 +20,7 @@ LOG_FORMAT_PROGNAME     = "%d\t%s"
 
 LOG_HEADER_TIME          = "%Y-%m-%d %H:%M:%S"
 LOG_HEADER_FORMAT        = "%s \t%d\t%-8s %-15s "
-LOG_MESSAGE_TRIM         = 100
+LOG_MESSAGE_TRIM         = 200
 LOG_MESSAGE_TEXT         = "%s%s"
 LOG_MESSAGE_ARRAY        = "%s     - %s"
 LOG_MESSAGE_HASH         = "%s     * %-15s %s"
