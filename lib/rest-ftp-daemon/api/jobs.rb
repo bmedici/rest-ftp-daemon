@@ -2,6 +2,7 @@ module RestFtpDaemon
   module API
     class Jobs < Grape::API
 
+      ### ENDPOINTS
       desc "Read job with ID"
       params do
         requires :id, type: String, desc: "ID of the Job to read"

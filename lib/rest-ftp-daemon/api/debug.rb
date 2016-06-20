@@ -2,6 +2,7 @@ module RestFtpDaemon
   module API
     class Debug < Grape::API
 
+      ### ENDPOINTS
       desc "Show app routes, params encodings"
       get "/" do
         # Encodings

@@ -5,11 +5,9 @@ require "facter"
 
 module RestFtpDaemon
   module API
-
     class Dashbaord < Grape::API
 
       ### HELPERS
-
       helpers do
         def render name, values={}
           template = File.read("#{Conf.app_libs}/views/#{name}.haml")
@@ -55,7 +53,6 @@ module RestFtpDaemon
         end
 
       end
-
 
       ### DASHBOARD
       desc "Show a global dashboard"

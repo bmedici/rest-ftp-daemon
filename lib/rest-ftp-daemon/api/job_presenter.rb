@@ -1,7 +1,6 @@
 module RestFtpDaemon
   module API
     module Entities
-
       class JobPresenter < Grape::Entity
         # Job ID
         expose :id
@@ -30,7 +29,6 @@ module RestFtpDaemon
         expose :infos, unless: :hide_infos
 
       end
-
     end
   end
 end

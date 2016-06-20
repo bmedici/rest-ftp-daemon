@@ -4,6 +4,7 @@ module RestFtpDaemon
   module API
     class Status < Grape::API
 
+      ### ENDPOINTS
       desc "Show daemon status"
       get "/" do
         mem = GetProcessMem.new

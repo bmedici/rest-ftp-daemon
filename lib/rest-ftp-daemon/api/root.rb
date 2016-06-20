@@ -3,8 +3,11 @@ module RestFtpDaemon
     class Root < Grape::API
 
       ### LOGGING & HELPERS
-
       helpers do
+        def log_prefix
+          ['API', nil, nil]
+        end
+
         def logger
           Root.logger
         end
@@ -18,7 +21,7 @@ module RestFtpDaemon
           request_method = env['REQUEST_METHOD']
           request_path   = env['REQUEST_PATH']
           request_uri    = env['REQUEST_URI']
-          log_info "HTTP #{request_method} #{request_uri}", params
+          log_info       "HTTP #{request_method} #{request_uri}", params
         end
       end
 
@@ -27,7 +30,6 @@ module RestFtpDaemon
       end
 
       ### CLASS CONFIG
-
       helpers Shared::LoggerHelper
       logger RestFtpDaemon::LoggerPool.instance.get :api
       do_not_route_head!
@@ -38,7 +40,6 @@ module RestFtpDaemon
 
 
       ### MOUNTPOINTS
-
       mount RestFtpDaemon::API::Status => MOUNT_STATUS
       mount RestFtpDaemon::API::Jobs => MOUNT_JOBS
       mount RestFtpDaemon::API::Dashbaord => MOUNT_BOARD
@@ -47,9 +48,7 @@ module RestFtpDaemon
 
 
       ### INITIALIZATION
-
       def initialize
-        # Call daddy
         super
 
         # Check that Queue and Pool are available
@@ -58,8 +57,7 @@ module RestFtpDaemon
       end
 
 
-      ### ROOT URL ACCESS
-
+      ### ENDPOINTS
       get "/" do
         redirect Helpers.dashboard_filter_url()
       end

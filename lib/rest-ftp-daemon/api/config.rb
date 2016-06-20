@@ -2,6 +2,7 @@ module RestFtpDaemon
   module API
     class Config < Grape::API
 
+      ### ENDPOINTS
       desc "Show daemon config"
       get "/" do
         status 200
