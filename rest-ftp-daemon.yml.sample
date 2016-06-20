@@ -41,7 +41,7 @@ defaults: &defaults
   newrelic:
     licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     platform: "bigbusiness"               # app platform name
-    app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
+    # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
 
   debug:
     # ftp: false

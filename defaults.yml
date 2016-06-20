@@ -1,0 +1,59 @@
+daemonize: true
+port: 3000
+nick: rftpd
+user: rftpd
+# group: rftpd
+#host: "myhost"
+
+pools:
+  default: 2
+
+transfer:
+  # notify_after_sec: 5       # wait at least X seconds between HTTP notifications
+  # mkdir: true               # build directory tree if missing
+  # tempfile: true            # transfer to temporary file, rename after sucessful transfer
+  # overwrite: false          # overwrite any target file with the same name
+  timeout: 1800             # jobs running for longer than X seconds will be killed
+
+retry:
+  # on_errors:
+  #   - ftp_perm_error
+  #   - net_temp_error
+  #   - conn_reset_by_peer
+  #   - conn_timed_out
+  #   - conn_refused
+  #   - sftp_auth_failed
+  #   - conn_host_is_down
+  #   - conn_unreachable
+  #   - conn_failed
+  #   - conn_openssl_error
+  # max_runs: 5
+  # max_age: 1800
+  # delay: 10
+
+conchita:
+  # timer: 60
+  # garbage_collector: true
+  # clean_failed: 3600
+  # clean_finished: 3600
+  # clean_queued: 86400
+
+newrelic:
+  licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  platform: "bigbusiness"               # app platform name
+  app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
+
+debug:
+  # ftp: false
+  # sftp: false
+  # conchita: false
+  allow_reload: false
+
+logs:
+  thin:     "/var/log/rftpd-environment-thin.log"
+  queue:    "/var/log/rftpd-environment-core.log"
+  api:      "/var/log/rftpd-environment-core.log"
+  workers:  "/var/log/rftpd-environment-work.log"
+  jobs:     "/var/log/rftpd-environment-work.log"
+  notify:   "/var/log/rftpd-environment-work.log"
+  newrelic: "/var/log/rftpd-environment-newrelic.log"
