@@ -1,12 +1,17 @@
 # Configuration defaults
 # DEFAULT_WORKERS         = 2
 DEFAULT_POOL            = "default"
-DEFAULT_WORKER_TIMEOUT  = 1800  # 1h
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_FTP_CHUNK       = 1024  # 1 MB
 DEFAULT_PAGE_SIZE       = 50    # 50 lines
 DEFAULT_RETRY_DELAY     = 10    # 10s
 
+
+# Internal job constants
+JOB_RANDOM_LEN          = 8
+JOB_IDENT_LEN           = 4
+JOB_TEMPFILE_LEN        = 8
+JOB_UPDATE_INTERVAL     = 1
 
 
 # Constants: logger
@@ -24,20 +29,11 @@ LOG_MESSAGE_HASH         = "%s     * %-15s %s"
 LOG_PREFIX_WID           = 8
 LOG_PREFIX_JID           = JOB_IDENT_LEN + 3 + 2
 LOG_PREFIX_ID            = 6
-LOG_PREFIX_FORMAT        = "W:%#{-LOG_PREFIX_WID.to_i}sJ:%#{-LOG_PREFIX_JID.to_i}sID:%#{-LOG_PREFIX_ID.to_i}s"
+LOG_PREFIX_FORMAT        = "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s"
 
 # Constants: logger to be cleaned up
 LOG_PIPE_LEN            = 10
 LOG_INDENT              = "\t"
-
-
-
-
-# Internal job constants
-JOB_RANDOM_LEN          = 8
-JOB_IDENT_LEN           = 4
-JOB_TEMPFILE_LEN        = 8
-JOB_UPDATE_INTERVAL     = 1
 
 
 # Jobs statuses
@@ -85,6 +81,7 @@ WORKER_STYLES = {
   }
 
 
+# API mountpoints
 MOUNT_JOBS               = "/jobs"
 MOUNT_BOARD              = "/board"
 MOUNT_STATUS             = "/status"
@@ -94,6 +91,5 @@ MOUNT_CONFIG             = "/config"
 
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
-NOTIFY_USERAGENT        = "#{APP_SPEC.name}/v#{APP_SPEC.version}"
 NOTIFY_IDENTIFIER_LEN   = 4
 

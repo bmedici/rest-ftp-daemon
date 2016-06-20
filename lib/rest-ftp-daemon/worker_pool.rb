@@ -57,7 +57,7 @@ module RestFtpDaemon
       pools[DEFAULT_POOL] ||= 1
 
       # Create workers
-      log_info "WorkerPool creating JobWorker's #{pools.inspect} + ConchitaWorker"
+      log_info "WorkerPool creating JobWorker's #{pools.to_hash.inspect} + ConchitaWorker"
       pools.each do |pool, count|
         # Start worker threads for each pool
         log_info "WorkerPool creating JobWorker [#{pool}] x#{count}"
@@ -79,9 +79,9 @@ module RestFtpDaemon
       Thread.new wid do
         begin
           worker = JobWorker.new wid, pool
-          log_info "JobWorker [#{wid}][#{pool}]: #{worker}"
+          #log_info "JobWorker [#{wid}][#{pool}]: #{worker}"
         rescue StandardError => ex
-          log_error "JobWorker EXCEPTION: #{ex.message}"
+          log_error "JobWorker EXCEPTION: #{ex.message} #{e.backtrace}"
         end
       end
     end
@@ -90,7 +90,7 @@ module RestFtpDaemon
       Thread.new do
         begin
           worker = ConchitaWorker.new :conchita
-          log_info "ConchitaWorker: #{worker}"
+          #log_info "ConchitaWorker: #{worker}"
         rescue StandardError => ex
           log_error "ConchitaWorker EXCEPTION: #{ex.message}"
         end

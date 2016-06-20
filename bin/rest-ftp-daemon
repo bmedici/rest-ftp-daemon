@@ -3,12 +3,13 @@
 # Try to load external libs, helpers and constants
 begin
   require "rubygems"
-  require "thin"
   require "optparse"
+  require "thin"
   require "socket"
-  # require "timeout"
   require_relative "../lib/rest-ftp-daemon/launcher_helpers"
   require_relative "../lib/shared/conf"
+rescue LoadError => e
+  raise "EXITING: some basic libs were not found (#{e.message})"
 end
 include Shared
 

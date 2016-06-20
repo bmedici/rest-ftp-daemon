@@ -12,7 +12,11 @@ module RestFtpDaemon
       @timeout = (Conf.at(:transfer, :timeout) rescue nil)
 
       # Start main loop
-      log_info "JobWorker initializing", ["wid: #{wid}", "pool: #{pool}", "timeout: #{@timeout}"]
+      log_info "JobWorker initializing", {
+        wid: wid,
+        pool: pool,
+        timeout: @timeout
+      }
       start
     end
 
@@ -71,8 +75,8 @@ module RestFtpDaemon
 
     def work_on_job job
       # Prepare job and worker for processing
-      worker_status WORKER_STATUS_RUNNING, job
       worker_jid job.id
+      worker_status WORKER_STATUS_RUNNING, job
       job.wid = Thread.current.thread_variable_get :wid
 
       # Processs this job protected by a timeout
