@@ -9,9 +9,9 @@ require "syslog"
 require "net/http"
 require "thread"
 require "singleton"
-require "newrelic_rpm"
 require "grape"
 require "grape-entity"
+require "newrelic_rpm"
 
 
 # Shared libs
