@@ -8,6 +8,28 @@ DEFAULT_PAGE_SIZE       = 50    # 50 lines
 DEFAULT_RETRY_DELAY     = 10    # 10s
 
 
+
+# Constants: logger
+LOG_ROTATION             = "daily"
+LOG_FORMAT_PROGNAME     = "%d\t%s"
+
+LOG_HEADER_TIME          = "%Y-%m-%d %H:%M:%S"
+LOG_HEADER_FORMAT        = "%s \t%d\t%-8s %-15s "
+LOG_MESSAGE_TRIM         = 100
+LOG_MESSAGE_TEXT         = "%s%s"
+LOG_MESSAGE_ARRAY        = "%s     - %s"
+LOG_MESSAGE_HASH         = "%s     * %-15s %s"
+
+# Constants: logger app-specific prefix
+LOG_PREFIX_WID           = 8
+LOG_PREFIX_JID           = JOB_IDENT_LEN + 3 + 2
+LOG_PREFIX_ID            = 6
+LOG_PREFIX_FORMAT        = "W:%#{-LOG_PREFIX_WID.to_i}sJ:%#{-LOG_PREFIX_JID.to_i}sID:%#{-LOG_PREFIX_ID.to_i}s"
+
+
+
+
+
 # Internal job constants
 JOB_RANDOM_LEN          = 8
 JOB_IDENT_LEN           = 4
@@ -61,19 +83,15 @@ WORKER_STYLES = {
 
 
 # Logging and startup
-LOG_PIPE_LEN            = 10
 LOG_COL_WID             = 8
 LOG_COL_JID             = JOB_IDENT_LEN + 3 + 2
 LOG_COL_ID              = 6
 LOG_TRIM_LINE           = 200
 LOG_DUMPS               = File.dirname(__FILE__) + "/../../log/"
-LOG_ROTATION            = "daily"
 LOG_FORMAT_TIME         = "%Y-%m-%d %H:%M:%S"
 LOG_FORMAT_PREFIX       = "%s %s\t%-#{LOG_PIPE_LEN.to_i}s\t"
 LOG_FORMAT_MESSAGE      = "%#{-LOG_COL_WID.to_i}s\t%#{-LOG_COL_JID.to_i}s\t%#{-LOG_COL_ID.to_i}s"
 LOG_NEWLINE             = "\n"
-LOG_INDENT              = "\t"
-
 MOUNT_JOBS               = "/jobs"
 MOUNT_BOARD              = "/board"
 MOUNT_STATUS             = "/status"
