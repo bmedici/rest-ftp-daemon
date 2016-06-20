@@ -4,11 +4,11 @@ module RestFtpDaemon
   class Remote
     include Shared::LoggerHelper
     attr_reader :logger
-    attr_reader :log_context
+    attr_reader :log_prefix
 
-    def initialize url, log_context, options = {}
+    def initialize url, log_prefix, options = {}
       # Logger
-      @log_context = log_context || {}
+      @log_prefix = log_prefix || {}
       @logger = RestFtpDaemon::LoggerPool.instance.get :jobs
 
       # Extract URL parts

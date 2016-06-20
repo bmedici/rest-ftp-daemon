@@ -26,6 +26,15 @@ module RestFtpDaemon
 
   protected
 
+    def log_prefix
+     [
+      Thread.current.thread_variable_get(:wid),
+      nil,
+      nil
+      ]
+    end
+
+
     def work
       # Announce we are working
       worker_status WORKER_STATUS_CLEANING
