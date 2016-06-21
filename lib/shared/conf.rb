@@ -27,17 +27,17 @@ module Shared
       attr_reader :host
     end
 
-    def self.init
       # Defaults, hostname
       @files        = []
       @app_name     = "app_name"
       @app_env      = "production"
       @app_started  = Time.now
       @host         = `hostname`.to_s.chomp.split(".").first
+    def self.init app_root
       @initialized  = true
 
-      # Grab app root
-      @app_root = File.expand_path( File.dirname(__FILE__) + "/../../")
+      # Store and clean app_root
+      @app_root = File.expand_path(app_root)
 
       # Try to find any gemspec file
       matches   = Dir["#{@app_root}/*.gemspec"]

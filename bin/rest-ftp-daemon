@@ -25,8 +25,8 @@ begin
   cmd_daemonize = nil
 
   # Init Chamber-based configuration from Gemspec
-  Conf.init
   Conf.app_env = "production"
+  Conf.init File.dirname(__FILE__) + "/../"
 
   # Parse options and check compliance
   thinopts = {}
