@@ -76,6 +76,7 @@ module RestFtpDaemon
 
       # Start ConchitaWorker and ReporterWorker
       @conchita = create_thread ConchitaWorker, :conchita
+      @reporter = create_thread ReporterWorker, :reporter
 
     rescue StandardError => ex
       log_error "EXCEPTION: #{ex.message}", ex.backtrace
