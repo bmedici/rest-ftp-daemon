@@ -69,20 +69,18 @@ module RestFtpDaemon
       end
       log_info "WorkerPool creating workers - JobWorker #{pools.to_hash.inspect}"
 
-      # Ensure we have at least one worker in default pool
-      pools[DEFAULT_POOL] ||= 1
+      # Start ConchitaWorker and ReporterWorker
+      @conchita = create_thread ConchitaWorker, :conchita
+      @reporter = create_thread ReporterWorker, :reporter
 
-      # Start JobWorkers threads for each pool
+      # Start JobWorkers threads, ensure we have at least one worker in default pool
+      pools[DEFAULT_POOL] ||= 1
       pools.each do |pool, count|
         count.times do
           wid = generate_id
           @workers[wid] = create_thread JobWorker, wid, pool
         end
       end
-
-      # Start ConchitaWorker and ReporterWorker
-      @conchita = create_thread ConchitaWorker, :conchita
-      @reporter = create_thread ReporterWorker, :reporter
 
     rescue StandardError => ex
       log_error "EXCEPTION: #{ex.message}", ex.backtrace
