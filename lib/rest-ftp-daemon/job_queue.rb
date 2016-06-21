@@ -216,6 +216,10 @@ module RestFtpDaemon
 
   protected
 
+    def log_prefix
+     [nil, nil, nil]
+    end
+
     def prefixed_id id
       "#{@prefix}.#{id}"
     end
