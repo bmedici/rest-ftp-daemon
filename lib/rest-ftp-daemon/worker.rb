@@ -61,9 +61,9 @@ module RestFtpDaemon
 
       # Log this status change
       if job.is_a?(Job)
-        log_info "Worker status[#{status}] on job[#{job.id}] status[#{job.status}] error[#{job.error}]"
+        log_info "status [#{status}] on job[#{job.id}] status[#{job.status}] error[#{job.error}]"
       else
-        log_info "Worker status[#{status}]"
+        log_info "status [#{status}]"
       end
     end
 
