@@ -18,7 +18,7 @@ module RestFtpDaemon
       worker_status WORKER_STATUS_STARTING
 
       # Load corker conf
-      load_config
+      load_config wid
     end
 
   protected
@@ -74,7 +74,7 @@ module RestFtpDaemon
 
   private
 
-    def load_config
+    def load_config wid
       # My debug
       @debug = (Conf.at :debug, wid) == true
       @log_worker_status_changes = @debug
@@ -82,9 +82,9 @@ module RestFtpDaemon
       # My configuration
       @config = Conf[wid]
       if !@config.is_a? Hash
-        return log_info "#{self.class.name}: missing #{wid}.* configuration"
+        return log_info "#{self.class.name}: missing #{wid}/* configuration"
       elsif @config[:timer].nil?
-        return log_info "#{self.class.name}: missing #{wid}.timer value"
+        return log_info "#{self.class.name}: missing #{wid}/timer value"
       end
     end
 

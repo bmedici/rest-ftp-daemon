@@ -30,7 +30,7 @@ module RestFtpDaemon
       do_metrics
 
     rescue StandardError => e
-      log_error "CONCHITA EXCEPTION: #{e.inspect}"
+      log_error "EXCEPTION: #{e.inspect}"
       sleep 1
     else
       wait_according_to_config
@@ -43,7 +43,7 @@ module RestFtpDaemon
   private
 
     def do_metrics
-      # Prepare hash
+      # Prepare context
       metrics = {}
 
       # Collect: jobs by status
@@ -79,12 +79,7 @@ module RestFtpDaemon
         log_debug "reported to NewRelic"
       end if Conf.newrelic_enabled?
 
-    end
 
-    # NewRelic instrumentation
-    if Conf.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-      add_transaction_tracer :work,       category: :task
     end
 
   end
