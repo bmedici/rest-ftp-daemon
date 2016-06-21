@@ -3,7 +3,8 @@ defaults: &defaults
   port: 3000
   user: rftpd
   group: rftpd
-  #host: "myhost"
+  # host: "myhost"
+  # pidfile: "/tmp/rftpd.pid"
 
   pools:
     default: 2
@@ -44,10 +45,11 @@ defaults: &defaults
     # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
 
   debug:
-    # ftp: false
-    # sftp: false
-    # conchita: false
-    # allow_reload: false
+    ftp: false
+    sftp: false
+    conchita: false
+    reporter: fakse
+    allow_reload: false
 
   logs:
     thin:    "/var/log/rftpd-environment-thin.log"
