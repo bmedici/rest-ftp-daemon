@@ -3,7 +3,7 @@ port: 3000
 nick: rftpd
 user: rftpd
 # group: rftpd
-#host: "myhost"
+# host: "myhost"
 
 pools:
   default: 2
@@ -39,14 +39,15 @@ conchita:
   # clean_queued: 86400
 
 newrelic:
-  licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  platform: "bigbusiness"               # app platform name
-  app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
+  # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  # platform: "bigbusiness"               # app platform name
+  # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
 
 debug:
-  # ftp: false
-  # sftp: false
-  # conchita: false
+  ftp: false
+  sftp: false
+  conchita: false
+  reporter: fakse
   allow_reload: false
 
 logs:
