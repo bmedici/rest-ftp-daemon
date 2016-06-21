@@ -45,6 +45,7 @@ module RestFtpDaemon
     def do_metrics
       # Prepare context
       metrics = {}
+      mem = GetProcessMem.new
 
       # Collect: jobs by status
       $queue.jobs_by_status.each do |key, value|
@@ -69,16 +70,19 @@ module RestFtpDaemon
       # Collect: other
       metrics["system/jobs_count"] = $queue.jobs_count
       metrics["system/uptime"] = (Time.now - Conf.app_started).round(1)
+      metrics["system/memory"] = mem.bytes.to_i
+      metrics["system/threads"] = Thread.list.count
 
       # Dump metrics to logs
       log_debug "metrics collected", metrics
 
       # NewRelic reporting
-      metrics.each do |key, value|
-        ::NewRelic::Agent.record_metric("rftpd/#{key}", value)
-        log_debug "reported to NewRelic"
-      end if Conf.newrelic_enabled?
-
+      if Conf.newrelic_enabled?
+        metrics.each do |key, value|
+          ::NewRelic::Agent.record_metric("rftpd/#{key}", value)
+        end
+        log_debug "reported [#{metrics.size}] metrics to NewRelic"
+      end
 
     end
 
