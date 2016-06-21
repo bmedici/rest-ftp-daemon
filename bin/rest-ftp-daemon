@@ -12,6 +12,7 @@ rescue LoadError => e
   raise "EXITING: some basic libs were not found (#{e.message})"
 end
 include Shared
+include RestFtpDaemon
 
 
 # Handle configuration
@@ -25,7 +26,6 @@ begin
   cmd_daemonize = nil
 
   # Init Chamber-based configuration from Gemspec
-  Conf.app_env = "production"
   Conf.init File.dirname(__FILE__) + "/../"
 
   # Parse options and check compliance
@@ -79,12 +79,15 @@ if command == "start"
 end
 
 
-# Thin: cmdline overriden options
+# Thin: override with cmdline then defaults
 Conf[:daemonize]    = cmd_daemonize  unless cmd_daemonize.nil?
 Conf[:port]         = cmd_port       unless cmd_port.nil?
 Conf[:user]         = cmd_user       unless cmd_user.nil?
 Conf[:group]        = cmd_group      unless cmd_group.nil?
 Conf[:pidfile]      = cmd_pidfile    unless cmd_pidfile.nil?
+
+Conf[:pidfile]      ||= Conf.gen_pidfile
+
 
 # Thin: basic options
 thin_logfile = Conf.at(:logs, :thin)
@@ -143,7 +146,7 @@ rescue ArgumentError => e
   puts "FAILED: argument error: #{e.message}"
 rescue SystemExit
   # Leave some time for the daemon to launch
-  print "Waiting for pidfile"
+  print "Waiting for pidfile "
   until File.file?(Conf[:pidfile]) do
     print "."
     sleep 0.25
