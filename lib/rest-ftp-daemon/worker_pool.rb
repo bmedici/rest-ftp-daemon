@@ -13,11 +13,10 @@ module RestFtpDaemon
       # Prepare status hash and vars
       @statuses = {}
       @workers = {}
-      @conchita = nil
       @mutex = Mutex.new
 
       # Identifiers generator
-      @last_id = 0
+      @last_worker_id = 0
 
       # Create worker threads
       create_threads
@@ -51,11 +50,11 @@ module RestFtpDaemon
       vars
     end
 
-    def generate_id
+    def next_worker_id
       @mutex.synchronize do
-        @last_id += 1
+        @last_worker_id += 1
       end
-      "w#{@last_id}"
+      "w#{@last_worker_id}"
     end
 
     def create_threads
@@ -70,15 +69,15 @@ module RestFtpDaemon
       log_info "WorkerPool creating workers - JobWorker #{pools.to_hash.inspect}"
 
       # Start ConchitaWorker and ReporterWorker
-      @conchita = create_thread ConchitaWorker, :conchita
-      @reporter = create_thread ReporterWorker, :reporter
+      create_thread :conchita, ConchitaWorker
+      create_thread :reporter, ReporterWorker
 
       # Start JobWorkers threads, ensure we have at least one worker in default pool
       pools[DEFAULT_POOL] ||= 1
       pools.each do |pool, count|
         count.times do
-          wid = generate_id
-          @workers[wid] = create_thread JobWorker, wid, pool
+          wid = next_worker_id
+          @workers[wid] = create_thread wid, JobWorker, pool
         end
       end
 
@@ -97,9 +96,10 @@ module RestFtpDaemon
     #   end
     # end
 
-    def create_thread klass, wid, pool = nil
+    def create_thread wid, klass, pool = nil
+      # Spawn thread and add it to my index
       log_info "spawning #{klass.name} [#{wid}] [#{pool}]"
-      Thread.new do
+      @workers[wid] = Thread.new do
         begin
           worker = klass.new wid, pool
         rescue StandardError => ex
