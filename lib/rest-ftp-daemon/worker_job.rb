@@ -29,6 +29,11 @@ module RestFtpDaemon
 
   protected
 
+
+    def load_config wid
+      # Do nothing
+    end
+
   private
 
     def work
