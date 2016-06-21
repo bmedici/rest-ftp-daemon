@@ -1,8 +1,7 @@
+# FIXME: files named with hyphens will not be found by Chamber for now
 require "chamber"
 
 module Shared
-
-  # FIXME: files named with hyphens will not be found by Chamber for now
   class ConfigMissingParameter    < StandardError; end
   class ConfigOtherError          < StandardError; end
   class ConfigParseError          < StandardError; end
@@ -14,27 +13,27 @@ module Shared
 
     class << self
       attr_accessor :app_env
+      attr_reader   :app_root
+      attr_reader   :app_libs
+      attr_reader   :app_name
+      attr_reader   :app_ver
+      attr_reader   :app_started
       attr_reader   :app_spec
+      attr_reader   :files
+      attr_reader   :host
 
-      attr_reader :app_root
-      attr_reader :app_libs
-
-      attr_reader :app_name
-      attr_reader :app_ver
-      attr_reader :app_started
-
-      attr_reader :files
-      attr_reader :host
     end
 
-      # Defaults, hostname
-      @files        = []
-      @app_name     = "app_name"
-      @app_env      = "production"
-      @app_started  = Time.now
-      @host         = `hostname`.to_s.chomp.split(".").first
     def self.init app_root
+      # Permanent flags
       @initialized  = true
+      @app_started  = Time.now
+
+      # Default values
+      @files        ||= []
+      @app_name     ||= "app_name"
+      @app_env      ||= "production"
+      @host         ||= `hostname`.to_s.chomp.split(".").first
 
       # Store and clean app_root
       @app_root = File.expand_path(app_root)
@@ -86,6 +85,7 @@ module Shared
       fail ConfigOtherError, "#{e.message} \n #{e.backtrace.to_yaml}"
     end
 
+    # Reload files
     def self.reload!
       ensure_init
       load_files
