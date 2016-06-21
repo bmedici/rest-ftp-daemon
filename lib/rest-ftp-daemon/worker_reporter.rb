@@ -52,8 +52,9 @@ module RestFtpDaemon
       end
 
       # Collect: workers by status
-      workers_by_status = $pool.worker_variables.group_by(&[:status])
-      workers_by_status.each do |status, workers|
+      $pool.worker_variables.group_by do |wid, vars|
+        vars[:status]
+      end.each do |status, workers|
         metrics["workers/#{status}"] = workers.count
       end
 

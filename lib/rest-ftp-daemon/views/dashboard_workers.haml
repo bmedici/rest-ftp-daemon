@@ -14,8 +14,8 @@
       %th.text-right seen
 
   %tbody
-    - variables.each do |vars|
-      - wid = vars[:wid]
+    - variables.each do |wid, vars|
+      -# wid = vars[:wid]
       - status = vars[:status]
       - alive = $pool.worker_alive? wid
       - trclass = WORKER_STYLES[status]

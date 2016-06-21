@@ -24,13 +24,11 @@ module RestFtpDaemon
     end
 
     def worker_variables
-      @workers.collect do |_wid, worker|
-        vars = {}
-        worker.thread_variables.each do |var|
-          vars[var] = worker.thread_variable_get var
-        end
-        vars
+      vars = {}
+      @workers.collect do |wid, worker|
+        vars[wid] = thread_variables worker
       end
+      vars
     end
 
     def worker_alive? wid
@@ -44,6 +42,14 @@ module RestFtpDaemon
     end
 
   private
+
+    def thread_variables thread
+      vars = {}
+      thread.thread_variables.each do |var|
+        vars[var] = thread.thread_variable_get var
+      end
+      vars
+    end
 
     def generate_id
       @mutex.synchronize do
