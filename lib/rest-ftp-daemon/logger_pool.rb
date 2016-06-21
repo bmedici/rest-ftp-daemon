@@ -19,6 +19,12 @@ module RestFtpDaemon
       logfile = Conf[:logs][pipe] if Conf[:logs].is_a? Hash
       logfile ||= STDERR
 
+      # Check if we can write to than file
+      unless File.writable?(logfile)
+        puts "LoggerPool [#{pipe}] logging to hyperspace (cannot write to #{logfile})"
+        logfile = nil
+      end
+
       # Create the logger and return it
       logger = Logger.new(logfile, LOG_ROTATION)   #, 10, 1024000)
       logger.progname = pipe.to_s.downcase
