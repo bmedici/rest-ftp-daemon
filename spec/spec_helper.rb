@@ -2,7 +2,7 @@ require "pathname"
 require "http"
 require "pry"
 
-require_relative "../lib/rest-ftp-daemon/boot"
+require_relative "../lib/rest-ftp-daemon/constants"
 require_relative "support/request_helpers"
 
 RSpec.configure do |config|

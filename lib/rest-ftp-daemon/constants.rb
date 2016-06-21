@@ -1,5 +1,7 @@
+# Misc constants
+
+
 # Configuration defaults
-# DEFAULT_WORKERS         = 2
 DEFAULT_POOL            = "default"
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_FTP_CHUNK       = 1024  # 1 MB
@@ -30,6 +32,7 @@ LOG_PREFIX_WID           = 8
 LOG_PREFIX_JID           = JOB_IDENT_LEN + 3 + 2
 LOG_PREFIX_ID            = 6
 LOG_PREFIX_FORMAT        = "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s"
+
 
 # Constants: logger to be cleaned up
 LOG_PIPE_LEN            = 10
@@ -93,4 +96,3 @@ MOUNT_CONFIG             = "/config"
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
 NOTIFY_IDENTIFIER_LEN   = 4
-
