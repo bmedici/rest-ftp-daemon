@@ -6,24 +6,12 @@ begin
   require "optparse"
   require "thin"
   require "socket"
-  require_relative "../lib/rest-ftp-daemon/launcher_helpers"
+  require_relative "../lib/rest-ftp-daemon/launcher"
   require_relative "../lib/shared/conf"
 rescue LoadError => e
   raise "EXITING: some basic libs were not found (#{e.message})"
 end
 include Shared
-
-
-# Constants
-DEFAULT_CONFIG_PATH = File.expand_path "/etc/rest-ftp-daemon.yml"
-SAMPLE_CONFIG_FILE = File.expand_path(File.join File.dirname(__FILE__), "/../../rest-ftp-daemon.yml.sample")
-TAIL_MESSAGE = <<EOD
-
-A default configuration is available here: #{SAMPLE_CONFIG_FILE}.
-You should copy it to the expected location #{DEFAULT_CONFIG_PATH}:
-
-sudo cp #{SAMPLE_CONFIG_FILE} #{DEFAULT_CONFIG_PATH}
-EOD
 
 
 # Handle configuration
@@ -55,9 +43,9 @@ begin
     opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)") { |value| cmd_group = value }
 
     opts.separator ""
-    opts.on_tail("-h", "--help", "Show this message")                    do
+    opts.on_tail("-h", "--help", "Show this message")  do
       puts opts
-      puts TAIL_MESSAGE unless File.exist?(DEFAULT_CONFIG_PATH)
+      puts Conf.gen_config_message unless File.exist?(Conf.gen_config_etc)
       exit
     end
     opts.on_tail("-v", "--version", "Show version (#{Conf.app_ver})")         { puts(Conf.app_ver) && exit }
@@ -85,7 +73,7 @@ end
 if command == "start"
   if !Conf[:port]
     abort "ABORTING: Network port is missing"
-  elsif RestFtpDaemon::LauncherHelpers.local_port_used? Conf[:port]
+  elsif Launcher.local_port_used? Conf[:port]
     abort "ABORTING: Network port #{Conf[:port]} is already in use"
   end
 end
