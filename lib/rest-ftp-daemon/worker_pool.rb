@@ -53,13 +53,17 @@ module RestFtpDaemon
     end
 
     def create_threads
-      # Read configuration
-      pools = (Conf[:pools] || {})
+      # Read configuration or initialize with empty hash
+      pools = Conf[:pools]
+      pools = {} unless pools.is_a? Hash
 
       # Minimum one worker on DEFAULT_POOL
       if !(pools.is_a? Hash)
-        log_error "create_threads: one worker is the minimum possible number (#{pools.inspect}"
+        log_error "create_threads: one JobWorker is the minimum (#{pools.inspect}"
       end
+      log_info "WorkerPool creating workers - JobWorker #{pools.to_hash.inspect}"
+
+      # Ensure we have at least one worker in default pool
       pools[DEFAULT_POOL] ||= 1
 
       # Start JobWorkers threads for each pool
@@ -74,9 +78,6 @@ module RestFtpDaemon
       @conchita = create_thread ConchitaWorker, :conchita
 
     rescue StandardError => ex
-      log_error "UNHANDLED EXCEPTION: #{ex.message}", ex.backtrace
-    end
-
       log_error "EXCEPTION: #{ex.message}", ex.backtrace
     end
 
