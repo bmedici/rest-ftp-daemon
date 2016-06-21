@@ -49,22 +49,22 @@ module RestFtpDaemon
 
       # Collect: jobs by status
       $queue.jobs_by_status.each do |key, value|
-        metrics["jobs/#{key}"] = value
+        metrics["jobs_by_status/#{key}"] = value
       end
 
       # Collect: workers by status
       $pool.worker_variables.group_by do |wid, vars|
         vars[:status]
       end.each do |status, workers|
-        metrics["workers/#{status}"] = workers.count
+        metrics["workers_by_status/#{status}"] = workers.count
       end
 
       # Collect: transfer rates
       $queue.rate_by(:pool).each do |key, value|
-        metrics["by_pool/#{key}"] = value
+        metrics["rate_by_pool/#{key}"] = value
       end
       $queue.rate_by(:targethost).each do |key, value|
-        metrics["by_targethost/#{key}"] = value
+        metrics["rate_by_targethost/#{key}"] = value
       end
 
       # Collect: other
