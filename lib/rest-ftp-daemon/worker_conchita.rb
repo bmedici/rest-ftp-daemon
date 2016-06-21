@@ -3,37 +3,24 @@ module RestFtpDaemon
   # Worker used to clean up the queue deleting expired jobs
   class ConchitaWorker < Worker
 
-    def initialize wid = :conchita
-      # Generic worker initialize
+    def initialize wid, pool = nil
+      # Call dady and load my conf
       super
 
-      # Use debug ?
-      @debug = (Conf.at :debug, :conchita) == true
-      @log_worker_status_changes = @debug
-
-      # Conchita configuration
-      @conchita = Conf[:conchita]
-      if !@conchita.is_a? Hash
-        return log_info "ConchitaWorker: missing conchita.* configuration"
-      elsif @conchita[:timer].nil?
-        return log_info "ConchitaWorker: missing conchita.timer value"
-      end
-
       # Start main loop
-      log_info "ConchitaWorker starting", @conchita
+      log_info "#{self.class.name} starting", @config
       start
     end
 
   protected
 
-    def log_prefix
-     [
-      Thread.current.thread_variable_get(:wid),
-      nil,
-      nil
-      ]
-    end
-
+    # def log_prefix
+    #  [
+    #   Thread.current.thread_variable_get(:wid),
+    #   nil,
+    #   nil
+    #   ]
+    # end
 
     def work
       # Announce we are working
@@ -51,11 +38,7 @@ module RestFtpDaemon
       log_error "CONCHITA EXCEPTION: #{e.inspect}"
       sleep 1
     else
-      # Restore previous status
-      worker_status WORKER_STATUS_WAITING
-
-      # Sleep for a few seconds
-      sleep @conchita[:timer]
+      wait_according_to_config
     end
 
     def maxage status

@@ -62,43 +62,42 @@ module RestFtpDaemon
       end
       pools[DEFAULT_POOL] ||= 1
 
-      # Create workers
-      log_info "WorkerPool creating JobWorker's #{pools.to_hash.inspect} + ConchitaWorker"
+      # Start JobWorkers threads for each pool
       pools.each do |pool, count|
-        # Start worker threads for each pool
-        log_info "WorkerPool creating JobWorker [#{pool}] x#{count}"
         count.times do
           wid = generate_id
-          @workers[wid] = create_worker_thread wid, pool
+          @workers[wid] = create_thread JobWorker, wid, pool
         end
       end
 
-      # Start conchita thread
-      log_info "WorkerPool creating ConchitaWorker"
-      @conchita = create_conchita_thread
+      # Start ConchitaWorker and ReporterWorker
+      @conchita = create_thread ConchitaWorker, :conchita
 
     rescue StandardError => ex
       log_error "UNHANDLED EXCEPTION: #{ex.message}", ex.backtrace
     end
 
-    def create_worker_thread wid, pool
-      Thread.new wid do
-        begin
-          worker = JobWorker.new wid, pool
-          #log_info "JobWorker [#{wid}][#{pool}]: #{worker}"
-        rescue StandardError => ex
-          log_error "JobWorker EXCEPTION: #{ex.message} #{e.backtrace}"
-        end
-      end
+      log_error "EXCEPTION: #{ex.message}", ex.backtrace
     end
 
-    def create_conchita_thread
+    # def create_worker_thread wid, pool
+    #   Thread.new wid do
+    #     begin
+    #       worker = JobWorker.new wid, pool
+    #       #log_info "JobWorker [#{wid}][#{pool}]: #{worker}"
+    #     rescue StandardError => ex
+    #       log_error "JobWorker EXCEPTION: #{ex.message} #{e.backtrace}"
+    #     end
+    #   end
+    # end
+
+    def create_thread klass, wid, pool = nil
+      log_info "spawning #{klass.name} [#{wid}] [#{pool}]"
       Thread.new do
         begin
-          worker = ConchitaWorker.new :conchita
-          #log_info "ConchitaWorker: #{worker}"
+          worker = klass.new wid, pool
         rescue StandardError => ex
-          log_error "ConchitaWorker EXCEPTION: #{ex.message}"
+          log_error "#{klass.name} EXCEPTION: #{ex.message}"
         end
       end
     end
@@ -106,8 +105,8 @@ module RestFtpDaemon
     # NewRelic instrumentation
     if Conf.newrelic_enabled?
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-      add_transaction_tracer :create_conchita_thread,     category: :task
-      add_transaction_tracer :create_worker_thread,       category: :task
+      # add_transaction_tracer :create_conchita_thread,     category: :task
+      add_transaction_tracer :create_thread,       category: :task
     end
 
   end

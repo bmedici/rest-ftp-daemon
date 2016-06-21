@@ -4,7 +4,7 @@ module RestFtpDaemon
   class JobWorker < Worker
 
     def initialize wid, pool
-      # Generic worker initialize
+      # Call dady and load my conf
       super
 
       # Timeout config
@@ -20,6 +20,8 @@ module RestFtpDaemon
     end
 
   protected
+
+  private
 
     def work
       # Wait for a job to be available in the queue
@@ -102,14 +104,6 @@ module RestFtpDaemon
 
       # Inform the job
       job.oops_after_crash ex unless job.nil?
-    end
-
-  private
-
-    # NewRelic instrumentation
-    if Conf.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-      add_transaction_tracer :work,       category: :task
     end
 
   end
