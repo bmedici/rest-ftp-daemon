@@ -32,17 +32,17 @@ module RestFtpDaemon
       $queue.expire JOB_STATUS_QUEUED,    maxage(JOB_STATUS_QUEUED),    @debug
 
       # Force garbage collector
-      GC.start if @conchita["garbage_collector"]
+      GC.start if @config["garbage_collector"]
 
     rescue StandardError => e
-      log_error "CONCHITA EXCEPTION: #{e.inspect}"
+      log_error "EXCEPTION: #{e.inspect}"
       sleep 1
     else
       wait_according_to_config
     end
 
     def maxage status
-      @conchita["clean_#{status}"] || 0
+      @config["clean_#{status}"] || 0
     end
 
   private
