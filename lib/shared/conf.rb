@@ -34,6 +34,7 @@ module Shared
       @app_env      = "production"
       @app_started  = Time.now
       @host         = `hostname`.to_s.chomp.split(".").first
+      @initialized  = true
 
       # Grab app root
       @app_root = File.expand_path( File.dirname(__FILE__) + "/../../")
@@ -86,19 +87,23 @@ module Shared
     end
 
     def self.reload!
+      ensure_init
       load_files
     end
 
     def self.dump
+      ensure_init
       to_hash.to_yaml(indent: 4, useheader: true, useversion: false )
     end
 
     # Direct access to any depth
     def self.at *path
+      ensure_init
       path.reduce(Conf) { |m, key| m && m[key.to_s] }
     end
 
     def self.newrelic_enabled?
+      ensure_init
       !!self[:newrelic]
     end
 
@@ -150,8 +155,15 @@ module Shared
       ENV["NEW_RELIC_LOG"] = logfile.to_s if logfile
     end
 
-  end
   private
 
+    def self.ensure_init
+      # Skip is already done
+      return if @initialized
 
+      # Go through init if not already done
+      self.init
+    end
+
+  end
 end
