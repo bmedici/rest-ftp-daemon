@@ -7,8 +7,16 @@ module RestFtpDaemon
       # Call dady and load my conf
       super
 
-      # Timeout config
-      @timeout = (Conf.at(:transfer, :timeout) rescue nil)
+      # Timeout and retry config
+      @timeout    = (Conf.at(:transfer, :timeout) rescue nil)
+      @retry      = (Conf.at(:retry) rescue {})
+
+      # Retry config
+      @retry_on_errors   = Conf.at(:retry, :on_errors)
+      @retry_max_age     = Conf.at(:retry, :max_age)
+      @retry_max_runs    = Conf.at(:retry, :max_runs)
+      @retry_delay       = Conf.at(:retry, :delay)
+
 
       # Start main loop
       log_info "JobWorker initializing", {
@@ -36,26 +44,21 @@ module RestFtpDaemon
       #sleep 1
 
       # If job status requires a retry, just restack it
-      on_errors = Conf.at(:retry, :on_errors)
-      max_age = Conf.at(:retry, :max_age)
-      max_runs = Conf.at(:retry, :max_runs)
-      delay = Conf.at(:retry, :delay)
-
       if !job.error
         #log_info "job succeeded"
 
-      elsif !(on_errors.is_a?(Enumerable) && on_errors.include?(job.error))
+      elsif !(@retry_on_errors.is_a?(Enumerable) && @retry_on_errors.include?(job.error))
         log_error "not retrying: error not eligible"
 
-      elsif max_age && (job.age >= max_age)
-        log_error "not retrying: max_age reached (#{max_age} s)"
+      elsif @retry_max_age && (job.age >= @retry_max_age)
+        log_error "not retrying: max_age reached (#{@retry_max_age} s)"
 
-      elsif max_runs && (job.runs >= max_runs)
-        log_error "not retrying: max_runs reached (#{max_runs} tries)"
+      elsif @retry_max_runs && (job.runs >= @retry_max_runs)
+        log_error "not retrying: max_runs reached (#{@retry_max_runs} tries)"
 
       else
         # Delay cannot be negative, and will be 1s minimum
-        retry_after = [delay || DEFAULT_RETRY_DELAY, 1].max
+        retry_after = [@retry_delay || DEFAULT_RETRY_DELAY, 1].max
         log_info "retrying job: waiting for #{retry_after} seconds"
 
         # Wait !
