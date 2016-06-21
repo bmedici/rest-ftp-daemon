@@ -29,9 +29,8 @@ module RestFtpDaemon
           version: Conf.app_ver,
           started: Conf.app_started,
           uptime: (Time.now - Conf.app_started).round(1),
-
-          memory_bytes: mem.bytes.to_i,
-          memory_mb: mem.mb.round(0),
+          memory: mem.bytes.to_i,
+          threads: Thread.list.count,
 
           status: $queue.jobs_by_status,
           jobs_count: $queue.jobs_count,
