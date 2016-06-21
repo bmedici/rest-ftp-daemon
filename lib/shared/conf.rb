@@ -64,6 +64,9 @@ module Shared
       # Load configuration files
       load_files
 
+      # Set Rack env
+      ENV["RACK_ENV"] = @app_env.to_s
+
       # Init New Relic
       prepare_newrelic self[:newrelic], self.at(:logs, :newrelic)
 
