@@ -14,6 +14,7 @@ module Shared
 
     class << self
       attr_accessor :app_env
+      attr_reader   :app_spec
 
       attr_reader :app_root
       attr_reader :app_libs
@@ -22,14 +23,14 @@ module Shared
       attr_reader :app_ver
       attr_reader :app_started
 
-      attr_reader :spec
       attr_reader :files
       attr_reader :host
     end
 
-    def self.init app_root = nil
+    def self.init
       # Defaults, hostname
       @files        = []
+      @app_name     = "app_name"
       @app_env      = "production"
       @app_started  = Time.now
       @host         = `hostname`.to_s.chomp.split(".").first
@@ -55,9 +56,14 @@ module Shared
       # Add other config files
       add_default_config
       add_etc_config
+
+      # Return something
+      return @app_name
     end
 
     def self.prepare args = {}
+      ensure_init
+
       # Add extra config file
       add_extra_config args[:config]
 
@@ -145,5 +151,7 @@ module Shared
     end
 
   end
+  private
+
 
 end
