@@ -107,6 +107,29 @@ module Shared
       !!self[:newrelic]
     end
 
+    # Defaults generators
+    def self.gen_pidfile
+      ensure_init
+      "/tmp/#{@app_name}-#{@host}-#{self[:port]}.pid"
+    end
+    def self.gen_config_etc
+      ensure_init
+      "/etc/#{@app_name}.yml"
+    end
+    def self.gen_config_sample
+      ensure_init
+      "#{@app_root}/#{@app_name}.sample.yml"
+    end
+    def self.gen_config_message
+      config_etc = gen_config_etc
+      config_sample = gen_config_sample
+      return "
+A default configuration is available here: #{config_sample}.
+You should copy it to the default location: #{config_etc}.
+sudo cp #{config_sample} #{config_etc}
+"
+    end
+
   protected
 
     def self.load_files
@@ -123,10 +146,6 @@ module Shared
 
     def self.add_extra_config path
       @files << File.expand_path(path) if path
-    end
-
-    def self.get_pidfile
-      self[:pidfile] || "/tmp/#{@app_name}-#{@host}-#{self[:port]}.pid"
     end
 
     def self.prepare_newrelic section, logfile
