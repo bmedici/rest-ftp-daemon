@@ -7,7 +7,6 @@ module RestFtpDaemon
       ### ENDPOINTS
       desc "Show daemon status"
       get "/" do
-        mem = GetProcessMem.new
         status 200
 
         # Get counters
@@ -24,23 +23,18 @@ module RestFtpDaemon
 
         # Generate sutrcture
         return  {
-          hostname: `hostname`.to_s.chomp,
           name: Conf.app_name,
           version: Conf.app_ver,
           started: Conf.app_started,
-          uptime: (Time.now - Conf.app_started).round(1),
-          memory: mem.bytes.to_i,
-          threads: Thread.list.count,
-
-          status: $queue.jobs_by_status,
+          hostname: `hostname`.to_s.chomp,
           jobs_count: $queue.jobs_count,
+
+          metrics: Metrics.sample,
 
           counters: counters,
 
-          rate_by_pool: $queue.rate_by(:pool),
-          rate_by_targethost: $queue.rate_by(:targethost),
-
           workers: $pool.worker_variables,
+
           }
       end
 

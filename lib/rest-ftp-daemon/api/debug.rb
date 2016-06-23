@@ -28,6 +28,7 @@ module RestFtpDaemon
 
        # Build response
        return  {
+          metrics: debug_metrics,
           routes: RestFtpDaemon::API::Root.routes,
           encodings: encodings,
           }
