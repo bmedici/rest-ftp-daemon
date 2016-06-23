@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.300.1)
+    rest-ftp-daemon (0.300.2)
       chamber
       double-bag-ftps
       facter
