@@ -14,7 +14,7 @@ PATH
       newrelic_rpm
       settingslogic
       sys-cpu
-      thin (~> 1.6)
+      thin (~> 1)
 
 GEM
   remote: http://rubygems.org/
@@ -87,7 +87,7 @@ GEM
     minitest (5.9.0)
     multi_json (1.12.1)
     multi_xml (0.5.5)
-    mustermann19 (0.4.3)
+    mustermann19 (0.4.4)
       enumerable-lazy
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
