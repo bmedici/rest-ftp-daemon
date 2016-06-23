@@ -39,6 +39,14 @@ module RestFtpDaemon
       @queues
     end
 
+    def queued_by_pool
+      result = {}
+      @queues.each do |pool, jobs|
+        result[pool] = jobs.count
+      end
+      result
+    end
+
     def rate_by method_name
       # Init
       result = {}
