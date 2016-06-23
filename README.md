@@ -61,7 +61,7 @@ Expected features in a short-time range :
 Installation
 ------------------------------------------------------------------------------------
 
-With Ruby (version 2.3 or higher) and rubygems properly installed, you only need :
+With Ruby (version 2.2 or higher) and rubygems properly installed, you only need :
 
 ```
 gem install rest-ftp-daemon
@@ -229,7 +229,7 @@ TODO for this document
 Debian install preparation
 ------------------------------------------------------------------------------------
 
-This project is available as a rubygem, requires Ruby 2.3 and rubygems installed.
+This project is available as a rubygem, requires Ruby 2.2 and RubyGems installed.
 
 #### Using rbenv and ruby-build
 
@@ -240,7 +240,7 @@ You may use `rbenv` and `ruby-build` to get the right Ruby version. If this is y
 # git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 # echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
 # echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-# ruby-build --definitions | grep '2.3'
+# ruby-build --definitions | grep '2.2'
 ```
 
 Otherwise, you way have to update ruby-build to include Ruby 2.3.0 definitions.
@@ -260,8 +260,8 @@ Use a dedicated user for the daemon, switch to this user and enable rbenv
 Install the right ruby version and activate it
 
 ```
-# rbenv install 2.1.0
-# rbenv local 2.1.0
+# rbenv install 2.2.0
+# rbenv local 2.2.0
 # rbenv rehash
 ```
 
