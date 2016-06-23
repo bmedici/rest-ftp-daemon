@@ -40,6 +40,7 @@ conchita:
 
 newrelic:
   # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  prefix: "rftpd"                         # app prefix
   # platform: "bigbusiness"               # app platform name
   # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
 

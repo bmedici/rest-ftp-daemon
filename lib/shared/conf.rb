@@ -165,10 +165,17 @@ sudo cp #{config_sample} #{config_etc}
       # License
       ENV["NEW_RELIC_LICENSE_KEY"] = section[:licence].to_s
 
-      # Appname
-      platform = section[:platform] || self.host
-      section[:app_name] ||= "#{@app_name}-#{platform}-#{@app_env}"
-      ENV["NEW_RELIC_APP_NAME"] = section[:app_name].to_s
+      # Build NewRelic app_name if not provided as-is
+      if section[:app_name]
+        ENV["NEW_RELIC_APP_NAME"] = section[:app_name].to_s
+      else
+        stack = []
+        stack << (section[:prefix] || @app_name)
+        stack << section[:platform] if section[:platform]
+        stack << @app_env
+        text = stack.join('-')
+        ENV["NEW_RELIC_APP_NAME"] = "#{text}-#{host};#{text}"
+      end
 
       # Logfile
       ENV["NEW_RELIC_LOG"] = logfile.to_s if logfile

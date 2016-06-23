@@ -40,7 +40,8 @@ defaults: &defaults
     # clean_queued: 86400
 
   newrelic:
-    licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    licence: ""
+    # prefix: "rftpd"                       # app prefix
     platform: "bigbusiness"               # app platform name
     # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
 
