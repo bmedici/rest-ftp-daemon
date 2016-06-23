@@ -40,10 +40,10 @@ Features
 * Realtime status reporting
   * realtime transfer status reporting, with progress and errors
   * periodic update notifications sent along with transfer status and progress to an arbitrary URL (JSON resource POSTed)
+  * metrics about pools, throughtput, and queues output to NewRelic
 
 
-
-Status
+Project status
 ------------------------------------------------------------------------------------
 
 Though it may need more robust tests, this gem has been used successfully in production for
@@ -183,6 +183,13 @@ Configuration priority is defined as follows (from most important to last resort
 As a starting point, `rest-ftp-daemon.yml.sample` is an example config file that can be  copied into the expected location ``/etc/rest-ftp-daemon.yml``.
 
 Default administrator credentials are `admin/admin`. Please change the password in this configuration file before starting any kind of production.
+
+
+Metrics
+------------------------------------------------------------------------------------
+
+[FIXME]
+
 
 
 Logging
