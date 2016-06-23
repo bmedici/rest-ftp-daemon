@@ -2,7 +2,7 @@
 Gem::Specification.new do |spec|
 
   # Project version
-  spec.version      = "0.300.1"
+  spec.version      = "0.300.3"
 
   # Project description
   spec.name                   = "rest-ftp-daemon"
@@ -26,7 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "http"
-  #spec.add_development_dependency "http", "~> 0.8"
   spec.add_development_dependency "rubocop", "~> 0.32.0"
   spec.add_development_dependency "pry"
 
