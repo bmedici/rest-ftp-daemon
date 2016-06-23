@@ -2,35 +2,46 @@ module RestFtpDaemon
   module API
     class Debug < Grape::API
 
-      ### ENDPOINTS
-      desc "Show app routes, params encodings"
-      get "/" do
-        # Encodings
-        encodings = {}
-        jobs = $queue.jobs
+      ### HELPERS
+      helpers do
 
-        jobs.each do |job|
-          # here = out[job.id] = {}
-          me = encodings[job.id] = {}
+        def debug_metrics
+          Metrics.sample
+        end
 
-          me[:error] = job.error.encoding.to_s unless job.error.nil?
-          me[:status] = job.status.encoding.to_s unless job.status.nil?
+        def debug_encodings
+          # Encodings
+          encodings = {}
+          jobs = $queue.jobs
 
-          Job::FIELDS.each do |name|
-            value = job.send(name)
-            me[name] = value.encoding.to_s if value.is_a? String
-          end
+          jobs.each do |job|
+            # here = out[job.id] = {}
+            me = encodings[job.id] = {}
 
-          job.infos.each do |name, value|
-            me["infos_#{name}"] = value.encoding.to_s if value.is_a? String
+            me[:error] = job.error.encoding.to_s unless job.error.nil?
+            me[:status] = job.status.encoding.to_s unless job.status.nil?
+
+            Job::FIELDS.each do |name|
+              value = job.send(name)
+              me[name] = value.encoding.to_s if value.is_a? String
+            end
+
+            job.infos.each do |name, value|
+              me["infos_#{name}"] = value.encoding.to_s if value.is_a? String
+            end
           end
         end
 
+      end
+
+      ### ENDPOINTS
+      desc "debug"
+      get "/" do
        # Build response
        return  {
           metrics: debug_metrics,
           routes: RestFtpDaemon::API::Root.routes,
-          encodings: encodings,
+          encodings: debug_encodings,
           }
       end
 
