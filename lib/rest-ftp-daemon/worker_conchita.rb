@@ -3,14 +3,8 @@ module RestFtpDaemon
   # Worker used to clean up the queue deleting expired jobs
   class ConchitaWorker < Worker
 
-    def initialize wid, pool = nil
-      # Call dady and load my conf
-      super
+  protected
 
-      # Start main loop
-      log_info "#{self.class.name} starting", @config
-      start
-    end
     def worker_init
       # Load corker conf
       config_section :conchita
@@ -20,13 +14,6 @@ module RestFtpDaemon
       return false
     end
 
-    # def log_prefix
-    #  [
-    #   Thread.current.thread_variable_get(:wid),
-    #   nil,
-    #   nil
-    #   ]
-    # end
     def worker_after
       # Sleep for a few seconds
       worker_status WORKER_STATUS_WAITING
