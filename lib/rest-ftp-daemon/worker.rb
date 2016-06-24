@@ -91,19 +91,22 @@ module RestFtpDaemon
       Thread.current.thread_variable_set :updated_at, Time.now
     end
 
-  private
+    def config_section key
+      # Init
+      @config = {}
+      section = Conf[key]
 
-    def load_config wid
-      # My debug
-      @debug = (Conf.at :debug, wid) == true
+      # Debugging
+      @debug = (Conf.at :debug, key) == true
       @log_worker_status_changes = @debug
 
-      # My configuration
-      @config = Conf[wid]
-      if !@config.is_a? Hash
-        return log_info "#{self.class.name}: missing #{wid}/* configuration"
-      elsif @config[:timer].nil?
-        return log_info "#{self.class.name}: missing #{wid}/timer value"
+      # Set my configuration
+      if !section.is_a? Hash
+        return log_info "#{self.class.name}: missing #{key}/* configuration"
+      elsif section[:timer].nil?
+        return log_info "#{self.class.name}: missing #{key}/timer value"
+      else
+        @config = section
       end
     end
 
