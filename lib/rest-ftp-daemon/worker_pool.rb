@@ -66,7 +66,7 @@ module RestFtpDaemon
       if !(pools.is_a? Hash)
         log_error "create_threads: one JobWorker is the minimum (#{pools.inspect}"
       end
-      log_info "WorkerPool creating workers - JobWorker #{pools.to_hash.inspect}"
+      log_info "WorkerPool creating all workers with #{pools.to_hash.inspect}"
 
       # Start ConchitaWorker and ReporterWorker
       create_thread :conchita, ConchitaWorker
@@ -84,17 +84,6 @@ module RestFtpDaemon
     rescue StandardError => ex
       log_error "EXCEPTION: #{ex.message}", ex.backtrace
     end
-
-    # def create_worker_thread wid, pool
-    #   Thread.new wid do
-    #     begin
-    #       worker = JobWorker.new wid, pool
-    #       #log_info "JobWorker [#{wid}][#{pool}]: #{worker}"
-    #     rescue StandardError => ex
-    #       log_error "JobWorker EXCEPTION: #{ex.message} #{e.backtrace}"
-    #     end
-    #   end
-    # end
 
     def create_thread wid, klass, pool = nil
       # Spawn thread and add it to my index
