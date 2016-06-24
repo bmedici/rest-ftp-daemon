@@ -1,7 +1,7 @@
 module RestFtpDaemon
 
   # Worker used to report metrics to various services
-  class ReporterWorker < WorkerBase
+  class ReporterWorker < Shared::WorkerBase
 
   protected
 

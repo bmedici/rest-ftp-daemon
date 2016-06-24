@@ -18,6 +18,7 @@ require "newrelic_rpm"
 require_relative "shared/logger_formatter"
 require_relative "shared/logger_helper"
 require_relative "shared/conf"
+require_relative "shared/worker_base"
 
 
 # Project's libs
@@ -32,7 +33,6 @@ require_relative "rest-ftp-daemon/uri"
 require_relative "rest-ftp-daemon/job_queue"
 require_relative "rest-ftp-daemon/counters"
 require_relative "rest-ftp-daemon/worker_pool"
-require_relative "rest-ftp-daemon/worker_base"
 require_relative "rest-ftp-daemon/workers/conchita"
 require_relative "rest-ftp-daemon/workers/reporter"
 require_relative "rest-ftp-daemon/workers/job"

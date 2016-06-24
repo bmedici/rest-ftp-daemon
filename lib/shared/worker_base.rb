@@ -1,4 +1,4 @@
-module RestFtpDaemon
+module Shared
   class WorkerBase
     include Shared::LoggerHelper
     attr_reader :logger
