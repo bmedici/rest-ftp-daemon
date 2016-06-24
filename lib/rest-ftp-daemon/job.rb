@@ -24,6 +24,9 @@ module RestFtpDaemon
     attr_reader :infos
     attr_reader :pool
 
+    attr_accessor :config
+    attr_accessor :endpoints
+
     FIELDS.each do |name|
       attr_reader name
     end
@@ -42,6 +45,8 @@ module RestFtpDaemon
       @status = nil
       @runs = 0
       @wid = nil
+      @config = {}
+      @endpoints = {}
 
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :jobs
@@ -54,6 +59,9 @@ module RestFtpDaemon
         instance_variable_set "@#{name}", params[name]
       end
 
+      # Set config
+      @config = (Conf[:config] || {})
+
       # Set pool
       pools = (Conf[:pools] || {})
       # Check if pool name exists
@@ -65,23 +73,15 @@ module RestFtpDaemon
 
       # Set job queue, thus reset
       reset
-
-      # Read source file size and parameters
-      @notify_after_sec = Conf.at(:transfer, :notify_after_sec) rescue nil
     end
 
     def reset
-      # Set super-default flags
-      flag_default :mkdir, false
-      flag_default :overwrite, false
-      flag_default :tempfile, false
-
       # Flag current job
       @queued_at = Time.now
       @updated_at = Time.now
 
       # Send first notification
-      log_info "Job.initialize notify[queued] notify_after_sec[#{@notify_after_sec}] interval[#{JOB_UPDATE_INTERVAL}]"
+      log_info "Job.initialize notify[queued]}]"
       client_notify :queued
 
       # Update job status
@@ -91,8 +91,7 @@ module RestFtpDaemon
     end
 
     def process
-      # Update job's status
-      log_info "Job.process"
+      log_info "Job.process update_interval[#{JOB_UPDATE_INTERVAL}]"
 
       # Prepare job
       begin
@@ -273,8 +272,8 @@ module RestFtpDaemon
 
     def replace_tokens path
       # Ensure endpoints are not a nil value
-      return path unless Conf[:endpoints].is_a? Enumerable
-      vectors = Conf[:endpoints].clone
+      return path unless @endpoints.is_a? Enumerable
+      vectors = @endpoints.clone
 
       # Stack RANDOM into tokens
       vectors["RANDOM"] = SecureRandom.hex(JOB_RANDOM_LEN)
@@ -294,12 +293,17 @@ module RestFtpDaemon
     end
 
     def prepare
+      # Init
+      @source_path = nil
+
+      # Prepare flags
+      flag_prepare :mkdir, false
+      flag_prepare :overwrite, false
+      flag_prepare :tempfile, true
+
       # Update job status
       set_status JOB_STATUS_PREPARING
       @runs += 1
-
-      # Init
-      @source_path = nil
 
       # Prepare source
       raise RestFtpDaemon::JobMissingAttribute unless @source
@@ -460,15 +464,17 @@ module RestFtpDaemon
       touch_job
     end
 
-    def flag_default name, default
+    def flag_prepare name, default
       # build the flag instance var name
       variable = "@#{name}"
 
-      # If it's true or false, that's ok
-      return if [true, false].include? instance_variable_get(variable)
+      [config[name], default].each do |alt_value|
+        # If it's already true or false, that's ok
+        return if [true, false].include? instance_variable_get(variable)
 
-      # Otherwise, set it to the default value
-      instance_variable_set variable, default
+        # Otherwise, set it to the new alt_value
+        instance_variable_set variable, alt_value
+      end
     end
 
     def finalize
@@ -539,6 +545,7 @@ module RestFtpDaemon
     def progress transferred, name = ""
       # What's current time ?
       now = Time.now
+      notify_after_sec = @config[:notify_after_sec]
 
       # Update counters
       @transfer_sent += transferred
@@ -569,7 +576,7 @@ module RestFtpDaemon
 
       # Notify if requested
       notified_ago = (now.to_f - @notified_at.to_f)
-      if (!@notify_after_sec.nil?) && (notified_ago > @notify_after_sec)
+      if (!notify_after_sec.nil?) && (notified_ago > notify_after_sec)
         # Prepare and send notification
         notif_status = {
           progress: percent0,
