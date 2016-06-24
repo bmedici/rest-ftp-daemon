@@ -10,6 +10,9 @@ module Shared
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
       @log_worker_status_changes = true
 
+      # Configuration
+      @config = {}
+
       # Set thread context
       @pool = pool
       @wid = wid
@@ -20,7 +23,7 @@ module Shared
 
       # Ask worker to init itself, and return if there are errors
       if worker_init_result = worker_init
-        log_error "#{self.class.name} worker_init: #{worker_init_result.inspect}", @config
+        log_error "worker_init aborting: #{worker_init_result.inspect}", @config
       else
         # We're ok, let's start out loop
         start_loop
@@ -48,13 +51,7 @@ module Shared
     end
 
     def start_loop
-      log_info "#{self.class.name} ready", {
-        wid: @wid,
-        pool: @pool,
-        timeout: @timeout
-        }
-      log_info "#{self.class.name} starting", @config
-
+      log_info "start_loop starting", @config
       loop do
         begin
           # Do the hard work
@@ -97,11 +94,10 @@ module Shared
       @log_worker_status_changes = @debug
 
       # Set my configuration
-      if Conf[key].is_a? Hash
+      if (Conf[key].is_a? Hash) && Conf[key]
         @config = Conf[key]
       else
-        @config = {}
-        log_error "missing #{key}/* configuration"
+        log_error "missing [#{key}] configuration"
       end
     end
 

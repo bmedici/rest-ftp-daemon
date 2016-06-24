@@ -10,8 +10,7 @@ module RestFtpDaemon
       config_section :reporter
 
       # Check that everything is OK
-      return "aborting: invalid configuration" unless @config
-      return "aborting: invalid timer" unless @config[:timer].to_i > 0
+      return "invalid timer" unless @config[:timer].to_i > 0
       return false
     end
 
