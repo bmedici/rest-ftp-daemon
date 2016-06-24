@@ -10,7 +10,8 @@ module RestFtpDaemon
       config_section :transfer
 
       # Timeout and retry config
-      @timeout    = @config[:timeout] || nil
+      return "invalid timeout" unless @config[:timeout].to_i > 0
+      @timeout    = @config[:timeout]
 
       # Retry config
       # @retry             = (Conf.at(:retry) rescue {})
@@ -24,6 +25,8 @@ module RestFtpDaemon
         pool: @pool,
         timeout: @timeout
       }
+
+      return false
     end
 
     def worker_after
@@ -83,12 +86,12 @@ module RestFtpDaemon
       job.wid = Thread.current.thread_variable_get :wid
 
       # Prepare job config
-      # job.config = @config
-      job.endpoints = (Conf.at(:endpoints) rescue {})
+      job.endpoints = @config[:endpoints] rescue {})
+      job.config = @config[:config] rescue {})
 
       # Processs this job protected by a timeout
       Timeout.timeout(@timeout, RestFtpDaemon::JobTimeout) do
-        job.process(@config)
+        job.process
       end
 
       # Processing done
