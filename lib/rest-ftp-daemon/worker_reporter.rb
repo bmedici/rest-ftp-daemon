@@ -1,14 +1,10 @@
 module RestFtpDaemon
 
-  # Worker used to clean up the queue deleting expired jobs
+  # Worker used to report metrics to various services
   class ReporterWorker < Worker
 
-    def initialize wid, pool = nil
-      # Call dady and load my conf
-      super
   protected
 
-    end
     def worker_init
       # Load corker conf
       config_section :reporter
@@ -18,13 +14,6 @@ module RestFtpDaemon
       return false
     end
 
-    # def log_prefix
-    #  [
-    #   Thread.current.thread_variable_get(:wid),
-    #   nil,
-    #   nil
-    #   ]
-    # end
     def worker_after
       # Sleep for a few seconds
       worker_status WORKER_STATUS_WAITING
@@ -41,9 +30,6 @@ module RestFtpDaemon
     rescue StandardError => e
       log_error "EXCEPTION: #{e.inspect}"
       sleep 1
-
-    def maxage status
-      @config["clean_#{status}"] || 0
     end
 
   private
