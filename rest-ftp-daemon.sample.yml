@@ -39,6 +39,9 @@ defaults: &defaults
     # clean_finished: 3600
     # clean_queued: 86400
 
+  reporter:
+    # timer: 20
+
   newrelic:
     licence: ""
     # prefix: "rftpd"                       # app prefix

@@ -234,17 +234,21 @@ This project is available as a rubygem, requires Ruby 2.2 and RubyGems installed
 #### Using rbenv and ruby-build
 
 You may use `rbenv` and `ruby-build` to get the right Ruby version. If this is your case, ensure that ruby-build definitions are up-to-date and include the right Ruby version.
+You may have to install some extra packages for the compilations to complete.
 
 ```
+# apt-get install libffi-dev zlib1g-dev bison libreadline-dev
 # git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 # git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 # echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
 # echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-# ruby-build --definitions | grep '2.2'
+# rbenv install --list | grep '2.2'
 ```
 
-Otherwise, you way have to update ruby-build to include Ruby 2.3.0 definitions.
-On Debian, 2.3.0 is not included in Wheezy and appears in Jessie's version of the package.
+# curl -fsSL https://gist.github.com/mislav/055441129184a1512bb5.txt | rbenv install --patch 2.2.3
+
+Otherwise, you way have to update ruby-build to include Ruby 2.2 definitions.
+On Debian, 2.2 is not included in Wheezy and appears in Jessie's version of the package.
 
 #### Dedicated user
 
@@ -287,6 +291,11 @@ Known bugs
 ```
 gem install eventmachine -v '1.0.8' -- --with-cppflags=-I/usr/local/opt/openssl/include
 bundle install
+```
+
+* If you get ```uncommon.mk:189: recipe for target 'build-ext' failed``` on Debian, you can try with:
+```
+curl -fsSL https://gist.github.com/mislav/055441129184a1512bb5.txt | rbenv install --patch 2.2.3
 ```
 
 

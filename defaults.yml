@@ -32,11 +32,14 @@ retry:
   # delay: 10
 
 conchita:
-  # timer: 60
-  # garbage_collector: true
-  # clean_failed: 3600
-  # clean_finished: 3600
-  # clean_queued: 86400
+  timer: 60
+  garbage_collector: true
+  clean_failed: 3600
+  clean_finished: 3600
+  clean_queued: 86400
+
+reporter:
+  timer: 20
 
 newrelic:
   # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
