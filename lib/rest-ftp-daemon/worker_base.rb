@@ -1,5 +1,5 @@
 module RestFtpDaemon
-  class Worker
+  class WorkerBase
     include Shared::LoggerHelper
     attr_reader :logger
     attr_reader :pool

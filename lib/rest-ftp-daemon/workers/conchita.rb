@@ -1,7 +1,7 @@
 module RestFtpDaemon
 
   # Worker used to clean up the queue deleting expired jobs
-  class ConchitaWorker < Worker
+  class ConchitaWorker < WorkerBase
 
   protected
 
