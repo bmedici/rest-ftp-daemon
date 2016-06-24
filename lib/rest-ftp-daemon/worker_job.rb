@@ -6,12 +6,17 @@ module RestFtpDaemon
     def initialize wid, pool
       # Call dady and load my conf
       super
+  protected
+
+    def worker_init
+      # Load standard config
+      config_section :transfer
 
       # Timeout and retry config
-      @timeout    = (Conf.at(:transfer, :timeout) rescue nil)
-      @retry      = (Conf.at(:retry) rescue {})
+      @timeout    = @config[:timeout] || nil
 
       # Retry config
+      # @retry             = (Conf.at(:retry) rescue {})
       @retry_on_errors   = Conf.at(:retry, :on_errors)
       @retry_max_age     = Conf.at(:retry, :max_age)
       @retry_max_runs    = Conf.at(:retry, :max_runs)
@@ -24,19 +29,16 @@ module RestFtpDaemon
         pool: pool,
         timeout: @timeout
       }
-      start
     end
 
-  protected
-
-
-    def load_config wid
-      # Do nothing
+    def worker_after
+      # Clean worker status
+      worker_jid nil
     end
 
   private
 
-    def work
+    def worker_process
       # Wait for a job to be available in the queue
       worker_status WORKER_STATUS_WAITING
       job = $queue.pop @pool
@@ -73,9 +75,6 @@ module RestFtpDaemon
         # Now, requeue this job
         $queue.requeue job
       end
-
-      # Clean worker status
-      worker_jid nil
 
     rescue StandardError => ex
       log_error "WORKER UNHANDLED EXCEPTION: #{ex.message}", ex.backtrace

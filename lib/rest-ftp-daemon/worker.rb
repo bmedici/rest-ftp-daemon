@@ -2,31 +2,41 @@ module RestFtpDaemon
   class Worker
     include Shared::LoggerHelper
     attr_reader :logger
+    attr_reader :pool
+    attr_reader :wid
 
     def initialize wid, pool = nil
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :workers
       @log_worker_status_changes = true
 
-      # Worker name
-      @pool = pool
-
       # Set thread context
+      @pool = pool
+      @wid = wid
       Thread.current.thread_variable_set :pool, pool
       Thread.current.thread_variable_set :wid, wid
       Thread.current.thread_variable_set :started_at, Time.now
       worker_status WORKER_STATUS_STARTING
 
-      # Load corker conf
-      load_config wid
-    end
+      # Ask worker to init itself, and return if there are errors
+      if worker_init_result = worker_init
+        log_error "#{self.class.name} worker_init: #{worker_init_result}", @config
+      else
+        # We're ok, let's start out loop
+        start_loop
+      end
+  end
 
   protected
 
-    def wait_according_to_config
-      # Sleep for a few seconds
-      worker_status WORKER_STATUS_WAITING
-      sleep @config[:timer] if @config.is_a? Hash
+    # Worker methods prototypes
+    def worker_init
+    end
+    def worker_after
+    end
+    def worker_process
+    end
+    def worker_config
     end
 
     def log_prefix
@@ -37,13 +47,22 @@ module RestFtpDaemon
       ]
     end
 
-    def work
-    end
+    def start_loop
+      log_info "#{self.class.name} ready", {
+        wid: @wid,
+        pool: @pool,
+        timeout: @timeout
+        }
+      log_info "#{self.class.name} starting", @config
 
-    def start
       loop do
         begin
-          work
+          # Do the hard work
+          worker_process
+
+          # Do the cleaning/sleeping stuff
+          worker_after
+
         rescue StandardError => e
           log_error "WORKER EXCEPTION: #{e.inspect}"
           sleep 1
@@ -91,7 +110,7 @@ module RestFtpDaemon
     # NewRelic instrumentation
     if Conf.newrelic_enabled?
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-      add_transaction_tracer :work,       category: :task
+      add_transaction_tracer :worker_process,    category: :task
     end
 
   end

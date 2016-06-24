@@ -11,8 +11,14 @@ module RestFtpDaemon
       log_info "#{self.class.name} starting", @config
       start
     end
+    def worker_init
+      # Load corker conf
+      config_section :conchita
 
-  protected
+      # Check that everything is OK
+      return "not starting: invalid timer" unless @config[:timer].to_i > 0
+      return false
+    end
 
     # def log_prefix
     #  [
@@ -21,8 +27,13 @@ module RestFtpDaemon
     #   nil
     #   ]
     # end
+    def worker_after
+      # Sleep for a few seconds
+      worker_status WORKER_STATUS_WAITING
+      sleep @config[:timer]
+    end
 
-    def work
+    def worker_process
       # Announce we are working
       worker_status WORKER_STATUS_CLEANING
 
@@ -37,9 +48,9 @@ module RestFtpDaemon
     rescue StandardError => e
       log_error "EXCEPTION: #{e.inspect}"
       sleep 1
-    else
-      wait_according_to_config
     end
+
+  private
 
     def maxage status
       @config["clean_#{status}"] || 0
