@@ -1,7 +1,7 @@
 module RestFtpDaemon
 
   # Worker used to process Jobs
-  class JobWorker < Shared::WorkerBase
+  class TransferWorker < Shared::WorkerBase
 
   protected
 

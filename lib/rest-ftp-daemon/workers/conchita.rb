@@ -10,7 +10,8 @@ module RestFtpDaemon
       config_section :conchita
 
       # Check that everything is OK
-      return "not starting: invalid timer" unless @config[:timer].to_i > 0
+      return "aborting: invalid configuration" unless @config
+      return "aborting: invalid timer" unless @config[:timer].to_i > 0
       return false
     end
 

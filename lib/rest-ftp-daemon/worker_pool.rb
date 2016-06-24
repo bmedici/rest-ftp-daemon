@@ -77,7 +77,7 @@ module RestFtpDaemon
       pools.each do |pool, count|
         count.times do
           wid = next_worker_id
-          @workers[wid] = create_thread wid, JobWorker, pool
+          @workers[wid] = create_thread wid, TransferWorker, pool
         end
       end
 
@@ -87,7 +87,7 @@ module RestFtpDaemon
 
     def create_thread wid, klass, pool = nil
       # Spawn thread and add it to my index
-      log_info "spawning #{klass.name} [#{wid}] [#{pool}]"
+      log_info "spawning #{klass.name} wid[#{wid}] pool[#{pool}]"
       @workers[wid] = Thread.new do
         begin
           worker = klass.new wid, pool

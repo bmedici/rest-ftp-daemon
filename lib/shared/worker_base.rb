@@ -20,7 +20,7 @@ module Shared
 
       # Ask worker to init itself, and return if there are errors
       if worker_init_result = worker_init
-        log_error "#{self.class.name} worker_init: #{worker_init_result}", @config
+        log_error "#{self.class.name} worker_init: #{worker_init_result.inspect}", @config
       else
         # We're ok, let's start out loop
         start_loop
@@ -92,21 +92,16 @@ module Shared
     end
 
     def config_section key
-      # Init
-      @config = {}
-      section = Conf[key]
-
       # Debugging
       @debug = (Conf.at :debug, key) == true
       @log_worker_status_changes = @debug
 
       # Set my configuration
-      if !section.is_a? Hash
-        return log_info "#{self.class.name}: missing #{key}/* configuration"
-      elsif section[:timer].nil?
-        return log_info "#{self.class.name}: missing #{key}/timer value"
+      if Conf[key].is_a? Hash
+        @config = Conf[key]
       else
-        @config = section
+        @config = {}
+        log_error "missing #{key}/* configuration"
       end
     end
 
