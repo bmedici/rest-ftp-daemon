@@ -3,9 +3,6 @@ module RestFtpDaemon
   # Worker used to process Jobs
   class JobWorker < Worker
 
-    def initialize wid, pool
-      # Call dady and load my conf
-      super
   protected
 
     def worker_init
@@ -22,11 +19,9 @@ module RestFtpDaemon
       @retry_max_runs    = Conf.at(:retry, :max_runs)
       @retry_delay       = Conf.at(:retry, :delay)
 
-
-      # Start main loop
-      log_info "JobWorker initializing", {
-        wid: wid,
-        pool: pool,
+      # Log that
+      log_info "JobWorker worker_init", {
+        pool: @pool,
         timeout: @timeout
       }
     end
