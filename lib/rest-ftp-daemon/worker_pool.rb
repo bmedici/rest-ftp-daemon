@@ -77,7 +77,7 @@ module RestFtpDaemon
       pools.each do |pool, count|
         count.times do
           wid = next_worker_id
-          @workers[wid] = create_thread wid, TransferWorker, pool
+          create_thread(wid, TransferWorker, pool)
         end
       end
 
@@ -91,6 +91,7 @@ module RestFtpDaemon
       @workers[wid] = Thread.new do
         begin
           worker = klass.new wid, pool
+          sleep 0.1
         rescue StandardError => ex
           log_error "#{klass.name} EXCEPTION: #{ex.message}"
         end
