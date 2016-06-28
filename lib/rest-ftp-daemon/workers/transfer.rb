@@ -8,17 +8,16 @@ module RestFtpDaemon
     def worker_init
       # Load standard config
       config_section :transfer
+      @timeout          = @config[:timeout]
 
       # Timeout and retry config
       return "invalid timeout" unless @config[:timeout].to_i > 0
-      @timeout    = @config[:timeout]
 
       # Retry config
-      # @retry             = (Conf.at(:retry) rescue {})
-      @retry_on_errors   = Conf.at(:retry, :on_errors)
-      @retry_max_age     = Conf.at(:retry, :max_age)
-      @retry_max_runs    = Conf.at(:retry, :max_runs)
-      @retry_delay       = Conf.at(:retry, :delay)
+      @retry_on_errors  = @config[:retry_on]
+      @retry_max_age    = @config[:retry_for]
+      @retry_max_runs   = @config[:retry_max]
+      @retry_delay      = @config[:retry_after]
 
       # Log that
       log_info "JobWorker worker_init", {
