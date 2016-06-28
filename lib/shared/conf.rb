@@ -107,7 +107,7 @@ module Shared
 
     def self.newrelic_enabled?
       ensure_init
-      !!self[:newrelic]
+      self[:newrelic] && self[:newrelic][:licence]
     end
 
     # Defaults generators
@@ -160,7 +160,7 @@ module Shared
 
     def self.prepare_newrelic section, logfile
       # Disable NewRelic if no config present
-      unless section.is_a?(Hash) && section[:licence]
+      unless self.newrelic_enabled?
         ENV["NEWRELIC_AGENT_ENABLED"] = "false"
         return
       end
