@@ -56,8 +56,9 @@ module Shared
       @app_libs = File.expand_path( @app_root + "/lib/#{@app_name}/" )
 
       # Add other config files
-      add_default_config
-      add_etc_config
+      #add_default_config
+      add_config generate(:config_defaults)
+      add_config generate(:config_etc)
 
       # Return something
       return @app_name
@@ -67,7 +68,7 @@ module Shared
       ensure_init
 
       # Add extra config file
-      add_extra_config args[:config]
+      add_config args[:config]
 
       # Load configuration files
       load_files
@@ -151,17 +152,10 @@ module Shared
       load files: @files, namespaces: { environment: @app_env }
     end
 
-    def self.add_default_config
-      @files << "#{@app_root}/defaults.yml" if @app_root
-    end
 
-    def self.add_etc_config
-      config_etc = self.generate(:config_etc)
-      @files << config_etc if config_etc
-    end
-
-    def self.add_extra_config path
-      @files << File.expand_path(path) if path
+    def self.add_config path
+      puts "add_config: #{path}"
+      @files << File.expand_path(path) if path && File.readable?(path)
     end
 
     def self.prepare_newrelic section, logfile
