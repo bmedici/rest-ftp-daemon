@@ -48,7 +48,7 @@ module RestFtpDaemon
       # Prepare configuration
       @config       = Conf[:transfer] || {}
       @endpoints    = Conf[:endpoints] || {}
-      @pools        = @config[:pools] || {}
+      @pools        = Conf[:pools] || {}
 
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :transfer

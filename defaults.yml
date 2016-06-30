@@ -6,6 +6,10 @@ defaults: &defaults
   # host: "myhost"
   allow_reload: false
 
+  pools:
+    default: 2
+    urgent: 1
+
   reporter:
     debug: false
     timer: 10
@@ -26,10 +30,6 @@ defaults: &defaults
     overwrite: false          # overwrite any target file with the same name
     timeout: 1800             # jobs running for longer than X seconds will be killed
     notify_after: 5           # wait at least X seconds between HTTP notifications
-
-    pools:
-      default: 2
-      urgent: 1
 
     debug_ftp: false
     debug_sftp: false

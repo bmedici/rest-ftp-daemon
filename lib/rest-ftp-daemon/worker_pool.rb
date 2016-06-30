@@ -59,7 +59,7 @@ module RestFtpDaemon
 
     def create_threads
       # Read configuration or initialize with empty hash
-      pools = Conf.at :transfer, :pools
+      pools = Conf.at[:pools]
       pools = {} unless pools.is_a? Hash
 
       # Minimum one worker on DEFAULT_POOL
