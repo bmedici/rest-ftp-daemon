@@ -7,6 +7,9 @@ module RestFtpDaemon
     attr_reader :log_prefix
 
     def initialize url, log_prefix, options = {}
+      # Options
+      @debug = !!options[:debug]
+
       # Logger
       @log_prefix = log_prefix || {}
       @logger = RestFtpDaemon::LoggerPool.instance.get :transfer
@@ -21,22 +24,7 @@ module RestFtpDaemon
 
     def connect
       # Debug mode ?
-      debug_header if @config[:debug]
-    end
-
-    def close
-      # Debug mode ?
-      puts "-------------------- SESSION CLOSING --------------------------" if @config[:debug]
-    end
-
-  private
-
-    def myname
-      self.class.to_s
-    end
-
-    def debug_header
-      # Output header to STDOUT
+      return unless @debug
       puts
       puts "-------------------- SESSION STARTING -------------------------"
       puts "class\t #{myname}"
@@ -45,6 +33,19 @@ module RestFtpDaemon
       puts "port\t #{@url.port}"
       puts "options\t #{@options.inspect}"
       puts "---------------------------------------------------------------"
+
+    end
+
+    def close
+      # Debug mode ?
+      return unless @debug
+      puts "-------------------- SESSION CLOSING --------------------------"
+    end
+
+  private
+
+    def myname
+      self.class.to_s
     end
 
   end

@@ -17,7 +17,7 @@ module RestFtpDaemon
         prepare_ftp
       end
       @ftp.passive = true
-      @ftp.debug_mode = !!options[:debug]
+      @ftp.debug_mode =  @debug
 
       # Config
       @chunk_size = DEFAULT_FTP_CHUNK.to_i * 1024
@@ -27,10 +27,8 @@ module RestFtpDaemon
     end
 
     def connect
-      # Connect init
-      super
-
       # Connect remote server
+      super
       @ftp.connect @url.host, @url.port
       @ftp.login @url.user, @url.password
     end
