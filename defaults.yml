@@ -7,12 +7,11 @@ user: rftpd
 allow_reload: false
 
 transfer:
-  # mkdir: true               # build directory tree if missing
-  # tempfile: true            # transfer to temporary file, rename after sucessful transfer
-  # overwrite: false          # overwrite any target file with the same name
   debug: false
+  mkdir: true               # build directory tree if missing
+  tempfile: true            # transfer to temporary file, rename after sucessful transfer
+  overwrite: false          # overwrite any target file with the same name
   timeout: 1800             # jobs running for longer than X seconds will be killed
-
   notify_after: 5           # wait at least X seconds between HTTP notifications
 
   pools:
@@ -57,10 +56,15 @@ newrelic:
   # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
 
 logs:
-  thin:     "/var/log/rftpd-environment-thin.log"
-  queue:    "/var/log/rftpd-environment-core.log"
-  api:      "/var/log/rftpd-environment-core.log"
-  workers:  "/var/log/rftpd-environment-work.log"
-  jobs:     "/var/log/rftpd-environment-work.log"
-  notify:   "/var/log/rftpd-environment-work.log"
-  newrelic: "/var/log/rftpd-environment-newrelic.log"
+  path:     "/var/log/"
+
+  thin:     "rftpd-environment-thin.log"
+  newrelic: "rftpd-environment-newrelic.log"
+  queue:    "rftpd-environment-core.log"
+  api:      "rftpd-environment-core.log"
+  workers:  "rftpd-environment-core.log"
+
+  transfer: "rftpd-environment-workers.log"
+  conchita: "rftpd-environment-workers.log"
+  reporter: "rftpd-environment-workers.log"
+  notify:   "rftpd-environment-workers.log"
