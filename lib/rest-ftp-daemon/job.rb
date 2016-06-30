@@ -25,7 +25,6 @@ module RestFtpDaemon
     attr_reader :pool
 
     attr_accessor :config
-    attr_accessor :endpoints
 
     FIELDS.each do |name|
       attr_reader name
@@ -45,8 +44,11 @@ module RestFtpDaemon
       @status = nil
       @runs = 0
       @wid = nil
-      @config = {}
-      @endpoints = {}
+
+      # Prepare configuration
+      @config       = Conf[:transfer] || {}
+      @endpoints    = Conf[:endpoints] || {}
+      @pools        = @config[:pools] || {}
 
       # Logger
       @logger = RestFtpDaemon::LoggerPool.instance.get :jobs
@@ -59,10 +61,8 @@ module RestFtpDaemon
         instance_variable_set "@#{name}", params[name]
       end
 
-      # Set pool
-      pools = (Conf[:pools] || {})
       # Check if pool name exists
-      if (pools.keys.include? params[:pool])
+      if (@pools.keys.include? params[:pool])
         @pool = params[:pool].to_s
       else
         @pool = DEFAULT_POOL
