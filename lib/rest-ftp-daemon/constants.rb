@@ -21,7 +21,7 @@ LOG_ROTATION             = "daily"
 LOG_FORMAT_PROGNAME     = "%d\t%s"
 
 LOG_HEADER_TIME          = "%Y-%m-%d %H:%M:%S"
-LOG_HEADER_FORMAT        = "%s \t%d\t%-8s %-15s "
+LOG_HEADER_FORMAT        = "%s \t%d\t%-8s %-10s "
 LOG_MESSAGE_TRIM         = 200
 LOG_MESSAGE_TEXT         = "%s%s"
 LOG_MESSAGE_ARRAY        = "%s     - %s"
@@ -29,9 +29,9 @@ LOG_MESSAGE_HASH         = "%s     * %-20s %s"
 
 # Constants: logger app-specific prefix
 LOG_PREFIX_WID           = 8
-LOG_PREFIX_JID           = JOB_IDENT_LEN + 3 + 2
-LOG_PREFIX_ID            = 6
-LOG_PREFIX_FORMAT        = "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s"
+LOG_PREFIX_JID           = JOB_IDENT_LEN + 4
+LOG_PREFIX_ID            = 5
+LOG_PREFIX_FORMAT        = "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s "
 
 
 # Constants: logger to be cleaned up
