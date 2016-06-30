@@ -542,7 +542,7 @@ module RestFtpDaemon
     def progress transferred, name = ""
       # What's current time ?
       now = Time.now
-      notify_after_sec = @config[:notify_after_sec]
+      notify_after = @config[:notify_after]
 
       # Update counters
       @transfer_sent += transferred
@@ -573,7 +573,7 @@ module RestFtpDaemon
 
       # Notify if requested
       notified_ago = (now.to_f - @notified_at.to_f)
-      if (!notify_after_sec.nil?) && (notified_ago > notify_after_sec)
+      if (!notify_after.nil?) && (notified_ago > notify_after)
         # Prepare and send notification
         notif_status = {
           progress: percent0,

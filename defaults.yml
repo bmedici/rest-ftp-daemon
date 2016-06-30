@@ -9,12 +9,12 @@ pools:
   default: 2
 
 transfer:
-  # notify_after_sec: 5       # wait at least X seconds between HTTP notifications
   # mkdir: true               # build directory tree if missing
   # tempfile: true            # transfer to temporary file, rename after sucessful transfer
   # overwrite: false          # overwrite any target file with the same name
   timeout: 1800             # jobs running for longer than X seconds will be killed
 
+  notify_after: 5           # wait at least X seconds between HTTP notifications
   retry_on:
     - ftp_perm_error
     - net_temp_error
