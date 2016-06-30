@@ -53,8 +53,8 @@ RSpec.configure do |config|
 
   include RequestHelpers
 
-  def call_server command, config = Pathname(__dir__).join("support/config.yml"), port = RequestHelpers::PORT
-    system(Pathname(__dir__).join("../bin/rest-ftp-daemon -e test -c #{config} #{command} -p #{port}").to_s, chdir: __dir__) || fail("Could not #{command} server")
+  def call_server command, port = RequestHelpers::PORT
+    system(Pathname(__dir__).join("../bin/rest-ftp-daemon -e test -p #{port} #{command}").to_s, chdir: __dir__) || fail("Could not #{command} server")
   end
 
   config.before :suite do
