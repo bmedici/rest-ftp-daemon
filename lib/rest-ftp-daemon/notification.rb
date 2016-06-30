@@ -1,3 +1,6 @@
+require 'api_auth'
+require 'rest_client'
+
 module RestFtpDaemon
 
   # Handles a notification POST using a dedicated thread
@@ -61,20 +64,24 @@ module RestFtpDaemon
 
     def send flags
       # Prepare query
-      headers = {
-        "Content-Type"  => "application/json",
-        "Accept"        => "application/json",
-        "User-Agent"    => "#{Conf.app_name}/v#{Conf.app_ver}"
-         }
-      data = flags.to_json
-
-      # Send notification through HTTP
       uri = URI @url
-      http = Net::HTTP.new uri.host, uri.port
+      # uri = URI(rule[:relay])
+      #http = Net::HTTP.new uri.host, uri.port
 
-      # Post notification, handle server response / multi-lines
-      log_info "sending #{data}"
-      response = http.post uri.path, data, headers
+      # Prepare request
+      request = RestClient::Request.new url: uri.to_s,
+        method: :post,
+        payload: JSON.pretty_generate(flags),
+        headers: {
+          content_type: :json,
+          accept: :json,
+          user_agent: Conf.generate(:user_agent),
+          }
+
+      # Execure request
+      log_info "posting #{flags.to_json}"
+      # response = http.post uri.path, data, headers
+      response = request.execute
 
       # Log reponse body
       response_lines = response.body.lines
