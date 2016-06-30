@@ -35,12 +35,9 @@ module RestFtpDaemon
   private
 
     def do_metrics
-      # Get common metrics
-      log_info "collecting metrics"
+      # Get common metrics and dump them to logs
       metrics = Metrics.sample
-
-      # Dump metrics to logs
-      log_debug "collected metrics", metrics
+      log_info "collected metrics", metrics
 
       # Transpose metrics to NewRelic metrics
       report_newrelic(metrics) if Conf.newrelic_enabled?
