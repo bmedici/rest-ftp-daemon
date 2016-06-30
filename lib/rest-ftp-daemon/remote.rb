@@ -9,7 +9,7 @@ module RestFtpDaemon
     def initialize url, log_prefix, options = {}
       # Logger
       @log_prefix = log_prefix || {}
-      @logger = RestFtpDaemon::LoggerPool.instance.get :jobs
+      @logger = RestFtpDaemon::LoggerPool.instance.get :transfer
 
       # Extract URL parts
       @url = url

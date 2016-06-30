@@ -51,7 +51,7 @@ module RestFtpDaemon
       @pools        = @config[:pools] || {}
 
       # Logger
-      @logger = RestFtpDaemon::LoggerPool.instance.get :jobs
+      @logger = RestFtpDaemon::LoggerPool.instance.get :transfer
 
       # Protect with a mutex
       @mutex = Mutex.new
