@@ -255,10 +255,6 @@ module RestFtpDaemon
 
   protected
 
-    def expand_path path
-      File.expand_path replace_tokens(path)
-    end
-
     def expand_url path
       URI.parse replace_tokens(path)
     end
@@ -304,7 +300,7 @@ module RestFtpDaemon
 
       # Prepare source
       raise RestFtpDaemon::JobMissingAttribute unless @source
-      @source_path = expand_path @source
+      @source_path = File.expand_path replace_tokens(@source)
       set_info :source, :path, @source_path
       set_info :source, :method, JOB_METHOD_FILE
 

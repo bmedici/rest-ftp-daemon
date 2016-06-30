@@ -53,7 +53,8 @@ module Shared
       fail ConfigMissingParameter, "gemspec: missing version" unless @app_ver
 
       # Now we know app_name, initalize app_libs
-      @app_libs = File.expand_path( @app_root + "/lib/#{@app_name}/" )
+      # @app_libs = File.expand_path( @app_root + "/lib/#{@app_name}/" )
+      @app_libs = File.expand_path("/lib/#{@app_name}/", @app_root)
 
       # Add other config files
       #add_default_config
@@ -130,11 +131,8 @@ module Shared
         parts.join('-')
 
       when :pidfile
-        File.expand_path sprintf(
-          "%s/%s.pid",
-          CONF_PIDFILE_BASE_DIR,
-          self.generate(:process_name)
-          )
+        process_name = self.generate(:process_name)
+        File.expand_path "#{process_name}.pid", CONF_PIDFILE_BASE_DIR
 
       when :config_message
         config_defaults = self.generate(:config_defaults)
