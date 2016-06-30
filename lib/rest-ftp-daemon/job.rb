@@ -575,7 +575,7 @@ module RestFtpDaemon
           progress: percent0,
           transfer_sent: @transfer_sent,
           transfer_total: @transfer_total,
-          transfer_bitrate: @current_bitrate,
+          transfer_bitrate: @current_bitrate.round(0),
           }
         client_notify :progress, status: notif_status
 
