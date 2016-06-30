@@ -137,12 +137,10 @@ module Shared
           )
 
       when :config_message
+        config_defaults = self.generate(:config_defaults)
         config_etc = self.generate(:config_etc)
-        config_sample = "#{@app_root}/#{@app_name}.sample.yml"
 
-        "A default configuration is available here: #{config_sample}.
-        You should copy it to the default location: #{config_etc}.
-        sudo cp #{config_sample} #{config_etc}"
+        "A default configuration is available (#{config_defaults}) and can be copied to the default location (#{config_etc}): \n sudo cp #{config_defaults} #{config_etc}"
 
       end
 
@@ -152,13 +150,10 @@ module Shared
   protected
 
     def self.load_files
-      puts "load_files"
       load files: @files, namespaces: { environment: @app_env }
     end
 
-
     def self.add_config path
-      puts "add_config: #{path}"
       @files << File.expand_path(path) if path && File.readable?(path)
     end
 
