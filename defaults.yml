@@ -1,70 +1,79 @@
-daemonize: true
-port: 3000
-nick: rftpd
-user: rftpd
-# group: rftpd
-# host: "myhost"
-allow_reload: false
+defaults: &defaults
 
-transfer:
-  debug: false
-  mkdir: true               # build directory tree if missing
-  tempfile: true            # transfer to temporary file, rename after sucessful transfer
-  overwrite: false          # overwrite any target file with the same name
-  timeout: 1800             # jobs running for longer than X seconds will be killed
-  notify_after: 5           # wait at least X seconds between HTTP notifications
+  daemonize: true
+  port: 3000
+  user: rftpd
+  # group: rftpd
+  # host: "myhost"
+  allow_reload: false
 
-  pools:
-    default: 2
-    urgent: 1
+  transfer:
+    debug: false
+    mkdir: true               # build directory tree if missing
+    tempfile: true            # transfer to temporary file, rename after sucessful transfer
+    overwrite: false          # overwrite any target file with the same name
+    timeout: 1800             # jobs running for longer than X seconds will be killed
+    notify_after: 5           # wait at least X seconds between HTTP notifications
 
-  debug_ftp: false
-  debug_sftp: false
+    pools:
+      default: 2
+      urgent: 1
 
-  retry_on:
-    - ftp_perm_error
-    - net_temp_error
-    - conn_reset_by_peer
-    - conn_timed_out
-    - conn_refused
-    - sftp_auth_failed
-    - conn_host_is_down
-    - conn_unreachable
-    - conn_failed
-    - conn_openssl_error
-  retry_max: 5
-  retry_for: 1800
-  retry_after: 10
+    debug_ftp: false
+    debug_sftp: false
 
-conchita:
-  debug: false
-  timer: 60
-  garbage_collector: true
-  clean_failed: 3600
-  clean_finished: 3600
-  clean_queued: 86400
+    retry_on:
+      - ftp_perm_error
+      - net_temp_error
+      - conn_reset_by_peer
+      - conn_timed_out
+      - conn_refused
+      - sftp_auth_failed
+      - conn_host_is_down
+      - conn_unreachable
+      - conn_failed
+      - conn_openssl_error
+    retry_max: 5
+    retry_for: 1800
+    retry_after: 10
 
-reporter:
-  debug: false
-  timer: 20
-  debug: false
+  conchita:
+    debug: false
+    timer: 60
+    garbage_collector: true
+    clean_failed: 3600
+    clean_finished: 3600
+    clean_queued: 86400
 
-newrelic:
-  # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  prefix: "rftpd"                         # app prefix
-  # platform: "bigbusiness"               # app platform name
-  # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
+  reporter:
+    debug: false
+    timer: 20
+    debug: false
 
-logs:
-  path:     "/var/log/"
+  newrelic:
+    # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    prefix: "rftpd"                         # app prefix
+    # platform: "bigbusiness"               # app platform name
+    # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
 
-  thin:     "rftpd-environment-thin.log"
-  newrelic: "rftpd-environment-newrelic.log"
-  queue:    "rftpd-environment-core.log"
-  api:      "rftpd-environment-core.log"
-  workers:  "rftpd-environment-core.log"
+  logs:
+    path:     "/var/log/"
 
-  transfer: "rftpd-environment-workers.log"
-  conchita: "rftpd-environment-workers.log"
-  reporter: "rftpd-environment-workers.log"
-  notify:   "rftpd-environment-workers.log"
+    thin:     "rftpd-environment-thin.log"
+    newrelic: "rftpd-environment-newrelic.log"
+    queue:    "rftpd-environment-core.log"
+    api:      "rftpd-environment-core.log"
+    workers:  "rftpd-environment-core.log"
+
+    transfer: "rftpd-environment-workers.log"
+    conchita: "rftpd-environment-workers.log"
+    reporter: "rftpd-environment-workers.log"
+    notify:   "rftpd-environment-workers.log"
+
+development:
+  <<: *defaults
+  port: 3400
+
+production:
+  <<: *defaults
+  port: 3200
