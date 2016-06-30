@@ -74,8 +74,13 @@ module Shared
       # Set Rack env
       ENV["RACK_ENV"] = @app_env.to_s
 
+      # Set up encodings
+      Encoding.default_internal = "utf-8"
+      Encoding.default_external = "utf-8"
+
       # Init New Relic
-      prepare_newrelic self[:newrelic], self.at(:logs, :newrelic)
+      newrelic_logfile = File.expand_path(Conf[:logs][:newrelic], Conf[:logs][:path])
+      prepare_newrelic self[:newrelic], newrelic_logfile
 
       # Try to access any key to force parsing of the files
       self[:dummy]
