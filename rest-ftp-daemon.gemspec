@@ -2,7 +2,7 @@
 Gem::Specification.new do |spec|
 
   # Project version
-  spec.version      = "0.300.3"
+  spec.version      = "0.302.0"
 
   # Project description
   spec.name                   = "rest-ftp-daemon"
@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage               = "http://github.com/bmedici/rest-ftp-daemon"
   spec.licenses               = ["MIT"]
   spec.date                   = Time.now.strftime("%Y-%m-%d")
+
 
   # List files and executables
   spec.files                  = `git ls-files -z`.split("\x0").reject{ |f| f == "dashboard.png"}
