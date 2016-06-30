@@ -93,14 +93,14 @@ module RestFtpDaemon
       end
 
       # Handle exceptions
-      rescue Net::OpenTimeout => ex
-        log_error "Net::OpenTimeout: #{ex.inspect}"
+      rescue Net::OpenTimeout => e
+        log_error "Net::OpenTimeout: #{e.message}"
 
-      rescue SocketError => ex
-        log_error "SocketError: #{ex.inspect}"
+      rescue SocketError => e
+        log_error "SocketError: #{e.message}"
 
-      rescue StandardError => ex
-        log_error "UNHANDLED EXCEPTION: #{ex.inspect}"
+      rescue StandardError => e
+        log_error "UNHANDLED EXCEPTION: #{e.message}", e.backtrace
     end
 
     def log_prefix
