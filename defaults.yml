@@ -4,17 +4,24 @@ nick: rftpd
 user: rftpd
 # group: rftpd
 # host: "myhost"
-
-pools:
-  default: 2
+allow_reload: false
 
 transfer:
   # mkdir: true               # build directory tree if missing
   # tempfile: true            # transfer to temporary file, rename after sucessful transfer
   # overwrite: false          # overwrite any target file with the same name
+  debug: false
   timeout: 1800             # jobs running for longer than X seconds will be killed
 
   notify_after: 5           # wait at least X seconds between HTTP notifications
+
+  pools:
+    default: 2
+    urgent: 1
+
+  debug_ftp: false
+  debug_sftp: false
+
   retry_on:
     - ftp_perm_error
     - net_temp_error
@@ -31,6 +38,7 @@ transfer:
   retry_after: 10
 
 conchita:
+  debug: false
   timer: 60
   garbage_collector: true
   clean_failed: 3600
@@ -38,20 +46,15 @@ conchita:
   clean_queued: 86400
 
 reporter:
+  debug: false
   timer: 20
+  debug: false
 
 newrelic:
   # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   prefix: "rftpd"                         # app prefix
   # platform: "bigbusiness"               # app platform name
   # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
-
-debug:
-  ftp: false
-  sftp: false
-  conchita: false
-  reporter: fakse
-  allow_reload: false
 
 logs:
   thin:     "/var/log/rftpd-environment-thin.log"
