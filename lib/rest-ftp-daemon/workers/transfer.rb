@@ -7,22 +7,16 @@ module RestFtpDaemon
 
     def worker_init
       # Load standard config
-      config_section :transfer
-      @timeout          = @config[:timeout]
+      config_section    :transfer
+      @endpoints        = Conf[:endpoints]
 
       # Timeout and retry config
       return "invalid timeout" unless @config[:timeout].to_i > 0
 
-      # Retry config
-      @retry_on_errors  = @config[:retry_on]
-      @retry_max_age    = @config[:retry_for]
-      @retry_max_runs   = @config[:retry_max]
-      @retry_delay      = @config[:retry_after]
-
       # Log that
       log_info "JobWorker worker_init", {
         pool: @pool,
-        timeout: @timeout
+        timeout: @config[:timeout]
       }
 
       return false
@@ -51,18 +45,18 @@ module RestFtpDaemon
       if !job.error
         #log_info "job succeeded"
 
-      elsif !(@retry_on_errors.is_a?(Enumerable) && @retry_on_errors.include?(job.error))
+      elsif !(@config[:retry_on].is_a?(Enumerable) && @config[:retry_on].include?(job.error))
         log_error "not retrying: error not eligible"
 
-      elsif @retry_max_age && (job.age >= @retry_max_age)
-        log_error "not retrying: max_age reached (#{@retry_max_age} s)"
+      elsif @config[:retry_for] && (job.age >= @config[:retry_for])
+        log_error "not retrying: max_age reached (#{@config[:retry_for]} s)"
 
-      elsif @retry_max_runs && (job.runs >= @retry_max_runs)
-        log_error "not retrying: max_runs reached (#{@retry_max_runs} tries)"
+      elsif @config[:retry_max] && (job.runs >= @config[:retry_max])
+        log_error "not retrying: max_runs reached (#{@config[:retry_max]} tries)"
 
       else
         # Delay cannot be negative, and will be 1s minimum
-        retry_after = [@retry_delay || DEFAULT_RETRY_DELAY, 1].max
+        retry_after = [@config[:retry_after] || DEFAULT_RETRY_AFTER, 1].max
         log_info "retrying job: waiting for #{retry_after} seconds"
 
         # Wait !
@@ -85,11 +79,11 @@ module RestFtpDaemon
       job.wid = Thread.current.thread_variable_get :wid
 
       # Prepare job config
-      job.endpoints = @config[:endpoints] rescue {})
-      job.config = @config[:config] rescue {})
+      job.endpoints = @endpoints
+      job.config = @config
 
       # Processs this job protected by a timeout
-      Timeout.timeout(@timeout, RestFtpDaemon::JobTimeout) do
+      Timeout.timeout(@config[:timeout], RestFtpDaemon::JobTimeout) do
         job.process
       end
 

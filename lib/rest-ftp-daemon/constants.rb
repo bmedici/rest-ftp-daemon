@@ -6,7 +6,7 @@ DEFAULT_POOL            = "default"
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_FTP_CHUNK       = 1024  # 1 MB
 DEFAULT_PAGE_SIZE       = 50    # 50 lines
-DEFAULT_RETRY_DELAY     = 10    # 10s
+DEFAULT_RETRY_AFTER     = 10    # 10s
 
 
 # Internal job constants

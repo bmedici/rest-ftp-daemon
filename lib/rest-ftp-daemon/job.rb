@@ -59,9 +59,6 @@ module RestFtpDaemon
         instance_variable_set "@#{name}", params[name]
       end
 
-      # Set config
-      @config = (Conf[:config] || {})
-
       # Set pool
       pools = (Conf[:pools] || {})
       # Check if pool name exists
@@ -72,7 +69,7 @@ module RestFtpDaemon
       end
 
       # Set job queue, thus reset
-      reset
+      # reset
     end
 
     def reset
