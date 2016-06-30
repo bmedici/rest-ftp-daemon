@@ -70,11 +70,14 @@ else
 end
 
 
-# Command "run" means foreground
-# if command == "run"
-#   cmd_daemonize = false
-#   command = "start"
-# end
+# Thin: override with cmdline then defaults
+Conf[:daemonize]    = cmd_daemonize  unless cmd_daemonize.nil?
+Conf[:port]         = cmd_port       unless cmd_port.nil?
+Conf[:user]         = cmd_user       unless cmd_user.nil?
+Conf[:group]        = cmd_group      unless cmd_group.nil?
+Conf[:pidfile]      = cmd_pidfile    unless cmd_pidfile.nil?
+Conf[:pidfile]      ||= Conf.generate(:pidfile)
+
 
 # Validate network configuration
 if command == "start"
@@ -85,16 +88,6 @@ if command == "start"
   end
 end
 
-
-# Thin: override with cmdline then defaults
-Conf[:daemonize]    = cmd_daemonize  unless cmd_daemonize.nil?
-Conf[:port]         = cmd_port       unless cmd_port.nil?
-Conf[:user]         = cmd_user       unless cmd_user.nil?
-Conf[:group]        = cmd_group      unless cmd_group.nil?
-Conf[:pidfile]      = cmd_pidfile    unless cmd_pidfile.nil?
-
-# FIXME
-# Conf[:pidfile]      ||= Conf.generate(:pidfile)
 
 # Thin: basic options
 thin_logfile = Conf.at(:logs, :thin)
