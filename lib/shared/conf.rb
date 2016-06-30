@@ -1,7 +1,5 @@
 # FIXME: files named with hyphens will not be found by Chamber for now
 require "chamber"
-CONF_PIDFILE_BASE_DIR = "/tmp/"
-
 
 module Shared
   class ConfigMissingParameter    < StandardError; end
@@ -12,6 +10,7 @@ module Shared
 
   class Conf
     extend Chamber
+    PIDFILE_DIR = "/tmp/"
 
     class << self
       attr_accessor :app_env
@@ -23,7 +22,6 @@ module Shared
       attr_reader   :app_spec
       attr_reader   :files
       attr_reader   :host
-
     end
 
     def self.init app_root
@@ -134,7 +132,7 @@ module Shared
 
       when :pidfile
         process_name = self.generate(:process_name)
-        File.expand_path "#{process_name}.pid", CONF_PIDFILE_BASE_DIR
+        File.expand_path "#{process_name}.pid", PIDFILE_DIR
 
       when :config_message
         config_defaults = self.generate(:config_defaults)
