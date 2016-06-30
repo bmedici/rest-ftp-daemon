@@ -29,7 +29,6 @@ begin
   Conf.init File.dirname(__FILE__) + "/../"
 
   # Parse options and check compliance
-  thinopts = {}
   parser = OptionParser.new do |opts|
     opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
     opts.on("-c", "--config CONFIGFILE")     { |value| cmd_config = File.expand_path(value)}

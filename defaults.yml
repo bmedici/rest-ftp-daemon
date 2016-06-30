@@ -6,6 +6,19 @@ defaults: &defaults
   # host: "myhost"
   allow_reload: false
 
+  reporter:
+    debug: false
+    timer: 10
+    debug: false
+
+  conchita:
+    debug: false
+    timer: 60
+    garbage_collector: true
+    clean_failed: 3600
+    clean_finished: 3600
+    clean_queued: 86400
+
   transfer:
     debug: false
     mkdir: true               # build directory tree if missing
@@ -35,19 +48,6 @@ defaults: &defaults
     retry_max: 5
     retry_for: 1800
     retry_after: 10
-
-  conchita:
-    debug: false
-    timer: 60
-    garbage_collector: true
-    clean_failed: 3600
-    clean_finished: 3600
-    clean_queued: 86400
-
-  reporter:
-    debug: false
-    timer: 20
-    debug: false
 
   newrelic:
     # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

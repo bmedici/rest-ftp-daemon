@@ -561,7 +561,7 @@ module RestFtpDaemon
         stack << (Helpers.format_bytes @transfer_total, "B")
         stack << (Helpers.format_bytes @current_bitrate.round(0), "bps")
         stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
-        log_debug "Job.progress #{stack2} \t#{name}"
+        log_debug "progress #{stack2} \t#{name}"
 
         # Remember when we last did it
         @progress_at = now

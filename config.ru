@@ -20,9 +20,6 @@ unless Conf[:adminpwd].nil?
   end
 end
 
-# NewRelic profiling
-# GC::Profiler.enable if Conf.newrelic_enabled?
-
 # Serve static assets
 use Rack::Static, urls: ["/css", "/js", "/images"], root: "#{Conf.app_libs}/static/"
 
@@ -31,10 +28,6 @@ unless Conf.app_env == "production"
   # use Rack::Reloader, 1
   # use Rack::MiniProfiler
 end
-
-# Set up encodings
-Encoding.default_internal = "utf-8"
-Encoding.default_external = "utf-8"
 
 # Launch the main daemon
 run RestFtpDaemon::API::Root
