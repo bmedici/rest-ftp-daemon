@@ -78,10 +78,6 @@ module RestFtpDaemon
       worker_status WORKER_STATUS_RUNNING, job
       job.wid = Thread.current.thread_variable_get :wid
 
-      # Prepare job config
-      job.endpoints = @endpoints
-      job.config = @config
-
       # Processs this job protected by a timeout
       Timeout.timeout(@config[:timeout], RestFtpDaemon::JobTimeout) do
         job.process
