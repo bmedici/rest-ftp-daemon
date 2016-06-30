@@ -21,12 +21,12 @@ module RestFtpDaemon
 
     def connect
       # Debug mode ?
-      debug_header if @debug
+      debug_header if @config[:debug]
     end
 
     def close
       # Debug mode ?
-      puts "-------------------- SESSION CLOSING --------------------------" if @debug
+      puts "-------------------- SESSION CLOSING --------------------------" if @config[:debug]
     end
 
   private

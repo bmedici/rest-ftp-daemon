@@ -90,7 +90,6 @@ module Shared
 
     def config_section key
       # Debugging
-      @debug = (Conf.at :debug, key) == true
       @log_worker_status_changes = @debug
 
       # Set my configuration

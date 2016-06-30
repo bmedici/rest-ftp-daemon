@@ -10,9 +10,6 @@ module RestFtpDaemon
       # Call super
       super
 
-      # Use debug ?
-      @debug = (Conf.at :debug, :ftp) == true
-
       # Create FTP object
       if options[:ftpes]
         prepare_ftpes
@@ -20,7 +17,7 @@ module RestFtpDaemon
         prepare_ftp
       end
       @ftp.passive = true
-      @ftp.debug_mode = !!@debug
+      @ftp.debug_mode = !!@config[:debug_ftp]
 
       # Config
       @chunk_size = DEFAULT_FTP_CHUNK.to_i * 1024

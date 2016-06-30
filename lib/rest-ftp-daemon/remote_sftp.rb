@@ -9,9 +9,6 @@ module RestFtpDaemon
       # Call super
       super
 
-      # Use debug ?
-      @debug = (Conf.at :debug, :sftp) == true
-
       # Announce object
       log_debug "RemoteSFTP.initialize"
     end
@@ -22,7 +19,7 @@ module RestFtpDaemon
       log_debug "RemoteSFTP.connect [#{@url.user}]@[#{@url.host}]:[#{@url.port}]"
 
       # Debug level
-      verbosity = @debug ? Logger::INFO : false
+      verbosity = @config[:debug_sftp] ? Logger::INFO : false
 
       # Connect remote server
       @sftp = Net::SFTP.start(@url.host.to_s, @url.user.to_s,
