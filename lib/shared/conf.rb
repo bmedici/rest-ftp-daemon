@@ -77,7 +77,7 @@ module Shared
       Encoding.default_external = "utf-8"
 
       # Init New Relic
-      newrelic_logfile = File.expand_path(Conf[:logs][:newrelic], Conf[:logs][:path])
+      newrelic_logfile = File.expand_path(Conf[:logs][:newrelic].to_s, Conf[:logs][:path].to_s)
       prepare_newrelic self[:newrelic], newrelic_logfile
 
       # Try to access any key to force parsing of the files

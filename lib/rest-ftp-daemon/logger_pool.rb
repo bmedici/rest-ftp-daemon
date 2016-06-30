@@ -34,7 +34,7 @@ module RestFtpDaemon
       return nil unless Conf[:logs].is_a?(Hash)
 
       # Compute logfile and check if we can write there
-      logfile = File.expand_path(Conf[:logs][pipe], Conf[:logs][:path])
+      logfile = File.expand_path(Conf[:logs][pipe].to_s, Conf[:logs][:path].to_s)
 
       # Check that we'll be able to create logfiles
       if File.exists?(logfile)
