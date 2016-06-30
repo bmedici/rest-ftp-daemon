@@ -13,11 +13,6 @@ module RestFtpDaemon
     def create pipe
       # Compute logfile or STDERR, and declare what we're doing
       filename = logfile(pipe)
-      if (filename)
-        puts "LoggerPool: logging [#{pipe}] to [#{filename}]"
-      else
-        puts "LoggerPool: logging disabled for [#{pipe}]"
-      end
 
       # Create the logger and return it
       logger = Logger.new(filename, LOG_ROTATION)   #, 10, 1024000)
@@ -26,6 +21,9 @@ module RestFtpDaemon
 
       # Finally return this logger
       logger
+
+    rescue Errno::EACCES
+      puts "LoggerPool [#{pipe}] failed: access error"
     end
 
   protected
@@ -35,15 +33,28 @@ module RestFtpDaemon
       return nil unless Conf[:logs].is_a?(Hash)
 
       # Compute logfile and check if we can write there
-      #logfile = File.join(Conf[:logs][:path].to_s, Conf[:logs][pipe].to_s)
       logfile = File.expand_path(Conf[:logs][pipe], Conf[:logs][:path])
-      # File.expand_path("#{Conf[:logs][:base]}/#{Conf[:logs][pipe]}")
-      return nil if File.exists?(logfile) && !File.writable?(logfile)
+
+      # Check that we'll be able to create logfiles
+      if File.exists?(logfile)
+        # File is there, is it writable ?
+        unless File.writable?(logfile)
+          puts "LoggerPool [#{pipe}] disabled: file not writable [#{logfile}]"
+          return nil
+        end
+      else
+        # No file here, can we create it ?
+        logdir = File.dirname(logfile)
+        unless File.writable?(logdir)
+          puts "LoggerPool [#{pipe}] disabled: directory not writable [#{logdir}]"
+          return nil
+        end
+      end
 
       # OK, return a clean file path
+      puts "LoggerPool [#{pipe}] logging to [#{logfile}]"
       return logfile
     end
-
 
   end
 end
