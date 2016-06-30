@@ -321,21 +321,21 @@ module RestFtpDaemon
         # set_info :target, :method, :ftp
         set_info :target, :method, JOB_METHOD_FTP
         #@target_method = :ftp
-        @remote = RemoteFTP.new target_uri, log_prefix
+        @remote = RemoteFTP.new target_uri, log_prefix, debug: @config[:debug_ftp]
 
       elsif (target_uri.is_a? URI::FTPES) || (target_uri.is_a? URI::FTPS)
         log_info "Job.prepare target_method FTPES"
         # set_info :target, :method, :ftpes
         set_info :target, :method, JOB_METHOD_FTPS
         # @target_method = :ftpes
-        @remote = RemoteFTP.new target_uri, log_prefix, ftpes: true
+        @remote = RemoteFTP.new target_uri, log_prefix, debug: @config[:debug_sftp], ftpes: true
 
       elsif target_uri.is_a? URI::SFTP
         log_info "Job.prepare target_method SFTP"
         # set_info :target, :method, :sftp
         set_info :target, :method, JOB_METHOD_SFTP
         # @target_method = :sftp
-        @remote = RemoteSFTP.new target_uri, log_prefix
+        @remote = RemoteSFTP.new target_uri, log_prefix, debug: @config[:debug_sftp]
 
       else
         log_info "Job.prepare unknown scheme [#{target_uri.scheme}]"
