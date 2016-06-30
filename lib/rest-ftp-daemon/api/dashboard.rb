@@ -2,6 +2,7 @@ require "haml"
 require "sys/cpu"
 require "get_process_mem"
 require "facter"
+require "grape"
 
 module RestFtpDaemon
   module API

@@ -6,11 +6,7 @@ require "haml"
 require "uri"
 require "timeout"
 require "syslog"
-require "net/http"
 require "thread"
-require "singleton"
-require "grape"
-require "grape-entity"
 require "newrelic_rpm"
 
 

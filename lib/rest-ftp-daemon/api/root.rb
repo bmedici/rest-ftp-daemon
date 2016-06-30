@@ -1,3 +1,5 @@
+require "grape"
+
 module RestFtpDaemon
   module API
     class Root < Grape::API

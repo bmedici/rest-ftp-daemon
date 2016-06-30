@@ -1,3 +1,4 @@
+require "grape"
 require "get_process_mem"
 
 module RestFtpDaemon

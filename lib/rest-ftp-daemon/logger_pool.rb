@@ -1,4 +1,5 @@
 require "logger"
+require "singleton"
 
 # Logger interface class to access logger though symbolic names
 module RestFtpDaemon
