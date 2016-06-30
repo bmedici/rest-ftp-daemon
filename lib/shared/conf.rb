@@ -53,8 +53,7 @@ module Shared
       fail ConfigMissingParameter, "gemspec: missing version" unless @app_ver
 
       # Now we know app_name, initalize app_libs
-      # @app_libs = File.expand_path( @app_root + "/lib/#{@app_name}/" )
-      @app_libs = File.expand_path("/lib/#{@app_name}/", @app_root)
+      @app_libs = File.expand_path("lib/#{@app_name}/", @app_root)
 
       # Add other config files
       #add_default_config
@@ -68,10 +67,8 @@ module Shared
     def self.prepare args = {}
       ensure_init
 
-      # Add extra config file
+      # Add extra config file and load them all
       add_config args[:config]
-
-      # Load configuration files
       reload!
 
       # Set Rack env
@@ -141,7 +138,6 @@ module Shared
         "A default configuration is available (#{config_defaults}) and can be copied to the default location (#{config_etc}): \n sudo cp #{config_defaults} #{config_etc}"
 
       end
-
     end
 
 
