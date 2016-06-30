@@ -1,5 +1,4 @@
 defaults: &defaults
-
   daemonize: true
   port: 3000
   user: rftpd
@@ -70,10 +69,17 @@ defaults: &defaults
     reporter: "rftpd-environment-workers.log"
     notify:   "rftpd-environment-workers.log"
 
+test:
+  <<: *defaults
+
 development:
   <<: *defaults
-  port: 3400
+  port: 3100
+
+pre-production:
+  <<: *defaults
+  port: 3200
 
 production:
   <<: *defaults
-  port: 3200
+  port: 3300
