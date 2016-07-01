@@ -30,7 +30,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
 
   # Runtime dependencies
-  spec.add_runtime_dependency "thin", "~> 1"
+  spec.add_runtime_dependency "json", "~> 1.8"
+  spec.add_runtime_dependency "thin", "~> 1.7"
+  spec.add_runtime_dependency "json"
   spec.add_runtime_dependency "grape"
   spec.add_runtime_dependency "grape-entity"
   spec.add_runtime_dependency "settingslogic"
@@ -38,7 +40,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rest-client", "~> 1.8"
   spec.add_runtime_dependency "api-auth"
   spec.add_runtime_dependency "haml"
-  spec.add_runtime_dependency "json"
   spec.add_runtime_dependency "net-sftp"
   spec.add_runtime_dependency "double-bag-ftps"
   spec.add_runtime_dependency "facter"
