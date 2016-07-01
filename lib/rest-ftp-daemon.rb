@@ -17,9 +17,13 @@ require_relative "shared/conf"
 require_relative "shared/worker_base"
 
 
+# HAML and Array monkey-patching
+require_relative "rest-ftp-daemon/patch_array"
+require_relative "rest-ftp-daemon/patch_haml"
+
+
 # Project's libs
 require_relative "rest-ftp-daemon/constants"
-require_relative "rest-ftp-daemon/array"
 require_relative "rest-ftp-daemon/exceptions"
 require_relative "rest-ftp-daemon/helpers"
 require_relative "rest-ftp-daemon/logger_pool"
@@ -48,5 +52,3 @@ require_relative "rest-ftp-daemon/api/config"
 require_relative "rest-ftp-daemon/api/debug"
 require_relative "rest-ftp-daemon/api/root"
 
-# Haml monkey-patching
-require_relative "rest-ftp-daemon/patch_haml"
