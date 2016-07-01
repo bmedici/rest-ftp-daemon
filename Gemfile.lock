@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.302.1)
+    rest-ftp-daemon (0.302.2)
       api-auth
       chamber
       double-bag-ftps
