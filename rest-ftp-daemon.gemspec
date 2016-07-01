@@ -32,7 +32,6 @@ Gem::Specification.new do |spec|
   # Runtime dependencies
   spec.add_runtime_dependency "json", "~> 1.8"
   spec.add_runtime_dependency "thin", "~> 1.7"
-  spec.add_runtime_dependency "json"
   spec.add_runtime_dependency "grape"
   spec.add_runtime_dependency "grape-entity"
   spec.add_runtime_dependency "settingslogic"
