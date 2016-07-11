@@ -43,25 +43,28 @@ Features
   * metrics about pools, throughtput, and queues output to NewRelic
 
 
-Project status
+Project status and quick installation
 ------------------------------------------------------------------------------------
+
+#### Stability
 
 Though it may need more robust tests, this gem has been used successfully in production for
 a while without any glitches at France Télévisions.
 
-Expected features in a short-time range :
+#### API Documentation
+
+API documentation was [maintained on Apiary](http://docs.restftpdaemon.apiary.io/) and will me migrated to swagger on day or another.
+
+#### Expected features in a short-time range
 
 * Provide swagger-style API documentation
 * Authenticate API clients
 * Allow more transfer protocols (HTTP POST etc)
 * Expose JSON status of workers on `GET /jobs/` for automated monitoring
 
+#### Installation
 
-
-Installation
-------------------------------------------------------------------------------------
-
-With Ruby (version 2.2 or higher) and rubygems properly installed, you only need :
+With Ruby (version 2.3 or higher) and rubygems properly installed, you only need :
 
 ```
 gem install rest-ftp-daemon
@@ -70,8 +73,28 @@ gem install rest-ftp-daemon
 If that is not the case yet, see section [Debian install preparation](#debian-install-preparation).
 
 
-Usage
+Project subsystems
 ------------------------------------------------------------------------------------
+
+#### Job cleanup (conchita)
+
+Job queue can be set to automatically cleanup after a certain delay. Entries are removed from the queue when they have been idle (updated_at) for more than X seconds, and in any of the following statuses:
+
+- failed (conchita.clean_failed)
+- finished (conchita.clean_finished)
+- queued, (conchita.clean_queued)
+
+Cleanup is done on a regular basis, every (conchita.timer) seconds.
+
+#### Metrics (reporter)
+
+[TODO]
+
+
+Usage and examples
+------------------------------------------------------------------------------------
+
+#### Launching rest-ftp-daemon
 
 You must provide a configuration file for the daemon to start, either explicitly using
 option `--config` or implicitly at `/etc/rest-ftp-daemon.yml`. A sample file is provided, issue
@@ -89,7 +112,7 @@ The dashboard will provide an overview at `http://localhost:3000/`
 
 If the daemon appears to exit quickly when launched, it may be caused by logfiles that can't be written (check files permissions or owner).
 
-Launcher options :
+#### Launcher options :
 
 | Param   | Short         | Default       | Description                                                 |
 |-------  |-------------- |-------------  |-----------------------------------------------------------  |
@@ -104,9 +127,6 @@ Launcher options :
 | -h      | --help        |               | Show info about the current version and available options   |
 | -v      | --version     |               | Show the current version                                    |
 
-
-Usage and examples
-------------------------------------------------------------------------------------
 
 #### Start a job to transfer a file named "file.iso" to a local FTP server
 
@@ -159,8 +179,25 @@ GET http://localhost:3000/jobs/1
 ```
 
 
-Sample configuration file
+Configuration
 ------------------------------------------------------------------------------------
+
+Most of the configuration options live in a YAML configuration file, containing two main sections:
+
+* `defaults` section should be left as-is and will be used is no other environment-specific value is provided.
+* `production` section can receive personalized settings according to your environment-specific setup and paths.
+
+Configuration priority is defined as follows (from most important to last resort):
+
+* command-line parameters
+* config file defaults section
+* config file environment section
+* application internal defaults
+
+As a starting point, `rest-ftp-daemon.yml.sample` is an example config file that can be  copied into the expected location ``/etc/rest-ftp-daemon.yml``.
+
+Default administrator credentials are `admin/admin`. Please change the password in this configuration file before starting any kind of production.
+
 
 Here is the contents of the default configuration (oeverride by passing -c local.yml at startup)
 
@@ -236,57 +273,6 @@ logs:
 ```
 
 
-API Documentation
-------------------------------------------------------------------------------------
-
-API documentation was [maintained on Apiary](http://docs.restftpdaemon.apiary.io/)
-
-
-Configuration
-------------------------------------------------------------------------------------
-
-Most of the configuration options live in a YAML configuration file, containing two main sections:
-
-* `defaults` section should be left as-is and will be used is no other environment-specific value is provided.
-* `production` section can receive personalized settings according to your environment-specific setup and paths.
-
-Configuration priority is defined as follows (from most important to last resort):
-
-* command-line parameters
-* config file defaults section
-* config file environment section
-* application internal defaults
-
-As a starting point, `rest-ftp-daemon.yml.sample` is an example config file that can be  copied into the expected location ``/etc/rest-ftp-daemon.yml``.
-
-Default administrator credentials are `admin/admin`. Please change the password in this configuration file before starting any kind of production.
-
-
-Metrics
-------------------------------------------------------------------------------------
-
-[FIXME]
-
-
-
-Logging
-------------------------------------------------------------------------------------
-
-The application will log to paths specified in the configuration file, if any.
-Separate logging paths can be provided for the Thin webserver, API related messages, and workers related messages.
-Providing empty values as paths, will simply activate logging to `STDOUT`.
-
-
-Job cleanup
-------------------------------------------------------------------------------------
-
-Job queue can be set to automatically cleanup after a certain delay. Entries are removed from the queue when they have been idle (updated_at) for more than X seconds, and in any of the following statuses:
-
-- failed (conchita.clean_failed)
-- finished (conchita.clean_finished)
-- queued, (conchita.clean_queued)
-
-Cleanup is done on a regular basis, every (conchita.timer) seconds.
 
 
 TODO for this document
