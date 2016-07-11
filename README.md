@@ -159,10 +159,87 @@ GET http://localhost:3000/jobs/1
 ```
 
 
+Sample configuration file
+------------------------------------------------------------------------------------
+
+Here is the contents of the default configuration (oeverride by passing -c local.yml at startup)
+
+```yaml
+daemonize: true
+port: 3000
+user: rftpd
+# group: rftpd
+# host: "myhost"
+allow_reload: false
+
+pools:                      # number of workers decidated to each pool value
+  default: 2
+  urgent: 1
+
+reporter:                   # the subsytem in charge of reporting metrics, mainly to NewRelic
+  debug: false
+  timer: 10                 # report every X seconds
+
+conchita:
+  debug: false
+  timer: 60                 # do the cleaning up every X seconds
+  garbage_collector: true   # force a garbage collector cleanup when cleaning things up
+  clean_failed: 3600        # after X seconds, clean jobs with status="failed"
+  clean_finished: 3600      # //              //              //       finished
+  clean_queued: 86400       # //              //              //       queued
+
+transfer:
+  debug: false
+  mkdir: true               # build directory tree if missing
+  tempfile: true            # transfer to temporary file, rename after sucessful transfer
+  overwrite: false          # overwrite any target file with the same name
+  timeout: 1800             # jobs running for longer than X seconds will be killed
+  notify_after: 5           # wait at least X seconds between HTTP notifications
+
+  debug_ftp: false
+  debug_sftp: false
+
+  retry_on:                 # job error values that will allow a retry
+    - ftp_perm_error
+    - net_temp_error
+    - conn_reset_by_peer
+    - conn_timed_out
+    - conn_refused
+    - sftp_auth_failed
+    - conn_host_is_down
+    - conn_unreachable
+    - conn_failed
+    - conn_openssl_error
+  retry_max: 5              # maximum number of retries before giving up on that job
+  retry_for: 1800           # maximum time window to retry failed jobs
+  retry_after: 10           # delay to wait before tries
+
+newrelic:
+  debug: false
+  # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  # app_name: "rftpd-bigbusiness-dev"     # app_name used for naming app (used as-is if provided)
+  prefix: "rftpd"                         # app prefix to build app_name
+  # platform: "bigbusiness"               # app platform to build app_name
+
+logs:
+  path:     "/var/log/"
+  thin:     "rftpd-environment-thin.log"
+  newrelic: "rftpd-environment-newrelic.log"
+  queue:    "rftpd-environment-core.log"
+  api:      "rftpd-environment-core.log"
+  workers:  "rftpd-environment-core.log"
+  transfer: "rftpd-environment-workers.log"
+  conchita: "rftpd-environment-workers.log"
+  reporter: "rftpd-environment-workers.log"
+  notify:   "rftpd-environment-workers.log"
+
+```
+
+
 API Documentation
 ------------------------------------------------------------------------------------
 
-API documentation is [maintained on Apiary](http://docs.restftpdaemon.apiary.io/)
+API documentation was [maintained on Apiary](http://docs.restftpdaemon.apiary.io/)
 
 
 Configuration
