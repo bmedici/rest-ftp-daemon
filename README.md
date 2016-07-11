@@ -73,10 +73,10 @@ gem install rest-ftp-daemon
 If that is not the case yet, see section [Debian install preparation](#debian-install-preparation).
 
 
-Project subsystems
+Subsystems
 ------------------------------------------------------------------------------------
 
-#### Job cleanup (conchita)
+#### Conchita: jobs queues cleanup
 
 Job queue can be set to automatically cleanup after a certain delay. Entries are removed from the queue when they have been idle (updated_at) for more than X seconds, and in any of the following statuses:
 
@@ -86,7 +86,7 @@ Job queue can be set to automatically cleanup after a certain delay. Entries are
 
 Cleanup is done on a regular basis, every (conchita.timer) seconds.
 
-#### Metrics (reporter)
+#### Reporter: metrics collection
 
 [TODO]
 
@@ -308,7 +308,9 @@ You may have to install some extra packages for the compilations to complete.
 # rbenv install --list | grep '2.2'
 ```
 
+```
 # curl -fsSL https://gist.github.com/mislav/055441129184a1512bb5.txt | rbenv install --patch 2.2.3
+```
 
 Otherwise, you way have to update ruby-build to include Ruby 2.2 definitions.
 On Debian, 2.2 is not included in Wheezy and appears in Jessie's version of the package.
