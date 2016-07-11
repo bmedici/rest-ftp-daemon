@@ -52,11 +52,11 @@ module RestFtpDaemon
           metrics_newrelic[name] = value
         end
       end
-      if @config[:debug]
-        log_debug "reported following metrics to NewRelic", metrics_newrelic
-      else
-        log_debug "reported all metrics to NewRelic"
-      end
+
+      # Don't dump metrics unless we're debugging
+      metrics_newrelic = nil unless @config[:debug]
+      newrelic_app_name = ENV["NEW_RELIC_APP_NAME"]
+      log_debug "reported metrics to NewRelic [#{newrelic_app_name}]", metrics_newrelic
     end
 
   end
