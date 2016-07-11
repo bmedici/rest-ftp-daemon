@@ -5,22 +5,21 @@ user: rftpd
 # host: "myhost"
 allow_reload: false
 
-pools:
+pools:                      # number of workers decidated to each pool value
   default: 2
   urgent: 1
 
-reporter:
+reporter:                   # the subsytem in charge of reporting metrics, mainly to NewRelic
   debug: false
-  timer: 10
-  debug: false
+  timer: 10                 # report every X seconds
 
 conchita:
   debug: false
-  timer: 60
-  garbage_collector: true
-  clean_failed: 3600
-  clean_finished: 3600
-  clean_queued: 86400
+  timer: 60                 # do the cleaning up every X seconds
+  garbage_collector: true   # force a garbage collector cleanup when cleaning things up
+  clean_failed: 3600        # after X seconds, clean jobs with status="failed"
+  clean_finished: 3600      # //              //              //       finished
+  clean_queued: 86400       # //              //              //       queued
 
 transfer:
   debug: false
@@ -33,7 +32,7 @@ transfer:
   debug_ftp: false
   debug_sftp: false
 
-  retry_on:
+  retry_on:                 # job error values that will allow a retry
     - ftp_perm_error
     - net_temp_error
     - conn_reset_by_peer
@@ -44,15 +43,16 @@ transfer:
     - conn_unreachable
     - conn_failed
     - conn_openssl_error
-  retry_max: 5
-  retry_for: 1800
-  retry_after: 10
+  retry_max: 5              # maximum number of retries before giving up on that job
+  retry_for: 1800           # maximum time window to retry failed jobs
+  retry_after: 10           # delay to wait before tries
 
 newrelic:
+  debug: false
   # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  prefix: "rftpd"                         # app prefix
-  # platform: "bigbusiness"               # app platform name
-  # app_name: "rftpd-bigbusiness-dev"     # nickname used for naming app
+  # app_name: "rftpd-bigbusiness-dev"     # app_name used for naming app (used as-is if provided)
+  prefix: "rftpd"                         # app prefix to build app_name
+  # platform: "bigbusiness"               # app platform to build app_name
 
 logs:
   path:     "/var/log/"
