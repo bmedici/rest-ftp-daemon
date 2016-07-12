@@ -55,7 +55,7 @@ newrelic:
   # platform: "bigbusiness"               # app platform to build app_name
 
 logs:
-  path:     "/var/log/"
+  path:     "/tmp/"
 
   thin:     "rftpd-environment-thin.log"
   newrelic: "rftpd-environment-newrelic.log"
