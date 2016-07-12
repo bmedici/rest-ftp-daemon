@@ -32,7 +32,7 @@ module RestFtpDaemon
       end
 
       ### CLASS CONFIG
-      helpers Shared::LoggerHelper
+      helpers BmcDaemonLib::LoggerHelper
       logger RestFtpDaemon::LoggerPool.instance.get :api
       do_not_route_head!
       do_not_route_options!

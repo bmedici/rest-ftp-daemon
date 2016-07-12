@@ -2,7 +2,7 @@ module RestFtpDaemon
 
   # Queue that stores all the Jobs waiting to be processed or fully processed
   class JobQueue
-    include Shared::LoggerHelper
+    include BmcDaemonLib::LoggerHelper
     attr_reader :logger
     attr_reader :jobs
 

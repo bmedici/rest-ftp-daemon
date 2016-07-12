@@ -1,6 +1,6 @@
 module Shared
   class WorkerBase
-    include Shared::LoggerHelper
+    include BmcDaemonLib::LoggerHelper
     attr_reader :logger
     attr_reader :pool
     attr_reader :wid

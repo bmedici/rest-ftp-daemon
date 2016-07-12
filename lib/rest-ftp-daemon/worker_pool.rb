@@ -2,7 +2,7 @@ module RestFtpDaemon
 
   # Handles a pool of Worker objects
   class WorkerPool
-    include Shared::LoggerHelper
+    include BmcDaemonLib::LoggerHelper
     attr_reader :logger
     attr_reader :wid
 

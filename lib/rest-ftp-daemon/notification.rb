@@ -5,7 +5,7 @@ module RestFtpDaemon
 
   # Handles a notification POST using a dedicated thread
   class Notification
-    include Shared::LoggerHelper
+    include BmcDaemonLib::LoggerHelper
     attr_reader :logger
 
     attr_accessor :job_id
