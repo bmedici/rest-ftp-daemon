@@ -1,6 +1,7 @@
 
 # Global libs
 require "rubygems"
+require 'bmc-daemon-lib'
 require "json"
 require "haml"
 require "uri"
@@ -13,7 +14,6 @@ require "newrelic_rpm"
 # Shared libs
 require_relative "shared/logger_formatter"
 require_relative "shared/logger_helper"
-require_relative "shared/conf"
 require_relative "shared/worker_base"
 
 

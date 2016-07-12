@@ -3,15 +3,15 @@
 # Try to load external libs, helpers and constants
 begin
   require "rubygems"
+  require 'bmc-daemon-lib'
   require "optparse"
   require "thin"
   require "socket"
   require_relative "../lib/rest-ftp-daemon/launcher"
-  require_relative "../lib/shared/conf"
 rescue LoadError => e
   raise "EXITING: some basic libs were not found (#{e.message})"
 end
-include Shared
+include BmcDaemonLib
 include RestFtpDaemon
 
 
