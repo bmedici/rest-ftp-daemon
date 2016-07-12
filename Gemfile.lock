@@ -3,7 +3,7 @@ PATH
   specs:
     rest-ftp-daemon (0.302.3)
       api-auth
-      chamber
+      bmc-daemon-lib (~> 0.1.1)
       double-bag-ftps
       facter
       get_process_mem
@@ -35,6 +35,9 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    bmc-daemon-lib (0.1.1)
+      chamber (~> 2.9)
+      newrelic_rpm
     builder (3.2.2)
     chamber (2.9.0)
       hashie (~> 3.3)
