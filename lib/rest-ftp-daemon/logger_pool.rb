@@ -18,7 +18,7 @@ module RestFtpDaemon
       # Create the logger and return it
       logger = Logger.new(filename, LOG_ROTATION)   #, 10, 1024000)
       logger.progname = pipe.to_s.downcase
-      logger.formatter = Shared::LoggerFormatter
+      logger.formatter = BmcDaemonLib::LoggerFormatter
 
       # Finally return this logger
       logger

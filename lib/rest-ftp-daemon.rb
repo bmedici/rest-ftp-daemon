@@ -12,7 +12,6 @@ require "newrelic_rpm"
 
 
 # Shared libs
-require_relative "shared/logger_formatter"
 require_relative "shared/logger_helper"
 require_relative "shared/worker_base"
 
