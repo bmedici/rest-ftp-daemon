@@ -9,6 +9,9 @@ module RestFtpDaemon
       # Load corker conf
       config_section :reporter
 
+      # Other configuration options
+      @report_newrelic = Conf.newrelic_enabled?
+
       # Check that everything is OK
       return "invalid timer" unless @config[:timer].to_i > 0
       return false
@@ -31,12 +34,16 @@ module RestFtpDaemon
   private
 
     def do_metrics
+      # What metrics to report?
+      report_newrelic = Conf.newrelic_enabled?
+
       # Get common metrics and dump them to logs
+      log_debug "begin metrics sample"
       metrics = Metrics.sample
-      log_info "collected metrics", metrics
+      log_info "collected metrics (newrelic: #{@report_newrelic})", metrics
 
       # Transpose metrics to NewRelic metrics
-      report_newrelic(metrics) if Conf.newrelic_enabled?
+      report_newrelic(metrics) if @report_newrelic
     end
 
     def report_newrelic metrics
@@ -50,9 +57,13 @@ module RestFtpDaemon
       end
 
       # Don't dump metrics unless we're debugging
-      metrics_newrelic = nil unless @config[:debug]
-      newrelic_app_name = ENV["NEW_RELIC_APP_NAME"]
-      log_debug "reported metrics to NewRelic [#{newrelic_app_name}]", metrics_newrelic
+      msg_newrelic = "reported metrics to NewRelic [#{ENV['NEW_RELIC_APP_NAME']}]"
+      if @config[:debug]
+        log_debug msg_newrelic, metrics_newrelic
+      else
+        log_info msg_newrelic
+      end
+
     end
 
   end
