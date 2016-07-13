@@ -19,7 +19,7 @@ module RestFtpDaemon
       log_debug "RemoteSFTP.connect [#{@url.user}]@[#{@url.host}]:[#{@url.port}]"
 
       # Debug level
-      verbosity =  @debug ? Logger::INFO : false
+      verbosity =  @debug ? Logger::DEBUG : false
 
       # Connect remote server
       @sftp = Net::SFTP.start(@url.host.to_s, @url.user.to_s,
