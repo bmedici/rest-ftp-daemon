@@ -10,7 +10,7 @@ $queue = RestFtpDaemon::JobQueue.new
 # Create global counters
 $counters = RestFtpDaemon::Counters.new
 
-# Initialize workers and conchita subsystem
+# Initialize workers
 $pool = RestFtpDaemon::WorkerPool.new
 
 # Rack authent
