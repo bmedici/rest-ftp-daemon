@@ -31,10 +31,6 @@ module RestFtpDaemon
 
       # Force garbage collector
       GC.start if @config["garbage_collector"]
-
-    rescue StandardError => e
-      log_error "EXCEPTION: #{e.inspect}"
-      sleep 1
     end
 
   private

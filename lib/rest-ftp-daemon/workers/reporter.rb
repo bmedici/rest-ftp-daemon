@@ -26,10 +26,6 @@ module RestFtpDaemon
 
       # Report metrics
       do_metrics
-
-    rescue StandardError => e
-      log_error "EXCEPTION: #{e.inspect}"
-      sleep 1
     end
 
   private

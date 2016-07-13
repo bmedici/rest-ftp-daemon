@@ -60,8 +60,9 @@ module Shared
           # Do the cleaning/sleeping stuff
           worker_after
 
-        rescue StandardError => e
-          log_error "WORKER EXCEPTION: #{e.inspect}"
+        rescue StandardError => ex
+          worker_status WORKER_STATUS_CRASHED
+          log_error "EXCEPTION: #{ex.message}", ex.backtrace
           sleep 1
         end
       end

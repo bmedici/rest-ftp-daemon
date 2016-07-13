@@ -66,10 +66,6 @@ module RestFtpDaemon
         # Now, requeue this job
         $queue.requeue job
       end
-
-    rescue StandardError => ex
-      log_error "WORKER UNHANDLED EXCEPTION: #{ex.message}", ex.backtrace
-      worker_status WORKER_STATUS_CRASHED
     end
 
     def work_on_job job
