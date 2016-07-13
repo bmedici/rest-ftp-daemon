@@ -54,8 +54,14 @@ module RestFtpDaemon
         super
 
         # Check that Queue and Pool are available
-        raise RestFtpDaemon::MissingQueue unless defined? $queue
-        raise RestFtpDaemon::MissingPool unless defined? $pool
+        unless $pool.is_a? RestFtpDaemon::WorkerPool
+          log_error "Metrics.sample: invalid WorkerPool"
+          raise RestFtpDaemon::MissingPool
+        end
+        unless $queue.is_a? RestFtpDaemon::JobQueue
+          log_error "Metrics.sample: invalid JobQueue"
+          raise RestFtpDaemon::MissingQueue
+        end
       end
 
 

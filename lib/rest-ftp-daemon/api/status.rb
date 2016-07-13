@@ -10,6 +10,16 @@ module RestFtpDaemon
       get "/" do
         status 200
 
+        # Check that Queue and Pool are available
+        unless true
+          log_error "Status API: invalid WorkerPool"
+          return status 501
+        end
+        unless $queue.is_a? RestFtpDaemon::JobQueue
+          log_error "Status API: invalid JobQueue"
+          return status 501
+        end
+
         # Get counters
         counters = $counters.stats.dup
 
