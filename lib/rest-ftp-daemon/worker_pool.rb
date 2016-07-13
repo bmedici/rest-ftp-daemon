@@ -8,7 +8,7 @@ module RestFtpDaemon
 
     def initialize
       # Logger
-      @logger = RestFtpDaemon::LoggerPool.instance.get :workers
+      @logger = Shared::LoggerPool.instance.get :workers
 
       # Prepare status hash and vars
       @statuses = {}

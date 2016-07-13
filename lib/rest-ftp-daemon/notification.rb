@@ -26,7 +26,7 @@ module RestFtpDaemon
       @jid = nil
 
       # Logger
-      @logger = RestFtpDaemon::LoggerPool.instance.get :notify
+      @logger = Shared::LoggerPool.instance.get :notify
 
       # Handle the notification
       log_info "initialized [#{@url}]"

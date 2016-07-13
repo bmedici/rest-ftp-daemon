@@ -20,7 +20,7 @@ module RestFtpDaemon
       @mutex = Mutex.new
 
       # Logger
-      @logger = RestFtpDaemon::LoggerPool.instance.get :queue
+      @logger = Shared::LoggerPool.instance.get :queue
 
       # Identifiers generator
       @last_id = 0

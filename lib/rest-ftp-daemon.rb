@@ -12,6 +12,7 @@ require "newrelic_rpm"
 
 
 # Shared libs
+require_relative "shared/logger_pool"
 require_relative "shared/worker_base"
 
 
@@ -24,7 +25,6 @@ require_relative "rest-ftp-daemon/patch_haml"
 require_relative "rest-ftp-daemon/constants"
 require_relative "rest-ftp-daemon/exceptions"
 require_relative "rest-ftp-daemon/helpers"
-require_relative "rest-ftp-daemon/logger_pool"
 require_relative "rest-ftp-daemon/metrics"
 require_relative "rest-ftp-daemon/paginate"
 require_relative "rest-ftp-daemon/uri"

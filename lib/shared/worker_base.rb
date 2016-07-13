@@ -7,7 +7,7 @@ module Shared
 
     def initialize wid, pool = nil
       # Logger
-      @logger = RestFtpDaemon::LoggerPool.instance.get :workers
+      @logger = Shared::LoggerPool.instance.get :workers
       @log_worker_status_changes = true
 
       # Configuration
