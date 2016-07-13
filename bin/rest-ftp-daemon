@@ -119,7 +119,7 @@ puts
 puts "Daemonize       \t #{Conf[:daemonize]}"
 puts "Network port    \t #{Conf[:port]}"
 puts "User:group      \t #{Conf[:user]}:#{Conf[:group]}" if Conf[:user] && Conf[:group]
-puts "Newrelic        \t #{Conf.newrelic_enabled? ? Conf.at(:newrelic, :licence) : 'no'}"
+puts "Newrelic        \t #{Conf.newrelic_enabled? ? Conf.at(:newrelic, :license) : 'no'}"
 puts "PID file        \t #{Conf[:pidfile]}"
 puts
 puts Conf.dump

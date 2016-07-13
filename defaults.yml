@@ -49,7 +49,7 @@ transfer:
 
 newrelic:
   debug: false
-  # licence: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  # license: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   # app_name: "rftpd-bigbusiness-dev"     # app_name used for naming app (used as-is if provided)
   prefix: "rftpd"                         # app prefix to build app_name
   # platform: "bigbusiness"               # app platform to build app_name
