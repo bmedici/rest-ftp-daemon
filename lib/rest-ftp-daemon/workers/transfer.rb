@@ -1,7 +1,7 @@
-module RestFtpDaemon
+# Worker used to process Jobs
 
-  # Worker used to process Jobs
   class TransferWorker < Shared::WorkerBase
+module RestFtpDaemon
 
   protected
 

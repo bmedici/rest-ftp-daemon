@@ -1,13 +1,13 @@
 require 'api_auth'
 require 'rest_client'
 
+# Handle a notification POST using a dedicated thread
 module RestFtpDaemon
-
-  # Handles a notification POST using a dedicated thread
   class Notification
     include BmcDaemonLib::LoggerHelper
-    attr_reader :logger
 
+    # Class options
+    attr_reader :logger
     attr_accessor :job_id
     attr_accessor :signal
     attr_accessor :error

@@ -1,7 +1,9 @@
-module RestFtpDaemon
+# Queue that stores all the Jobs waiting to be processed or fully processed
 
-  # Queue that stores all the Jobs waiting to be processed or fully processed
+module RestFtpDaemon
   class Counters
+
+    # Class options
     attr_reader :stats
 
     def initialize

@@ -1,5 +1,6 @@
 module RestFtpDaemon
   class Launcher
+    # Class constants
     LAUNCHER_PORT_TIMEOUT       = 3
     LAUNCHER_PORT_LOCALHOST     = "127.0.0.1"
 

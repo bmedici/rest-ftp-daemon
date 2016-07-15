@@ -1,8 +1,10 @@
 require "net/sftp"
 
+# Handle sFTP transfers for Remote class
 module RestFtpDaemon
-  # Handles sFTP transfers for Remote class
   class RemoteSFTP < Remote
+
+    # Class options
     attr_reader :sftp
 
     def initialize url, log_prefix, options = {}

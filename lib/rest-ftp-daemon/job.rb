@@ -1,15 +1,16 @@
+# Reprensents work to be done along with parameters to process it
 require "securerandom"
 
 module RestFtpDaemon
-
-  # Reprensents work to be done along with parameters to process it
   class Job
     include BmcDaemonLib::LoggerHelper
-    attr_reader :logger
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
+    # Class constants
     FIELDS = [:source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]
 
+    # Class options
+    attr_reader :logger
     attr_accessor :wid
 
     attr_reader :id

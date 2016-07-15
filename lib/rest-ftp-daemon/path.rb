@@ -1,5 +1,7 @@
 module RestFtpDaemon
   class Path
+
+    # Class options
     attr_accessor :name
     attr_accessor :dir
 

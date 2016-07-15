@@ -1,6 +1,3 @@
-# Misc constants
-
-
 # Configuration defaults
 DEFAULT_POOL            = "default"
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
@@ -19,13 +16,13 @@ JOB_UPDATE_INTERVAL     = 1
 # Constants: logger
 LOG_ROTATION             = "daily"
 LOG_FORMAT_PROGNAME     = "%d\t%s"
-
 LOG_HEADER_TIME          = "%Y-%m-%d %H:%M:%S"
 LOG_HEADER_FORMAT        = "%s \t%d\t%-8s %-10s "
 LOG_MESSAGE_TRIM         = 200
 LOG_MESSAGE_TEXT         = "%s%s"
 LOG_MESSAGE_ARRAY        = "%s     - %s"
 LOG_MESSAGE_HASH         = "%s     * %-20s %s"
+
 
 # Constants: logger app-specific prefix
 LOG_PREFIX_WID           = 8

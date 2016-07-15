@@ -1,9 +1,11 @@
 require "net/ftp"
 require "double_bag_ftps"
 
+# Handle FTP and FTPeS transfers for Remote class
 module RestFtpDaemon
-  # Handles FTP and FTPeS transfers for Remote class
   class RemoteFTP < Remote
+
+    # Class options
     attr_reader :ftp
 
     def initialize url, log_prefix, options = {}

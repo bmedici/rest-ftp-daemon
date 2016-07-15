@@ -1,6 +1,7 @@
 module RestFtpDaemon
   class Paginate
 
+    # Class options
     attr_writer :filter
     attr_accessor :all
 
