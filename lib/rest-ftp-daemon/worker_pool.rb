@@ -3,6 +3,9 @@ module RestFtpDaemon
   # Handles a pool of Worker objects
   class WorkerPool
     include BmcDaemonLib::LoggerHelper
+    include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+
+    # Class options
     attr_reader :logger
     attr_reader :wid
 
@@ -100,7 +103,6 @@ module RestFtpDaemon
 
     # NewRelic instrumentation
     if Conf.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
       # add_transaction_tracer :create_conchita_thread,     category: :task
       add_transaction_tracer :create_thread,       category: :task
     end

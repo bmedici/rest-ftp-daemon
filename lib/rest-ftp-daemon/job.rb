@@ -6,6 +6,7 @@ module RestFtpDaemon
   class Job
     include BmcDaemonLib::LoggerHelper
     attr_reader :logger
+    include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
     FIELDS = [:source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]
 
@@ -660,7 +661,6 @@ module RestFtpDaemon
 
     # NewRelic instrumentation
     if Conf.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
       add_transaction_tracer :prepare,        category: :task
       add_transaction_tracer :run,            category: :task
       add_transaction_tracer :client_notify,  category: :task

@@ -3,6 +3,9 @@ module RestFtpDaemon
   # Queue that stores all the Jobs waiting to be processed or fully processed
   class JobQueue
     include BmcDaemonLib::LoggerHelper
+    include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+
+    # Class options
     attr_reader :logger
     attr_reader :jobs
 
@@ -236,7 +239,6 @@ module RestFtpDaemon
 
     # NewRelic instrumentation
     if Conf.newrelic_enabled?
-      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
       add_transaction_tracer :push,                 category: :task
       add_transaction_tracer :pop,                  category: :task
       add_transaction_tracer :expire,               category: :task
