@@ -1,4 +1,3 @@
-
 # Global libs
 require "rubygems"
 require 'bmc-daemon-lib'
@@ -11,13 +10,9 @@ require "thread"
 require "newrelic_rpm"
 
 
-# Shared libs
-require_relative "shared/worker_base"
-
-
-# HAML and Array monkey-patching
-require_relative "rest-ftp-daemon/patch_array"
-require_relative "rest-ftp-daemon/patch_haml"
+# Shared libs / monkey-patching
+require_relative "shared/patch_array"
+require_relative "shared/patch_haml"
 
 
 # Project's libs
