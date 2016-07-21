@@ -1,8 +1,9 @@
+# Handles transfers for Job class
 module RestFtpDaemon
-
-  # Handles transfers for Job class
   class Remote
     include BmcDaemonLib::LoggerHelper
+
+    # Class options
     attr_reader :logger
     attr_reader :log_prefix
 
