@@ -11,7 +11,7 @@ module RestFtpDaemon
 
     def initialize
       # Logger
-      @logger = Shared::LoggerPool.instance.get :workers
+      @logger = BmcDaemonLib::LoggerPool.instance.get :workers
 
       # Prepare status hash and vars
       @statuses = {}

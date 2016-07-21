@@ -12,7 +12,6 @@ require "newrelic_rpm"
 
 
 # Shared libs
-require_relative "shared/logger_pool"
 require_relative "shared/worker_base"
 
 

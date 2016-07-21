@@ -12,7 +12,7 @@ module RestFtpDaemon
 
       # Logger
       @log_prefix = log_prefix || {}
-      @logger = Shared::LoggerPool.instance.get :transfer
+      @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
 
       # Extract URL parts
       @url = url

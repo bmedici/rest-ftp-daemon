@@ -53,7 +53,7 @@ module RestFtpDaemon
       @pools        = Conf[:pools] || {}
 
       # Logger
-      @logger = Shared::LoggerPool.instance.get :transfer
+      @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
 
       # Protect with a mutex
       @mutex = Mutex.new
