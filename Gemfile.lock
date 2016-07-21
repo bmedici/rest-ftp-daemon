@@ -3,7 +3,7 @@ PATH
   specs:
     rest-ftp-daemon (0.303.0)
       api-auth
-      bmc-daemon-lib (~> 0.1)
+      bmc-daemon-lib (~> 0.2)
       double-bag-ftps
       facter
       get_process_mem
@@ -27,6 +27,7 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    addressable (2.4.0)
     api-auth (2.0.0)
     ast (2.3.0)
     astrolabe (1.3.1)
@@ -35,9 +36,8 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    bmc-daemon-lib (0.1.2)
+    bmc-daemon-lib (0.2.0)
       chamber (~> 2.9)
-      newrelic_rpm
     builder (3.2.2)
     chamber (2.9.0)
       hashie (~> 3.3)
@@ -76,8 +76,15 @@ GEM
     haml (4.0.7)
       tilt
     hashie (3.4.4)
+    http (2.0.2)
+      addressable (~> 2.3)
+      http-cookie (~> 1.0)
+      http-form_data (~> 1.0.1)
+      http_parser.rb (~> 0.6.0)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
+    http-form_data (1.0.1)
+    http_parser.rb (0.6.0)
     i18n (0.7.0)
     ice_nine (0.11.2)
     json (1.8.3)
@@ -156,6 +163,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.6)
+  http
   pry
   rake
   rest-ftp-daemon!

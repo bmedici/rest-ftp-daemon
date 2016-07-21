@@ -28,9 +28,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rubocop", "~> 0.32.0"
   spec.add_development_dependency "pry"
+  spec.add_development_dependency "http"
 
   # Runtime dependencies
-  spec.add_runtime_dependency "bmc-daemon-lib", "~> 0.1"
+  spec.add_runtime_dependency "bmc-daemon-lib", "~> 0.2"
   spec.add_runtime_dependency "json", "~> 1.8"
   spec.add_runtime_dependency "thin", "~> 1.7"
   spec.add_runtime_dependency "grape"
