@@ -102,10 +102,7 @@ module RestFtpDaemon
     end
 
     # NewRelic instrumentation
-    if Conf.newrelic_enabled?
-      # add_transaction_tracer :create_conchita_thread,     category: :task
-      add_transaction_tracer :create_thread,       category: :task
-    end
+    add_transaction_tracer :create_thread, category: :task
 
   end
 end

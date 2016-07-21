@@ -661,12 +661,10 @@ module RestFtpDaemon
     end
 
     # NewRelic instrumentation
-    if Conf.newrelic_enabled?
-      add_transaction_tracer :prepare,        category: :task
-      add_transaction_tracer :run,            category: :task
-      add_transaction_tracer :client_notify,  category: :task
-      add_transaction_tracer :initialize,     category: :task
-    end
+    add_transaction_tracer :prepare,        category: :task
+    add_transaction_tracer :run,            category: :task
+    add_transaction_tracer :client_notify,  category: :task
+    add_transaction_tracer :initialize,     category: :task
 
   end
 end

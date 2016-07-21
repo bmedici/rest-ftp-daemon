@@ -235,16 +235,12 @@ module RestFtpDaemon
       "#{@prefix}.#{id}"
     end
 
-  private
-
     # NewRelic instrumentation
-    if Conf.newrelic_enabled?
-      add_transaction_tracer :push,                 category: :task
-      add_transaction_tracer :pop,                  category: :task
-      add_transaction_tracer :expire,               category: :task
-      add_transaction_tracer :rate_by,              category: :task
-      add_transaction_tracer :jobs_by_status,       category: :task
-    end
+    add_transaction_tracer :push,                 category: :task
+    add_transaction_tracer :pop,                  category: :task
+    add_transaction_tracer :expire,               category: :task
+    add_transaction_tracer :rate_by,              category: :task
+    add_transaction_tracer :jobs_by_status,       category: :task
 
   end
 end
