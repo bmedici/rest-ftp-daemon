@@ -1,7 +1,7 @@
 # Worker used to report metrics to various services
 
-  class ReporterWorker < Shared::WorkerBase
 module RestFtpDaemon
+  class ReporterWorker < Worker
 
   protected
 
@@ -65,6 +65,11 @@ module RestFtpDaemon
       end
 
     end
+
+    # NewRelic instrumentation
+    add_transaction_tracer :worker_init,       category: :task
+    add_transaction_tracer :worker_after,      category: :task
+    add_transaction_tracer :worker_process,    category: :task
 
   end
 end

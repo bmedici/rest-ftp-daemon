@@ -1,7 +1,7 @@
 # Worker used to clean up the queue deleting expired jobs
 
-  class ConchitaWorker < Shared::WorkerBase
 module RestFtpDaemon
+  class ConchitaWorker < Worker
 
   protected
 
@@ -38,6 +38,11 @@ module RestFtpDaemon
     def maxage status
       @config["clean_#{status}"] || 0
     end
+
+    # NewRelic instrumentation
+    add_transaction_tracer :worker_init,       category: :task
+    add_transaction_tracer :worker_after,      category: :task
+    add_transaction_tracer :worker_process,    category: :task
 
   end
 end
