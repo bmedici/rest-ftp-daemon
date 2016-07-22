@@ -21,13 +21,13 @@
     %td= job.pool
 
     %td{title: job.get_info(:source, :path)}
-      = Helpers.highlight_tokens job.source
+      = token_highlight job.source
 
     %td
       = job_method_label (job.get_info :target, :method)
 
     %td{title: job.get_info(:target, :url)}
-      = Helpers.highlight_tokens job.target
+      = token_highlight job.target
 
     %td
       = datetime_short(job.queued_at)

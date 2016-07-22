@@ -28,5 +28,15 @@ module RestFtpDaemon
       datetime.to_datetime.strftime("%d/%m %H:%M:%S")
     end
 
+    def token_to_label name, url = ''
+      clean_url = hide_credentials_from_url url
+      sprintf '<span class="token" title="%s">%s</span>', clean_url, name
+    end
+
+    def token_highlight path
+      return unless path.is_a? String
+      path.gsub(/\[([^\[]+)\]/, token_to_label('\1'))
+    end
+
   end
 end
