@@ -20,12 +20,6 @@ module RestFtpDaemon
       "#{truncated} #{units[index]}#{unit}"
     end
 
-    def self.text_or_empty text
-      return "-" if text.nil? || text.empty?
-
-      text
-    end
-
     def self.identifier len
       rand(36**len).to_s(36)
     end

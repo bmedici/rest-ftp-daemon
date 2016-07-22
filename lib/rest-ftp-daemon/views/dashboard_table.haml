@@ -57,7 +57,7 @@
 
       - else
         .error{title: job.get_info(:error, :message)}
-          = Helpers.text_or_empty(job.error)
+          = text_or_empty(job.error)
 
     %td.nobr.text-right
       = Helpers.format_bytes(job.get_info(:transfer, :total), "B")

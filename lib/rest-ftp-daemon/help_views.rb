@@ -38,5 +38,10 @@ module RestFtpDaemon
       path.gsub(/\[([^\[]+)\]/, token_to_label('\1'))
     end
 
+    def text_or_empty text
+      return "-" if text.nil? || text.empty?
+      text
+    end
+
   end
 end
