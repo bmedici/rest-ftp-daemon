@@ -70,7 +70,7 @@ module RestFtpDaemon
 
       ### ENDPOINTS
       get "/" do
-        redirect Helpers.dashboard_filter_url()
+        redirect dashboard_url()
       end
 
     end

@@ -5,13 +5,13 @@
 
 .btn-group.btn-group-xs.filters
   - klass = @filter.empty? ? "btn-info" : ""
-  %a.btn.btn-default{href: Helpers.dashboard_filter_url(), class: klass}
+  %a.btn.btn-default{href: dashboard_url(), class: klass}
     ALL (#{counts_all})
 
 .btn-group.btn-group-xs.filters
   - jobs_by_status.each do |status, count|
     - klass = (status.to_s == @filter) ? "btn-info" : ""
-    %a.btn.btn-default{href: Helpers.dashboard_filter_url(status), class: klass}
+    %a.btn.btn-default{href: dashboard_url(status), class: klass}
       #{status} (#{count})
 
 

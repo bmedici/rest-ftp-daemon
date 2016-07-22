@@ -38,6 +38,9 @@ module RestFtpDaemon
       datetime.to_datetime.strftime("%d/%m %H:%M:%S")
     end
 
+    def dashboard_url filter = ''
+      "#{MOUNT_BOARD}/#{filter}"
+    end
 
     # Dates and times: date with time generator
     # def datetime_full datetime
