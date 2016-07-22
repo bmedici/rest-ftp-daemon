@@ -11,7 +11,7 @@ through a RESTful API. Create transfer jobs by POSTing a simple JSON structure,
 be notified of their completion, watch their status on a dedicated dashboard.
 
 
-![Dashboard](dashboard.png)
+![Dashboard](dashboard-201607.png)
 
 
 Features
