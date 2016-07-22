@@ -7,9 +7,8 @@
     %tr
       %th token
       %th value
-
   %tbody
     - tokens.each do |token, value|
       %tr
         %td= Helpers.tokenize token
-        %td= Helpers.hide_credentials_from_url value
+        %td= remove_credentials value

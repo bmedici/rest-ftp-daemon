@@ -28,8 +28,13 @@ module RestFtpDaemon
       datetime.to_datetime.strftime("%d/%m %H:%M:%S")
     end
 
+    def remove_credentials path
+      return unless path.is_a? String
+      path.sub(/([a-z]+:\/\/[^\/]+):[^\/]+\@/, '\1@')
+    end
+
     def token_to_label name, url = ''
-      clean_url = hide_credentials_from_url url
+      clean_url = remove_credentials url
       sprintf '<span class="token" title="%s">%s</span>', clean_url, name
     end
 
