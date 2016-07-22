@@ -20,5 +20,13 @@ module RestFtpDaemon
       "<div class=\"transfer-method label #{klass}\">#{method.upcase}</div>"
     end
 
+    def datetime_short datetime
+      # return param.class
+      return "-" if datetime.nil?
+      return "?" unless datetime.respond_to? :to_date
+      return datetime.to_datetime.strftime("%H:%M:%S") if datetime.to_date == Time.now.to_date
+      datetime.to_datetime.strftime("%d/%m %H:%M:%S")
+    end
+
   end
 end
