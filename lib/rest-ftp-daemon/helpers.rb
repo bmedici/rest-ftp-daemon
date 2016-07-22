@@ -55,20 +55,6 @@ module RestFtpDaemon
     end
 
 
-    def self.job_method_label method
-      return if method.nil?
-      klass = case method
-      when JOB_METHOD_FILE
-        "label-primary"
-      when JOB_METHOD_FTP
-        "label-warning"
-      when JOB_METHOD_FTPS
-        "label-success"
-      else
-        "label-default"
-      end
-      "<div class=\"transfer-method label #{klass}\">#{method.upcase}</div>"
-    end
 
     def self.job_runs_style runs
       return  "label-outline"     if runs <= 0
