@@ -156,11 +156,20 @@ module RestFtpDaemon
       rescue OpenSSL::SSL::SSLError => exception
         return oops :ended, exception, "conn_openssl_error"
 
+      rescue Net::FTPReplyError => exception
+        return oops :ended, exception, "ftp_reply_error"
+
+      rescue Net::FTPTempError => exception
+        return oops :ended, exception, "ftp_temp_error"
+
       rescue Net::FTPPermError => exception
         return oops :ended, exception, "ftp_perm_error"
 
-      rescue Net::FTPTempError => exception
-        return oops :ended, exception, "net_temp_error"
+      rescue Net::FTPProtoError => exception
+        return oops :ended, exception, "ftp_proto_error"
+
+      rescue Net::FTPError => exception
+        return oops :ended, exception, "ftp_error"
 
       rescue Net::SFTP::StatusException => exception
         return oops :ended, exception, "sftp_exception"
