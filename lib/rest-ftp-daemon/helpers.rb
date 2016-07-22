@@ -29,13 +29,6 @@ module RestFtpDaemon
       "[#{item}]"
     end
 
-    def self.job_runs_style runs
-      return  "label-outline"     if runs <= 0
-      return  "label-info"  if runs == 1
-      return  "label-warning"  if runs == 2
-      return  "label-danger"   if runs > 2
-    end
-
     def self.datetime_short datetime
       # return param.class
       return "-" if datetime.nil?
