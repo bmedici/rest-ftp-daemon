@@ -1,13 +1,6 @@
 module RestFtpDaemon
   class Helpers
 
-    def self.get_censored_config
-      config = Conf.to_hash
-      config[:users] = Conf[:users].keys if Conf[:users]
-      config[:endpoints] = Conf[:endpoints].keys if Conf[:endpoints]
-      config
-    end
-
     def self.format_bytes number, unit="", decimals = 0
       return "&Oslash;" if number.nil? || number.to_f.zero?
 
