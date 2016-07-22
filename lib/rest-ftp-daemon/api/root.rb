@@ -3,6 +3,9 @@ require "grape"
 module RestFtpDaemon
   module API
     class Root < Grape::API
+      include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+
+
 
       ### LOGGING & HELPERS
       helpers do
