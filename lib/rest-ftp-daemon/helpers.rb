@@ -54,11 +54,6 @@ module RestFtpDaemon
       return "/#{m[1]}" unless m.nil?
     end
 
-    def self.extract_parent path
-      return unless path.is_a? String
-      m = path.match(/^(.*)\/([^\/]+)\/?$/)
-      return m[1], m[2] unless m.nil?
-    end
 
     def self.job_method_label method
       return if method.nil?
