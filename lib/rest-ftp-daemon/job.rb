@@ -395,6 +395,7 @@ module RestFtpDaemon
 
       # Handle each source file matched, and start a transfer
       source_processed = 0
+      targets = []
       sources.each do |source|
         # Compute target filename
         full_target = @target_path.clone
@@ -406,6 +407,10 @@ module RestFtpDaemon
 
         # Do the transfer, for each file
         remote_push source, full_target
+
+        # Add it to transferred target names
+        targets << full_target.full
+        set_info :target, :files, targets
 
         # Update counters
         set_info :source, :processed, source_processed += 1
