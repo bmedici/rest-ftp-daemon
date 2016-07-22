@@ -29,34 +29,11 @@ module RestFtpDaemon
       "[#{item}]"
     end
 
-    def self.extract_filename path
-      return unless path.is_a? String
-      # match everything that's after a slash at the end of the string
-      m = path.match(/\/?([^\/]+)$/)
-      return m[1] unless m.nil?
-    end
-
-    def self.extract_dirname path
-      return unless path.is_a? String
-      # match all the beginning of the string up to the last slash
-      m = path.match(/^(.*)\/[^\/]*$/)
-      return "/#{m[1]}" unless m.nil?
-    end
-
-
-
     def self.job_runs_style runs
       return  "label-outline"     if runs <= 0
       return  "label-info"  if runs == 1
       return  "label-warning"  if runs == 2
       return  "label-danger"   if runs > 2
-    end
-
-    # Dates and times: date with time generator
-    def self.datetime_full datetime
-      return "-"  if datetime.nil?
-
-      datetime.to_datetime.strftime("%d.%m.%Y %H:%M:%S")
     end
 
     def self.datetime_short datetime
@@ -69,6 +46,11 @@ module RestFtpDaemon
     end
 
 
+    # Dates and times: date with time generator
+    # def datetime_full datetime
+    #   return "-"  if datetime.nil?
+    #   datetime.to_datetime.strftime("%d.%m.%Y %H:%M:%S")
+    # end
 
   end
 end
