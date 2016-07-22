@@ -66,10 +66,5 @@ module RestFtpDaemon
 
     end
 
-    # NewRelic instrumentation
-    add_transaction_tracer :worker_init,       category: :task
-    add_transaction_tracer :worker_after,      category: :task
-    add_transaction_tracer :worker_process,    category: :task
-
   end
 end
