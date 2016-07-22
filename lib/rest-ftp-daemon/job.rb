@@ -322,30 +322,21 @@ module RestFtpDaemon
       set_info :target, :host, target_uri.host
       @target_path = Path.new target_uri.path, true
 
-      #puts "@target_path: #{@target_path.inspect}"
-
-      # Prepare remote
-      #FIXME: use a "case" statement on @target_url.class
-
+      # Prepare remote (case would be preferable but too hard to use,
+      # as target could be of a descendent class of URI:XXX and not matching directlry)
       if target_uri.is_a? URI::FTP
         log_info "Job.prepare target_method FTP"
-        # set_info :target, :method, :ftp
         set_info :target, :method, JOB_METHOD_FTP
-        #@target_method = :ftp
         @remote = RemoteFTP.new target_uri, log_prefix, debug: @config[:debug_ftp]
 
       elsif (target_uri.is_a? URI::FTPES) || (target_uri.is_a? URI::FTPS)
         log_info "Job.prepare target_method FTPES"
-        # set_info :target, :method, :ftpes
         set_info :target, :method, JOB_METHOD_FTPS
-        # @target_method = :ftpes
         @remote = RemoteFTP.new target_uri, log_prefix, debug: @config[:debug_ftps], ftpes: true
 
       elsif target_uri.is_a? URI::SFTP
         log_info "Job.prepare target_method SFTP"
-        # set_info :target, :method, :sftp
         set_info :target, :method, JOB_METHOD_SFTP
-        # @target_method = :sftp
         @remote = RemoteSFTP.new target_uri, log_prefix, debug: @config[:debug_sftp]
 
       else
