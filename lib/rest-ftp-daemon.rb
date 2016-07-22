@@ -18,6 +18,7 @@ require_relative "shared/patch_haml"
 # Project's libs
 require_relative "rest-ftp-daemon/constants"
 require_relative "rest-ftp-daemon/exceptions"
+require_relative "rest-ftp-daemon/help_views"
 require_relative "rest-ftp-daemon/helpers"
 require_relative "rest-ftp-daemon/metrics"
 require_relative "rest-ftp-daemon/paginate"

@@ -11,11 +11,17 @@ module RestFtpDaemon
       ### HELPERS
       helpers do
         def render name, values={}
+          # Prepare template engine
           template = File.read("#{Conf.app_libs}/views/#{name}.haml")
-
           haml_engine = Haml::Engine.new(template, encoding: Encoding::UTF_8)
-              #:encoding => Encoding::ASCII_8BIT
-          haml_engine.render(binding, values)
+
+          # Inject helpers
+          scope_object = eval("self", binding)
+          scope_object.extend RestFtpDaemon::HelpViews
+          scope_object.extend RestFtpDaemon::Helpers
+
+          # Do the rendering !
+          haml_engine.render(scope_object, values)
         end
 
         def build_dashboard filter = ''
