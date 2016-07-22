@@ -339,7 +339,7 @@ module RestFtpDaemon
         # set_info :target, :method, :ftpes
         set_info :target, :method, JOB_METHOD_FTPS
         # @target_method = :ftpes
-        @remote = RemoteFTP.new target_uri, log_prefix, debug: @config[:debug_sftp], ftpes: true
+        @remote = RemoteFTP.new target_uri, log_prefix, debug: @config[:debug_ftps], ftpes: true
 
       elsif target_uri.is_a? URI::SFTP
         log_info "Job.prepare target_method SFTP"
