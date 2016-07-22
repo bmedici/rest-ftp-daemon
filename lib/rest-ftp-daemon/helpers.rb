@@ -68,23 +68,7 @@ module RestFtpDaemon
       datetime.to_datetime.strftime("%d/%m %H:%M:%S")
     end
 
-    def self.formatted_duration duration
-    out = []
 
-    hours = duration / (60 * 60)
-    minutes = (duration / 60) % 60
-    seconds = duration % 60
-
-    out << "#{hours}h" if hours > 0
-    out << "#{minutes}mn" if (minutes > 0) || (hours > 0)
-    out << "#{seconds}s"
-
-    out.join(" ")
-    end
-
-    def self.dashboard_filter_url filter = ''
-      "#{MOUNT_BOARD}/#{filter}"
-    end
 
   end
 end

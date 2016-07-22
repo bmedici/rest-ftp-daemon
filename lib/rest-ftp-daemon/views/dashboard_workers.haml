@@ -36,6 +36,6 @@
 
           - if vars[:updated_at].is_a? Time
             - no_news_for = (Time.now - vars[:updated_at]).round(0)
-            = Helpers.formatted_duration no_news_for
+            = formatted_duration no_news_for
           - else
             = "?"
