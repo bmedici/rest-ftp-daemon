@@ -30,6 +30,7 @@ transfer:
   notify_after: 5           # wait at least X seconds between HTTP notifications
 
   debug_ftp: false
+  debug_ftps: false
   debug_sftp: false
 
   retry_on:                 # job error values that will allow a retry
