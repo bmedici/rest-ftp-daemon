@@ -5,8 +5,6 @@ module RestFtpDaemon
     class Root < Grape::API
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
-
-
       ### LOGGING & HELPERS
       helpers do
         def log_prefix
@@ -35,6 +33,7 @@ module RestFtpDaemon
       end
 
       ### CLASS CONFIG
+      helpers RestFtpDaemon::HelpApis
       helpers BmcDaemonLib::LoggerHelper
       logger BmcDaemonLib::LoggerPool.instance.get :api
       do_not_route_head!
