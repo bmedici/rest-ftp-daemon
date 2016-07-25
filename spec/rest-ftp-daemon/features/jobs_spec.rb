@@ -42,7 +42,7 @@ describe "Jobs", feature: true do
 
       it "assigns a status" do
         response = JSON.parse post(MOUNT_JOBS, json: params)
-        expect(response["status"]).to match(/^(queued|failed)$/)
+        expect(response["status"]).to match(/^(queued|failed|preparing)$/)
       end
 
       it "assigns a pool" do
