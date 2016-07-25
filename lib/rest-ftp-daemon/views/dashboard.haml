@@ -1,3 +1,5 @@
+- title = "#{Conf.host} [#{Conf.app_env}] #{Conf.app_name} #{Conf.app_ver}"
+
 -# coding: utf-8
 !!! 5
 %html{:lang => "en"}
@@ -6,7 +8,7 @@
     %link{ href:"/css/bootstrap.css" , rel: "stylesheet"}
     %link{ href:"/css/main.css" , rel: "stylesheet"}
     -# %link{ href:"http://fonts.googleapis.com/css?family=Inconsolata:400,700" , rel: "stylesheet"}
-    %title="#{Conf.host} [#{Conf.app_env}] #{Conf.app_name}"
+    %title= title
 
   %body
 

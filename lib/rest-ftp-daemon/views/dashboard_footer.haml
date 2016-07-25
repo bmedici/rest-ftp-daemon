@@ -5,19 +5,20 @@
 
   &copy;
   = "2014-#{Time.now.year}"
-  %a{href: "http://bmconseil.com"}Bruno Medici Consultant
+  %a{href: "http://bmconseil.com/?ref=rftpd-dashbaord"}Bruno Medici Consultant
 
   &middot;
-  %a{href: "http://github.com/bmedici/rest-ftp-daemon"} GitHub
+  %a{href: "http://github.com/bmedici/rest-ftp-daemon/"} GitHub
   &middot;
-  %a{href: "http://refactorcop.com/bmedici/rest-ftp-daemon"} RefactorCop
+  %a{href: "http://refactorcop.com/bmedici/rest-ftp-daemon/"} RefactorCop
 
 
 .footer-indicators.pull-right
 
-  .btn-group.btn-group-sm
-    .btn.btn-default.btn-info Host
-    .btn.btn-default= Conf.host
+  - if Conf.host
+    .btn-group.btn-group-sm
+      .btn.btn-default.btn-info Host
+      .btn.btn-default= Conf.host
 
   .btn-group.btn-group-sm
     .btn.btn-default.btn-info IP
