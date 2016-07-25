@@ -22,15 +22,6 @@ module RestFtpDaemon
       "[#{item}]"
     end
 
-    def self.datetime_short datetime
-      # return param.class
-      return "-" if datetime.nil?
-      return "?" unless datetime.respond_to? :to_date
-      return datetime.to_datetime.strftime("%H:%M:%S") if datetime.to_date == Time.now.to_date
-
-      datetime.to_datetime.strftime("%d/%m %H:%M:%S")
-    end
-
     def dashboard_url filter = ''
       "#{MOUNT_BOARD}/#{filter}"
     end
