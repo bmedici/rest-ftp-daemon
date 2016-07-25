@@ -1,18 +1,19 @@
 -# coding: utf-8
 
-- groups = {pool: "pool", targethost: "target host"}
+- groups = {pool: "pool", targethost: "target"}
 
 
 %h2 Transfer rates
 
-%table.table.table-striped.table-hover.table-condensed
 
-  - groups.each do |group_by, group_title|
-    - rates_by_status = $queue.rate_by(group_by)
+- groups.each do |group_by, group_title|
+  - rates_by_status = $queue.rate_by(group_by)
+
+  %table.table.table-striped.table-hover.table-condensed
 
     %thead
       %tr
-        %th= group_title
+        %th= "by #{group_title}"
         %th.text-right bitrate
 
     %tbody
@@ -24,9 +25,4 @@
           %td
             = group
           %td.text-right
-            = Helpers.format_bytes(rate, "bps")
-
-    %thead
-      %tr
-        %td{colspan: 3}
-          %br
+            = format_bytes(rate, "bps")

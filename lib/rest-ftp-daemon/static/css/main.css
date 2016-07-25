@@ -20,6 +20,8 @@ body, table tr td, .fixed {
   margin: 0 2px;
   border: 1px solid silver;
   border-radius: 0.25em;
+  cursor: pointer;
+  cursor: hand;
   }
 
 .label {
@@ -59,7 +61,6 @@ a.class {
   text-decoration: underline;
   }
 
-
 .debug {
   border: 1px solid orange;
 }
@@ -71,6 +72,15 @@ a.class {
 #box-jobs .error {
   min-width: 100px;
 }
+
+
+
+/* Table styles
+-------------------------------------------------- */
+
+table.table th {
+  text-transform: uppercase;
+  }
 
 
 /* Header styles

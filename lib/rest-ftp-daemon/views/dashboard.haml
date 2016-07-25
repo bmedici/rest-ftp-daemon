@@ -16,19 +16,22 @@
 
     .container-fluid
       .row
-        #box-jobs.col-md-12
+        .col-md-12
           = render :dashboard_jobs
 
       .row
-        #box-tokens.col-md-6
-          = render :dashboard_tokens, {tokens: Conf[:endpoints] || {}}
-
-        #box-workers.col-md-3
+        .col-md-5
           = render :dashboard_workers
 
-        #box-rates.col-md-3
+        .col-md-4
           = render :dashboard_counters
+
+        .col-md-3
           = render :dashboard_rates
+
+      .row
+        .col-md-12
+          = render :dashboard_tokens
 
     .footer
       .container-fluid
