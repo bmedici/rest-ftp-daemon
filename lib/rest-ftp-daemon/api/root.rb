@@ -6,6 +6,7 @@ module RestFtpDaemon
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
       ### LOGGING & HELPERS
+      helpers RestFtpDaemon::CommonHelpers
       helpers RestFtpDaemon::ApiHelpers
       helpers BmcDaemonLib::LoggerHelper
 
