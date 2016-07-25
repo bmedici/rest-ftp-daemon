@@ -17,8 +17,8 @@ module RestFtpDaemon
 
           # Inject helpers
           scope_object = eval("self", binding)
-          scope_object.extend RestFtpDaemon::HelpViews
-          scope_object.extend RestFtpDaemon::Helpers
+          scope_object.extend RestFtpDaemon::ViewsHelper
+          scope_object.extend RestFtpDaemon::CommonHelpers
 
           # Do the rendering !
           haml_engine.render(scope_object, values)

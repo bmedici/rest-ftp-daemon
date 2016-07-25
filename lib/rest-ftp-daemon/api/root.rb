@@ -6,6 +6,9 @@ module RestFtpDaemon
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
       ### LOGGING & HELPERS
+      helpers RestFtpDaemon::ApiHelpers
+      helpers BmcDaemonLib::LoggerHelper
+
       helpers do
         def log_prefix
           ['API', nil, nil]
@@ -14,18 +17,6 @@ module RestFtpDaemon
         def logger
           Root.logger
         end
-
-        def log_request
-          if env.nil?
-            puts "HTTP_ENV_IS_NIL: #{env.inspect}"
-            return
-          end
-
-          request_method = env['REQUEST_METHOD']
-          request_path   = env['REQUEST_PATH']
-          request_uri    = env['REQUEST_URI']
-          log_info       "HTTP #{request_method} #{request_uri}", params
-        end
       end
 
       before do
@@ -33,8 +24,6 @@ module RestFtpDaemon
       end
 
       ### CLASS CONFIG
-      helpers RestFtpDaemon::HelpApis
-      helpers BmcDaemonLib::LoggerHelper
       logger BmcDaemonLib::LoggerPool.instance.get :api
       do_not_route_head!
       do_not_route_options!

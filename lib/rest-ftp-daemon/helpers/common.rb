@@ -1,5 +1,5 @@
 module RestFtpDaemon
-  module Helpers
+  module CommonHelpers
 
     def format_bytes number, unit="", decimals = 0
       return "&Oslash;" if number.nil? || number.to_f.zero?

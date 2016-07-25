@@ -5,7 +5,7 @@ module RestFtpDaemon
   class Job
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    include Helpers
+    include CommonHelpers
 
     # Class constants
     FIELDS = [:source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]

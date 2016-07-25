@@ -1,5 +1,5 @@
 module RestFtpDaemon
-  module HelpViews
+  module ViewsHelper
 
     def dashboard_job_url job
       "#{MOUNT_JOBS}/#{job.id}" if job.respond_to? :id

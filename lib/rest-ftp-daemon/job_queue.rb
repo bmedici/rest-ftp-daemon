@@ -4,7 +4,7 @@ module RestFtpDaemon
   class JobQueue
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-    include Helpers
+    include CommonHelpers
 
     # Class options
     attr_reader :logger

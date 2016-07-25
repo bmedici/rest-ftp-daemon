@@ -5,7 +5,7 @@ require 'rest_client'
 module RestFtpDaemon
   class Notification
     include BmcDaemonLib::LoggerHelper
-    include Helpers
+    include CommonHelpers
 
     # Class options
     attr_reader :logger
@@ -87,7 +87,7 @@ module RestFtpDaemon
       # Log reponse body
       response_lines = response.body.lines
       if response_lines.size > 1
-        human_size = Helpers.format_bytes(response.body.bytesize, "B")
+        human_size = format_bytes(response.body.bytesize, "B")
         log_info "received [#{response.code}] #{human_size} (#{response_lines.size} lines)", response_lines
       else
         log_info "received [#{response.code}] #{response.body.strip}"

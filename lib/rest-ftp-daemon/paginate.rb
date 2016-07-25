@@ -1,6 +1,6 @@
 module RestFtpDaemon
   class Paginate
-    include Helpers
+    include CommonHelpers
 
     # Class options
     attr_writer :filter
