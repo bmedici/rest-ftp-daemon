@@ -4,6 +4,7 @@ module RestFtpDaemon
   class JobQueue
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+    include Helpers
 
     # Class options
     attr_reader :logger
@@ -27,7 +28,7 @@ module RestFtpDaemon
 
       # Identifiers generator
       @last_id = 0
-      @prefix = Helpers.identifier JOB_IDENT_LEN
+      @prefix = identifier JOB_IDENT_LEN
       log_info "JobQueue initialized (prefix: #{@prefix})"
     end
 

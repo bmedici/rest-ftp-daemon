@@ -1,7 +1,7 @@
 module RestFtpDaemon
-  class Helpers
+  module Helpers
 
-    def self.format_bytes number, unit="", decimals = 0
+    def format_bytes number, unit="", decimals = 0
       return "&Oslash;" if number.nil? || number.to_f.zero?
 
       units = ["", "k", "M", "G", "T", "P" ]
@@ -13,11 +13,11 @@ module RestFtpDaemon
       "#{truncated} #{units[index]}#{unit}"
     end
 
-    def self.identifier len
+    def identifier len
       rand(36**len).to_s(36)
     end
 
-    def self.tokenize item
+    def tokenize item
       return unless item.is_a? String
       "[#{item}]"
     end

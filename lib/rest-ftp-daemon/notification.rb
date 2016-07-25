@@ -5,6 +5,7 @@ require 'rest_client'
 module RestFtpDaemon
   class Notification
     include BmcDaemonLib::LoggerHelper
+    include Helpers
 
     # Class options
     attr_reader :logger
@@ -22,7 +23,7 @@ module RestFtpDaemon
       @params = params
 
       # Generate a random key
-      @id = Helpers.identifier(NOTIFY_IDENTIFIER_LEN)
+      @id = identifier(NOTIFY_IDENTIFIER_LEN)
       @jid = nil
 
       # Logger

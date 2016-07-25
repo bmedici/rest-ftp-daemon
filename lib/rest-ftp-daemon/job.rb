@@ -5,6 +5,7 @@ module RestFtpDaemon
   class Job
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+    include Helpers
 
     # Class constants
     FIELDS = [:source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]
@@ -286,7 +287,7 @@ module RestFtpDaemon
       newpath = path.clone
       vectors.each do |from, to|
         next if to.to_s.blank?
-        newpath.gsub! Helpers.tokenize(from), to
+        newpath.gsub! tokenize(from), to
       end
 
       # Ensure result does not contain tokens after replacement
@@ -507,7 +508,7 @@ module RestFtpDaemon
       # Compute temp target name
       tempname = nil
       if @tempfile
-        tempname = "#{target.name}.temp-#{Helpers.identifier(JOB_TEMPFILE_LEN)}"
+        tempname = "#{target.name}.temp-#{identifier(JOB_TEMPFILE_LEN)}"
         log_debug "Job.remote_push tempname [#{tempname}]"
       end
 
@@ -515,7 +516,7 @@ module RestFtpDaemon
       if @overwrite
         @remote.remove! target
       elsif size = @remote.present?(target)
-        log_debug "Job.remote_push existing (#{Helpers.format_bytes size, 'B'})"
+        log_debug "Job.remote_push existing (#{format_bytes size, 'B'})"
         raise RestFtpDaemon::JobTargetFileExists
       end
 
@@ -564,9 +565,9 @@ module RestFtpDaemon
         # Log progress
         stack = []
         stack << "#{percent0} %"
-        stack << (Helpers.format_bytes @transfer_sent, "B")
-        stack << (Helpers.format_bytes @transfer_total, "B")
-        stack << (Helpers.format_bytes @current_bitrate.round(0), "bps")
+        stack << (format_bytes @transfer_sent, "B")
+        stack << (format_bytes @transfer_total, "B")
+        stack << (format_bytes @current_bitrate.round(0), "bps")
         stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
         log_debug "progress #{stack2} \t#{name}"
 

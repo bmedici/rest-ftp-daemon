@@ -53,19 +53,19 @@
       - if job.status == JOB_STATUS_UPLOADING
         .progress
           .progress-bar{style:"width: #{progress}%;"}
-            = Helpers.format_bytes(job.get_info(:transfer, :sent), "B")
+            = format_bytes(job.get_info(:transfer, :sent), "B")
 
       - else
         .error{title: job.get_info(:error, :message)}
           = text_or_empty(job.error)
 
     %td.nobr.text-right
-      = Helpers.format_bytes(job.get_info(:transfer, :total), "B")
+      = format_bytes(job.get_info(:transfer, :total), "B")
 
     %td.nobr.text-right{title: "time: #{job.exectime} s"}
       - if bitrate
         %span.push-bitrate
-          = Helpers.format_bytes(bitrate, "bps")
+          = format_bytes(bitrate, "bps")
 
     %td
       - unless job.wid.nil?
