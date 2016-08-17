@@ -17,7 +17,7 @@ body, table tr td, .fixed {
   display: inline-block;
   background-color: #fefefe;
   padding: 0 3px;
-  margin: 0 2px;
+  margin: 0 1px;
   border: 1px solid silver;
   border-radius: 0.25em;
   cursor: pointer;
