@@ -58,6 +58,8 @@ newrelic:
 logs:
   path:     "/tmp/"
 
+  default:  "rftpd-environment.log"
+
   thin:     "rftpd-environment-thin.log"
   newrelic: "rftpd-environment-newrelic.log"
   queue:    "rftpd-environment-core.log"
