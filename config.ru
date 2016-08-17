@@ -12,6 +12,7 @@ $counters = RestFtpDaemon::Counters.new
 
 # Initialize workers
 $pool = RestFtpDaemon::WorkerPool.new
+$pool.start!
 
 # Rack authent
 unless Conf[:adminpwd].nil?

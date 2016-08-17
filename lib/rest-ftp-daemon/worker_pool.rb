@@ -20,10 +20,36 @@ module RestFtpDaemon
 
       # Identifiers generator
       @seqno = 0
-
-      # Create worker threads
-      create_threads
     end
+
+    def start!
+      # Read configuration or initialize with empty hash
+      pools = Conf.at[:pools]
+      pools = {} unless pools.is_a? Hash
+
+      # Minimum one worker on DEFAULT_POOL
+      if !(pools.is_a? Hash)
+        log_error "create_threads: one JobWorker is the minimum (#{pools.inspect}"
+      end
+      log_info "WorkerPool creating all workers with #{pools.to_hash.inspect}"
+
+      # Start ConchitaWorker and ReporterWorker
+      create_thread ConchitaWorker, :conchita
+      create_thread ReporterWorker, :reporter
+
+      # Start JobWorkers threads, ensure we have at least one worker in default pool
+      pools[DEFAULT_POOL] ||= 1
+      pools.each do |pool, count|
+        count.times do
+          my_wid = next_wid()
+          create_thread TransferWorker, my_wid, pool
+        end
+      end
+
+    rescue StandardError => ex
+      log_error "EXCEPTION: #{ex.message}", ex.backtrace
+    end
+
 
     def worker_variables
       vars = {}
@@ -58,34 +84,6 @@ module RestFtpDaemon
         @seqno += 1
       end
       "w#{@seqno}"
-    end
-
-    def create_threads
-      # Read configuration or initialize with empty hash
-      pools = Conf.at[:pools]
-      pools = {} unless pools.is_a? Hash
-
-      # Minimum one worker on DEFAULT_POOL
-      if !(pools.is_a? Hash)
-        log_error "create_threads: one JobWorker is the minimum (#{pools.inspect}"
-      end
-      log_info "WorkerPool creating all workers with #{pools.to_hash.inspect}"
-
-      # Start ConchitaWorker and ReporterWorker
-      create_thread ConchitaWorker, :conchita
-      create_thread ReporterWorker, :reporter
-
-      # Start JobWorkers threads, ensure we have at least one worker in default pool
-      pools[DEFAULT_POOL] ||= 1
-      pools.each do |pool, count|
-        count.times do
-          my_wid = next_wid()
-          create_thread TransferWorker, my_wid, pool
-        end
-      end
-
-    rescue StandardError => ex
-      log_error "EXCEPTION: #{ex.message}", ex.backtrace
     end
 
     def create_thread klass, wid, pool = nil
