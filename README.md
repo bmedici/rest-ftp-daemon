@@ -293,7 +293,7 @@ TODO for this document
 Debian install preparation
 ------------------------------------------------------------------------------------
 
-This project is available as a rubygem, requires Ruby 2.2 and RubyGems installed.
+This project is available as a rubygem, requires Ruby 2.2.2 and RubyGems installed.
 
 #### Using rbenv and ruby-build
 
@@ -330,8 +330,8 @@ Use a dedicated user for the daemon, switch to this user and enable rbenv
 Install the right ruby version and activate it
 
 ```
-# rbenv install 2.2.0
-# rbenv local 2.2.0
+# rbenv install 2.2.2
+# rbenv local 2.2.2
 # rbenv rehash
 ```
 
