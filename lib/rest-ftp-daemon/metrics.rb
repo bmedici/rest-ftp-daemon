@@ -3,8 +3,8 @@ module RestFtpDaemon
 
     def self.sample
       # Check validity of globals
-      return log_error "Metrics.sample: invalid WorkerPool" unless $pool.is_a? RestFtpDaemon::WorkerPool
-      return log_error "Metrics.sample: invalid JobQueue"  unless $queue.is_a? RestFtpDaemon::JobQueue
+      return unless $pool.is_a? RestFtpDaemon::WorkerPool
+      return unless $queue.is_a? RestFtpDaemon::JobQueue
 
       # Prepare external deps
       mem = GetProcessMem.new
