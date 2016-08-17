@@ -19,7 +19,7 @@ module RestFtpDaemon
       @mutex = Mutex.new
 
       # Identifiers generator
-      @last_worker_id = 0
+      @seqno = 0
 
       # Create worker threads
       create_threads
@@ -53,11 +53,11 @@ module RestFtpDaemon
       vars
     end
 
-    def next_worker_id
+    def next_wid
       @mutex.synchronize do
-        @last_worker_id += 1
+        @seqno += 1
       end
-      "w#{@last_worker_id}"
+      "w#{@seqno}"
     end
 
     def create_threads
@@ -72,15 +72,15 @@ module RestFtpDaemon
       log_info "WorkerPool creating all workers with #{pools.to_hash.inspect}"
 
       # Start ConchitaWorker and ReporterWorker
-      create_thread :conchita, ConchitaWorker
-      create_thread :reporter, ReporterWorker
+      create_thread ConchitaWorker, :conchita
+      create_thread ReporterWorker, :reporter
 
       # Start JobWorkers threads, ensure we have at least one worker in default pool
       pools[DEFAULT_POOL] ||= 1
       pools.each do |pool, count|
         count.times do
-          wid = next_worker_id
-          create_thread(wid, TransferWorker, pool)
+          my_wid = next_wid()
+          create_thread TransferWorker, my_wid, pool
         end
       end
 
@@ -88,7 +88,8 @@ module RestFtpDaemon
       log_error "EXCEPTION: #{ex.message}", ex.backtrace
     end
 
-    def create_thread wid, klass, pool = nil
+    def create_thread klass, wid, pool = nil
+    # def create_thread wid, klass, pool = nil
       # Spawn thread and add it to my index
       log_info "spawning #{klass.name} wid[#{wid}] pool[#{pool}]"
       @workers[wid] = Thread.new do
