@@ -13,9 +13,9 @@ module RestFtpDaemon
       @report_newrelic = Conf.newrelic_enabled?
 
       # Check that everything is OK
-      return "invalid timer" unless @config[:timer].to_i > 0
-      return "invalid WorkerPool" unless $pool.is_a? RestFtpDaemon::WorkerPool
-      return "invalid JobQueue"   unless $queue.is_a? RestFtpDaemon::JobQueue
+      return "invalid timer"      unless @config[:timer].to_i > 0
+      # return "invalid WorkerPool" unless $pool.is_a? RestFtpDaemon::WorkerPool
+      # return "invalid JobQueue"   unless $queue.is_a? RestFtpDaemon::JobQueue
       return false
     end
 
@@ -42,6 +42,12 @@ module RestFtpDaemon
       # Get common metrics and dump them to logs
       log_debug "begin metrics sample"
       metrics = Metrics.sample
+
+      # Skip following if no valid metrics collected
+      unless metrics.is_a? Hash
+        log_error "unable to collect metrics"
+        return
+      end
       log_info "collected metrics (newrelic: #{@report_newrelic})", metrics
 
       # Transpose metrics to NewRelic metrics
@@ -49,6 +55,7 @@ module RestFtpDaemon
     end
 
     def report_newrelic metrics
+
       metrics_newrelic = {}
       metrics.each do |group, pairs|
         pairs.each do |key, value|
