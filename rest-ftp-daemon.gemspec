@@ -2,7 +2,7 @@
 Gem::Specification.new do |spec|
 
   # Project version
-  spec.version                    = "0.306.3"
+  spec.version                    = "0.306.4"
 
   # Project description
   spec.name                       = "rest-ftp-daemon"

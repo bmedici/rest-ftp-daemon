@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.306.3)
+    rest-ftp-daemon (0.306.4)
       activesupport (~> 4.2)
       api-auth
       bmc-daemon-lib (~> 0.3.1)
