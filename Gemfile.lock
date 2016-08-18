@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.306.1)
+    rest-ftp-daemon (0.306.2)
       api-auth
       bmc-daemon-lib (~> 0.3.1)
       double-bag-ftps
@@ -171,4 +171,4 @@ DEPENDENCIES
   rubocop (~> 0.32.0)
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
