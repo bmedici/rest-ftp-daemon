@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "bmc-daemon-lib", "~> 0.3.1"
   spec.add_runtime_dependency     "json", "~> 1.8"
   spec.add_runtime_dependency     "thin", "~> 1.7"
+  spec.add_runtime_dependency     "activesupport", "~> 4.2"
   spec.add_runtime_dependency     "grape"
   spec.add_runtime_dependency     "grape-entity"
   spec.add_runtime_dependency     "settingslogic"

@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     rest-ftp-daemon (0.306.2)
+      activesupport (~> 4.2)
       api-auth
       bmc-daemon-lib (~> 0.3.1)
       double-bag-ftps
@@ -22,10 +23,11 @@ GEM
   remote: http://rubygems.org/
   specs:
     CFPropertyList (2.2.8)
-    activesupport (5.0.0.1)
-      concurrent-ruby (~> 1.0, >= 1.0.2)
+    activesupport (4.2.7.1)
       i18n (~> 0.7)
+      json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.4.0)
     api-auth (2.0.1)
@@ -45,7 +47,6 @@ GEM
     coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    concurrent-ruby (1.0.2)
     daemons (1.2.4)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
