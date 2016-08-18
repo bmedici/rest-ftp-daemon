@@ -24,6 +24,13 @@ body, table tr td, .fixed {
   cursor: hand;
   }
 
+.feature-enabled img {
+  }
+.feature-disabled img {
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  }
+
 .label {
   font-size: 1em;
   padding: 2px 2px 2px 2px;
