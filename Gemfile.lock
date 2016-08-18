@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.306.2)
+    rest-ftp-daemon (0.306.3)
       activesupport (~> 4.2)
       api-auth
       bmc-daemon-lib (~> 0.3.1)
@@ -38,7 +38,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    bmc-daemon-lib (0.3.1)
+    bmc-daemon-lib (0.3.2)
       chamber (~> 2.9)
     builder (3.2.2)
     chamber (2.9.0)
