@@ -1,7 +1,10 @@
-module RestFtpDaemon
+require 'singleton'
 
-  # Handles a pool of Worker objects
+# Handles a pool of Worker objects
+module RestFtpDaemon
   class WorkerPool
+    include Singleton
+
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
@@ -22,7 +25,7 @@ module RestFtpDaemon
       @seqno = 0
     end
 
-    def start!
+    def start_em_all
       # Read configuration or initialize with empty hash
       pools = Conf.at[:pools]
       pools = {} unless pools.is_a? Hash
@@ -49,7 +52,6 @@ module RestFtpDaemon
     rescue StandardError => ex
       log_error "EXCEPTION: #{ex.message}", ex.backtrace
     end
-
 
     def worker_variables
       vars = {}

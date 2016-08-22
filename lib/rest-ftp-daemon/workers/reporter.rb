@@ -14,7 +14,6 @@ module RestFtpDaemon
 
       # Check that everything is OK
       return "invalid timer"      unless @config[:timer].to_i > 0
-      # return "invalid WorkerPool" unless $pool.is_a? RestFtpDaemon::WorkerPool
       return false
     end
 

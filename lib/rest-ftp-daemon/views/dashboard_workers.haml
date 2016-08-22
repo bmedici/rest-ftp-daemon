@@ -1,8 +1,5 @@
 -# coding: utf-8
-
-- unless $pool.is_a? RestFtpDaemon::WorkerPool
-  - log_error "Dashboard: invalid WorkerPool"
-- variables = $pool.worker_variables
+- variables = RestFtpDaemon::WorkerPool.instance.worker_variables
 
 %h2 Worker status
 
@@ -19,7 +16,7 @@
   %tbody
     - variables.each do |wid, vars|
       - status = vars[:status]
-      - alive = $pool.worker_alive? wid
+      - alive = RestFtpDaemon::WorkerPool.instance.worker_alive? wid
       - trclass = WORKER_STYLES[status]
 
       - unless alive

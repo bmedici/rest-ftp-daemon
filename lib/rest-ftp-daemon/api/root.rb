@@ -44,14 +44,7 @@ module RestFtpDaemon
       ### INITIALIZATION
       def initialize
         super
-
-        # Check that Queue and Pool are available
-        unless $pool.is_a? RestFtpDaemon::WorkerPool
-          log_error "Metrics.sample: invalid WorkerPool"
-          raise RestFtpDaemon::MissingPool
-        end
       end
-
 
       ### ENDPOINTS
       get "/" do

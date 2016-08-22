@@ -2,9 +2,6 @@ module RestFtpDaemon
   class Metrics
 
     def self.sample
-      # Check validity of globals
-      return unless $pool.is_a? RestFtpDaemon::WorkerPool
-
       # Prepare external deps
       mem = GetProcessMem.new
 
@@ -30,13 +27,7 @@ module RestFtpDaemon
         # Init
         counts = {}
 
-        # Check validity of globals
-        unless $pool.is_a? RestFtpDaemon::WorkerPool
-          log_error "Metrics.workers_count_by_status: invalid WorkerPool"
-          return counts
-        end
-
-        $pool.worker_variables.group_by do |wid, vars|
+        RestFtpDaemon::WorkerPool.instance.worker_variables.group_by do |wid, vars|
           vars[:status]
         end.each do |status, workers|
           counts[status] = workers.count

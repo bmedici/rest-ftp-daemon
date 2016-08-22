@@ -4,9 +4,6 @@ load_path_libs = File.expand_path "lib", File.dirname(__FILE__)
 $LOAD_PATH.unshift(load_path_libs) unless $LOAD_PATH.include?(load_path_libs)
 require "rest-ftp-daemon"
 
-# Initialize workers
-$pool = RestFtpDaemon::WorkerPool.new
-$pool.start!
 
 # Rack authent
 unless Conf[:adminpwd].nil?
@@ -25,4 +22,8 @@ unless Conf.app_env == "production"
 end
 
 # Launch the main daemon
+# Initialize workers
+RestFtpDaemon::WorkerPool.instance.start_em_all
+
+
 run RestFtpDaemon::API::Root
