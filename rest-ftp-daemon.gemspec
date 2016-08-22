@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
                                       reject{ |f| f =~ /^dashboard.+\.png/ }
   spec.executables                = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths              = ["lib"]
-  spec.required_ruby_version      = ">= 2.2"
+  spec.required_ruby_version      = ">= 2.2.2"
 
 
   # Development dependencies
@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "http"
 
   # Runtime dependencies
-  spec.add_runtime_dependency     "bmc-daemon-lib", "~> 0.3.1"
+  spec.add_runtime_dependency     "bmc-daemon-lib", "~> 0.3.3"
   spec.add_runtime_dependency     "json", "~> 1.8"
   spec.add_runtime_dependency     "thin", "~> 1.7"
   spec.add_runtime_dependency     "activesupport", "~> 4.2"
