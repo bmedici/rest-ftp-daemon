@@ -4,7 +4,6 @@ module RestFtpDaemon
     def self.sample
       # Check validity of globals
       return unless $pool.is_a? RestFtpDaemon::WorkerPool
-      return unless $queue.is_a? RestFtpDaemon::JobQueue
 
       # Prepare external deps
       mem = GetProcessMem.new
@@ -16,10 +15,10 @@ module RestFtpDaemon
           memory:           mem.bytes.to_i,
           threads:          Thread.list.count,
           },
-        jobs_by_status:     $queue.jobs_by_status,
-        rate_by_pool:       $queue.rate_by(:pool),
-        rate_by_targethost: $queue.rate_by(:targethost),
-        queued_by_pool:     $queue.queued_by_pool,
+        jobs_by_status:     RestFtpDaemon::JobQueue.instance.jobs_by_status,
+        rate_by_pool:       RestFtpDaemon::JobQueue.instance.rate_by(:pool),
+        rate_by_targethost: RestFtpDaemon::JobQueue.instance.rate_by(:targethost),
+        queued_by_pool:     RestFtpDaemon::JobQueue.instance.queued_by_pool,
         workers_by_status:  self.workers_count_by_status,
         }
     end

@@ -4,9 +4,6 @@ load_path_libs = File.expand_path "lib", File.dirname(__FILE__)
 $LOAD_PATH.unshift(load_path_libs) unless $LOAD_PATH.include?(load_path_libs)
 require "rest-ftp-daemon"
 
-# Create global queue
-$queue = RestFtpDaemon::JobQueue.new
-
 # Initialize workers
 $pool = RestFtpDaemon::WorkerPool.new
 $pool.start!

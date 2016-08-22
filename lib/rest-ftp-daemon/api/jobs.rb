@@ -13,7 +13,7 @@ module RestFtpDaemon
         begin
           # Get job to display
           raise RestFtpDaemon::JobNotFound if params[:id].nil?
-          job = $queue.find_by_id(params[:id]) || $queue.find_by_id(params[:id], true)
+          job = RestFtpDaemon::JobQueue.instance.find_by_id(params[:id]) || RestFtpDaemon::JobQueue.instance.find_by_id(params[:id], true)
           raise RestFtpDaemon::JobNotFound if job.nil?
 
         rescue RestFtpDaemon::JobNotFound => exception
@@ -35,7 +35,7 @@ module RestFtpDaemon
       get "/" do
         begin
           # Get jobs to display
-          jobs = $queue.jobs
+          jobs = RestFtpDaemon::JobQueue.instance.jobs
 
         rescue StandardError => exception
           log_error "Exception: #{exception.message}"
@@ -73,11 +73,11 @@ module RestFtpDaemon
         # log_debug params.to_json
         begin
           # Create a new job
-          job_id = $queue.generate_id
+          job_id = RestFtpDaemon::JobQueue.instance.generate_id
           job = Job.new(job_id, params)
 
           # And push it to the queue
-          $queue.push job
+          RestFtpDaemon::JobQueue.instance.push job
 
           # Increment a counter
           RestFtpDaemon::Counters.instance.increment :jobs, :received

@@ -33,11 +33,11 @@ module RestFtpDaemon
           @page = params["page"].to_i
 
           # Get jobs for this view, order jobs by their weights
-          jobs_with_status = $queue.jobs_with_status(filter).reverse
+          jobs_with_status = RestFtpDaemon::JobQueue.instance.jobs_with_status(filter).reverse
 
           # Provide queue only if no filtering set
           if filter.empty?
-            @jobs_queued = $queue.jobs_queued
+            @jobs_queued = RestFtpDaemon::JobQueue.instance.jobs_queued
           else
             @jobs_queued = []
           end

@@ -50,10 +50,6 @@ module RestFtpDaemon
           log_error "Metrics.sample: invalid WorkerPool"
           raise RestFtpDaemon::MissingPool
         end
-        unless $queue.is_a? RestFtpDaemon::JobQueue
-          log_error "Metrics.sample: invalid JobQueue"
-          raise RestFtpDaemon::MissingQueue
-        end
       end
 
 

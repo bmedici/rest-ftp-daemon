@@ -1,3 +1,5 @@
+require 'singleton'
+
 module RestFtpDaemon
 
   # Queue that stores all the Jobs waiting to be processed or fully processed
@@ -5,29 +7,30 @@ module RestFtpDaemon
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include CommonHelpers
+    include Singleton
 
     # Class options
     attr_reader :logger
     attr_reader :jobs
 
     def initialize
-      # Instance variables
+      # Initialize values
       @queues = {}
       @waitings = {}
       @jobs = []
+      @last_id = 0
 
       @queues.taint          # enable tainted communication
       @waitings.taint
       taint
 
-      # Global mutex for the queue
+      # Create mutex
       @mutex = Mutex.new
 
       # Logger
       @logger = BmcDaemonLib::LoggerPool.instance.get :queue
 
       # Identifiers generator
-      @last_id = 0
       @prefix = identifier JOB_IDENT_LEN
       log_info "JobQueue initialized (prefix: #{@prefix})"
     end

@@ -412,7 +412,7 @@ Style/FormatString:
 
 # Built-in global variables are allowed by default.
 Style/GlobalVars:
-  AllowedVariables: ["$queue", "$pool"]
+  AllowedVariables: ["$pool"]
 
 # `MinBodyLength` defines the number of lines of the a body of an if / unless
 # needs to have to trigger this cop

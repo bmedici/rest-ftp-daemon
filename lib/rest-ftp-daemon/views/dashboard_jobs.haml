@@ -1,6 +1,6 @@
 -# coding: utf-8
-- jobs_by_status = $queue.jobs_by_status
-- counts_all = $queue.jobs_count
+- jobs_by_status = RestFtpDaemon::JobQueue.instance.jobs_by_status
+- counts_all = RestFtpDaemon::JobQueue.instance.jobs_count
 - jobs = @paginate.subset
 
 .btn-group.btn-group-xs.filters

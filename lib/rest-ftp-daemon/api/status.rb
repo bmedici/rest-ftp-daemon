@@ -15,10 +15,6 @@ module RestFtpDaemon
           log_error "Status API: invalid WorkerPool"
           return status 501
         end
-        unless $queue.is_a? RestFtpDaemon::JobQueue
-          log_error "Status API: invalid JobQueue"
-          return status 501
-        end
 
         # Get counters
         counters = RestFtpDaemon::Counters.instance.stats
@@ -38,7 +34,7 @@ module RestFtpDaemon
           version: Conf.app_ver,
           started: Conf.app_started,
           hostname: `hostname`.to_s.chomp,
-          jobs_count: $queue.jobs_count,
+          jobs_count: RestFtpDaemon::JobQueue.instance.jobs_count,
 
           metrics: Metrics.sample,
 

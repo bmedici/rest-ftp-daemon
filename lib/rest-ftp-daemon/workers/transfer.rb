@@ -32,7 +32,7 @@ module RestFtpDaemon
     def worker_process
       # Wait for a job to be available in the queue
       worker_status WORKER_STATUS_WAITING
-      job = $queue.pop @pool
+      job = RestFtpDaemon::JobQueue.instance.pop @pool
 
       # Work on this job
       work_on_job(job)
@@ -64,7 +64,7 @@ module RestFtpDaemon
         log_info "retrying job: requeued after delay"
 
         # Now, requeue this job
-        $queue.requeue job
+        RestFtpDaemon::JobQueue.instance.requeue job
       end
     end
 

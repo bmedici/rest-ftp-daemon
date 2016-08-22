@@ -14,7 +14,7 @@ module RestFtpDaemon
         def debug_encodings
           # Encodings
           encodings = {}
-          jobs = $queue.jobs
+          jobs = RestFtpDaemon::JobQueue.instance.jobs
 
           jobs.each do |job|
             # here = out[job.id] = {}

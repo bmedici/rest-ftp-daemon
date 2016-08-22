@@ -7,7 +7,7 @@
 
 
 - groups.each do |group_by, group_title|
-  - rates_by_status = $queue.rate_by(group_by)
+  - rates_by_status = RestFtpDaemon::JobQueue.instance.rate_by(group_by)
 
   %table.table.table-striped.table-hover.table-condensed
 
