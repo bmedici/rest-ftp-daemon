@@ -4,7 +4,6 @@ load_path_libs = File.expand_path "lib", File.dirname(__FILE__)
 $LOAD_PATH.unshift(load_path_libs) unless $LOAD_PATH.include?(load_path_libs)
 require "rest-ftp-daemon"
 
-
 # Rack authent
 unless Conf[:adminpwd].nil?
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
@@ -21,9 +20,9 @@ unless Conf.app_env == "production"
   # use Rack::MiniProfiler
 end
 
-# Launch the main daemon
+
 # Initialize workers
 RestFtpDaemon::WorkerPool.instance.start_em_all
 
-
+# Launch the API
 run RestFtpDaemon::API::Root

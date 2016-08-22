@@ -1,14 +1,17 @@
-# Queue that stores all the Jobs waiting to be processed or fully processed
 require 'singleton'
 
+# Queue that stores all the Jobs waiting to be processed or fully processed
 module RestFtpDaemon
   class Counters
     include Singleton
 
     def initialize
       # Initialize values
-      @mutex = Mutex.new
       @stats = {}
+
+      # Create mutex
+      @mutex = Mutex.new
+
 
       set :system, :started_at, Time.now
     end

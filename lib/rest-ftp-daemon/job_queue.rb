@@ -1,13 +1,13 @@
 require 'singleton'
 
+# Queue that stores all the Jobs waiting to be processed or fully processed
 module RestFtpDaemon
-
-  # Queue that stores all the Jobs waiting to be processed or fully processed
   class JobQueue
+    include Singleton
+
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include CommonHelpers
-    include Singleton
 
     # Class options
     attr_reader :logger
