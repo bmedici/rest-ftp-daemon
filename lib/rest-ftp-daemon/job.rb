@@ -491,8 +491,8 @@ module RestFtpDaemon
       @finished_at = Time.now
 
       # Update counters
-      $counters.increment :jobs, :finished
-      $counters.add :data, :transferred, @transfer_total
+      RestFtpDaemon::Counters.instance.increment :jobs, :finished
+      RestFtpDaemon::Counters.instance.add :data, :transferred, @transfer_total
     end
 
     def remote_push source, target
@@ -658,8 +658,8 @@ module RestFtpDaemon
       end
 
       # Increment counter for this error
-      $counters.increment :errors, error
-      $counters.increment :jobs, :failed
+      RestFtpDaemon::Counters.instance.increment :errors, error
+      RestFtpDaemon::Counters.instance.increment :jobs, :failed
 
       # Prepare notification if signal given
       return unless event

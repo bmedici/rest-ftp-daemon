@@ -11,7 +11,7 @@
 
   %tbody
 
-    - $counters.stats.each do |group, values|
+    - RestFtpDaemon::Counters.instance.stats.each do |group, values|
       - if values.is_a? Enumerable
         - values.each do |name, value|
           %tr

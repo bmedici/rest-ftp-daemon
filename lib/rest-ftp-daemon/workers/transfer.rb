@@ -83,7 +83,7 @@ module RestFtpDaemon
       worker_status WORKER_STATUS_FINISHED, job
 
       # Increment total processed jobs count
-      $counters.increment :jobs, :processed
+      RestFtpDaemon::Counters.instance.increment :jobs, :processed
 
     rescue RestFtpDaemon::JobTimeout => ex
       log_error "JOB TIMED OUT", ex.backtrace

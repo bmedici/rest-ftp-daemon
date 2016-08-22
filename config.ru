@@ -7,9 +7,6 @@ require "rest-ftp-daemon"
 # Create global queue
 $queue = RestFtpDaemon::JobQueue.new
 
-# Create global counters
-$counters = RestFtpDaemon::Counters.new
-
 # Initialize workers
 $pool = RestFtpDaemon::WorkerPool.new
 $pool.start!

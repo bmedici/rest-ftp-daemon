@@ -21,7 +21,7 @@ module RestFtpDaemon
         end
 
         # Get counters
-        counters = $counters.stats.dup
+        counters = RestFtpDaemon::Counters.instance.stats
 
         # Amend counters with legacy attributes
         if counters[:jobs].is_a? Hash
