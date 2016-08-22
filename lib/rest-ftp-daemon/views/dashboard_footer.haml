@@ -1,7 +1,5 @@
 -# coding: utf-8
 - info_procs = (Facter.value :processorcount).to_i
-- newrelic_class = Conf.newrelic_enabled? ? 'feature-enabled' : 'feature-disabled'
-- reload_class = Conf[:allow_reload] ? 'feature-enabled' : 'feature-disabled'
 
 .footer-signature.pull-left
 
@@ -11,6 +9,7 @@
 
   &middot;
   %a{href: "http://github.com/bmedici/rest-ftp-daemon/"} GitHub
+
   &middot;
   %a{href: "http://refactorcop.com/bmedici/rest-ftp-daemon/"} RefactorCop
 
@@ -18,16 +17,13 @@
 .footer-indicators.pull-right
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-info Features
-    .btn.btn-default{class: newrelic_class}
-      %img{src: "/images/logo_newrelic.png", height: "14", title: "NewRelic"}
-    .btn.btn-default{class: reload_class}
-      %img{src: "/images/reload.png", height: "14", title: "Configuration is hot-reloadable (allow_relaod)"}
+    .btn.btn-default.btn-info Host
+    .btn.btn-default= Conf.host
 
-  - if Conf.host
-    .btn-group.btn-group-sm
-      .btn.btn-default.btn-info Host
-      .btn.btn-default= Conf.host
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-info Features
+    = dashboard_feature :reload, Conf[:allow_reload], "configuration is hot-reloadable",  "configuration changes at startup only"
+    = dashboard_feature :newrelic, Conf.newrelic_enabled?, "active (license found)",  "disabled"
 
   .btn-group.btn-group-sm
     .btn.btn-default.btn-info IP

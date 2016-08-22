@@ -1,6 +1,24 @@
 module RestFtpDaemon
   module ViewsHelper
 
+    def dashboard_feature name, enabled, message_on = "enabled", message_of = "disabled"
+      # Build classes
+      class_status = enabled ? 'enabled' : 'disabled'
+      classes = "btn btn-default feature-#{class_status}"
+
+      # Build title
+      title_status = enabled ? message_on : message_of
+      title = "#{name}: #{title_status}"
+
+      return sprintf(
+        '<div class="%s" title="%s"><img src="/images/feature_%s.png" height="14" alt="%s"/></div>',
+        classes,
+        title,
+        name,
+        title
+        )
+    end
+
     def dashboard_job_url job
       "#{MOUNT_JOBS}/#{job.id}" if job.respond_to? :id
     end
