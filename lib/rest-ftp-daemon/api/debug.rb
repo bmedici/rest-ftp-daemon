@@ -37,13 +37,25 @@ module RestFtpDaemon
       end
 
       ### ENDPOINTS
-      desc "debug"
+      desc "debug"#, hidden: true
       get "/" do
-       # Build response
-       return  {
+
+        # Extract routes
+        routes = []
+        RestFtpDaemon::API::Root.routes.each do |route|
+          routes << {
+            url: "#{route.options[:method]} #{route.pattern.path}",
+            vars: route.instance_variables,
+            options: route.options
+            }
+
+        end
+
+        # Build response
+        return  {
           metrics: debug_metrics,
-          routes: RestFtpDaemon::API::Root.routes,
           encodings: debug_encodings,
+          routes: routes,
           }
       end
 
