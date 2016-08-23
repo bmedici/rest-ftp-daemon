@@ -12,14 +12,17 @@ unless Conf[:adminpwd].nil?
 end
 
 # Serve static assets
-use Rack::Static, urls: ["/css", "/js", "/images"], root: "#{Conf.app_libs}/static/"
+use Rack::Static, root: "#{Conf.app_libs}/static/", urls: [
+  "/css",
+  "/js",
+  "/images",
+  ]
 
 # Rack reloader and mini-profiler
 unless Conf.app_env == "production"
   # use Rack::Reloader, 1
   # use Rack::MiniProfiler
 end
-
 
 # Initialize workers
 RestFtpDaemon::WorkerPool.instance.start_em_all
