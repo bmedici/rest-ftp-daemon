@@ -6,6 +6,9 @@ DEFAULT_PAGE_SIZE       = 50    # 50 lines
 DEFAULT_RETRY_AFTER     = 10    # 10s
 
 
+TARGET_BLANK             = "_blank"
+
+
 # Internal job constants
 JOB_RANDOM_LEN          = 8
 JOB_IDENT_LEN           = 4
