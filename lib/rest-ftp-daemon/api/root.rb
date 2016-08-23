@@ -34,11 +34,13 @@ module RestFtpDaemon
 
 
       ### MOUNTPOINTS
-      mount RestFtpDaemon::API::Status => MOUNT_STATUS
-      mount RestFtpDaemon::API::Jobs => MOUNT_JOBS
-      mount RestFtpDaemon::API::Dashbaord => MOUNT_BOARD
-      mount RestFtpDaemon::API::Config => MOUNT_CONFIG
-      mount RestFtpDaemon::API::Debug => MOUNT_DEBUG
+      mount RestFtpDaemon::API::Status      => MOUNT_STATUS
+      mount RestFtpDaemon::API::Jobs        => MOUNT_JOBS
+      mount RestFtpDaemon::API::Dashbaord   => MOUNT_BOARD
+      mount RestFtpDaemon::API::Config      => MOUNT_CONFIG
+      mount RestFtpDaemon::API::Debug       => MOUNT_DEBUG
+
+
 
 
       ### INITIALIZATION
