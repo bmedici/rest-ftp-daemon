@@ -16,6 +16,8 @@ use Rack::Static, root: "#{Conf.app_libs}/static/", urls: [
   "/css",
   "/js",
   "/images",
+  "/swagger/",
+  MOUNT_SWAGGER,
   ]
 
 # Rack reloader and mini-profiler

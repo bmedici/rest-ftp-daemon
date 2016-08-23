@@ -86,6 +86,7 @@ WORKER_STYLES = {
 
 
 # API mountpoints
+MOUNT_SWAGGER            = "/swagger.html"
 MOUNT_JOBS               = "/jobs"
 MOUNT_BOARD              = "/board"
 MOUNT_STATUS             = "/status"
