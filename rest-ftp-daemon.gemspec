@@ -39,6 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "activesupport", "~> 4.2"
   spec.add_runtime_dependency     "grape"
   spec.add_runtime_dependency     "grape-entity"
+  spec.add_runtime_dependency     "grape-swagger"
   spec.add_runtime_dependency     "settingslogic"
   spec.add_runtime_dependency     "rest-client", "~> 1.8"
   spec.add_runtime_dependency     "api-auth"

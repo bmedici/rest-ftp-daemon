@@ -1,4 +1,5 @@
 require "grape"
+require 'grape-swagger'
 
 module RestFtpDaemon
   module API
@@ -40,6 +41,20 @@ module RestFtpDaemon
       mount RestFtpDaemon::API::Config      => MOUNT_CONFIG
       mount RestFtpDaemon::API::Debug       => MOUNT_DEBUG
 
+
+      ### API Documentation
+      add_swagger_documentation hide_documentation_path: true,
+        api_version: Conf.app_ver,
+        doc_version: Conf.app_ver,
+        mount_path: '/swagger.json',
+        info: {
+          title: Conf.app_name,
+          version: Conf.app_ver,
+          description: "API description for #{Conf.app_name} #{Conf.app_ver}",
+          }
+         # models: [
+         #   RestFtpDaemon::API::Entities::JobPresenter,
+         # ]
 
 
 
