@@ -11,9 +11,6 @@ module RestFtpDaemon
 
       # Create mutex
       @mutex = Mutex.new
-
-
-      set :system, :started_at, Time.now
     end
 
     def set group, name, value
