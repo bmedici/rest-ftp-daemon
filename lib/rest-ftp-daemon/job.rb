@@ -8,11 +8,12 @@ module RestFtpDaemon
     include CommonHelpers
 
     # Class constants
-    FIELDS = [:source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]
+    FIELDS = [:type, :source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]
 
     # Class options
     attr_reader :logger
     attr_accessor :wid
+    attr_accessor :type
 
     attr_reader :id
     attr_reader :error

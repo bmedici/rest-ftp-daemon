@@ -56,6 +56,12 @@ module RestFtpDaemon
         optional :notify, type: String, desc: "URL to get POST'ed notifications back"
         optional :priority, type: Integer, desc: "Priority level of the job (lower is stronger)"
         optional :pool, type: String, desc: "Pool of worker to be used"
+        optional :type,
+          type: String,
+          desc: "Type of job",
+          default: JOB_TYPE_TRANSFER,
+          values: {value: JOB_TYPES, message: "should be one of: #{JOB_TYPES.join', '}"},
+          allow_blank: { value: false, message: 'cannot be empty' }
         optional :overwrite,
           type: Boolean,
           desc: "Overwrites files at target server",

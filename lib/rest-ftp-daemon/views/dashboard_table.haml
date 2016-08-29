@@ -16,15 +16,17 @@
       %a{href: dashboard_job_url(job)}
         %b= job.id
 
-    %td= job.label
 
     %td= job.pool
 
+    %td
+      = job.type
+      = job_method_label (job.get_info :target, :method)
+
+    %td= job.label
+
     %td{title: job.get_info(:source, :path)}
       = token_highlight job.source
-
-    %td
-      = job_method_label (job.get_info :target, :method)
 
     %td{title: job.get_info(:target, :url)}
       = token_highlight job.target

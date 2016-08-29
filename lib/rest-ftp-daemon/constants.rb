@@ -5,7 +5,6 @@ DEFAULT_FTP_CHUNK       = 1024  # 1 MB
 DEFAULT_PAGE_SIZE       = 50    # 50 lines
 DEFAULT_RETRY_AFTER     = 10    # 10s
 
-
 TARGET_BLANK             = "_blank"
 
 
@@ -67,6 +66,10 @@ JOB_METHOD_FTPS          = "ftps"
 JOB_METHOD_SFTP          = "sftp"
 JOB_METHOD_FILE          = "file"
 
+# Jobs types
+JOB_TYPE_TRANSFER        = "transfer"
+JOB_TYPE_VIDEO           = "video"
+JOB_TYPES                = [JOB_TYPE_TRANSFER, JOB_TYPE_VIDEO]
 
 # Worker statuses
 WORKER_STATUS_STARTING  = "starting"
