@@ -2,7 +2,7 @@
 require "securerandom"
 
 module RestFtpDaemon
-  class Job
+  class JobCommon
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include CommonHelpers
