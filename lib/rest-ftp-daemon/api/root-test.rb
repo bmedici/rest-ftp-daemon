@@ -5,8 +5,17 @@ module RestFtpDaemon
   module API
     class Root < Grape::API
 
-    add_swagger_documentation hide_documentation_path: true,
-      mount_path: '/swagger.json'
+      ### API Documentation
+      add_swagger_documentation hide_documentation_path: true,
+        api_version: Conf.app_ver,
+        doc_version: Conf.app_ver,
+        mount_path: MOUNT_SWAGGER_JSON,
+        info: {
+          title: Conf.app_name,
+          version: Conf.app_ver,
+          description: "API description for #{Conf.app_name} #{Conf.app_ver}",
+          }
+
 
       namespace :hudson do
         desc 'Document root'

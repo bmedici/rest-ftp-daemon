@@ -46,7 +46,7 @@ module RestFtpDaemon
       add_swagger_documentation hide_documentation_path: true,
         api_version: Conf.app_ver,
         doc_version: Conf.app_ver,
-        mount_path: '/swagger.json',
+        mount_path: MOUNT_SWAGGER_JSON,
         info: {
           title: Conf.app_name,
           version: Conf.app_ver,
