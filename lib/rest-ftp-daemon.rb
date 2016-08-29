@@ -36,6 +36,8 @@ require_relative "rest-ftp-daemon/remote_sftp"
 require_relative "rest-ftp-daemon/job"
 require_relative "rest-ftp-daemon/jobs/dummy"
 require_relative "rest-ftp-daemon/jobs/transfer"
+require_relative "rest-ftp-daemon/jobs/video"
+
 require_relative "rest-ftp-daemon/worker_pool"
 require_relative "rest-ftp-daemon/workers/worker"
 require_relative "rest-ftp-daemon/workers/conchita"
