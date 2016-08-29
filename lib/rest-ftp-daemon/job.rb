@@ -91,6 +91,41 @@ module RestFtpDaemon
       @infos = {}
     end
 
+    def process
+      alert_common_method_called
+    end
+
+    # def process
+    #   log_info "Job.process update_interval[#{JOB_UPDATE_INTERVAL}]"
+
+    #   # Prepare
+    #   begin
+    #     log_info "Job.process: raise a fake error"
+    #     raise RestFtpDaemon::PrepareError, "fake_error_common"
+    #     # prepare
+
+    #   rescue PrepareError => ex
+    #     log_info "Job.process: rescue a fake error: #{ex.inspect}"
+    #     # return oops :started, PrepareError, ex.message
+
+    #   else
+    #     log_info "Job.process: no exception caught"
+    #   end
+
+    #   # # Prepare done !
+    #   # set_status JOB_STATUS_PREPARED
+    #   # log_info "Job.process notify [started]"
+    #   # client_notify :started
+
+    #   # # Run
+    #   # run
+
+    #   # # Run done !
+    #   # set_status JOB_STATUS_FINISHED
+    #   # log_info "Job.process notify [ended]"
+    #   # client_notify :ended
+    # end
+
     def weight
       @weight = [
         - @runs.to_i,
@@ -142,15 +177,11 @@ module RestFtpDaemon
 
   protected
 
-    def process
-      alert_common_method_called
-    end
-
-  private
-
     def alert_common_method_called
       log_error "JobCommon PLACEHOLDER METHOD CALLED"
     end
+
+  private
 
     def log_prefix
      [@wid, @id, nil]

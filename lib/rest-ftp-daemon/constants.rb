@@ -69,6 +69,7 @@ JOB_METHOD_FILE          = "file"
 # Jobs types
 JOB_TYPE_TRANSFER        = "transfer"
 JOB_TYPE_VIDEO           = "video"
+JOB_TYPE_DUMMY           = "dummy"
 JOB_TYPES                = [JOB_TYPE_TRANSFER, JOB_TYPE_VIDEO]
 
 # Worker statuses
