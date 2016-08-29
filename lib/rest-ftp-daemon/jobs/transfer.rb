@@ -1,5 +1,9 @@
 module RestFtpDaemon
-  class Job < JobCommon
+  class JobTransfer < Job
+
+    def initialize job_id, params = {}
+      super
+    end
 
     def process
       log_info "Job.process update_interval[#{JOB_UPDATE_INTERVAL}]"

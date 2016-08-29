@@ -2,7 +2,7 @@
 require "securerandom"
 
 module RestFtpDaemon
-  class JobCommon
+  class Job
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include CommonHelpers
@@ -178,7 +178,7 @@ module RestFtpDaemon
   protected
 
     def alert_common_method_called
-      log_error "JobCommon PLACEHOLDER METHOD CALLED"
+      log_error "Job PLACEHOLDER METHOD CALLED"
     end
 
   private
