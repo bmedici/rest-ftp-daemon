@@ -141,7 +141,15 @@ module RestFtpDaemon
 
   protected
 
+    def process
+      alert_common_method_called
+    end
+
   private
+
+    def alert_common_method_called
+      log_error "JobCommon PLACEHOLDER METHOD CALLED"
+    end
 
     def log_prefix
      [@wid, @id, nil]
