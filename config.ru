@@ -13,9 +13,10 @@ end
 
 # Serve static assets
 use Rack::Static, root: "#{Conf.app_libs}/static/", urls: [
-  "/css",
-  "/js",
-  "/images",
+  "/css/",
+  "/js/",
+  "/fonts/",
+  "/images/",
   "/swagger/",
   MOUNT_SWAGGER,
   ]
