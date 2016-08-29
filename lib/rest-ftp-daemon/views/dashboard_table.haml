@@ -19,9 +19,7 @@
 
     %td= job.pool
 
-    %td
-      = job.type
-      = job_method_label (job.get_info :target, :method)
+    %td= job_label job
 
     %td= job.label
 

@@ -30,19 +30,47 @@ module RestFtpDaemon
       return  "label-danger"    if runs > 2
     end
 
-    def job_method_label method
-      return if method.nil?
-      klass = case method
-      when JOB_METHOD_FILE
-        "label-primary"
-      when JOB_METHOD_FTP
-        "label-warning"
-      when JOB_METHOD_FTPS
-        "label-success"
+    def job_label job
+      out = []
+
+      # Icon
+      icon_klass = case job.type
+      when JOB_TYPE_TRANSFER
+        icon_klass = "transfer"
+      when JOB_TYPE_VIDEO
+        icon_klass = "facetime-video"
+      when JOB_TYPE_DUMMY
+        icon_klass = "question-sign"
       else
-        "label-default"
+        icon_klass = "label-default"
       end
-      "<div class=\"transfer-method label #{klass}\">#{method.upcase}</div>"
+      out << sprintf(
+        '<span class="glyphicon glyphicon-%s"></span>',
+        icon_klass
+        )
+
+      # Label and class
+      if method = job.get_info(:target, :method)
+        label_klass = case method
+        when JOB_METHOD_FILE
+          "primary"
+        when JOB_METHOD_FTP
+          "warning"
+        when JOB_METHOD_FTPS
+          "success"
+        else
+          "default"
+        end
+        out << '&nbsp;'
+        out << sprintf(
+          '<div class="transfer-type label label-%s">%s</div>',
+          label_klass,
+          method.upcase
+          )
+      end
+
+      # Build output
+      out.join()
     end
 
     def datetime_short datetime
