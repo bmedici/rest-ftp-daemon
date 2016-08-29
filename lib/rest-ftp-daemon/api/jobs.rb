@@ -52,6 +52,7 @@ module RestFtpDaemon
       params do
         requires :source, type: String, desc: "Source file pattern"
         requires :target, type: String, desc: "Target remote path"
+
         optional :label, type: String, desc: "Descriptive label for this job"
         optional :notify, type: String, desc: "URL to get POST'ed notifications back"
         optional :priority, type: Integer, desc: "Priority level of the job (lower is stronger)"
@@ -78,12 +79,8 @@ module RestFtpDaemon
       post "/" do
         # log_debug params.to_json
         begin
-          # Create a new job
-          job_id = RestFtpDaemon::JobQueue.instance.generate_id
-          job = Job.new(job_id, params)
-
-          # And push it to the queue
-          RestFtpDaemon::JobQueue.instance.push job
+          # Add up the new job on the queue
+          job = RestFtpDaemon::JobQueue.instance.create_job(params)
 
           # Increment a counter
           RestFtpDaemon::Counters.instance.increment :jobs, :received
@@ -91,6 +88,10 @@ module RestFtpDaemon
         rescue JSON::ParserError => exception
           log_error "JSON::ParserError: #{exception.message}"
           error!({error: :api_parse_error, message: exception.message}, 422)
+
+        rescue QueueCantCreateJob => exception
+          log_error "QueueCantCreateJob: #{exception.message}"
+          error!({error: :api_cant_create_job, message: exception.message}, 422)
 
         rescue RestFtpDaemonException => exception
           log_error "RestFtpDaemonException: #{exception.message}"
