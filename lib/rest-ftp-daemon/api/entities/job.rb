@@ -3,7 +3,8 @@ require "grape-entity"
 module RestFtpDaemon
   module API
     module Entities
-      class JobPresenter < Grape::Entity
+      class Job < Grape::Entity
+
         # Job ID
         expose :id
 
@@ -29,6 +30,14 @@ module RestFtpDaemon
 
         # Params
         expose :infos, unless: :hide_infos
+
+        # Params
+        expose :options, using: API::Entities::Options
+
+        # with_options(format_with: :iso_timestamp) do
+        #     expose :created_at
+        #     expose :updated_at
+        # end
 
       end
     end

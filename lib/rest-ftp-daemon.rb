@@ -44,7 +44,9 @@ require_relative "rest-ftp-daemon/workers/conchita"
 require_relative "rest-ftp-daemon/workers/reporter"
 require_relative "rest-ftp-daemon/workers/transfer"
 
-require_relative "rest-ftp-daemon/api/job_presenter"
+require_relative "rest-ftp-daemon/api/entities/options"
+require_relative "rest-ftp-daemon/api/entities/job"
+
 require_relative "rest-ftp-daemon/api/jobs"
 require_relative "rest-ftp-daemon/api/dashboard"
 require_relative "rest-ftp-daemon/api/status"

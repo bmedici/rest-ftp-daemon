@@ -52,9 +52,6 @@ module RestFtpDaemon
           version: Conf.app_ver,
           description: "API description for #{Conf.app_name} #{Conf.app_ver}",
           }
-         # models: [
-         #   RestFtpDaemon::API::Entities::JobPresenter,
-         # ]
 
 
 
