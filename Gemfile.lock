@@ -4,7 +4,7 @@ PATH
     rest-ftp-daemon (0.400.0)
       activesupport (~> 4.2)
       api-auth
-      bmc-daemon-lib (~> 0.3.3)
+      bmc-daemon-lib (~> 0.3.4)
       double-bag-ftps
       facter
       get_process_mem
@@ -42,7 +42,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    bmc-daemon-lib (0.3.3)
+    bmc-daemon-lib (0.3.4)
       chamber (~> 2.9)
     builder (3.2.2)
     chamber (2.9.1)
