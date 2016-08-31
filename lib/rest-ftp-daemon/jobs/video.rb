@@ -1,5 +1,5 @@
 module RestFtpDaemon
-  class JobVideo
+  class JobVideo < Job
 
   def prepare_local
     # Prepare flags

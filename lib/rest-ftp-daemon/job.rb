@@ -82,6 +82,13 @@ module RestFtpDaemon
         @pool = DEFAULT_POOL
       end
 
+
+      # Store options
+      # @options = params[:options].to_hash
+      # log_info "Job.initialize params[:options]: #{params[:options].inspect}"
+      # log_info "Job.initialize params[:options][:opt1]: #{params[:options][:opt1]}"
+
+
       # Set job queue, thus reset
       # reset
     end
@@ -92,7 +99,7 @@ module RestFtpDaemon
       @updated_at = Time.now
 
       # Send first notification
-      log_info "Job.initialize notify[queued]}]"
+      log_info "Job.initialize notify[queued]"
       client_notify :queued
 
       # Update job status

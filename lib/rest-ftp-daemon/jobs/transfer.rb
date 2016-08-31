@@ -6,7 +6,7 @@ module RestFtpDaemon
     end
 
     def process
-      log_info "Job.process update_interval[#{JOB_UPDATE_INTERVAL}]"
+      log_info "JobTransfer.process update_interval:#{JOB_UPDATE_INTERVAL}"
 
       # Prepare job
       begin
@@ -34,12 +34,12 @@ module RestFtpDaemon
       else
         # Prepare done !
         set_status JOB_STATUS_PREPARED
-        log_info "Job.process notify [started]"
-        client_notify :started
       end
 
       # Process job
       begin
+        log_info "JobTransfer.process notify [started]"
+        client_notify :started
         #return oops :ended, Exception.new, "ftp_perm_error"
         run
 
@@ -297,6 +297,8 @@ module RestFtpDaemon
     end
 
     def progress transferred, name = ""
+
+
       # What's current time ?
       now = Time.now
       notify_after = @config[:notify_after]
@@ -370,7 +372,7 @@ module RestFtpDaemon
   end
 
   # NewRelic instrumentation
-  add_transaction_tracer :prepare,        category: :task
-  add_transaction_tracer :run,            category: :task
+  # add_transaction_tracer :prepare,        category: :task
+  # add_transaction_tracer :run,            category: :task
 
 end
