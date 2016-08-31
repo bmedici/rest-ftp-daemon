@@ -37,18 +37,26 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "json", "~> 1.8"
   spec.add_runtime_dependency     "thin", "~> 1.7"
   spec.add_runtime_dependency     "activesupport", "~> 4.2"
+
   spec.add_runtime_dependency     "grape"
   spec.add_runtime_dependency     "grape-entity"
   spec.add_runtime_dependency     "grape-swagger"
   spec.add_runtime_dependency     "grape-swagger-entity"
+  spec.add_runtime_dependency     "grape-swagger-representable"
+
   spec.add_runtime_dependency     "settingslogic"
   spec.add_runtime_dependency     "rest-client", "~> 1.8"
   spec.add_runtime_dependency     "api-auth"
   spec.add_runtime_dependency     "haml"
-  spec.add_runtime_dependency     "net-sftp"
-  spec.add_runtime_dependency     "double-bag-ftps"
   spec.add_runtime_dependency     "facter"
   spec.add_runtime_dependency     "sys-cpu"
   spec.add_runtime_dependency     "get_process_mem"
   spec.add_runtime_dependency     "newrelic_rpm"
+
+
+  spec.add_runtime_dependency     "net-sftp"
+  spec.add_runtime_dependency     "double-bag-ftps"
+
+  spec.add_runtime_dependency     "streamio-ffmpeg"
+
 end
