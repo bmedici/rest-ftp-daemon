@@ -89,7 +89,7 @@ end
 
 
 # Thin: basic options
-thin_logfile = Conf.logfile(:newrelic)
+thin_logfile = Conf.logfile_path(:thin)
 
 argv = []
 argv << ["-e",          Conf.app_env]
