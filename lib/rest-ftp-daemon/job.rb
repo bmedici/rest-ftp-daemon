@@ -1,3 +1,6 @@
+# FIXME: prepare files list ar prepare_common
+
+
 # Reprensents work to be done along with parameters to process it
 require "securerandom"
 
@@ -8,7 +11,10 @@ module RestFtpDaemon
     include CommonHelpers
 
     # Class constants
-    FIELDS = [:type, :source, :target, :label, :priority, :pool, :notify, :overwrite, :mkdir, :tempfile]
+    FIELDS = [:type, :source, :target, :label, :priority, :pool, :notify,
+      :overwrite, :mkdir, :tempfile,
+      :video_ac, :video_custom
+    ]
 
     # Class options
     attr_reader :logger
@@ -48,6 +54,10 @@ module RestFtpDaemon
       @status = nil
       @runs = 0
       @wid = nil
+      @target_uri = nil
+
+      # Store params
+      # @params = params
 
       # Prepare configuration
       @config       = Conf[:transfer] || {}
