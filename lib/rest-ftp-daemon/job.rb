@@ -191,6 +191,33 @@ module RestFtpDaemon
       log_error "Job PLACEHOLDER METHOD CALLED"
     end
 
+    def prepare_common
+      # Init
+      @source_path = nil
+
+      # Update job status
+      set_status JOB_STATUS_PREPARING
+      @runs += 1
+
+      # Prepare source
+      raise RestFtpDaemon::JobMissingAttribute unless @source
+      @source_path = File.expand_path replace_tokens(@source)
+      set_info :source, :path, @source_path
+      set_info :source, :method, JOB_METHOD_FILE
+      log_info "Job.prepare source_path path[#{@source_path}]"
+
+      # Prepare target
+      raise RestFtpDaemon::JobMissingAttribute unless @target
+      @target_uri = expand_url @target
+      log_info "Job.prepare target_uri [#{@target_uri}]"
+
+      set_info :target, :uri, @target_uri.to_s
+      set_info :target, :host, @target_uri.host
+      @target_path = Path.new @target_uri.path, false
+
+      log_info "Job.prepare target_path path[#{@target_path}] scheme[#{@target_uri.scheme}]"
+    end
+
   private
 
     def log_prefix
@@ -209,6 +236,36 @@ module RestFtpDaemon
       now = Time.now
       @updated_at = now
       Thread.current.thread_variable_set :updated_at, now
+    end
+
+    def expand_url path
+      URI.parse replace_tokens(path)
+    end
+
+    def contains_brackets item
+      /\[.*\]/.match(item)
+    end
+
+    def replace_tokens path
+      # Ensure endpoints are not a nil value
+      return path unless @endpoints.is_a? Enumerable
+      vectors = @endpoints.clone
+
+      # Stack RANDOM into tokens
+      vectors["RANDOM"] = SecureRandom.hex(JOB_RANDOM_LEN)
+
+      # Replace endpoints defined in config
+      newpath = path.clone
+      vectors.each do |from, to|
+        next if to.to_s.blank?
+        newpath.gsub! tokenize(from), to
+      end
+
+      # Ensure result does not contain tokens after replacement
+      raise RestFtpDaemon::JobUnresolvedTokens if contains_brackets newpath
+
+      # All OK, return this URL stripping multiple slashes
+      newpath.gsub(/([^:])\/\//, '\1/')
     end
 
     def set_info level1, level2, value
@@ -255,23 +312,6 @@ module RestFtpDaemon
         # Otherwise, set it to the new alt_value
         instance_variable_set variable, alt_value
       end
-    end
-
-    def finalize
-      # Close FTP connexion and free up memory
-      log_info "Job.finalize"
-      @remote.close
-
-      # Free-up remote object
-      @remote = nil
-
-      # Update job status
-      set_status JOB_STATUS_DISCONNECTING
-      @finished_at = Time.now
-
-      # Update counters
-      RestFtpDaemon::Counters.instance.increment :jobs, :finished
-      RestFtpDaemon::Counters.instance.add :data, :transferred, @transfer_total
     end
 
     def client_notify event, payload = {}

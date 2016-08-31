@@ -10,7 +10,8 @@ module RestFtpDaemon
 
       # Prepare job
       begin
-        prepare
+        prepare_common
+        prepare_local
 
       rescue RestFtpDaemon::JobMissingAttribute => exception
         return oops :started, exception, "missing_attribute"
@@ -133,61 +134,12 @@ module RestFtpDaemon
 
   protected
 
-    def expand_url path
-      URI.parse replace_tokens(path)
-    end
-
-    def contains_brackets item
-      /\[.*\]/.match(item)
-    end
-
-    def replace_tokens path
-      # Ensure endpoints are not a nil value
-      return path unless @endpoints.is_a? Enumerable
-      vectors = @endpoints.clone
-
-      # Stack RANDOM into tokens
-      vectors["RANDOM"] = SecureRandom.hex(JOB_RANDOM_LEN)
-
-      # Replace endpoints defined in config
-      newpath = path.clone
-      vectors.each do |from, to|
-        next if to.to_s.blank?
-        newpath.gsub! tokenize(from), to
-      end
-
-      # Ensure result does not contain tokens after replacement
-      raise RestFtpDaemon::JobUnresolvedTokens if contains_brackets newpath
-
-      # All OK, return this URL stripping multiple slashes
-      newpath.gsub(/([^:])\/\//, '\1/')
-    end
-
-    def prepare
-      # Init
-      @source_path = nil
-
+    def prepare_local
       # Prepare flags
       flag_prepare :mkdir, false
       flag_prepare :overwrite, false
       flag_prepare :tempfile, true
 
-      # Update job status
-      set_status JOB_STATUS_PREPARING
-      @runs += 1
-
-      # Prepare source
-      raise RestFtpDaemon::JobMissingAttribute unless @source
-      @source_path = File.expand_path replace_tokens(@source)
-      set_info :source, :path, @source_path
-      set_info :source, :method, JOB_METHOD_FILE
-
-      # Prepare target
-      raise RestFtpDaemon::JobMissingAttribute unless @target
-      target_uri = expand_url @target
-      set_info :target, :uri, target_uri.to_s
-      set_info :target, :host, target_uri.host
-      @target_path = Path.new target_uri.path, true
 
       # Prepare remote (case would be preferable but too hard to use,
       # as target could be of a descendent class of URI:XXX and not matching directlry)
@@ -278,6 +230,23 @@ module RestFtpDaemon
       finalize
     end
 
+
+    def finalize
+      # Close FTP connexion and free up memory
+      log_info "Job.finalize"
+      @remote.close
+
+      # Free-up remote object
+      @remote = nil
+
+      # Update job status
+      set_status JOB_STATUS_DISCONNECTING
+      @finished_at = Time.now
+
+      # Update counters
+      RestFtpDaemon::Counters.instance.increment :jobs, :finished
+      RestFtpDaemon::Counters.instance.add :data, :transferred, @transfer_total
+    end
 
     def remote_push source, target
       # Method assertions
