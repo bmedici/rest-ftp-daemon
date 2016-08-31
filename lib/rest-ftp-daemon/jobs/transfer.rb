@@ -140,26 +140,25 @@ module RestFtpDaemon
       flag_prepare :overwrite, false
       flag_prepare :tempfile, true
 
-
       # Prepare remote (case would be preferable but too hard to use,
-      # as target could be of a descendent class of URI:XXX and not matching directlry)
-      if target_uri.is_a? URI::FTP
+      # as target could be of a descendent class of URI:XXX and not matching directly)
+      if @target_uri.is_a? URI::FTP
         log_info "Job.prepare target_method FTP"
         set_info :target, :method, JOB_METHOD_FTP
-        @remote = RemoteFTP.new target_uri, log_prefix, debug: @config[:debug_ftp]
+        @remote = RemoteFTP.new @target_uri, log_prefix, debug: @config[:debug_ftp]
 
-      elsif (target_uri.is_a? URI::FTPES) || (target_uri.is_a? URI::FTPS)
+      elsif (@target_uri.is_a? URI::FTPES) || (target_uri.is_a? URI::FTPS)
         log_info "Job.prepare target_method FTPES"
         set_info :target, :method, JOB_METHOD_FTPS
-        @remote = RemoteFTP.new target_uri, log_prefix, debug: @config[:debug_ftps], ftpes: true
+        @remote = RemoteFTP.new @target_uri, log_prefix, debug: @config[:debug_ftps], ftpes: true
 
-      elsif target_uri.is_a? URI::SFTP
+      elsif @target_uri.is_a? URI::SFTP
         log_info "Job.prepare target_method SFTP"
         set_info :target, :method, JOB_METHOD_SFTP
-        @remote = RemoteSFTP.new target_uri, log_prefix, debug: @config[:debug_sftp]
+        @remote = RemoteSFTP.new @target_uri, log_prefix, debug: @config[:debug_sftp]
 
       else
-        log_info "Job.prepare unknown scheme [#{target_uri.scheme}]"
+        log_info "Job.prepare unknown scheme [#{@target_uri.scheme}]"
         raise RestFtpDaemon::JobTargetUnsupported
 
       end
