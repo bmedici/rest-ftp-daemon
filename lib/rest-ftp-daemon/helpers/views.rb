@@ -44,23 +44,29 @@ module RestFtpDaemon
       else
         icon_klass = "label-default"
       end
-      out << sprintf(
-        '<span class="glyphicon glyphicon-%s"></span>',
-        icon_klass
-        )
+
+      if icon_klass
+        out << sprintf(
+          '<span class="glyphicon glyphicon-%s" alt="%s"></span>',
+          icon_klass,
+          job.type
+          )
+      end
 
       # Label and class
-      if method = job.get_info(:target, :method)
-        label_klass = case method
-        when JOB_METHOD_FILE
-          "primary"
-        when JOB_METHOD_FTP
-          "warning"
-        when JOB_METHOD_FTPS
-          "success"
-        else
-          "default"
-        end
+      method = job.get_info(:target, :method)
+      case method
+      when JOB_METHOD_FILE
+        label_klass = "primary"
+      when JOB_METHOD_FTP
+        label_klass = "warning"
+      when JOB_METHOD_FTPS
+        label_klass = "success"
+      else
+        label_klass = nil
+      end
+
+      if label_klass
         out << '&nbsp;'
         out << sprintf(
           '<div class="transfer-type label label-%s">%s</div>',
