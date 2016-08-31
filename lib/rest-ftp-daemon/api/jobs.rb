@@ -63,6 +63,16 @@ module RestFtpDaemon
           default: JOB_TYPE_TRANSFER,
           values: {value: JOB_TYPES, message: "should be one of: #{JOB_TYPES.join', '}"},
           allow_blank: { value: false, message: 'cannot be empty' }
+
+        optional :video_ac,
+          type: String,
+          desc: "video: audio codec",
+          default: ""
+        optional :video_custom,
+          type: Hash,
+          desc: "video: custom options passed to FFMPEG encoder",
+          default: {}
+
         optional :overwrite,
           type: Boolean,
           desc: "Overwrites files at target server",
@@ -75,7 +85,10 @@ module RestFtpDaemon
           type: Boolean,
           desc: "Upload to a temp file before renaming it to the target filename",
           default: Conf.at(:transfer, :tempfile)
+        # optional :options, desc: "", type: API::Entities::Options
+
       end
+
       post "/" do
         # log_debug params.to_json
         begin
