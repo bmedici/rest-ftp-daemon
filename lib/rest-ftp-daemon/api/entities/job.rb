@@ -9,7 +9,7 @@ module RestFtpDaemon
         expose :id
 
         # Job specific attributes and flags
-        Job::FIELDS.each { |name| expose name }
+        RestFtpDaemon::Job::FIELDS.each { |name| expose name }
 
         # Technical fields
         expose :wid, unless: lambda { |object, _options| object.wid.nil? }
