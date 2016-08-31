@@ -89,7 +89,8 @@ end
 
 
 # Thin: basic options
-thin_logfile = Conf.at(:logs, :thin)
+thin_logfile = Conf.logfile(:newrelic)
+
 argv = []
 argv << ["-e",          Conf.app_env]
 argv << ["-p",          Conf[:port].to_s]
