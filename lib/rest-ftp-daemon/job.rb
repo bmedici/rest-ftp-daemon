@@ -286,17 +286,15 @@ module RestFtpDaemon
       value.to_s.encode("UTF-8")
     end
 
-    def flag_prepare name, default
+    def flag_prepare name
       # build the flag instance var name
       variable = "@#{name}"
 
-      [config[name], default].each do |alt_value|
-        # If it's already true or false, that's ok
-        return if [true, false].include? instance_variable_get(variable)
+      # If it's already true or false, that's ok
+      return if [true, false].include? instance_variable_get(variable)
 
-        # Otherwise, set it to the new alt_value
-        instance_variable_set variable, alt_value
-      end
+      # Otherwise, set it to the new alt_value
+      instance_variable_set variable, config[name]
     end
 
     def client_notify signal, payload = {}
