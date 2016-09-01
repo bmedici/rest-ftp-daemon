@@ -26,7 +26,6 @@ module RestFtpDaemon
       conn_broken_pipe:         Errno::EPIPE,
       conn_unreachable:         Errno::ENETUNREACH,
       conn_reset_by_peer:       Errno::ECONNRESET,
-      conn_failed:              Errno::ENOTCONN,
       conn_refused:             Errno::ECONNREFUSED,
       conn_timed_out_1:         Timeout::Error,
       conn_timed_out_2:         Net::ReadTimeout,

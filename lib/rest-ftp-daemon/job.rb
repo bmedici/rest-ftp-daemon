@@ -140,7 +140,8 @@ module RestFtpDaemon
       do_after
 
     rescue StandardError => exception
-      return oops signal, exception
+      log_debug "Job.process caught #{exception.class} #{exception.message}"
+      return oops current_signal, exception
 
     else
       # All done !
