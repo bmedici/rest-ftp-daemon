@@ -3,6 +3,8 @@ require 'active_support/core_ext/module/delegation'
 
 module RestFtpDaemon
   class Location
+    include CommonHelpers
+
     # Accessors
     attr_accessor :name
 
@@ -32,6 +34,12 @@ module RestFtpDaemon
       resolve_tokens! location_uri
       fix_scheme! location_uri
 
+      # Ensure result does not contain tokens after replacement
+      detected_tokens = detect_tokens(location_uri)
+      unless detected_tokens.empty?
+        raise RestFtpDaemon::UnresolvedTokens, detected_tokens.join(' ')
+      end
+
       # Parse URL
       parse_url location_uri
 
@@ -39,12 +47,6 @@ module RestFtpDaemon
       init_aws if @uri.is_a? URI::S3
 
       # Set default user if not provided
-
-      # Ensure result does not contain tokens after replacement
-      detected_tokens = detect_tokens(location_uri)
-      unless detected_tokens.empty?
-        raise RestFtpDaemon::UnresolvedTokens, detected_tokens.join(' ')
-      end
       # init_username
 
       # Check that scheme is supported
@@ -71,6 +73,10 @@ module RestFtpDaemon
       local_fil_path = path
       return unless File.exist? local_fil_path
       return File.size local_fil_path
+    end
+
+    def generate_temp_name!
+      @name = "#{@name}.temp-#{identifier(JOB_TEMPFILE_LEN)}"
     end
 
   private
