@@ -89,7 +89,7 @@ module RestFtpDaemon
         remote_push source, target_final
 
         # Add it to transferred target names
-        targets << target_final.path
+        targets << target_final.name
         set_info :target, :files, targets
 
         # Update counters

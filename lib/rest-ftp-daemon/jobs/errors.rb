@@ -17,6 +17,7 @@ module RestFtpDaemon
       target_file_exists:       RestFtpDaemon::TargetFileExists,
       target_directory_error:   RestFtpDaemon::TargetDirectoryError,
       target_permission_error:  RestFtpDaemon::TargetPermissionError,
+      target_not_supported:     RestFtpDaemon::TargetNotSupported,
       assertion_failed:         RestFtpDaemon::AssertionFailed,
 
       conn_socket_error:        SocketError,

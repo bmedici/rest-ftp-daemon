@@ -102,7 +102,6 @@ module RestFtpDaemon
       # Job has been prepared, reset infos
       set_status JOB_STATUS_PREPARED
       @infos = {}
-      set_info :job, :prepared_at, Time.now
       set_info_location :source, @source_loc
       set_info_location :target, @target_loc
 
@@ -141,7 +140,7 @@ module RestFtpDaemon
       do_after
 
     rescue StandardError => exception
-      log_debug "Job.process caught #{exception.class} #{exception.message}"
+      log_debug "Job.process caught [#{exception.class}] #{exception.message}"
       return oops current_signal, exception
 
     else
