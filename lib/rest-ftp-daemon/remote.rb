@@ -21,6 +21,7 @@ module RestFtpDaemon
 
       # Annnounce object
       log_info "Remote.initialize [#{url}]"
+      prepare
     end
 
     def connect

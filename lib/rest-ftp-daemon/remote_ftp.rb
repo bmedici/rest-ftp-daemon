@@ -8,10 +8,7 @@ module RestFtpDaemon
     # Class options
     attr_reader :ftp
 
-    def initialize url, log_prefix, options = {}
-      # Call super
-      super
-
+    def prepare
       # Create FTP object
       if options[:ftpes]
         prepare_ftpes

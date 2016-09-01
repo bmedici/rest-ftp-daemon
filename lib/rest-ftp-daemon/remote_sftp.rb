@@ -7,12 +7,7 @@ module RestFtpDaemon
     # Class options
     attr_reader :sftp
 
-    def initialize url, log_prefix, options = {}
-      # Call super
-      super
-
-      # Announce object
-      log_debug "RemoteSFTP.initialize"
+    def prepare
     end
 
     def connect
