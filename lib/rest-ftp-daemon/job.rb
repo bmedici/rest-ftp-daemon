@@ -43,9 +43,13 @@ module RestFtpDaemon
       attr_reader name
     end
 
-    def initialize job_id, params = {}
-      # Call super
-      # super()
+    def initialize job_id = nil, params = {}
+      # Minimal init
+      @infos = {}
+      @mutex = Mutex.new
+
+      # Skip if no job_id passed or null (mock Job)
+      return if job_id.nil?
 
       # Init context
       @id = job_id.to_s
@@ -56,7 +60,6 @@ module RestFtpDaemon
       @status = nil
       @runs = 0
       @wid = nil
-      @infos = {}
 
       # Prepare configuration
       @config       = Conf[:transfer] || {}
@@ -66,8 +69,6 @@ module RestFtpDaemon
       # Logger
       @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
 
-      # Protect with a mutex
-      @mutex = Mutex.new
 
       # Import query params
       FIELDS.each do |name|
@@ -253,8 +254,13 @@ module RestFtpDaemon
       return unless location.is_a? Location
       set_info prefix, :uri,    location.to_s
       set_info prefix, :scheme, location.scheme
+      set_info prefix, :user,   location.user
       set_info prefix, :host,   location.host
+      set_info prefix, :port,   location.port
       set_info prefix, :path,   location.path
+      set_info prefix, :aws_region,   location.aws_region
+      set_info prefix, :aws_bucket,   location.aws_bucket
+      set_info prefix, :aws_id,       location.aws_id
     end
 
   private
