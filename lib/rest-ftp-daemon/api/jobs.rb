@@ -5,7 +5,11 @@ module RestFtpDaemon
     class Jobs < Grape::API
 
       ### ENDPOINTS
-      desc "Read job with ID"
+      desc "Read job with ID", http_codes: [
+        { code: 200, message: "Here is the job you requested" },
+        { code: 404, message: "Job not found" }
+        ],
+        is_array: false
       params do
         requires :id, type: String, desc: "ID of the Job to read"
       end
@@ -15,6 +19,8 @@ module RestFtpDaemon
           raise RestFtpDaemon::JobNotFound if params[:id].nil?
           job = RestFtpDaemon::JobQueue.instance.find_by_id(params[:id]) || RestFtpDaemon::JobQueue.instance.find_by_id(params[:id], true)
           raise RestFtpDaemon::JobNotFound if job.nil?
+
+          log_debug "found job: #{job.inspect}"
 
         rescue RestFtpDaemon::JobNotFound => exception
           log_error "JobNotFound: #{exception.message}"
@@ -31,7 +37,10 @@ module RestFtpDaemon
         end
       end
 
-      desc "List all Jobs"
+      desc "List all Jobs", http_codes: [
+        { code: 200, message: "Here are the jobs you requested" },
+        ],
+        is_array: true
       get "/" do
         begin
           # Get jobs to display
@@ -64,6 +73,10 @@ module RestFtpDaemon
           values: {value: JOB_TYPES, message: "should be one of: #{JOB_TYPES.join', '}"},
           allow_blank: { value: false, message: 'cannot be empty' }
 
+        optional :video_vc,
+          type: String,
+          desc: "video: video codec",
+          default: ""
         optional :video_ac,
           type: String,
           desc: "video: audio codec",
@@ -107,8 +120,8 @@ module RestFtpDaemon
           error!({error: :api_cant_create_job, message: exception.message}, 422)
 
         rescue RestFtpDaemonException => exception
-          log_error "RestFtpDaemonException: #{exception.message}"
-          error!({error: :api_exception, message: exception.message}, 500)
+          log_error "#{exception.class.to_s} #{exception.message}"
+          error!({error: exception_to_error(exception), message: exception.message}, 500)
 
         else
           status 201
