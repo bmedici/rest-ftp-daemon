@@ -13,16 +13,16 @@ module RestFtpDaemon
     def connect
       # Connect init
       super
-      log_debug "RemoteSFTP.connect [#{@url.user}]@[#{@url.host}]:[#{@url.port}]"
+      log_debug "RemoteSFTP.connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
 
       # Debug level
       verbosity =  @debug ? Logger::DEBUG : false
 
       # Connect remote server
-      @sftp = Net::SFTP.start(@url.host.to_s, @url.user.to_s,
-          password: @url.password.to_s,
+      @sftp = Net::SFTP.start(@target.host.to_s, @target.user.to_s,
+          password: @target.password.to_s,
           verbose: verbosity,
-          port: @url.port,
+          port: @target.port,
           non_interactive: true,
           timeout: DEFAULT_SFTP_TIMEOUT
           )

@@ -7,21 +7,26 @@ module RestFtpDaemon
     attr_reader :logger
     attr_reader :log_prefix
 
-    def initialize url, log_prefix, options = {}
-      # Options
-      @debug = !!options[:debug]
+    def initialize target, log_prefix, debug = false, ftpes = false
+      # Init
+      @target = target
+      @ftpes = ftpes
+      @debug = debug
 
       # Logger
       @log_prefix = log_prefix || {}
       @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
 
       # Extract URL parts
-      @url = url
       @url.user ||= "anonymous"
 
       # Annnounce object
-      log_info "Remote.initialize [#{url}]"
+      log_info "Remote.initialize [#{target.path}]"
+      log_debug "Remote.initialize target[#{@target.inspect}]"
       prepare
+    end
+
+    def prepare
     end
 
     def connect
@@ -30,10 +35,9 @@ module RestFtpDaemon
       puts
       puts "-------------------- SESSION STARTING -------------------------"
       puts "class\t #{myname}"
-      puts "host\t #{@url.host}"
-      puts "user\t #{@url.user}"
-      puts "port\t #{@url.port}"
-      puts "options\t #{@options.inspect}"
+      puts "host\t #{@target.host}"
+      puts "user\t #{@target.user}"
+      puts "port\t #{@target.port}"
       puts "---------------------------------------------------------------"
 
     end

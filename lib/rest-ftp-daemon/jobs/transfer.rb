@@ -18,18 +18,20 @@ module RestFtpDaemon
       # Ensure source is FILE
       raise RestFtpDaemon::SourceNotSupported, @source_loc.scheme   unless source_uri.is_a? URI::FILE
 
-      # Prepare remote (case would be preferable but too hard to use,
-      # as target could be of a descendent class of URI:XXX and not matching directly)
+      # Prepare remote object
       case target_uri
       when URI::FTP
         log_info "JobTransfer.before target_method FTP"
-        @remote = RemoteFTP.new @target_loc.uri, log_prefix, debug: @config[:debug_ftp]
+        @remote = RemoteFTP.new @target_loc, log_prefix, @config[:debug_ftps]
       when URI::FTPES, URI::FTPS
         log_info "JobTransfer.before target_method FTPES/FTPS"
-        @remote = RemoteFTP.new @target_loc.uri, log_prefix, debug: @config[:debug_ftps], ftpes: true
+        @remote = RemoteFTP.new @target_loc, log_prefix, @config[:debug_ftps], :ftpes
       when URI::SFTP
         log_info "JobTransfer.before target_method SFTP"
-        @remote = RemoteSFTP.new @target_loc.uri, log_prefix, debug: @config[:debug_sftp]
+        @remote = RemoteSFTP.new @target_loc, log_prefix, @config[:debug_sftp]
+      when URI::S3
+        log_info "JobTransfer.before target_method S3"
+        @remote = RemoteS3.new @target_loc, log_prefix, @config[:debug_s3]
       else
         log_info "JobTransfer.before unknown scheme [#{@target_loc.scheme}]"
         raise RestFtpDaemon::TargetNotSupported, @target_loc.scheme

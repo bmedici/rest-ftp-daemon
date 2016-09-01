@@ -10,7 +10,7 @@ module RestFtpDaemon
 
     def prepare
       # Create FTP object
-      if options[:ftpes]
+      if @ftpes
         prepare_ftpes
       else
         prepare_ftp
@@ -22,14 +22,14 @@ module RestFtpDaemon
       @chunk_size = DEFAULT_FTP_CHUNK.to_i * 1024
 
       # Announce object
-      log_debug "RemoteFTP.initialize chunk_size:#{@chunk_size}"
+      log_debug "RemoteFTP.prepare chunk_size:#{@chunk_size}"
     end
 
     def connect
       # Connect remote server
       super
-      @ftp.connect @url.host, @url.port
-      @ftp.login @url.user, @url.password
+      @ftp.connect @target.host, @target.port
+      @ftp.login @target.user, @target.password
     end
 
     def present? target
