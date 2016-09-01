@@ -19,7 +19,8 @@ module RestFtpDaemon
     def initialize path
       #@logger = BmcDaemonLib::LoggerPool.instance.get :transfer
       #log_debug "Location.initialize path[#{path}]"
-      location_uri = path.dup
+      # Strip spaces before/after, copying original "path" at the same time
+      location_uri = path.strip
 
       # Replace tokens, fix scheme for local paths
       resolve_tokens! location_uri
@@ -68,8 +69,6 @@ module RestFtpDaemon
       return unless File.exist? local_fil_path
       return File.size local_fil_path
     end
-
-
 
   private
 
