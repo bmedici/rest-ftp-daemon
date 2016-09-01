@@ -88,15 +88,17 @@ module RestFtpDaemon
 
     def upload source, target, use_temp_name = false, &callback
       # Push init
-      raise RestFtpDaemon::AssertionFailed, "push/sftp" if @sftp.nil?
+      raise RestFtpDaemon::AssertionFailed, "upload/sftp" if @sftp.nil?
 
-      # Temp file if provided
-      destination = target.clone
-      destination.name = tempname if tempname
+      # Temp file if needed
+      dest = target.clone
+      if use_temp_name
+        dest.generate_temp_name!
+      end
 
       # Do the transfer
-      log_debug "RemoteSFTP.push [#{destination.path}]"
-      @sftp.upload! source.path, destination.path do |event, _uploader, *args|
+      log_debug "RemoteSFTP.upload temp[#{use_temp_name}] name[#{dest.name}]"
+      @sftp.upload! source.path, dest.path do |event, _uploader, *args|
         case event
         when :open then
           # args[0] : file metadata
@@ -107,7 +109,7 @@ module RestFtpDaemon
           # puts "writing #{args[2].length} bytes to #{args[0].remote} starting at #{args[1]}"
 
           # Update job status after this block transfer
-          yield args[2].length, destination.name
+          yield args[2].length, dest.name
 
         when :close then
           # args[0] : file metadata
@@ -118,13 +120,11 @@ module RestFtpDaemon
 
       end
 
-      # flags = 0x0001 + 0x0002
-      flags = 0x00000001
-
-      # Rename if needed
-      if tempname
-        log_debug "RemoteSFTP.push rename to\t[#{target.name}]"
-        @sftp.rename! destination.path, target.path, flags
+      # Move the file back to its original name
+      if use_temp_name
+        flags = 0x00000001
+        log_debug "RemoteSFTP.upload rename [#{dest.name}] > [#{target.name}]"
+        @sftp.rename! dest.path, target.path, flags
       end
 
       # progress:
