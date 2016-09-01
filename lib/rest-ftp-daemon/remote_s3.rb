@@ -27,7 +27,7 @@ module RestFtpDaemon
         )
     end
 
-    def push source, target, tempname = nil, &callback
+    def upload source, target, use_temp_name = false, &callback
       # Push init
       raise RestFtpDaemon::AssertionFailed, "push/client" if @client.nil?
       log_debug "RemoteS3.push bucket[#{target.aws_bucket}] name[#{target.name}]"
@@ -38,8 +38,8 @@ module RestFtpDaemon
       object.put(body:'Hello World!')
 
       # Dump information about this file
-      log_debug "RemoteS3.push url[#{object.public_url}]"
-      log_debug "RemoteS3.push etag[#{object.etag}]"
+      log_debug "RemoteS3.upload url[#{object.public_url}]"
+      log_debug "RemoteS3.upload etag[#{object.etag}]"
       set_info :target, :aws_public_url, object.public_url
       set_info :target, :aws_etag, object.etag
     end

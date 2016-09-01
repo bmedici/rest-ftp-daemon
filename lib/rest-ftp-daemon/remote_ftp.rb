@@ -83,7 +83,7 @@ module RestFtpDaemon
       end
     end
 
-    def push source, target, tempname = nil, &callback
+    def upload source, target, use_temp_name = false, &callback
       # Push init
       raise RestFtpDaemon::AssertionFailed, "push/ftp" if @ftp.nil?
 

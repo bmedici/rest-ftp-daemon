@@ -114,14 +114,14 @@ module RestFtpDaemon
       RestFtpDaemon::Counters.instance.add :data, :transferred, @transfer_total
     end
 
-    def remote_push source, target
+    def remote_upload source, target
       # Method assertions
-      raise RestFtpDaemon::AssertionFailed, "remote_push/remote" if @remote.nil?
-      raise RestFtpDaemon::AssertionFailed, "remote_push/source" if source.nil?
-      raise RestFtpDaemon::AssertionFailed, "remote_push/target" if target.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_upload/remote" if @remote.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_upload/source" if source.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_upload/target" if target.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
-      log_info "JobTransfer.remote_push [#{source.name}]: [#{source.path}] > [#{target.path}]"
+      log_info "JobTransfer.remote_upload [#{source.name}]: [#{source.path}] > [#{target.path}]"
       set_info :source, :current, source.name
 
       # Compute temp target name
@@ -135,7 +135,7 @@ module RestFtpDaemon
       if @overwrite
         @remote.remove! target
       elsif size = @remote.present?(target)
-        log_debug "JobTransfer.remote_push existing (#{format_bytes size, 'B'})"
+        log_debug "JobTransfer.remote_upload existing (#{format_bytes size, 'B'})"
         raise RestFtpDaemon::TargetFileExists
       end
 
@@ -146,7 +146,7 @@ module RestFtpDaemon
 
       # Start the transfer, update job status after each block transfer
       set_status JOB_STATUS_UPLOADING
-      @remote.push source, target, tempname do |transferred, name|
+      @remote.upload source, target, @tempfile do |transferred, name|
         # Update transfer statistics
         progress transferred, name
 
