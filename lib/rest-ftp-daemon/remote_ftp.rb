@@ -62,7 +62,10 @@ module RestFtpDaemon
     def chdir_or_create directory, mkdir = false
       # Init, extract my parent name and my own name
       log_debug "RemoteFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
-      parent, _current = extract_parent(directory)
+      parent, current = extract_parent(directory)
+
+      #dirname, _current = extract_parent(directory)
+
 
       # Access this directory
       begin
@@ -85,18 +88,29 @@ module RestFtpDaemon
 
     def upload source, target, use_temp_name = false, &callback
       # Push init
-      raise RestFtpDaemon::AssertionFailed, "push/ftp" if @ftp.nil?
+      raise RestFtpDaemon::AssertionFailed, "upload/ftp" if @ftp.nil?
 
-      # Temp file if provided
-      destination = target.clone
-      destination.name = tempname if tempname
+      # Temp file if needed
+      dest = target.clone
+      if use_temp_name
+        dest.generate_temp_name!
+      end
+
+      # Move to the directory
+      log_debug "RemoteFTP.upload chdir [#{dest.dir}]"
+      @ftp.chdir "/#{dest.dir}"
 
       # Do the transfer
-      log_debug "RemoteFTP.push to [#{destination.name}]"
-
-      @ftp.putbinaryfile source.path, target.name, @chunk_size do |data|
+      log_debug "RemoteFTP.upload putbinaryfile [#{dest.name}]"
+      @ftp.putbinaryfile source.path, dest.name, @chunk_size do |data|
         # Update job status after this block transfer
-        yield data.bytesize, destination.name
+        yield data.bytesize, dest.name
+      end
+
+      # Move the file back to its original name
+      if use_temp_name
+        log_debug "RemoteFTP.upload rename [#{dest.name}] > [#{target.name}]"
+        @ftp.rename dest.name, target.name
       end
     end
 
