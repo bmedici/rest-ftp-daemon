@@ -89,23 +89,25 @@ module RestFtpDaemon
       # log_info "Job.initialize params[:options][:opt1]: #{params[:options][:opt1]}"
 
 
-      # Set job queue, thus reset
-      # reset
     end
 
     def reset
-      # Flag current job
+      # Update job status
+      set_status JOB_STATUS_PREPARING
+
+      # Flag current job timestamps
       @queued_at = Time.now
       @updated_at = Time.now
 
-      # Send first notification
-      log_info "Job.initialize notify[queued]"
-      client_notify :queued
+      # Job has been prepared, reset infos
+      set_status JOB_STATUS_PREPARED
+      @infos = {}
 
-      # Update job status
+      # Update job status, send first notification
       set_status JOB_STATUS_QUEUED
       set_error nil
-      @infos = {}
+      client_notify :queued
+      log_info "Job.reset notify[queued]"
     end
 
     def process
