@@ -59,11 +59,11 @@ begin
   command = ARGV.shift
 
 rescue OptionParser::InvalidOption => e
-  abort "EXITING: InvalidOption: #{e.message} \n #{e.backtrace.to_yaml}"
+  abort "EXITING: InvalidOption: #{e.message}"
 rescue ConfigParseError => e
-  abort "EXITING: ConfigParseError: #{e.message} \n #{e.backtrace.to_yaml}"
+  abort "EXITING: ConfigParseError: #{e.message}"
 rescue StandardError => e
-  abort "EXITING: StandardError: #{e.message} \n #{e.backtrace.to_yaml}"
+  abort "EXITING: StandardError: #{e.message}"
 else
   abort parser.to_s unless ["start", "stop"].include? command
 end
