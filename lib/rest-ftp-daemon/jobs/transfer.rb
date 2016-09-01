@@ -51,7 +51,7 @@ module RestFtpDaemon
 
       # Compute total files size
       @transfer_total = sources.collect(&:size).sum
-      set_info :transfer, :total, @transfer_total
+      set_info :work, :total, @transfer_total
 
       # Reset counters
       @last_data = 0
@@ -218,7 +218,7 @@ module RestFtpDaemon
 
       # Compute final bitrate
       global_transfer_bitrate = get_bitrate @transfer_total, (Time.now - transfer_started_at)
-      set_info :transfer, :bitrate, global_transfer_bitrate.round(0)
+      set_info :work, :bitrate, global_transfer_bitrate.round(0)
 
       # Done
       set_info :source, :current, nil
@@ -233,17 +233,17 @@ module RestFtpDaemon
 
       # Update counters
       @transfer_sent += transferred
-      set_info :transfer, :sent, @transfer_sent
+      set_info :work, :sent, @transfer_sent
 
       # Update job info
       percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
-      set_info :transfer, :progress, percent0
+      set_info :work, :progress, percent0
 
       # Update job status after each NOTIFY_UPADE_STATUS
       progressed_ago = (now.to_f - @progress_at.to_f)
       if (!JOB_UPDATE_INTERVAL.to_f.zero?) && (progressed_ago > JOB_UPDATE_INTERVAL.to_f)
         @current_bitrate = running_bitrate @transfer_sent
-        set_info :transfer, :bitrate, @current_bitrate.round(0)
+        set_info :work, :bitrate, @current_bitrate.round(0)
 
         # Log progress
         stack = []

@@ -62,11 +62,11 @@ module RestFtpDaemon
       set_info :work, :ffmpeg_custom_options, ffmpeg_custom_options
 
       # Build command
-        set_info :video, :ffmpeg_progress, ffmpeg_progress
       movie.transcode(target.path, ffmpeg_custom_options) do |ffmpeg_progress|
+        set_info :work, :ffmpeg_progress, ffmpeg_progress
 
         percent0 = (100.0 * ffmpeg_progress).round(0)
-        set_info :transfer, :progress, percent0
+        set_info :work, :progress, percent0
 
         log_debug "progress #{ffmpeg_progress}"
       end
