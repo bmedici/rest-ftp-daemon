@@ -22,8 +22,8 @@ module RestFtpDaemon
       end
 
       # Ensure source and target are FILE
-      raise RestFtpDaemon::SourceNotSupported, @source_loc.scheme   unless source_uri.is_a? URI::FILE
-      raise RestFtpDaemon::TargetNotSupported, @target.scheme       unless target_uri.is_a? URI::FILE
+      raise RestFtpDaemon::SourceNotSupported, @source_loc.scheme   unless @source_loc.is? URI::FILE
+      raise RestFtpDaemon::TargetNotSupported, @target_loc.scheme   unless @target_loc.is? URI::FILE
     end
 
     def do_work
