@@ -29,10 +29,10 @@ module RestFtpDaemon
     #   return oops :started, exception, "target_invalid"
     end
 
-      # Guess source files from disk
     def work
+      # Scan local source files from disk
       set_status JOB_STATUS_CHECKING_SRC
-      sources = find_local @source_path
+      sources = scan_local_paths @source_loc.path
       set_info :source, :count, sources.count
       set_info :source, :files, sources.collect(&:full)
       log_info "Job.run sources #{sources.collect(&:name)}"

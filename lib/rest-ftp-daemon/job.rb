@@ -161,7 +161,13 @@ module RestFtpDaemon
     def after
     end
 
+    def source_uri
+      @source_loc.uri
+    end
 
+    def target_uri
+      @target_loc.uri
+    end
 
     def weight
       @weight = [
@@ -253,7 +259,7 @@ module RestFtpDaemon
      [@wid, @id, nil]
     end
 
-    def find_local path
+    def scan_local_paths path
       Dir.glob(path).collect do |file|
         next unless File.readable? file
         next unless File.file? file
