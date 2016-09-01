@@ -30,11 +30,23 @@ module RestFtpDaemon
       return  "label-danger"    if runs > 2
     end
 
-    def job_label job
-      out = []
+    def location_style uri
+      case uri
+      when URI::FILE
+        "primary"
+      when URI::FTP
+        "warning"
+      when URI::FTPS
+        "success"
+      when URI::SFTP
+        "success"
+      else
+        "default"
+      end
+    end
 
-      # Icon
-      icon_klass = case job.type
+    def job_style job
+      case job.type
       when JOB_TYPE_TRANSFER
         icon_klass = "transfer"
       when JOB_TYPE_VIDEO
@@ -44,39 +56,23 @@ module RestFtpDaemon
       else
         icon_klass = "label-default"
       end
+    end
 
-      if icon_klass
-        out << sprintf(
-          '<span class="glyphicon glyphicon-%s" alt="%s"></span>',
-          icon_klass,
+    def location_label uri
+      sprintf(
+        '<div class="transfer-type label label-%s">%s</div>',
+        location_style(uri),
+        uri.class.name.split('::').last
+        )
+    end
+
+    def job_type job
+      sprintf(
+          '<span class="glyphicon glyphicon-%s" alt="%s"></span>&nbsp;%s',
+          job_style(job),
+          job.type,
           job.type
           )
-      end
-
-      # Label and class
-      method = job.get_info(:target, :method)
-      case method
-      when JOB_METHOD_FILE
-        label_klass = "primary"
-      when JOB_METHOD_FTP
-        label_klass = "warning"
-      when JOB_METHOD_FTPS
-        label_klass = "success"
-      else
-        label_klass = nil
-      end
-
-      if label_klass
-        out << '&nbsp;'
-        out << sprintf(
-          '<div class="transfer-type label label-%s">%s</div>',
-          label_klass,
-          method.upcase
-          )
-      end
-
-      # Build output
-      out.join()
     end
 
     def datetime_short datetime
