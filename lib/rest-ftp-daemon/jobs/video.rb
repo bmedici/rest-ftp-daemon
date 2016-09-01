@@ -109,6 +109,7 @@ module RestFtpDaemon
       # Build options
       ffmpeg_cutsom_options = {
         audio_codec: @video_ac,
+        video_codec: @video_vc,
         custom: ffmpeg_custom_option_array,
         }
       set_info :video, :ffmpeg_cutsom_options, ffmpeg_cutsom_options

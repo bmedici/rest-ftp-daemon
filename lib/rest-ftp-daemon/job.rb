@@ -13,8 +13,8 @@ module RestFtpDaemon
     # Class constants
     FIELDS = [:type, :source, :target, :label, :priority, :pool, :notify,
       :overwrite, :mkdir, :tempfile,
-      :video_ac, :video_custom
-    ]
+      :video_vc, :video_ac, :video_custom
+      ]
 
     # Class options
     attr_reader :logger
