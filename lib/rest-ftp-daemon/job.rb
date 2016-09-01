@@ -245,14 +245,6 @@ module RestFtpDaemon
      [@wid, @id, nil]
     end
 
-    def scan_local_paths path
-      Dir.glob(path).collect do |file|
-        next unless File.readable? file
-        next unless File.file? file
-        Path.new file
-      end
-    end
-
     def touch_job
       now = Time.now
       @updated_at = now
