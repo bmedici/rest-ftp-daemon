@@ -53,7 +53,6 @@ module RestFtpDaemon
     end
 
     def report_newrelic metrics
-
       metrics_newrelic = {}
       metrics.each do |group, pairs|
         pairs.each do |key, value|

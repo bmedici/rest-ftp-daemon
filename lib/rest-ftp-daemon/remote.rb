@@ -16,7 +16,7 @@ module RestFtpDaemon
       # Init
       @target = target
       @ftpes = ftpes
-      @debug = debug
+      @debug = !!debug
 
       # Build and empty job to protect set_info delegation
       @job = Job.new(nil, {})
