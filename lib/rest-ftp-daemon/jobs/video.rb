@@ -61,17 +61,17 @@ module RestFtpDaemon
       movie = FFMPEG::Movie.new(source.path)
 
       # Build options
-      ffmpeg_custom_options = {
-        audio_codec: @video_ac,
-        video_codec: @video_vc,
-        custom: ffmpeg_custom_option_array,
-        }
-      set_info :work, :ffmpeg_custom_options, ffmpeg_custom_options
+      options = {}
+      options[:audio_codec] = @video_ac unless @video_ac.to_s.empty?
+      options[:video_codec] = @video_vc unless @video_vc.to_s.empty?
+      options[:custom] = @ffmpeg_custom_option_array if @ffmpeg_custom_option_array
+      set_info :work, :ffmpeg_options, options
+
       # Announce contexte
       log_info "JobVideo.ffmpeg_command [#{FFMPEG.ffmpeg_binary}] [#{source.name}] > [#{target.name}]", options
 
       # Build command
-      movie.transcode(target.path, ffmpeg_custom_options) do |ffmpeg_progress|
+      movie.transcode(target.path, options) do |ffmpeg_progress|
         set_info :work, :ffmpeg_progress, ffmpeg_progress
 
         percent0 = (100.0 * ffmpeg_progress).round(0)
