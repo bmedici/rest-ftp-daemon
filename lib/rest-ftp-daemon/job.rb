@@ -54,7 +54,6 @@ module RestFtpDaemon
       @status = nil
       @runs = 0
       @wid = nil
-      @target_uri = nil
       @infos = {}
 
       # Store params
@@ -83,6 +82,9 @@ module RestFtpDaemon
         @pool = DEFAULT_POOL
       end
 
+      # Prepare sources/target
+      prepare_source
+      prepare_target
 
       # Store options
       # @options = params[:options].to_hash
@@ -103,6 +105,9 @@ module RestFtpDaemon
       # Job has been prepared, reset infos
       set_status JOB_STATUS_PREPARED
       @infos = {}
+      set_info :job, :prepared_at, Time.now
+      set_info_location :source, @source_loc
+      set_info_location :target, @target_loc
 
       # Update job status, send first notification
       set_status JOB_STATUS_QUEUED
@@ -112,11 +117,9 @@ module RestFtpDaemon
     end
 
     def process
-      alert_common_method_called
-    end
-
-    # def process
-    #   log_info "Job.process update_interval[#{JOB_UPDATE_INTERVAL}]"
+      # Check prerequisites
+      raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
+      raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
 
     #   # Prepare
     #   begin
@@ -204,26 +207,31 @@ module RestFtpDaemon
     def prepare_common
       # Init
       @source_path = nil
+    def prepare_source
+      raise RestFtpDaemon::AttributeMissing, "source" unless @source
+      @source_loc = Location.new @source
+      log_info "Job.prepare_source #{@source_loc.uri}"
+    end
+
+    def prepare_target
+      raise RestFtpDaemon::AttributeMissing, "target" unless @target
+      @target_loc = Location.new @target
+      log_info "Job.prepare_target #{@target_loc.uri}"
+    end
+
+    def set_info_location prefix, location
+      return unless location.is_a? Location
+      set_info prefix, :location_uri,    location.to_s
+      set_info prefix, :location_scheme, location.scheme
+      set_info prefix, :location_path,   location.path
+      set_info prefix, :location_host,   location.host
+    end
 
       # Update job status
       set_status JOB_STATUS_PREPARING
       @runs += 1
 
-      # Prepare source
-      raise RestFtpDaemon::JobMissingAttribute unless @source
-      @source_path = File.expand_path replace_tokens(@source)
-      set_info :source, :path, @source_path
-      set_info :source, :method, JOB_METHOD_FILE
-      log_info "Job.prepare source_path path[#{@source_path}]"
 
-      # Prepare target
-      raise RestFtpDaemon::JobMissingAttribute unless @target
-      @target_uri = expand_url @target
-      log_info "Job.prepare target_uri [#{@target_uri}]"
-
-      set_info :target, :uri, @target_uri.to_s
-      set_info :target, :host, @target_uri.host
-      @target_path = Path.new @target_uri.path, false
 
       log_info "Job.prepare target_path path[#{@target_path}] scheme[#{@target_uri.scheme}]"
     end
@@ -248,27 +256,12 @@ module RestFtpDaemon
       Thread.current.thread_variable_set :updated_at, now
     end
 
-    def expand_url path
-      URI.parse replace_tokens(path)
-    end
 
     def contains_brackets item
       /\[.*\]/.match(item)
     end
 
     def replace_tokens path
-      # Ensure endpoints are not a nil value
-      return path unless @endpoints.is_a? Enumerable
-      vectors = @endpoints.clone
-
-      # Stack RANDOM into tokens
-      vectors["RANDOM"] = SecureRandom.hex(JOB_RANDOM_LEN)
-
-      # Replace endpoints defined in config
-      newpath = path.clone
-      vectors.each do |from, to|
-        next if to.to_s.blank?
-        newpath.gsub! tokenize(from), to
       end
 
       # Ensure result does not contain tokens after replacement
