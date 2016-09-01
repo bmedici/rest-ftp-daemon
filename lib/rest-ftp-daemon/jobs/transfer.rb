@@ -5,7 +5,7 @@ module RestFtpDaemon
 
   protected
 
-    def before
+    def do_before
       # Prepare flags
       flag_prepare :mkdir, false
       flag_prepare :overwrite, false
@@ -42,7 +42,7 @@ module RestFtpDaemon
     #   return oops :started, exception, "target_invalid"
     end
 
-    def work
+    def do_work
       # Scan local source files from disk
       set_status JOB_STATUS_CHECKING_SRC
       sources = @source_loc.scan_files
@@ -157,7 +157,7 @@ module RestFtpDaemon
     #   return oops :ended, exception, "encoding_error", true
     end
 
-    def after
+    def do_after
       # Close FTP connexion and free up memory
       log_info "JobTransfer.after"
       @remote.close

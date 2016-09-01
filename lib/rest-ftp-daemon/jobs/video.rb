@@ -8,8 +8,10 @@ require 'streamio-ffmpeg'
 module RestFtpDaemon
   class JobVideo < Job
 
+  protected
+
     # Process job
-    def before
+    def do_before
       log_info "JobVideo.before source_loc.path: #{@source_loc.path}"
       log_info "JobVideo.before target_loc.path: #{@target_loc.path}"
 
@@ -24,7 +26,7 @@ module RestFtpDaemon
       raise RestFtpDaemon::TargetNotSupported, @target.scheme       unless target_uri.is_a? URI::FILE
     end
 
-    def work
+    def do_work
       # Guess source files from disk
       set_status JOB_STATUS_TRANSFORMING
       sources = @source_loc.scan_files
@@ -50,12 +52,10 @@ module RestFtpDaemon
       return oops :ended, exception, "ffmpeg_error"
     end
 
-    def after
+    def do_after
       # Done
       set_info :source, :current, nil
     end
-
-  protected
 
     def video_command source, target
       log_info "JobVideo.video_command [#{source.name}]: [#{source.path}] > [#{target.path}]"

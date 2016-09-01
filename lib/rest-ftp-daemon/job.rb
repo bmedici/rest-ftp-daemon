@@ -124,7 +124,6 @@ module RestFtpDaemon
       # Before work
       begin
         log_debug "Job.process before"
-        before
       rescue RestFtpDaemon::SourceNotSupported => exception
         return oops :started, exception
       rescue RestFtpDaemonException => exception
@@ -132,12 +131,13 @@ module RestFtpDaemon
       rescue StandardError => exception
         return oops :started, exception, "unexpected_before"
       end
+        do_before
 
       # Do the hard work
       begin
         log_debug "Job.process work"
         set_status JOB_STATUS_WORKING
-        work
+        do_work
 
       rescue RestFtpDaemon::SourceNotFound => exception
         return oops :ended, exception
@@ -156,7 +156,7 @@ module RestFtpDaemon
       # Finalize all this
       begin
         log_debug "Job.process after"
-        after
+        do_after
 
       rescue RestFtpDaemonException => exception
         return oops :ended, exception

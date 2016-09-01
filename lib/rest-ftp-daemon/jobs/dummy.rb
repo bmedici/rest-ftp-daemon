@@ -4,16 +4,17 @@ module RestFtpDaemon
     # def initialize job_id, params = {}
     #   super
     # end
+  protected
 
-    def before
+    def do_before
     end
 
-    def work
       log_info "JobDummy.work YEAH WE'RE PROCESSING, man !"
+    def do_work
       sleep 5
     end
 
-    def after
+    def do_after
     end
 
   end
