@@ -22,7 +22,7 @@ module RestFtpDaemon
       case target_uri
       when URI::FTP
         log_info "JobTransfer.before target_method FTP"
-        @remote = RemoteFTP.new @target_loc, log_prefix, @config[:debug_ftps]
+        @remote = RemoteFTP.new @target_loc, log_prefix, @config[:debug_ftp]
       when URI::FTPES, URI::FTPS
         log_info "JobTransfer.before target_method FTPES/FTPS"
         @remote = RemoteFTP.new @target_loc, log_prefix, @config[:debug_ftps], :ftpes
