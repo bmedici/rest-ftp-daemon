@@ -36,7 +36,7 @@ module RestFtpDaemon
     end
 
     def present? target
-      size = @ftp.size target.full
+      size = @ftp.size target.path
       log_debug "RemoteFTP.present? [#{target.name}]"
 
     rescue Net::FTPPermError
@@ -47,7 +47,7 @@ module RestFtpDaemon
 
     def remove! target
       log_debug "RemoteFTP.remove! [#{target.name}]"
-      @ftp.delete target.full
+      @ftp.delete target.path
     rescue Net::FTPPermError
       log_debug "#{LOG_INDENT}[#{target.name}] file not found"
     else
@@ -97,7 +97,7 @@ module RestFtpDaemon
       # Do the transfer
       log_debug "RemoteFTP.push to [#{destination.name}]"
 
-      @ftp.putbinaryfile source.full, target.name, @chunk_size do |data|
+      @ftp.putbinaryfile source.path, target.name, @chunk_size do |data|
         # Update job status after this block transfer
         yield data.bytesize, destination.name
       end
