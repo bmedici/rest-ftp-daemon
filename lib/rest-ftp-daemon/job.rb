@@ -256,10 +256,10 @@ module RestFtpDaemon
 
     def set_info_location prefix, location
       return unless location.is_a? Location
-      set_info prefix, :location_uri,    location.to_s
-      set_info prefix, :location_scheme, location.scheme
-      set_info prefix, :location_path,   location.path
-      set_info prefix, :location_host,   location.host
+      set_info prefix, :uri,    location.to_s
+      set_info prefix, :scheme, location.scheme
+      set_info prefix, :host,   location.host
+      set_info prefix, :path,   location.path
     end
 
   private
