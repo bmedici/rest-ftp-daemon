@@ -33,6 +33,7 @@ module RestFtpDaemon
       do_not_route_options!
       # version 'v1'
       format :json
+      formatter :json, PrettyJSON
       content_type :json, 'application/json; charset=utf-8'
 
 

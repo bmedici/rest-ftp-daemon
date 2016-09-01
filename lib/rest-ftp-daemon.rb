@@ -26,6 +26,7 @@ require_relative "rest-ftp-daemon/job_queue"
 require_relative "rest-ftp-daemon/counters"
 require_relative "rest-ftp-daemon/notification"
 require_relative "rest-ftp-daemon/location"
+require_relative "rest-ftp-daemon/pretty_json"
 
 # Remotes
 require_relative "rest-ftp-daemon/remote"
