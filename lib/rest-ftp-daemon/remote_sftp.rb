@@ -63,8 +63,8 @@ module RestFtpDaemon
 
       # Access this directory
       begin
-        log_debug "chdir [/#{directory}]"
-        @sftp.opendir! "./#{directory}"
+        #log_debug "chdir [/#{directory}]"
+        @sftp.opendir! directory
 
       rescue Net::SFTP::StatusException => _e
         # If not allowed to create path, that's over, we're stuck
