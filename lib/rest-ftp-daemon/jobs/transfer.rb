@@ -45,10 +45,11 @@ module RestFtpDaemon
     def work
       # Scan local source files from disk
       set_status JOB_STATUS_CHECKING_SRC
-      sources = scan_local_paths @source_loc.path
-      set_info :source, :count, sources.count
-      set_info :source, :files, sources.collect(&:full)
-      log_info "JobTransfer.work sources #{sources.collect(&:name)}"
+      sources = @source_loc.scan_files
+      log_debug "JobTransfer.work sources result #{sources.inspect}"
+      set_info :source, :count, sources.size
+      set_info :source, :files, sources.collect(&:name)
+      log_info "JobTransfer.work sources names #{sources.collect(&:name)}"
       raise RestFtpDaemon::SourceNotFound if sources.empty?
 
       # Guess target file name, and fail if present while we matched multiple sources
@@ -78,7 +79,7 @@ module RestFtpDaemon
         target_final = @target_loc.clone
 
         # Add the source file name if none found in the target path
-        unless full_target.name
+        unless target_final.name
           target_final.name = source.name
         end
 
@@ -180,7 +181,7 @@ module RestFtpDaemon
       raise RestFtpDaemon::AssertionFailed, "remote_push/target" if target.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
-      log_info "JobTransfer.remote_push [#{source.name}]: [#{source.full}] > [#{target.full}]"
+      log_info "JobTransfer.remote_push [#{source.name}]: [#{source.path}] > [#{target.path}]"
       set_info :source, :current, source.name
 
       # Compute temp target name
@@ -222,8 +223,6 @@ module RestFtpDaemon
     end
 
     def progress transferred, name = ""
-
-
       # What's current time ?
       now = Time.now
       notify_after = @config[:notify_after]
