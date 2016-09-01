@@ -1,5 +1,6 @@
 # FIXME: prepare files list ar prepare_common
 # FIXME: scope classes in submodules like Worker::Transfer, Job::Video
+# FIXME: restore HostKeyMismatch and other NEt::SFTP exceptions
 
 # Represents work to be done along with parameters to process it
 require "securerandom"
@@ -16,7 +17,7 @@ module RestFtpDaemon
     # Class constants
     FIELDS = [:type, :source, :target, :label, :priority, :pool, :notify,
       :overwrite, :mkdir, :tempfile,
-      :video_vc, :video_ac, :video_custom
+      :video_vc, :video_ac, :video_custom,
       ]
 
     # Class options
@@ -120,30 +121,29 @@ module RestFtpDaemon
       # Notify we start working
       log_info "Job.process notify [started]"
       current_signal = :started
+      set_status JOB_STATUS_WORKING
       client_notify :started
 
       # Before work
-      begin
-        do_before
       log_debug "Job.process do_before"
       current_signal = :started
+      do_before
 
       # Do the hard work
-      begin
-        set_status JOB_STATUS_WORKING
-        do_work
-
       log_debug "Job.process do_work"
       current_signal = :ended
+      do_work
 
       # Finalize all this
-      begin
-        do_after
       log_debug "Job.process do_after"
       current_signal = :ended
+      do_after
 
+    rescue StandardError => exception
+      return oops signal, exception
 
-        # All done !
+    else
+      # All done !
       set_status JOB_STATUS_FINISHED
       log_info "JobVideo.process notify [ended]"
       client_notify :ended
