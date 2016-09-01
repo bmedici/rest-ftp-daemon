@@ -69,7 +69,6 @@ module RestFtpDaemon
       # Logger
       @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
 
-
       # Import query params
       FIELDS.each do |name|
         instance_variable_set "@#{name}", params[name]
@@ -140,7 +139,6 @@ module RestFtpDaemon
       do_after
 
     rescue StandardError => exception
-      log_debug "Job.process caught [#{exception.class}] #{exception.message}"
       return oops current_signal, exception
 
     else
@@ -251,15 +249,12 @@ module RestFtpDaemon
 
     def set_info_location prefix, location
       return unless location.is_a? Location
-      set_info prefix, :uri,    location.to_s
-      set_info prefix, :scheme, location.scheme
-      set_info prefix, :user,   location.user
-      set_info prefix, :host,   location.host
-      set_info prefix, :port,   location.port
-      set_info prefix, :path,   location.path
-      set_info prefix, :aws_region,   location.aws_region
-      set_info prefix, :aws_bucket,   location.aws_bucket
-      set_info prefix, :aws_id,       location.aws_id
+      fields = [:uri, :scheme, :user, :host, :port, :dir, :name, :path, :aws_region, :aws_bucket, :aws_id]
+
+      # Add each field to @infos
+      fields.each do |what|
+        set_info prefix, what, location.send(what)
+      end
     end
 
   private
