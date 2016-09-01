@@ -249,9 +249,9 @@ module RestFtpDaemon
 
     def remote_push source, target
       # Method assertions
-      raise RestFtpDaemon::JobAssertionFailed, "remote_push/1" if @remote.nil?
-      raise RestFtpDaemon::JobAssertionFailed, "remote_push/2" if source.nil?
-      raise RestFtpDaemon::JobAssertionFailed, "remote_push/3" if target.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_push/remote" if @remote.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_push/source" if source.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_push/target" if target.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
       log_info "Job.remote_push [#{source.name}]: [#{source.full}] > [#{target.full}]"
@@ -269,7 +269,7 @@ module RestFtpDaemon
         @remote.remove! target
       elsif size = @remote.present?(target)
         log_debug "Job.remote_push existing (#{format_bytes size, 'B'})"
-        raise RestFtpDaemon::JobTargetFileExists
+        raise RestFtpDaemon::TargetFileExists
       end
 
       # Start transfer

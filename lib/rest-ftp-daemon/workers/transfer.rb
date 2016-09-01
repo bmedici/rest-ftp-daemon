@@ -92,14 +92,14 @@ module RestFtpDaemon
       # Inform the job
       job.oops_you_stop_now ex unless job.nil?
 
-    rescue RestFtpDaemon::JobMissingAttribute => ex
+    rescue RestFtpDaemon::AttributeMissing => ex
       log_error "JOB MISSING ATTRIBUTE", ex.backtrace
       worker_status WORKER_STATUS_CRASHED
 
       # Inform the job
       job.oops_you_stop_now ex unless job.nil?
 
-    rescue RestFtpDaemon::JobAssertionFailed => ex
+    rescue RestFtpDaemon::AssertionFailed => ex
       log_error "JOB ASSERTION FAILED", ex.backtrace
       worker_status WORKER_STATUS_CRASHED
 

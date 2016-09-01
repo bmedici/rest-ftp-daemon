@@ -58,7 +58,7 @@ module RestFtpDaemon
       @sftp.mkdir! directory
 
       rescue
-        raise JobTargetPermissionError
+        raise TargetPermissionError
     end
 
     def chdir_or_create directory, mkdir = false
@@ -93,7 +93,7 @@ module RestFtpDaemon
 
     def push source, target, tempname = nil, &callback
       # Push init
-      raise RestFtpDaemon::JobAssertionFailed, "push/1" if @sftp.nil?
+      raise RestFtpDaemon::AssertionFailed, "push/1" if @sftp.nil?
 
       # Temp file if provided
       destination = target.clone
