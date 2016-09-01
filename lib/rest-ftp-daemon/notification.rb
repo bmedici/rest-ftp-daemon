@@ -41,15 +41,15 @@ module RestFtpDaemon
       if @url.nil?
         log_error "skipping (missing url)", params
         return
-      elsif @params[:event].nil?
-        log_error "skipping (missing event)", params
+      elsif @params[:signal].nil?
+        log_error "skipping (missing signal)", params
         return
       end
 
       # Build body and extract job ID if provided
       flags = {
         id:       @params[:id].to_s,
-        signal:   "#{NOTIFY_PREFIX}.#{@params[:event]}",
+        signal:   "#{NOTIFY_PREFIX}.#{@params[:signal]}",
         error:    @params[:error],
         host:     Conf.host.to_s,
         }

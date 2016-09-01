@@ -119,12 +119,14 @@ module RestFtpDaemon
 
       # Notify we start working
       log_info "Job.process notify [started]"
+      current_signal = :started
       client_notify :started
 
       # Before work
       begin
         log_debug "Job.process before"
         do_before
+      current_signal = :started
 
       # Do the hard work
       begin
@@ -132,11 +134,13 @@ module RestFtpDaemon
         set_status JOB_STATUS_WORKING
         do_work
 
+      current_signal = :ended
 
       # Finalize all this
       begin
         log_debug "Job.process after"
         do_after
+      current_signal = :ended
 
 
         # All done !
@@ -303,20 +307,20 @@ module RestFtpDaemon
       end
     end
 
-    def client_notify event, payload = {}
+    def client_notify signal, payload = {}
       # Skip if no URL given
       return unless @notify
 
       # Ok, create a notification!
       payload[:id] = @id
-      payload[:event] = event
+      payload[:signal] = signal
       RestFtpDaemon::Notification.new @notify, payload
 
     rescue StandardError => ex
       log_error "Job.client_notify EXCEPTION: #{ex.inspect}"
     end
 
-    def oops event, exception, error = nil#, include_backtrace = false
+    def oops signal, exception, error = nil#, include_backtrace = false
       # Find error code in ERRORS table
       if error.nil?
         error = ERRORS.key(exception.class)
@@ -332,7 +336,7 @@ module RestFtpDaemon
       end
 
       # Log backtrace ?
-      message = "Job.oops event[#{event}] exception[#{exception.class}] error[#{error}] #{exception.message}"
+      message = "Job.oops signal[#{signal}] exception[#{exception.class}] error[#{error}] #{exception.message}"
       if include_backtrace
         log_error message, exception.backtrace
       else
@@ -362,8 +366,8 @@ module RestFtpDaemon
       RestFtpDaemon::Counters.instance.increment :jobs, :failed
 
       # Prepare notification if signal given
-      return unless event
-      client_notify event, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
+      return unless signal
+      client_notify signal, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
 
     # NewRelic instrumentation
