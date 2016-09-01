@@ -27,13 +27,11 @@
 
     %td= job_type job
 
-    %td{title: job.get_info(:source, :path)}
-      = location_label job.source_uri
-      = token_highlight job.source
+    %td.text-right= location_label job.source_uri
+    %td= token_highlight job.source
 
-    %td{title: job.get_info(:target, :path)}
-      = location_label job.target_uri
-      = token_highlight job.target
+    %td.text-right= location_label job.target_uri
+    %td= token_highlight job.target
 
     %td= datetime_short(job.queued_at)
 

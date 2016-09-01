@@ -60,8 +60,9 @@ module RestFtpDaemon
 
     def location_label uri
       sprintf(
-        '<div class="transfer-type label label-%s">%s</div>',
+        '<div class="transfer-type label label-%s" title="%s">%s</div>',
         location_style(uri),
+        uri.to_s,
         uri.class.name.split('::').last
         )
     end
