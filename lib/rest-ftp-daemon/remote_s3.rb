@@ -13,9 +13,10 @@ module RestFtpDaemon
     end
 
     def connect
-      # Connect init
       super
-      log_debug "RemoteS3.connect [#{@target.aws_id}]@[#{@target.aws_bucket}]"
+
+      # Connect init
+      log_debug "RemoteS3.connect region[#{target.aws_region}] id[#{target.aws_id}]"
 
       # Debug level
       verbosity =  @debug ? Logger::DEBUG : false
@@ -29,13 +30,21 @@ module RestFtpDaemon
 
     def upload source, target, use_temp_name = false, &callback
       # Push init
-      raise RestFtpDaemon::AssertionFailed, "push/client" if @client.nil?
-      log_debug "RemoteS3.push bucket[#{target.aws_bucket}] name[#{target.name}]"
+      raise RestFtpDaemon::AssertionFailed, "upload/client" if @client.nil?
+      log_debug "RemoteS3.upload bucket[#{target.aws_bucket}] name[#{target.name}]"
+
+      # Update progress before
+      #yield 0, target.name
 
       # Do the transfer
       bucket = @client.bucket(target.aws_bucket)
       object = bucket.object(target.name)
-      object.put(body:'Hello World!')
+      object.upload_file source.path do |progress, total|
+        log_debug "- progress[#{progress}] total[#{total}]"
+      end
+
+      # Update progress after
+      #yield target.size, target.name
 
       # Dump information about this file
       log_debug "RemoteS3.upload url[#{object.public_url}]"
