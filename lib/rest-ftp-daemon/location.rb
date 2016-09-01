@@ -12,7 +12,6 @@ module RestFtpDaemon
     attr_reader :scheme
     attr_reader :dir
 
-
     attr_reader :aws_region
     attr_reader :aws_bucket
     attr_reader :aws_id
@@ -40,14 +39,12 @@ module RestFtpDaemon
         raise RestFtpDaemon::UnresolvedTokens, detected_tokens.join(' ')
       end
 
-      # Parse URL
+      # Parse URL and do specific initializations
       parse_url location_uri
-
-      # Match AWS URL with BUCKET.s3.amazonaws.com
-      init_aws if @uri.is_a? URI::S3
-
-      # Set default user if not provided
-      # init_username
+      case @uri
+      when URI::FILE  then init_file
+      when URI::S3    then init_aws               # Match AWS URL with BUCKET.s3.amazonaws.com
+      end
 
       # Check that scheme is supported
       unless @uri.scheme
@@ -55,7 +52,12 @@ module RestFtpDaemon
       end
     end
 
+    def is? kind
+      @uri.is_a? kind
+    end
+
     def path
+      return @name if @dir.nil?
       File.join(@dir.to_s, @name.to_s)
     end
 
@@ -127,6 +129,11 @@ module RestFtpDaemon
     #   @uri.user ||= "anonymous"
     # end
 
+    def init_file
+      # Dir is absolute
+      @dir = File.join('/', @dir.to_s)
+    end
+
     def init_aws
       # Split hostname
       parts       = @uri.host.split('.')
@@ -141,6 +148,9 @@ module RestFtpDaemon
       # Credentials from config
       @aws_id     = Conf.at(:credentials, @uri.host, :id)
       @aws_secret = Conf.at(:credentials, @uri.host, :secret)
+
+      # Clear @dir
+      @dir = nil
     end
 
     def extract_filename path
