@@ -4,10 +4,13 @@ require 'active_support/core_ext/module/delegation'
 module RestFtpDaemon
   class Location
     # Accessors
+    attr_accessor :name
+
     attr_reader :uri
     attr_reader :scheme
     attr_reader :dir
-    attr_accessor :name
+
+
     attr_reader :aws_region
     attr_reader :aws_bucket
     attr_reader :aws_id
@@ -18,11 +21,10 @@ module RestFtpDaemon
     #include BmcDaemonLib::LoggerHelper
 
     # def_delegators :@uri,
-    delegate :scheme, :host, :user, :password, :to_s, to: :uri
+    delegate :scheme, :host, :port, :user, :password, :to_s,
+      to: :uri
 
     def initialize path
-      #@logger = BmcDaemonLib::LoggerPool.instance.get :transfer
-      #log_debug "Location.initialize path[#{path}]"
       # Strip spaces before/after, copying original "path" at the same time
       location_uri = path.strip
 
@@ -31,15 +33,16 @@ module RestFtpDaemon
       fix_scheme! location_uri
 
       # Parse URL
-      #log_debug "Location.initialize uri[#{location_uri}]"
       parse_url location_uri
 
       # Match AWS URL with BUCKET.s3.amazonaws.com
       init_aws if @uri.is_a? URI::S3
 
+      # Set default user if not provided
+      init_username
+
       # Ensure result does not contain tokens after replacement
       detected_tokens = detect_tokens(location_uri)
-      #log_debug "Location.initialize detected_tokens: #{detected_tokens.inspect}"
       unless detected_tokens.empty?
         raise RestFtpDaemon::UnresolvedTokens, detected_tokens.join(' ')
       end
@@ -48,13 +51,6 @@ module RestFtpDaemon
       unless @uri.scheme
         raise RestFtpDaemon::UnsupportedScheme, url
       end
-
-      # All done
-      #log_debug "Location.initialize class[#{@uri.class}] scheme[#{@uri.scheme}] dir[#{@dir}] name[#{@name}]"
-    end
-
-    def is? klass
-      @uri.is_a? klass
     end
 
     def path
@@ -95,7 +91,7 @@ module RestFtpDaemon
 
       # Replace endpoints defined in config
       vectors.each do |from, to|
-        next if to.to_s.blank?
+        next if to.to_s.empty?
         path.gsub! tokenize(from), to
       end
     end
@@ -112,7 +108,7 @@ module RestFtpDaemon
     def parse_url path
       # Parse that URL
       @uri = URI.parse path # rescue nil
-      raise RestFtpDaemon::LocationParseError, location_path unless uri
+      raise RestFtpDaemon::LocationParseError, location_path unless @uri
 
       # Store URL parts
       @ori_path = path
@@ -122,6 +118,10 @@ module RestFtpDaemon
 
       rescue StandardError => exception
         raise RestFtpDaemon::LocationParseError, exception.message unless uri
+    end
+
+    def init_username
+      @uri.user ||= "anonymous"
     end
 
     def init_aws

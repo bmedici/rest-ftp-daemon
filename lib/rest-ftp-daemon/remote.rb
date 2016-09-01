@@ -25,9 +25,6 @@ module RestFtpDaemon
       @log_prefix = log_prefix || {}
       @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
 
-      # Extract URL parts
-      @url.user ||= "anonymous"
-
       # Annnounce object
       log_info "Remote.initialize [#{target.path}]"
       log_debug "Remote.initialize target[#{@target.inspect}]"
