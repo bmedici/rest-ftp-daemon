@@ -109,20 +109,23 @@ module RestFtpDaemon
       path.gsub! /^\/(.*)/, 'file:/\1'
     end
 
-    def remove_multiple_slashes path
-      path.gsub! /([^:])\/\//, '\1/'
-    end
-
     def parse_url path
       # Parse that URL
       @uri = URI.parse path # rescue nil
       raise RestFtpDaemon::LocationParseError, location_path unless @uri
 
+      # Sanitize path
+      cleaned  = @uri.path.clone
+
+      # remove_leading_slashes
+      cleaned.gsub! /^\//, ''
+
+      # remove_multiple_slashes
+      cleaned.gsub! /([^:])\/\//, '\1/'
+
       # Store URL parts
-      @ori_path = path
-      @uri_path = uri.path
-      @dir      = extract_dirname uri.path
-      @name     = extract_filename uri.path
+      @dir      = extract_dirname  cleaned
+      @name     = extract_filename cleaned
     end
 
     # def init_username
@@ -163,10 +166,6 @@ module RestFtpDaemon
       # match all the beginning of the string up to the last slash
       m = path.match(/^(.*)\/[^\/]*$/)
       return m[1].to_s unless m.nil?
-    end
-
-    def strip_leading_slash_from_dir!
-      @dir.to_s.gsub!(/^\//, '')
     end
 
     def detect_tokens item
