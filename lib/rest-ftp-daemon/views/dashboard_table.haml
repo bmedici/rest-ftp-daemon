@@ -1,10 +1,15 @@
 -# coding: utf-8
 - jobs.each do |job|
-  - progress = job.get_info(:transfer, :progress)
-  - source_count = job.get_info(:source, :count) || 0
-  - source_processed = job.get_info(:source, :processed) || 0
-  - source_current = job.get_info(:source, :current)
-  - bitrate = job.get_info(:transfer, :bitrate)
+  - work_progress     = job.get_info(:work, :progress)
+  - work_bitrate      = job.get_info(:work, :bitrate)
+  - work_sent         = job.get_info(:work, :sent)
+
+  - source_count      = job.get_info(:source, :count) || 0
+  - source_processed  = job.get_info(:source, :processed) || 0
+  - source_current    = job.get_info(:source, :current)
+
+  - job_working       = [JOB_STATUS_UPLOADING, JOB_STATUS_TRANSFORMING].include? job.status
+
   - trclass = JOB_STYLES[job.status]
   - runs = job.runs.to_i
 
@@ -16,21 +21,21 @@
       %a{href: dashboard_job_url(job)}
         %b= job.id
 
-
     %td= job.pool
-
-    %td= job_label job
 
     %td= job.label
 
+    %td= job_type job
+
     %td{title: job.get_info(:source, :path)}
+      = location_label job.source_uri
       = token_highlight job.source
 
-    %td{title: job.get_info(:target, :url)}
+    %td{title: job.get_info(:target, :path)}
+      = location_label job.target_uri
       = token_highlight job.target
 
-    %td
-      = datetime_short(job.queued_at)
+    %td= datetime_short(job.queued_at)
 
     %td
       %span.push-status
@@ -39,21 +44,21 @@
       - if (job.status != JOB_STATUS_FINISHED) && (source_processed < source_count)
         = " (#{source_processed}/#{source_count})"
 
-      - if job.status == JOB_STATUS_UPLOADING
+      - if job_working
 
-        - unless progress.nil?
+        - unless work_progress.nil?
           %span.push-progress
-            = "#{progress}%"
+            = "#{work_progress}%"
         %br
         %span.push-filename
           %b= source_current unless source_current.nil?
 
     %td
       -# unless job.error || job.status == JOB_STATUS_FINISHED
-      - if job.status == JOB_STATUS_UPLOADING
+      - if job_working
         .progress
-          .progress-bar{style:"width: #{progress}%;"}
-            = format_bytes(job.get_info(:transfer, :sent), "B")
+          .progress-bar{style:"width: #{work_progress}%;"}
+            = "#{work_progress} %"
 
       - else
         .error{title: job.get_info(:error, :message)}
@@ -63,9 +68,9 @@
       = format_bytes(job.get_info(:transfer, :total), "B")
 
     %td.nobr.text-right{title: "time: #{job.exectime} s"}
-      - if bitrate
+      - if work_bitrate
         %span.push-bitrate
-          = format_bytes(bitrate, "bps")
+          = format_bytes(work_bitrate, "bps")
 
     %td
       - unless job.wid.nil?
