@@ -130,7 +130,7 @@ module RestFtpDaemon
       rescue Net::FTPConnectionError => exception
         return oops :started, exception, "ftp_connection_error"
       rescue StandardError => exception
-        return oops :started, exception, "unexpected_error"
+        return oops :started, exception, "unexpected_before_error"
       end
 
       # Do the hard work
@@ -153,8 +153,9 @@ module RestFtpDaemon
 
       rescue RestFtpDaemon::AssertionFailed => exception
         return oops :ended, exception
+
       rescue StandardError => exception
-        return oops :started, exception, "unexpected_error"
+        return oops :started, exception, "unexpected_work_error"
       end
 
       # Finalize all this
@@ -162,7 +163,7 @@ module RestFtpDaemon
         log_debug "Job.process after"
         after
       rescue StandardError => exception
-        return oops :started, exception, "unexpected_error"
+        return oops :started, exception, "unexpected_after_error"
       end
 
         # All done !
