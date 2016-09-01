@@ -214,6 +214,23 @@ module RestFtpDaemon
       end
     end
 
+    def set_info level1, level2, value
+      @mutex.synchronize do
+        @infos || {}
+        @infos[level1] ||= {}
+
+        # Force strings to UTF8
+        if value.is_a? Symbol
+          @infos[level1][level2] = value.to_s.force_encoding(Encoding::UTF_8)
+        elsif value.is_a? String
+          @infos[level1][level2] = value.dup.force_encoding(Encoding::UTF_8)
+        else
+          @infos[level1][level2] = value
+        end
+      end
+      touch_job
+    end
+
   protected
 
     def alert_common_method_called
@@ -262,23 +279,6 @@ module RestFtpDaemon
     def set_status value
       @mutex.synchronize do
         @status = value
-      end
-      touch_job
-    end
-
-    def set_info level1, level2, value
-      @mutex.synchronize do
-        @infos || {}
-        @infos[level1] ||= {}
-
-        # Force strings to UTF8
-        if value.is_a? Symbol
-          @infos[level1][level2] = value.to_s.force_encoding(Encoding::UTF_8)
-        elsif value.is_a? String
-          @infos[level1][level2] = value.dup.force_encoding(Encoding::UTF_8)
-        else
-          @infos[level1][level2] = value
-        end
       end
       touch_job
     end

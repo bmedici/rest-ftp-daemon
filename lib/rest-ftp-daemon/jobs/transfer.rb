@@ -37,6 +37,9 @@ module RestFtpDaemon
         raise RestFtpDaemon::TargetNotSupported, @target_loc.scheme
       end
 
+      # Plug this Job into @remote to allow it to log
+      @remote.job = self
+
     # rescue URI::InvalidURIError => exception
     #   return oops :started, exception, "target_invalid"
     end

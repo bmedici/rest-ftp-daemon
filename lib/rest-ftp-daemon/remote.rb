@@ -7,6 +7,11 @@ module RestFtpDaemon
     attr_reader :logger
     attr_reader :log_prefix
 
+    attr_accessor :job
+
+    # Delegate set_info info to Job
+    delegate :set_info, to: :job
+
     def initialize target, log_prefix, debug = false, ftpes = false
       # Init
       @target = target
@@ -23,6 +28,8 @@ module RestFtpDaemon
       # Annnounce object
       log_info "Remote.initialize [#{target.path}]"
       log_debug "Remote.initialize target[#{@target.inspect}]"
+
+      # Prepare real object
       prepare
     end
 
