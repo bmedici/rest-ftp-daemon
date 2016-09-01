@@ -138,6 +138,21 @@ module RestFtpDaemon
         log_debug "Job.process work"
         set_status JOB_STATUS_WORKING
         work
+
+      rescue RestFtpDaemon::SourceNotFound => exception
+        return oops :ended, exception
+
+      rescue RestFtpDaemon::TargetFileExists => exception
+        return oops :ended, exception
+
+      rescue RestFtpDaemon::TargetDirectoryError => exception
+        return oops :ended, exception
+
+      rescue RestFtpDaemon::TargetPermissionError => exception
+        return oops :ended, exception
+
+      rescue RestFtpDaemon::AssertionFailed => exception
+        return oops :ended, exception
       rescue StandardError => exception
         return oops :started, exception, "unexpected_error"
       end

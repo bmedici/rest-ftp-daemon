@@ -152,24 +152,8 @@ module RestFtpDaemon
 
     rescue Errno::EINVAL => exception
       return oops :ended, exception, "invalid_argument", true
-
     # rescue Encoding::UndefinedConversionError => exception
     #   return oops :ended, exception, "encoding_error", true
-
-    rescue RestFtpDaemon::SourceNotFound => exception
-      return oops :ended, exception
-
-    rescue RestFtpDaemon::TargetFileExists => exception
-      return oops :ended, exception
-
-    rescue RestFtpDaemon::TargetDirectoryError => exception
-      return oops :ended, exception
-
-    rescue RestFtpDaemon::TargetPermissionError => exception
-      return oops :ended, exception
-
-    rescue RestFtpDaemon::AssertionFailed => exception
-      return oops :ended, exception
     end
 
     def after
