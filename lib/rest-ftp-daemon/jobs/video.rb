@@ -19,6 +19,8 @@ module RestFtpDaemon
 
 
 
+    rescue FFMPEG::Error => exception
+      return oops :ended, exception, "ffmpeg_error"
     end
 
     def after

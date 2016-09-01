@@ -86,6 +86,9 @@ module RestFtpDaemon
       prepare_source
       prepare_target
 
+      # Handle exceptions
+      rescue RestFtpDaemon::UnsupportedScheme => exception
+        return oops :started, exception
     end
 
     def reset
@@ -120,6 +123,12 @@ module RestFtpDaemon
       begin
         log_debug "Job.process before"
         before
+      rescue RestFtpDaemon::SourceNotSupported => exception
+        return oops :started, exception
+      rescue Net::FTPConnectionError => exception
+        return oops :started, exception, "ftp_connection_error"
+      rescue StandardError => exception
+        return oops :started, exception, "unexpected_error"
       end
 
       # Do the hard work
@@ -127,10 +136,16 @@ module RestFtpDaemon
         log_debug "Job.process work"
         set_status JOB_STATUS_WORKING
         work
+      rescue StandardError => exception
+        return oops :started, exception, "unexpected_error"
+      end
+
       # Finalize all this
       begin
         log_debug "Job.process after"
         after
+      rescue StandardError => exception
+        return oops :started, exception, "unexpected_error"
       end
 
         # All done !
