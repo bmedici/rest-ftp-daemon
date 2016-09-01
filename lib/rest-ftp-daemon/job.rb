@@ -127,9 +127,6 @@ module RestFtpDaemon
         before
       rescue RestFtpDaemon::SourceNotSupported => exception
         return oops :started, exception
-      rescue Net::FTPConnectionError => exception
-        return oops :started, exception, "ftp_connection_error"
-
       rescue RestFtpDaemonException => exception
         return oops :started, exception
       rescue StandardError => exception
@@ -152,11 +149,8 @@ module RestFtpDaemon
         return oops :ended, exception
       rescue RestFtpDaemon::AssertionFailed => exception
         return oops :ended, exception
-
-      rescue RestFtpDaemonException => exception
-        return oops :ended, exception
       rescue StandardError => exception
-        return oops :ended, exception, "unexpected_work"
+        return oops :ended, exception
       end
 
       # Finalize all this
@@ -347,12 +341,23 @@ module RestFtpDaemon
       log_error "Job.client_notify EXCEPTION: #{ex.inspect}"
     end
 
-    def oops event, exception, error = nil, include_backtrace = false
-      # Default error code derived from  exception name
-      error = exception_to_error(exception) if error.nil?
-      message = "Job.oops event[#{event}] error[#{error}] ex[#{exception.class}] #{exception.message}"
+    def oops event, exception, error = nil#, include_backtrace = false
+      # Find error code in ERRORS table
+      if error.nil?
+        error = ERRORS.key(exception.class)
+        # log_debug "Job.oops ERRORS: #{exception.class} > #{error}"
+      end
 
-      # Backtrace?
+      # Default error code derived from exception name
+      if error.nil?
+        error_name = exception.class.name.split('::').last
+        error = "unexpected_#{underscore(error_name)}"
+        # log_debug "Job.oops derivated: #{exception.class} > #{error}"
+        include_backtrace = true
+      end
+
+      # Log backtrace ?
+      message = "Job.oops event[#{event}] exception[#{exception.class}] error[#{error}] #{exception.message}"
       if include_backtrace
         log_error message, exception.backtrace
       else

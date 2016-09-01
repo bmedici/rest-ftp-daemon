@@ -29,15 +29,5 @@ module RestFtpDaemon
         downcase
     end
 
-    def exception_to_error exception
-      underscore exception.class.name.split('::').last
-    end
-
-    # Dates and times: date with time generator
-    # def datetime_full datetime
-    #   return "-"  if datetime.nil?
-    #   datetime.to_datetime.strftime("%d.%m.%Y %H:%M:%S")
-    # end
-
   end
 end
