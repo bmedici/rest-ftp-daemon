@@ -11,17 +11,29 @@ module RestFtpDaemon
       flag_prepare :overwrite, false
       flag_prepare :tempfile, true
 
+      # Some init
+      @transfer_sent = 0
+      set_info :source, :processed, 0
 
-      elsif @target_uri.is_a? URI::SFTP
-        log_info "Job.prepare target_method SFTP"
-        set_info :target, :method, JOB_METHOD_SFTP
-        @remote = RemoteSFTP.new @target_uri, log_prefix, debug: @config[:debug_sftp]
+      # Ensure source is FILE
+      raise RestFtpDaemon::SourceNotSupported, @source_loc.scheme   unless source_uri.is_a? URI::FILE
 
+      # Prepare remote (case would be preferable but too hard to use,
+      # as target could be of a descendent class of URI:XXX and not matching directly)
+      case target_uri
+      when URI::FTP
+        log_info "JobTransfer.before target_method FTP"
+        @remote = RemoteFTP.new @target_loc.uri, log_prefix, debug: @config[:debug_ftp]
+      when URI::FTPES, URI::FTPS
+        log_info "JobTransfer.before target_method FTPES/FTPS"
+        @remote = RemoteFTP.new @target_loc.uri, log_prefix, debug: @config[:debug_ftps], ftpes: true
+      when URI::SFTP
+        log_info "JobTransfer.before target_method SFTP"
+        @remote = RemoteSFTP.new @target_loc.uri, log_prefix, debug: @config[:debug_sftp]
       else
         log_info "JobTransfer.before unknown scheme [#{@target_loc.scheme}]"
         raise RestFtpDaemon::TargetNotSupported, @target_loc.scheme
       end
-    end
 
     rescue RestFtpDaemon::AssertionFailed => exception
       return oops :started, exception
@@ -40,7 +52,7 @@ module RestFtpDaemon
       raise RestFtpDaemon::SourceNotFound if sources.empty?
 
       # Guess target file name, and fail if present while we matched multiple sources
-      raise RestFtpDaemon::JobTargetDirectoryError if @target_path.name && sources.count>1
+      raise RestFtpDaemon::TargetDirectoryError if @target_loc.name && sources.count>1
 
       # Connect to remote server and login
       set_status JOB_STATUS_CONNECTING
@@ -48,7 +60,7 @@ module RestFtpDaemon
 
       # Prepare target path or build it if asked
       set_status JOB_STATUS_CHDIR
-      @remote.chdir_or_create @target_path.dir, @mkdir
+      @remote.chdir_or_create @target_loc.dir, @mkdir
 
       # Compute total files size
       @transfer_total = sources.collect(&:size).sum
@@ -63,18 +75,18 @@ module RestFtpDaemon
       targets = []
       sources.each do |source|
         # Compute target filename
-        full_target = @target_path.clone
+        target_final = @target_loc.clone
 
         # Add the source file name if none found in the target path
         unless full_target.name
-          full_target.name = source.name
+          target_final.name = source.name
         end
 
         # Do the transfer, for each file
-        remote_push source, full_target
+        remote_push source, target_final
 
         # Add it to transferred target names
-        targets << full_target.full
+        targets << target_final.path
         set_info :target, :files, targets
 
         # Update counters
