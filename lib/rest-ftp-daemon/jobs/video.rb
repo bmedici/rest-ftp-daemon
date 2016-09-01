@@ -47,9 +47,6 @@ module RestFtpDaemon
 
       # Done
       set_info :source, :current, nil
-
-    rescue FFMPEG::Error => exception
-      return oops :ended, exception, "ffmpeg_error"
     end
 
     def do_after

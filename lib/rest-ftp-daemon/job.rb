@@ -124,13 +124,6 @@ module RestFtpDaemon
       # Before work
       begin
         log_debug "Job.process before"
-      rescue RestFtpDaemon::SourceNotSupported => exception
-        return oops :started, exception
-      rescue RestFtpDaemonException => exception
-        return oops :started, exception
-      rescue StandardError => exception
-        return oops :started, exception, "unexpected_before"
-      end
         do_before
 
       # Do the hard work
@@ -139,30 +132,12 @@ module RestFtpDaemon
         set_status JOB_STATUS_WORKING
         do_work
 
-      rescue RestFtpDaemon::SourceNotFound => exception
-        return oops :ended, exception
-      rescue RestFtpDaemon::TargetFileExists => exception
-        return oops :ended, exception
-      rescue RestFtpDaemon::TargetDirectoryError => exception
-        return oops :ended, exception
-      rescue RestFtpDaemon::TargetPermissionError => exception
-        return oops :ended, exception
-      rescue RestFtpDaemon::AssertionFailed => exception
-        return oops :ended, exception
-      rescue StandardError => exception
-        return oops :ended, exception
-      end
 
       # Finalize all this
       begin
         log_debug "Job.process after"
         do_after
 
-      rescue RestFtpDaemonException => exception
-        return oops :ended, exception
-      rescue StandardError => exception
-        return oops :started, exception, "unexpected_after"
-      end
 
         # All done !
       set_status JOB_STATUS_FINISHED

@@ -35,9 +35,6 @@ module RestFtpDaemon
         raise RestFtpDaemon::TargetNotSupported, @target_loc.scheme
       end
 
-    rescue RestFtpDaemon::AssertionFailed => exception
-      return oops :started, exception
-
     # rescue URI::InvalidURIError => exception
     #   return oops :started, exception, "target_invalid"
     end
@@ -93,68 +90,6 @@ module RestFtpDaemon
         # Update counters
         set_info :source, :processed, source_processed += 1
       end
-
-    rescue SocketError => exception
-      return oops :ended, exception, "conn_socket_error"
-
-    rescue EOFError => exception
-      return oops :ended, exception, "conn_eof"
-
-    rescue Errno::EHOSTDOWN => exception
-      return oops :ended, exception, "conn_host_is_down"
-
-    rescue Errno::EPIPE=> exception
-      return oops :ended, exception, "conn_broken_pipe"
-
-    rescue Errno::ENETUNREACH => exception
-      return oops :ended, exception, "conn_unreachable"
-
-    rescue Errno::ECONNRESET => exception
-      return oops :ended, exception, "conn_reset_by_peer"
-
-    rescue Errno::ENOTCONN => exception
-      return oops :ended, exception, "conn_failed"
-
-    rescue Errno::ECONNREFUSED => exception
-      return oops :ended, exception, "conn_refused"
-
-    rescue Timeout::Error, Errno::ETIMEDOUT, Net::ReadTimeout => exception
-      return oops :ended, exception, "conn_timed_out"
-
-    rescue OpenSSL::SSL::SSLError => exception
-      return oops :ended, exception, "conn_openssl_error"
-
-    rescue Net::FTPReplyError => exception
-      return oops :ended, exception, "ftp_reply_error"
-
-    rescue Net::FTPTempError => exception
-      return oops :ended, exception, "ftp_temp_error"
-
-    rescue Net::FTPPermError => exception
-      return oops :ended, exception, "ftp_perm_error"
-
-    rescue Net::FTPProtoError => exception
-      return oops :ended, exception, "ftp_proto_error"
-
-    rescue Net::FTPError => exception
-      return oops :ended, exception, "ftp_error"
-
-    rescue Net::SFTP::StatusException => exception
-      return oops :ended, exception, "sftp_exception"
-
-    rescue Net::SSH::HostKeyMismatch => exception
-      return oops :ended, exception, "sftp_key_mismatch"
-
-    rescue Net::SSH::AuthenticationFailed => exception
-      return oops :ended, exception, "sftp_auth_failed"
-
-    rescue Errno::EMFILE => exception
-      return oops :ended, exception, "too_many_open_files"
-
-    rescue Errno::EINVAL => exception
-      return oops :ended, exception, "invalid_argument", true
-    # rescue Encoding::UndefinedConversionError => exception
-    #   return oops :ended, exception, "encoding_error", true
     end
 
     def do_after
