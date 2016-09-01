@@ -17,6 +17,7 @@ module RestFtpDaemon
   class UnresolvedTokens          < RestFtpDaemonException; end
   class LocationParseError        < RestFtpDaemonException; end
   class UnsupportedScheme         < RestFtpDaemonException; end
+  class MissingFfmpegLibraries    < RestFtpDaemonException; end
 
   class SourceNotSupported        < RestFtpDaemonException; end
   class SourceNotFound            < RestFtpDaemonException; end

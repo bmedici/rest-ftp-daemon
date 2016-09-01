@@ -13,6 +13,12 @@ module RestFtpDaemon
       log_info "JobVideo.before source_loc.path: #{@source_loc.path}"
       log_info "JobVideo.before target_loc.path: #{@target_loc.path}"
 
+      # Ensure FFMPEG lib is available
+      ffmpeg_binary_path = FFMPEG.ffmpeg_binary
+      unless ffmpeg_binary_path && File.exists?(ffmpeg_binary_path)
+        raise RestFtpDaemon::MissingFfmpegLibraries, ffmpeg_binary_path
+      end
+
       # Ensure source and target are FILE
       raise RestFtpDaemon::SourceNotSupported, @source_loc.scheme   unless source_uri.is_a? URI::FILE
       raise RestFtpDaemon::TargetNotSupported, @target.scheme       unless target_uri.is_a? URI::FILE
