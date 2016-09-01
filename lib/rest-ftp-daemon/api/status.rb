@@ -4,6 +4,7 @@ require "get_process_mem"
 module RestFtpDaemon
   module API
     class Status < Grape::API
+      include BmcDaemonLib
 
       ### ENDPOINTS
       desc "Show daemon status"

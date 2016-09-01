@@ -3,6 +3,7 @@ require "grape"
 module RestFtpDaemon
   module API
     class Debug < Grape::API
+      include BmcDaemonLib
 
       ### HELPERS
       helpers do

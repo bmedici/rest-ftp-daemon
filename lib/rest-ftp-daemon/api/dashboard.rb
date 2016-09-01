@@ -7,6 +7,7 @@ require "grape"
 module RestFtpDaemon
   module API
     class Dashbaord < Grape::API
+      include BmcDaemonLib
 
       ### HELPERS
       helpers do

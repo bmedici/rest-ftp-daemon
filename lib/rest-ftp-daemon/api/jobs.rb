@@ -3,6 +3,7 @@ require "grape"
 module RestFtpDaemon
   module API
     class Jobs < Grape::API
+      include BmcDaemonLib
 
       ### ENDPOINTS
       desc "Read job with ID", http_codes: [

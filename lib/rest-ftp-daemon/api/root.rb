@@ -7,6 +7,7 @@ module RestFtpDaemon
   module API
     class Root < Grape::API
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+      include BmcDaemonLib
 
       ### LOGGING & HELPERS
       helpers RestFtpDaemon::CommonHelpers
