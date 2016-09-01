@@ -29,5 +29,9 @@ module RestFtpDaemon
         downcase
     end
 
+    def exception_to_error exception
+      underscore 'err_' + exception.class.name.split('::').last
+    end
+
   end
 end

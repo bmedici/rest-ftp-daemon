@@ -320,8 +320,7 @@ module RestFtpDaemon
 
       # Default error code derived from exception name
       if error.nil?
-        error_name = exception.class.name.split('::').last
-        error = "unexpected_#{underscore(error_name)}"
+        error = exception_to_error(exception)
         # log_debug "Job.oops derivated: #{exception.class} > #{error}"
         include_backtrace = true
       end
