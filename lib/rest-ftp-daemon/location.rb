@@ -115,9 +115,6 @@ module RestFtpDaemon
       @uri_path = uri.path
       @dir      = extract_dirname uri.path
       @name     = extract_filename uri.path
-
-      rescue StandardError => exception
-        raise RestFtpDaemon::LocationParseError, exception.message unless uri
     end
 
     def init_username

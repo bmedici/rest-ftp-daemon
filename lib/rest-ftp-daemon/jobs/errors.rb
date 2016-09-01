@@ -19,6 +19,7 @@ module RestFtpDaemon
       target_permission_error:  RestFtpDaemon::TargetPermissionError,
       target_not_supported:     RestFtpDaemon::TargetNotSupported,
       assertion_failed:         RestFtpDaemon::AssertionFailed,
+      location_parse_error:     RestFtpDaemon::LocationParseError,
 
       conn_socket_error:        SocketError,
       conn_eof:                 EOFError,
