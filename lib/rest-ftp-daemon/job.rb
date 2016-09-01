@@ -116,9 +116,35 @@ module RestFtpDaemon
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
 
+      # Before work
+      begin
+        log_debug "Job.process before"
+        before
+      end
 
+      # Do the hard work
+      begin
+        log_debug "Job.process work"
+        set_status JOB_STATUS_WORKING
+        work
+      # Finalize all this
+      begin
+        log_debug "Job.process after"
+        after
+      end
 
+        # All done !
+      set_status JOB_STATUS_FINISHED
+      log_info "JobVideo.process notify [ended]"
+      client_notify :ended
+    end
 
+    def before
+    end
+    def work
+    end
+    def after
+    end
 
 
 
@@ -177,9 +203,6 @@ module RestFtpDaemon
       log_error "Job PLACEHOLDER METHOD CALLED"
     end
 
-    def prepare_common
-      # Init
-      @source_path = nil
     def prepare_source
       raise RestFtpDaemon::AttributeMissing, "source" unless @source
       @source_loc = Location.new @source

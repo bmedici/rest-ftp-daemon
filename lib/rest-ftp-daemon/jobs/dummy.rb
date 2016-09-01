@@ -3,13 +3,15 @@ module RestFtpDaemon
 
     def initialize job_id, params = {}
       super
+    def before
     end
 
-    def process
-      set_status JOB_STATUS_PREPARED
-      log_info "JobDummy.process YEAH WE'RE PROCESSING, man !"
+    def work
+      log_info "JobDummy.work YEAH WE'RE PROCESSING, man !"
       sleep 5
-      set_status JOB_STATUS_FINISHED
+    end
+
+    def after
     end
 
   end

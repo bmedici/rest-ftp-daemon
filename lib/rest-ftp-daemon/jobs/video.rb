@@ -3,96 +3,25 @@ require 'streamio-ffmpeg'
 module RestFtpDaemon
   class JobVideo < Job
 
-    def process
-      log_info "JobVideo.process update_interval:#{JOB_UPDATE_INTERVAL}"
+    # Process job
+    def before
+      log_info "JobVideo.before source_loc.path: #{@source_loc.path}"
+      log_info "JobVideo.before target_loc.path: #{@target_loc.path}"
 
-      # Prepare job
-      begin
-        prepare_common
-        prepare_local
-
-      rescue RestFtpDaemon::JobMissingAttribute => exception
-        return oops :started, exception, "missing_attribute"
-
-      else
-        set_status JOB_STATUS_PREPARED
-      end
-
-      # Process job
-      begin
-        log_info "JobVideo.process notify [started]"
-        client_notify :started
-        run
-
-      rescue FFMPEG::Error => exception
-        return oops :ended, exception, "ffmpeg_error"
-
-      else
-        set_status JOB_STATUS_FINISHED
-        log_info "JobVideo.process notify [ended]"
-        client_notify :ended
-      end
+      # Ensure source and target are FILE
+      raise RestFtpDaemon::SourceNotSupported, @source_loc.scheme   unless source_uri.is_a? URI::FILE
+      raise RestFtpDaemon::TargetNotSupported, @target.scheme       unless target_uri.is_a? URI::FILE
     end
 
-
-  def prepare_local
-    # Prepare flags
-    # flag_prepare :mkdir, false
-
-    # Update job status
-
-  end
+    def work
 
 
-  def run
-      # Update job status
-      set_status JOB_STATUS_RUNNING
-      @started_at = Time.now
 
-      # Method assertions and init
-      raise RestFtpDaemon::JobAssertionFailed, "run/1" unless @source_path
-      raise RestFtpDaemon::JobAssertionFailed, "run/2" unless @target_path
 
-      # Guess source files from disk
-      set_status JOB_STATUS_CHECKING_SRC
-      sources = find_local @source_path
-      set_info :source, :count, sources.count
-      set_info :source, :files, sources.collect(&:full)
-      log_info "JobVideo.run sources #{sources.collect(&:name)}"
-      raise RestFtpDaemon::JobSourceNotFound if sources.empty?
 
-      # Guess target file name, and fail if present while we matched multiple sources
-      raise RestFtpDaemon::JobTargetDirectoryError if @target_path.name && sources.count>1
+    end
 
-      # Connect to remote server and login
-      set_status JOB_STATUS_CONNECTING
-
-      # Handle each source file matched, and start a transfer
-      source_processed = 0
-      targets = []
-      sources.each do |source|
-        # Compute target filename
-        full_target = @target_path.clone
-        log_info "JobVideo.run source: #{source.name}"
-        log_info "JobVideo.run target_path: #{@target_path.inspect}"
-        log_info "JobVideo.run full_target: #{full_target.inspect}"
-
-        # Add the source file name if none found in the target path
-        unless full_target.name
-          full_target.name = source.name
-        end
-
-        # Do the transfer, for each file
-        video_command source, full_target
-
-        # Add it to transferred target names
-        targets << full_target.full
-        set_info :target, :files, targets
-
-        # Update counters
-        set_info :source, :processed, source_processed += 1
-      end
-
+    def after
       # Done
       set_info :source, :current, nil
     end

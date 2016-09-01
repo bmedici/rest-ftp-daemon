@@ -134,7 +134,7 @@ module RestFtpDaemon
 
   protected
 
-    def prepare_local
+    def before
       # Prepare flags
       flag_prepare :mkdir, false
       flag_prepare :overwrite, false
@@ -164,18 +164,11 @@ module RestFtpDaemon
       end
     end
 
-    def run
-      # Update job status
-      set_status JOB_STATUS_RUNNING
-      @started_at = Time.now
 
-      # Method assertions and init
-      raise RestFtpDaemon::JobAssertionFailed, "run/1" unless @source_path
-      raise RestFtpDaemon::JobAssertionFailed, "run/2" unless @target_path
-      @transfer_sent = 0
-      set_info :source, :processed, 0
+    end
 
       # Guess source files from disk
+    def work
       set_status JOB_STATUS_CHECKING_SRC
       sources = find_local @source_path
       set_info :source, :count, sources.count
@@ -225,14 +218,12 @@ module RestFtpDaemon
         set_info :source, :processed, source_processed += 1
       end
 
-      # FTP transfer finished
-      finalize
     end
 
 
-    def finalize
+    def after
       # Close FTP connexion and free up memory
-      log_info "Job.finalize"
+      log_info "JobTransfer.after"
       @remote.close
 
       # Free-up remote object
