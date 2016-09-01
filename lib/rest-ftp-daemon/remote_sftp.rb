@@ -88,7 +88,7 @@ module RestFtpDaemon
 
     def push source, target, tempname = nil, &callback
       # Push init
-      raise RestFtpDaemon::AssertionFailed, "push/1" if @sftp.nil?
+      raise RestFtpDaemon::AssertionFailed, "push/sftp" if @sftp.nil?
 
       # Temp file if provided
       destination = target.clone

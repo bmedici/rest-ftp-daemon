@@ -39,7 +39,12 @@ module RestFtpDaemon
       puts "user\t #{@target.user}"
       puts "port\t #{@target.port}"
       puts "---------------------------------------------------------------"
+    end
 
+    def chdir_or_create directory, mkdir = false
+    end
+
+    def remove! target
     end
 
     def close
