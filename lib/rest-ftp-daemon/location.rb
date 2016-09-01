@@ -39,13 +39,13 @@ module RestFtpDaemon
       init_aws if @uri.is_a? URI::S3
 
       # Set default user if not provided
-      init_username
 
       # Ensure result does not contain tokens after replacement
       detected_tokens = detect_tokens(location_uri)
       unless detected_tokens.empty?
         raise RestFtpDaemon::UnresolvedTokens, detected_tokens.join(' ')
       end
+      # init_username
 
       # Check that scheme is supported
       unless @uri.scheme
@@ -117,9 +117,9 @@ module RestFtpDaemon
       @name     = extract_filename uri.path
     end
 
-    def init_username
-      @uri.user ||= "anonymous"
-    end
+    # def init_username
+    #   @uri.user ||= "anonymous"
+    # end
 
     def init_aws
       # Split hostname
