@@ -26,8 +26,9 @@ module RestFtpDaemon
     end
 
     def connect
-      # Connect remote server
       super
+
+      # Connect remote server
       @ftp.connect @target.host, @target.port
       @ftp.login @target.user, @target.password
     end
@@ -43,20 +44,19 @@ module RestFtpDaemon
     end
 
     def remove! target
-      log_debug "RemoteFTP.remove! [#{target.name}]"
       @ftp.delete target.path
     rescue Net::FTPPermError
-      log_debug "#{LOG_INDENT}[#{target.name}] file not found"
+      log_debug "RemoteFTP.remove! [#{target.name}] not found"
     else
-      log_debug "#{LOG_INDENT}[#{target.name}] removed"
+      log_debug "RemoteFTP.remove! [#{target.name}] removed"
     end
 
     def mkdir directory
       log_debug "RemoteFTP.mkdir [#{directory}]"
       @ftp.mkdir directory
 
-      rescue
-        raise TargetPermissionError
+    rescue StandardError => ex
+      raise TargetPermissionError, ex.message
     end
 
     def chdir_or_create directory, mkdir = false
@@ -77,7 +77,7 @@ module RestFtpDaemon
         chdir_or_create parent, mkdir
 
         # Now I was able to chdir into my parent, create the current directory
-        mkdir "/#{directory}"
+        mkdir current
 
         # Finally retry the chdir
         retry

@@ -11,8 +11,9 @@ module RestFtpDaemon
     end
 
     def connect
-      # Connect init
       super
+
+      # Connect init
       log_debug "RemoteSFTP.connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
 
       # Debug level
@@ -52,8 +53,8 @@ module RestFtpDaemon
       log_debug "RemoteSFTP.mkdir [#{directory}]"
       @sftp.mkdir! directory
 
-      rescue
-        raise TargetPermissionError
+      rescue StandardError => ex
+        raise TargetPermissionError, ex.message
     end
 
     def chdir_or_create directory, mkdir = false
