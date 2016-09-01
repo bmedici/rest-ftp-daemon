@@ -43,7 +43,7 @@ module RestFtpDaemon
 
       # Do the work, for each file
       set_info :source, :current, @source_loc.name
-      video_command @source_loc, target_final
+      ffmpeg_command @source_loc, target_final
 
       # Done
       set_info :source, :current, nil
@@ -54,8 +54,7 @@ module RestFtpDaemon
       set_info :source, :current, nil
     end
 
-    def video_command source, target
-      log_info "JobVideo.video_command [#{source.name}]: [#{source.path}] > [#{target.path}]"
+    def ffmpeg_command source, target
       set_info :source, :current, source.name
 
       # Read info about source file
@@ -68,6 +67,8 @@ module RestFtpDaemon
         custom: ffmpeg_custom_option_array,
         }
       set_info :work, :ffmpeg_custom_options, ffmpeg_custom_options
+      # Announce contexte
+      log_info "JobVideo.ffmpeg_command [#{FFMPEG.ffmpeg_binary}] [#{source.name}] > [#{target.name}]", options
 
       # Build command
       movie.transcode(target.path, ffmpeg_custom_options) do |ffmpeg_progress|
