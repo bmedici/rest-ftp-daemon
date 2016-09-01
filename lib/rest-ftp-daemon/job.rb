@@ -55,6 +55,7 @@ module RestFtpDaemon
       @runs = 0
       @wid = nil
       @target_uri = nil
+      @infos = {}
 
       # Store params
       # @params = params
@@ -290,10 +291,8 @@ module RestFtpDaemon
         else
           @infos[level1][level2] = value
         end
-
-        # Mark the job as updated
-        touch_job
       end
+      touch_job
     end
 
     def utf8 value
