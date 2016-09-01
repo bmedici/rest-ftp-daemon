@@ -50,8 +50,26 @@ module RestFtpDaemon
     end
 
     def path
-      File.join @dir.to_s, @name.to_s
+      File.join(@dir.to_s, @name.to_s)
     end
+
+    def scan_files
+      Dir.glob(path).collect do |file|
+        next unless File.readable? file
+        next unless File.file? file
+        # Create a new location object
+        self.class.new(file)
+      end
+    end
+
+    def size
+      return unless uri.is_a? URI::FILE
+      local_fil_path = path
+      return unless File.exist? local_fil_path
+      return File.size local_fil_path
+    end
+
+
 
   private
 
