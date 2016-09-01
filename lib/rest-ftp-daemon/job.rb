@@ -328,7 +328,8 @@ module RestFtpDaemon
     end
 
     def oops event, exception, error = nil, include_backtrace = false
-      error = exception.class if error.nil?
+      # Default error code derived from  exception name
+      error = exception_to_error(exception) if error.nil?
       message = "Job.oops event[#{event}] error[#{error}] ex[#{exception.class}] #{exception.message}"
 
       # Backtrace?
