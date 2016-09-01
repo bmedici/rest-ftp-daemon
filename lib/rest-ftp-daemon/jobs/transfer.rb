@@ -1,37 +1,6 @@
 module RestFtpDaemon
   class JobTransfer < Job
 
-    def initialize job_id, params = {}
-      super
-    end
-
-    def process
-      log_info "JobTransfer.process update_interval:#{JOB_UPDATE_INTERVAL}"
-
-      # Prepare job
-      begin
-        prepare_common
-        prepare_local
-
-      else
-        # Prepare done !
-        set_status JOB_STATUS_PREPARED
-      end
-
-      # Process job
-      begin
-        log_info "JobTransfer.process notify [started]"
-        client_notify :started
-        #return oops :ended, Exception.new, "ftp_perm_error"
-        run
-      else
-        # All done !
-        set_status JOB_STATUS_FINISHED
-        log_info "Job.process notify [ended]"
-        client_notify :ended
-      end
-    end
-
   protected
 
     def before
@@ -40,17 +9,6 @@ module RestFtpDaemon
       flag_prepare :overwrite, false
       flag_prepare :tempfile, true
 
-      # Prepare remote (case would be preferable but too hard to use,
-      # as target could be of a descendent class of URI:XXX and not matching directly)
-      if @target_uri.is_a? URI::FTP
-        log_info "Job.prepare target_method FTP"
-        set_info :target, :method, JOB_METHOD_FTP
-        @remote = RemoteFTP.new @target_uri, log_prefix, debug: @config[:debug_ftp]
-
-      elsif (@target_uri.is_a? URI::FTPES) || (target_uri.is_a? URI::FTPS)
-        log_info "Job.prepare target_method FTPES"
-        set_info :target, :method, JOB_METHOD_FTPS
-        @remote = RemoteFTP.new @target_uri, log_prefix, debug: @config[:debug_ftps], ftpes: true
 
       elsif @target_uri.is_a? URI::SFTP
         log_info "Job.prepare target_method SFTP"
