@@ -124,22 +124,22 @@ module RestFtpDaemon
 
       # Before work
       begin
-        log_debug "Job.process before"
         do_before
+      log_debug "Job.process do_before"
       current_signal = :started
 
       # Do the hard work
       begin
-        log_debug "Job.process work"
         set_status JOB_STATUS_WORKING
         do_work
 
+      log_debug "Job.process do_work"
       current_signal = :ended
 
       # Finalize all this
       begin
-        log_debug "Job.process after"
         do_after
+      log_debug "Job.process do_after"
       current_signal = :ended
 
 
