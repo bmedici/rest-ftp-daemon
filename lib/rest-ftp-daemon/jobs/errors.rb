@@ -1,8 +1,7 @@
 require "securerandom"
 require "double_bag_ftps"
-require "net/ssh"
-require "net/ftp"
 require "net/sftp"
+require "net/ftp"
 require 'streamio-ffmpeg'
 
 module RestFtpDaemon
@@ -42,10 +41,10 @@ module RestFtpDaemon
 
       ffmpeg_error:             FFMPEG::Error,
 
-      # sftp_exception:       Net::SFTP::StatusException,
-      # sftp_key_mismatch:    Net::SFTP::HostKeyMismatch,
-      # sftp_auth_failed:     Net::SFTP::AuthenticationFailed,
-      sftp_openssl_error:   OpenSSL::SSL::SSLError,
+      sftp_exception:           Net::SFTP::StatusException,
+      sftp_key_mismatch:        Net::SSH::HostKeyMismatch,
+      sftp_auth_failed:         Net::SSH::AuthenticationFailed,
+      sftp_openssl_error:       OpenSSL::SSL::SSLError,
       # rescue Encoding::UndefinedConversionError => exception
       #   return oops :ended, exception, "encoding_error", true
       }
