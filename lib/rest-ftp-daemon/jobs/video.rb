@@ -61,10 +61,13 @@ module RestFtpDaemon
       movie = FFMPEG::Movie.new(source.path)
 
       # Build options
-      options = {}
-      options[:audio_codec] = @video_ac unless @video_ac.to_s.empty?
-      options[:video_codec] = @video_vc unless @video_vc.to_s.empty?
-      options[:custom] = @ffmpeg_custom_option_array if @ffmpeg_custom_option_array
+      options = {
+        threads: JOB_FFMPEG_THREADS
+        }
+      options[:audio_codec] = @video_ac                    unless @video_ac.to_s.empty?
+      options[:video_codec] = @video_vc                    unless @video_vc.to_s.empty?
+      options[:custom]      = options_from(@video_custom)  if @video_custom.is_a? Hash
+
       set_info :work, :ffmpeg_options, options
 
       # Announce contexte
@@ -81,14 +84,14 @@ module RestFtpDaemon
       end
     end
 
-    def ffmpeg_custom_option_array
+    def options_from attributes
       # Ensure options ar in the correct format
-      return [] unless @video_custom.is_a? Hash
+      return [] unless attributes.is_a? Hash
       # video_custom_parts = @video_custom.to_s.scan(/(?:\w|"[^"]*")+/)
 
       # Build the final array
       custom_parts = []
-      @video_custom.each do |name, value|
+      attributes.each do |name, value|
         custom_parts << "-#{name}"
         custom_parts << value.to_s
       end

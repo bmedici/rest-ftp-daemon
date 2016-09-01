@@ -13,7 +13,7 @@ JOB_RANDOM_LEN          = 8
 JOB_IDENT_LEN           = 4
 JOB_TEMPFILE_LEN        = 8
 JOB_UPDATE_INTERVAL     = 1
-
+JOB_FFMPEG_THREADS      = 2
 
 # Constants: logger
 LOG_ROTATION             = "daily"
