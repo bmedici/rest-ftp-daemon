@@ -18,6 +18,9 @@ module RestFtpDaemon
       @ftpes = ftpes
       @debug = debug
 
+      # Build and empty job to protect set_info delegation
+      @job = Job.new(nil, {})
+
       # Logger
       @log_prefix = log_prefix || {}
       @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
