@@ -26,8 +26,7 @@ module RestFtpDaemon
       @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
 
       # Annnounce object
-      log_info "Remote.initialize [#{target.path}]"
-      log_debug "Remote.initialize target[#{@target.inspect}]"
+      log_info "Remote.initialize debug[#{debug}] target[#{target.path}] "
 
       # Prepare real object
       prepare
