@@ -48,10 +48,9 @@ module RestFtpDaemon
       # Scan local source files from disk
       set_status JOB_STATUS_CHECKING_SRC
       sources = @source_loc.scan_files
-      log_debug "JobTransfer.work sources result #{sources.inspect}"
       set_info :source, :count, sources.size
       set_info :source, :files, sources.collect(&:name)
-      log_info "JobTransfer.work sources names #{sources.collect(&:name)}"
+      log_info "JobTransfer.work sources #{sources.collect(&:name)}"
       raise RestFtpDaemon::SourceNotFound if sources.empty?
 
       # Guess target file name, and fail if present while we matched multiple sources
@@ -77,19 +76,15 @@ module RestFtpDaemon
       source_processed = 0
       targets = []
       sources.each do |source|
-        # Compute target filename
-        target_final = @target_loc.clone
-
-        # Add the source file name if none found in the target path
-        unless target_final.name
-          target_final.name = source.name
-        end
+        # Build final target, add the source file name if noneh
+        target = @target_loc.clone
+        target.name = source.name unless target.name
 
         # Do the transfer, for each file
-        remote_push source, target_final
+        remote_upload source, target
 
         # Add it to transferred target names
-        targets << target_final.name
+        targets << target.name
         set_info :target, :files, targets
 
         # Update counters
@@ -99,7 +94,6 @@ module RestFtpDaemon
 
     def do_after
       # Close FTP connexion and free up memory
-      log_info "JobTransfer.after"
       @remote.close
 
       # Free-up remote object
@@ -124,14 +118,7 @@ module RestFtpDaemon
       log_info "JobTransfer.remote_upload [#{source.name}]: [#{source.path}] > [#{target.path}]"
       set_info :source, :current, source.name
 
-      # Compute temp target name
-      tempname = nil
-      if @tempfile
-        tempname = "#{target.name}.temp-#{identifier(JOB_TEMPFILE_LEN)}"
-        log_debug "JobTransfer.remote_push tempname [#{tempname}]"
-      end
-
-      # Remove any existing version if expected, or test its presence
+      # Remove any existing version if present, or check if it's there
       if @overwrite
         @remote.remove! target
       elsif size = @remote.present?(target)
@@ -146,9 +133,11 @@ module RestFtpDaemon
 
       # Start the transfer, update job status after each block transfer
       set_status JOB_STATUS_UPLOADING
+      log_debug "JobTransfer.remote_upload source[#{source.path}] temp[#{@tempfile}]"
       @remote.upload source, target, @tempfile do |transferred, name|
+
         # Update transfer statistics
-        progress transferred, name
+        update_progress transferred, name
 
         # Touch my worker status
         touch_job
@@ -162,7 +151,7 @@ module RestFtpDaemon
       set_info :source, :current, nil
     end
 
-    def progress transferred, name = ""
+    def update_progress transferred, name = ""
       # What's current time ?
       now = Time.now
       notify_after = @config[:notify_after]
