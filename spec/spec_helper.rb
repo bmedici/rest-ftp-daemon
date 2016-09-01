@@ -58,16 +58,16 @@ RSpec.configure do |config|
   end
 
   config.before :suite do
+    puts
+    puts ">> starting up server..."
+    puts
     call_server(:start)
-    puts
-    puts ">> waiting for server to bootup"
-    puts
-    sleep 5
+    sleep 3
   end
 
   config.after :suite do
     puts
-    puts ">> shutting sown server"
+    puts ">> shutting down server..."
     puts
     call_server(:stop)
   end
