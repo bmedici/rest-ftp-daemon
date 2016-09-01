@@ -32,6 +32,7 @@ require_relative "rest-ftp-daemon/pretty_json"
 require_relative "rest-ftp-daemon/remote"
 require_relative "rest-ftp-daemon/remote_ftp"
 require_relative "rest-ftp-daemon/remote_sftp"
+require_relative "rest-ftp-daemon/remote_s3"
 
 # Jobs
 require_relative "rest-ftp-daemon/job"

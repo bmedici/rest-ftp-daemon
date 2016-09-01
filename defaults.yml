@@ -29,6 +29,7 @@ transfer:
   timeout: 1800             # jobs running for longer than X seconds will be killed
   notify_after: 5           # wait at least X seconds between HTTP notifications
 
+  debug_s3: false
   debug_ftp: false
   debug_ftps: false
   debug_sftp: false
