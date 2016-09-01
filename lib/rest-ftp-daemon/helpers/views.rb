@@ -33,12 +33,10 @@ module RestFtpDaemon
     def location_style uri
       case uri
       when URI::FILE
-        "primary"
+        "info"
       when URI::FTP
         "warning"
-      when URI::FTPS
-        "success"
-      when URI::SFTP
+      when URI::FTPES, URI::FTPS, URI::SFTP
         "success"
       else
         "default"
