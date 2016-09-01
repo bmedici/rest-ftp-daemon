@@ -38,6 +38,8 @@ module RestFtpDaemon
         "warning"
       when URI::FTPES, URI::FTPS, URI::SFTP
         "success"
+      when URI::S3
+        "primary"
       else
         "default"
       end

@@ -8,6 +8,10 @@ module RestFtpDaemon
     attr_reader :scheme
     attr_reader :dir
     attr_accessor :name
+    attr_reader :aws_region
+    attr_reader :aws_bucket
+    attr_reader :aws_id
+    attr_reader :aws_secret
 
     # Logging
     #attr_reader :logger
@@ -29,6 +33,9 @@ module RestFtpDaemon
       # Parse URL
       #log_debug "Location.initialize uri[#{location_uri}]"
       parse_url location_uri
+
+      # Match AWS URL with BUCKET.s3.amazonaws.com
+      init_aws if @uri.is_a? URI::S3
 
       # Ensure result does not contain tokens after replacement
       detected_tokens = detect_tokens(location_uri)
@@ -108,7 +115,6 @@ module RestFtpDaemon
       raise RestFtpDaemon::LocationParseError, location_path unless uri
 
       # Store URL parts
-      # remove_multiple_slashes
       @ori_path = path
       @uri_path = uri.path
       @dir      = extract_dirname uri.path
@@ -116,6 +122,22 @@ module RestFtpDaemon
 
       rescue StandardError => exception
         raise RestFtpDaemon::LocationParseError, exception.message unless uri
+    end
+
+    def init_aws
+      # Split hostname
+      parts       = @uri.host.split('.')
+
+      # Pop parts
+      aws_tld     = parts.pop
+      aws_domain  = parts.pop
+      @aws_region = parts.pop
+      aws_tag     = parts.pop
+      @aws_bucket = parts.pop
+
+      # Credentials from config
+      @aws_id     = Conf.at(:credentials, @uri.host, :id)
+      @aws_secret = Conf.at(:credentials, @uri.host, :secret)
     end
 
     def extract_filename path
