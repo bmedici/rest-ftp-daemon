@@ -239,7 +239,7 @@ module RestFtpDaemon
     end
 
       # Update job status
-      set_status JOB_STATUS_PREPARING
+      set_status JOB_STATUS_WORKING
       @runs += 1
 
 
