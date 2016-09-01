@@ -76,11 +76,11 @@ module RestFtpDaemon
         optional :video_vc,
           type: String,
           desc: "video: video codec",
-          default: ""
+          default: nil
         optional :video_ac,
           type: String,
           desc: "video: audio codec",
-          default: ""
+          default: nil
         optional :video_custom,
           type: Hash,
           desc: "video: custom options passed to FFMPEG encoder",
