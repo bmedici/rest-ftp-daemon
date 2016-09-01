@@ -1,14 +1,16 @@
 # FIXME: prepare files list ar prepare_common
 
-
 # Reprensents work to be done along with parameters to process it
 require "securerandom"
 
 module RestFtpDaemon
   class Job
-    include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include CommonHelpers
+
+    # Logging
+    attr_reader :logger
+    include BmcDaemonLib::LoggerHelper
 
     # Class constants
     FIELDS = [:type, :source, :target, :label, :priority, :pool, :notify,
@@ -17,7 +19,6 @@ module RestFtpDaemon
       ]
 
     # Class options
-    attr_reader :logger
     attr_accessor :wid
     attr_accessor :type
 
@@ -46,7 +47,6 @@ module RestFtpDaemon
 
       # Init context
       @id = job_id.to_s
-      # @infos = {}
       #@updated_at = nil
       @started_at = nil
       @finished_at = nil
@@ -86,12 +86,6 @@ module RestFtpDaemon
       prepare_source
       prepare_target
 
-      # Store options
-      # @options = params[:options].to_hash
-      # log_info "Job.initialize params[:options]: #{params[:options].inspect}"
-      # log_info "Job.initialize params[:options][:opt1]: #{params[:options][:opt1]}"
-
-
     end
 
     def reset
@@ -116,38 +110,17 @@ module RestFtpDaemon
       log_info "Job.reset notify[queued]"
     end
 
+    # Process job
     def process
       # Check prerequisites
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
 
-    #   # Prepare
-    #   begin
-    #     log_info "Job.process: raise a fake error"
-    #     raise RestFtpDaemon::PrepareError, "fake_error_common"
-    #     # prepare
 
-    #   rescue PrepareError => ex
-    #     log_info "Job.process: rescue a fake error: #{ex.inspect}"
-    #     # return oops :started, PrepareError, ex.message
 
-    #   else
-    #     log_info "Job.process: no exception caught"
-    #   end
 
-    #   # # Prepare done !
-    #   # set_status JOB_STATUS_PREPARED
-    #   # log_info "Job.process notify [started]"
-    #   # client_notify :started
 
-    #   # # Run
-    #   # run
 
-    #   # # Run done !
-    #   # set_status JOB_STATUS_FINISHED
-    #   # log_info "Job.process notify [ended]"
-    #   # client_notify :ended
-    # end
 
     def weight
       @weight = [
@@ -193,7 +166,7 @@ module RestFtpDaemon
 
     def get_info level1, level2
       @mutex.synchronize do
-        @infos || {}
+        # @infos || {}
         @infos[level1][level2] if @infos[level1].is_a? Hash
       end
     end
@@ -329,12 +302,10 @@ module RestFtpDaemon
     end
 
     def oops event, exception, error = nil, include_backtrace = false
-      # Log this error
-      # error = exception.class.to_s.encoding.to_s if error.nil?
       error = exception.class if error.nil?
-      # error = "DEF #{exception.class}" if error.nil?
-
       message = "Job.oops event[#{event}] error[#{error}] ex[#{exception.class}] #{exception.message}"
+
+      # Backtrace?
       if include_backtrace
         log_error message, exception.backtrace
       else
