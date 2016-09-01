@@ -12,7 +12,16 @@ module URI
     DEFAULT_PORT = 22
   end
 
+  class S3 < Generic
+  end
+
+  class FILE < Generic
+    DEFAULT_PORT = 22
+  end
+
   @@schemes["FTPS"] = FTPS
   @@schemes["FTPES"] = FTPES
   @@schemes["SFTP"] = SFTP
+  @@schemes["S3"] = S3
+  @@schemes["FILE"] = FILE
 end
