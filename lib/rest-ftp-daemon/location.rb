@@ -1,5 +1,5 @@
-#require 'forwardable'
 require 'active_support/core_ext/module/delegation'
+#require 'forwardable'
 
 module RestFtpDaemon
   class Location
@@ -54,6 +54,11 @@ module RestFtpDaemon
     end
 
   private
+
+    def tokenize item
+      return unless item.is_a? String
+      "[#{item}]"
+    end
 
     def resolve_tokens! path
       # Gther endpoints, and copy path string to alter it later
@@ -110,11 +115,6 @@ module RestFtpDaemon
 
     def strip_leading_slash_from_dir!
       @dir.to_s.gsub!(/^\//, '')
-    end
-
-    def tokenize item
-      return unless item.is_a? String
-      "[#{item}]"
     end
 
     def detect_tokens item

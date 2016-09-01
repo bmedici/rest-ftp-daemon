@@ -17,11 +17,6 @@ module RestFtpDaemon
       rand(36**len).to_s(36)
     end
 
-    def tokenize item
-      return unless item.is_a? String
-      "[#{item}]"
-    end
-
     def dashboard_url filter = ''
       "#{MOUNT_BOARD}/#{filter}"
     end

@@ -1,3 +1,5 @@
+#FIXME: move progress from Job/infos/transfer to Job/progress
+
 module RestFtpDaemon
   class JobTransfer < Job
 
@@ -16,9 +18,8 @@ module RestFtpDaemon
         @remote = RemoteSFTP.new @target_uri, log_prefix, debug: @config[:debug_sftp]
 
       else
-        log_info "Job.prepare unknown scheme [#{@target_uri.scheme}]"
-        raise RestFtpDaemon::JobTargetUnsupported
-
+        log_info "JobTransfer.before unknown scheme [#{@target_loc.scheme}]"
+        raise RestFtpDaemon::TargetNotSupported, @target_loc.scheme
       end
     end
 
@@ -35,8 +36,8 @@ module RestFtpDaemon
       sources = scan_local_paths @source_loc.path
       set_info :source, :count, sources.count
       set_info :source, :files, sources.collect(&:full)
-      log_info "Job.run sources #{sources.collect(&:name)}"
-      raise RestFtpDaemon::JobSourceNotFound if sources.empty?
+      log_info "JobTransfer.work sources #{sources.collect(&:name)}"
+      raise RestFtpDaemon::SourceNotFound if sources.empty?
 
       # Guess target file name, and fail if present while we matched multiple sources
       raise RestFtpDaemon::JobTargetDirectoryError if @target_path.name && sources.count>1
@@ -183,21 +184,21 @@ module RestFtpDaemon
       raise RestFtpDaemon::AssertionFailed, "remote_push/target" if target.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
-      log_info "Job.remote_push [#{source.name}]: [#{source.full}] > [#{target.full}]"
+      log_info "JobTransfer.remote_push [#{source.name}]: [#{source.full}] > [#{target.full}]"
       set_info :source, :current, source.name
 
       # Compute temp target name
       tempname = nil
       if @tempfile
         tempname = "#{target.name}.temp-#{identifier(JOB_TEMPFILE_LEN)}"
-        log_debug "Job.remote_push tempname [#{tempname}]"
+        log_debug "JobTransfer.remote_push tempname [#{tempname}]"
       end
 
       # Remove any existing version if expected, or test its presence
       if @overwrite
         @remote.remove! target
       elsif size = @remote.present?(target)
-        log_debug "Job.remote_push existing (#{format_bytes size, 'B'})"
+        log_debug "JobTransfer.remote_push existing (#{format_bytes size, 'B'})"
         raise RestFtpDaemon::TargetFileExists
       end
 

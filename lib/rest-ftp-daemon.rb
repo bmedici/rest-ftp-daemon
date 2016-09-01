@@ -30,6 +30,7 @@ require_relative "rest-ftp-daemon/notification"
 
 require_relative "rest-ftp-daemon/path"
 require_relative "rest-ftp-daemon/location"
+
 require_relative "rest-ftp-daemon/remote"
 require_relative "rest-ftp-daemon/remote_ftp"
 require_relative "rest-ftp-daemon/remote_sftp"

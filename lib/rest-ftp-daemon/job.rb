@@ -1,6 +1,7 @@
 # FIXME: prepare files list ar prepare_common
+# FIXME: scope classes in submodules like Worker::Transfer, Job::Video
 
-# Reprensents work to be done along with parameters to process it
+# Represents work to be done along with parameters to process it
 require "securerandom"
 
 module RestFtpDaemon
@@ -55,9 +56,6 @@ module RestFtpDaemon
       @runs = 0
       @wid = nil
       @infos = {}
-
-      # Store params
-      # @params = params
 
       # Prepare configuration
       @config       = Conf[:transfer] || {}
@@ -118,6 +116,10 @@ module RestFtpDaemon
       # Check prerequisites
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
+
+      # Notify we start working
+      log_info "Job.process notify [started]"
+      client_notify :started
 
       # Before work
       begin
@@ -244,15 +246,6 @@ module RestFtpDaemon
       set_info prefix, :location_host,   location.host
     end
 
-      # Update job status
-      set_status JOB_STATUS_WORKING
-      @runs += 1
-
-
-
-      log_info "Job.prepare target_path path[#{@target_path}] scheme[#{@target_uri.scheme}]"
-    end
-
   private
 
     def log_prefix
@@ -273,19 +266,18 @@ module RestFtpDaemon
       Thread.current.thread_variable_set :updated_at, now
     end
 
-
-    def contains_brackets item
-      /\[.*\]/.match(item)
+    def set_error value
+      @mutex.synchronize do
+        @error = value
+      end
+      touch_job
     end
 
-    def replace_tokens path
+    def set_status value
+      @mutex.synchronize do
+        @status = value
       end
-
-      # Ensure result does not contain tokens after replacement
-      raise RestFtpDaemon::JobUnresolvedTokens if contains_brackets newpath
-
-      # All OK, return this URL stripping multiple slashes
-      newpath.gsub(/([^:])\/\//, '\1/')
+      touch_job
     end
 
     def set_info level1, level2, value
@@ -307,16 +299,6 @@ module RestFtpDaemon
 
     def utf8 value
       value.to_s.encode("UTF-8")
-    end
-
-    def set_error value
-      @error = value
-      touch_job
-    end
-
-    def set_status value
-      @status = value
-      touch_job
     end
 
     def flag_prepare name, default

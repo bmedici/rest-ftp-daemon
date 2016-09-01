@@ -8,7 +8,10 @@ module RestFtpDaemon
     def initialize full, strip_leading_slash = false
       # Extract path parts
       @name = extract_filename full.to_s
+
       @dir = extract_dirname full.to_s
+      # puts "Path full.to_s: #{full.to_s}"
+      # puts "Path extract_dirname: #{@dir}"
 
       # Remove leading slash if needed
       strip_leading_slash_from_dir! if strip_leading_slash

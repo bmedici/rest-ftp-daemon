@@ -1,8 +1,10 @@
 module RestFtpDaemon
   class JobDummy < Job
 
-    def initialize job_id, params = {}
-      super
+    # def initialize job_id, params = {}
+    #   super
+    # end
+
     def before
     end
 

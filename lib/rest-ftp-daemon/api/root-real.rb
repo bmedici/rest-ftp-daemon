@@ -34,33 +34,35 @@ module RestFtpDaemon
       content_type :json, 'application/json; charset=utf-8'
 
 
+desc 'API Root'
+
       ### MOUNTPOINTS
-      mount RestFtpDaemon::API::Status      => MOUNT_STATUS
-      mount RestFtpDaemon::API::Jobs        => MOUNT_JOBS
-      mount RestFtpDaemon::API::Dashbaord   => MOUNT_BOARD
-      mount RestFtpDaemon::API::Config      => MOUNT_CONFIG
-      mount RestFtpDaemon::API::Debug       => MOUNT_DEBUG
+      # mount RestFtpDaemon::API::Status      => MOUNT_STATUS
+      # mount RestFtpDaemon::API::Jobs        => MOUNT_JOBS
+      # mount RestFtpDaemon::API::Dashbaord   => MOUNT_BOARD
+      # mount RestFtpDaemon::API::Config      => MOUNT_CONFIG
+      # mount RestFtpDaemon::API::Debug       => MOUNT_DEBUG
 
 
       ### API Documentation
       add_swagger_documentation hide_documentation_path: true,
-        api_version: Conf.app_ver,
-        doc_version: Conf.app_ver,
-        mount_path: '/swagger.json',
+        api_version: BmcDaemonLib::Conf.app_ver,
+        doc_version: BmcDaemonLib::Conf.app_ver,
+        mount_path: MOUNT_SWAGGER_JSON,
         info: {
-          title: Conf.app_name,
-          version: Conf.app_ver,
-          description: "API description for #{Conf.app_name} #{Conf.app_ver}",
+          title: BmcDaemonLib::Conf.app_name,
+          version: BmcDaemonLib::Conf.app_ver,
+          description: "API description for #{BmcDaemonLib::Conf.app_name} #{BmcDaemonLib::Conf.app_ver}",
           }
          # models: [
-         #   RestFtpDaemon::API::Entities::JobPresenter,
+         #   RestFtpDaemon::API::Entities::Job,
          # ]
 
       ### GLOBAL EXCEPTION HANDLING
-      rescue_from :all do |e|
-        raise e
-        error_response(message: "Internal server error: #{e}", status: 500)
-      end
+      # rescue_from :all do |e|
+      #   raise e
+      #   error_response(message: "Internal server error: #{e}", status: 500)
+      # end
 
 
       ### INITIALIZATION

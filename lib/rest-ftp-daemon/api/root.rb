@@ -1,5 +1,7 @@
 require "grape"
 require 'grape-swagger'
+# require 'grape-swagger/entity'
+# require 'grape-swagger/representable'
 
 module RestFtpDaemon
   module API

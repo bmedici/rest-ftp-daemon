@@ -31,13 +31,27 @@ module RestFtpDaemon
         # Params
         expose :infos, unless: :hide_infos
 
-        # Params
-        expose :options, using: API::Entities::Options
+        # Options
+        # expose :options, using: API::Entities::Options
+        # expose :video_ac
+        # expose :video_custom
 
         # with_options(format_with: :iso_timestamp) do
         #     expose :created_at
         #     expose :updated_at
         # end
+
+        # expose :age do
+        # end
+
+        # expose :slots do |station,options|
+        #   station.slots.map{ |slot| SlotEntity.new(slot).serializable_hash }
+        # end
+
+      private
+
+        def priv_func
+        end
 
       end
     end

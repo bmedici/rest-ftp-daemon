@@ -1,3 +1,8 @@
+# FIXME: handle overwrite
+# FIXME: progress over multiple files
+# FIXME: open movie files to guess total runtime
+# FIXME: analyze media files at prepare
+
 require 'streamio-ffmpeg'
 
 module RestFtpDaemon
@@ -92,4 +97,11 @@ module RestFtpDaemon
 end
 
 
-
+# require "stringio"
+# def capture_stderr
+#   real_stderr, $stderr = $stderr, StringIO.new
+#   yield
+#   $stderr.string
+# ensure
+#   $stderr = real_stderr
+# end

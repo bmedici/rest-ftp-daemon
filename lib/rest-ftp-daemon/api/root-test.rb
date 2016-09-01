@@ -39,6 +39,29 @@ module RestFtpDaemon
         get '/simple-test' do
           { bla: 'something' }
         end
+
+
+      desc "List all Jobs", http_codes: [
+        { code: 200, message: "Here are the jobs you requested" },
+        ],
+        is_array: true
+      get "/" do
+        begin
+          # Get jobs to display
+          jobs = RestFtpDaemon::JobQueue.instance.jobs
+
+        rescue StandardError => exception
+          log_error "Exception: #{exception.message}"
+          error!({ error: :api_exception, message: exception.message }, 500)
+
+        else
+          status 200
+          present jobs, with: RestFtpDaemon::API::Entities::Job
+
+        end
+      end
+
+
       end
 
     end
