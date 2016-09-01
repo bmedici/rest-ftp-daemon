@@ -150,13 +150,13 @@ module RestFtpDaemon
 
     def push job
       # Check that item responds to "priorty" method
-      raise "JobQueue.push: job should respond to priority method" unless job.respond_to? :priority
-      raise "JobQueue.push: job should respond to id method" unless job.respond_to? :id
-      raise "JobQueue.push: job should respond to pool method" unless job.respond_to? :pool
-      raise "JobQueue.push: job should respond to reset" unless job.respond_to? :reset
+      raise "JobQueue.push: job should respond to: priority" unless job.respond_to? :priority
+      raise "JobQueue.push: job should respond to: id" unless job.respond_to? :id
+      raise "JobQueue.push: job should respond to: pool" unless job.respond_to? :pool
+      raise "JobQueue.push: job should respond to: reset" unless job.respond_to? :reset
 
       @mutex.synchronize do
-        # Get this job's pool @ prepare queue of this pool
+        # Get this job's pool & prepare queue of this pool
         pool = job.pool
         myqueue = (@queues[pool] ||= [])
 
