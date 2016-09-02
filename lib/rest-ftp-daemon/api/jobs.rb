@@ -82,6 +82,11 @@ module RestFtpDaemon
           type: String,
           desc: "video: audio codec",
           default: nil
+
+        optional :video_options,
+          type: Hash,
+          desc: "Video: standard options passed to FFMPEG encoder",
+          default: {}
         optional :video_custom,
           type: Hash,
           desc: "video: custom options passed to FFMPEG encoder",
@@ -99,8 +104,7 @@ module RestFtpDaemon
           type: Boolean,
           desc: "Upload to a temp file before renaming it to the target filename",
           default: Conf.at(:transfer, :tempfile)
-        # optional :options, desc: "", type: API::Entities::Options
-
+        # optional :options, desc: "Options passed to FFMPEG (video jobs)", type: API::Entities::Options
       end
 
       post "/" do

@@ -17,7 +17,7 @@ module RestFtpDaemon
     # Class constants
     FIELDS = [:type, :source, :target, :label, :priority, :pool, :notify,
       :overwrite, :mkdir, :tempfile,
-      :video_vc, :video_ac, :video_custom,
+      :video_options, :video_custom
       ]
 
     # Class options
