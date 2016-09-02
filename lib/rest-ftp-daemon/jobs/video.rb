@@ -59,27 +59,30 @@ module RestFtpDaemon
 
       # Read info about source file
       movie = FFMPEG::Movie.new(source.path)
+      set_info :source, :ffmpeg_size, movie.size
+      set_info :source, :ffmpeg_duration, movie.duration
+      set_info :source, :ffmpeg_resolution, movie.resolution
+
+
+
 
       # Build options
       options = {
-        threads: JOB_FFMPEG_THREADS
+        threads: JOB_FFMPEG_THREADS,
+        custom: options_from(@video_custom)
         }
-      options[:audio_codec] = @video_ac                    unless @video_ac.to_s.empty?
-      options[:video_codec] = @video_vc                    unless @video_vc.to_s.empty?
-      options[:custom]      = options_from(@video_custom)  if @video_custom.is_a? Hash
-
+      JOB_FFMPEG_ATTRIBUTES.each do |name|
+        options[name] = @video_options[name] unless @video_options[name].nil?
+      end
       set_info :work, :ffmpeg_options, options
 
-      # Announce contexte
+      # Announce context
       log_info "JobVideo.ffmpeg_command [#{FFMPEG.ffmpeg_binary}] [#{source.name}] > [#{target.name}]", options
 
       # Build command
       movie.transcode(target.path, options) do |ffmpeg_progress|
-        set_info :work, :ffmpeg_progress, ffmpeg_progress
-
-        percent0 = (100.0 * ffmpeg_progress).round(0)
-        set_info :work, :progress, percent0
-
+        # set_info :work, :ffmpeg_progress, ffmpeg_progress
+        set_info :work, :progress, (100.0 * ffmpeg_progress).round(1)
         log_debug "progress #{ffmpeg_progress}"
       end
     end
@@ -87,7 +90,6 @@ module RestFtpDaemon
     def options_from attributes
       # Ensure options ar in the correct format
       return [] unless attributes.is_a? Hash
-      # video_custom_parts = @video_custom.to_s.scan(/(?:\w|"[^"]*")+/)
 
       # Build the final array
       custom_parts = []

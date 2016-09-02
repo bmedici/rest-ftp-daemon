@@ -13,7 +13,9 @@ JOB_RANDOM_LEN          = 8
 JOB_IDENT_LEN           = 4
 JOB_TEMPFILE_LEN        = 8
 JOB_UPDATE_INTERVAL     = 1
+
 JOB_FFMPEG_THREADS      = 2
+JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_tolerance, :frame_rate, :resolution, :aspect, :keyframe_interval, :x264_vprofile, :x264_preset, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels]
 
 # Constants: logger
 LOG_ROTATION             = "daily"
