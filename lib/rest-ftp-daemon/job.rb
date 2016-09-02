@@ -253,7 +253,7 @@ module RestFtpDaemon
 
       # Add each field to @infos
       fields.each do |what|
-        set_info prefix, what, location.send(what)
+        set_info prefix, "loc_#{what}".to_sym, location.send(what)
       end
     end
 
