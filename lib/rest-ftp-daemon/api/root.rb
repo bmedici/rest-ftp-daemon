@@ -33,9 +33,22 @@ module RestFtpDaemon
       do_not_route_head!
       do_not_route_options!
       # version 'v1'
-      format :json
-      formatter :json, PrettyJSON
+
+      # Response formats
       content_type :json, 'application/json; charset=utf-8'
+      # format :json
+      default_format :json
+
+      # Pretty JSON
+      formatter :json_tmp, ->(object, env) do
+        put "----- formatter"
+        puts object.inspect
+        # JSON.pretty_generate(JSON.parse(object.to_json))
+        #if object.respond_to? to_hash
+          JSON.pretty_generate(object)
+        #end
+        put "-----"
+      end
 
 
       ### MOUNTPOINTS
