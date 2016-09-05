@@ -43,6 +43,9 @@ module RestFtpDaemon
         # Infos
         expose :infos, unless: :hide_infos
 
+        # Source and target     #, :unless => Proc.new {|g| g.source_loc.nil?}
+        expose :source_loc, using: API::Entities::Location#, as: :source
+        expose :target_loc, using: API::Entities::Location#, as: :target
 
         # expose :slots do |station,options|
         #   station.slots.map{ |slot| SlotEntity.new(slot).serializable_hash }

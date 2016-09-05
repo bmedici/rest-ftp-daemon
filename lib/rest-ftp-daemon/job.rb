@@ -20,6 +20,9 @@ module RestFtpDaemon
     # Class options
     attr_accessor :wid
 
+    attr_reader :source_loc
+    attr_reader :target_loc
+
     attr_reader :id
     attr_reader :error
     attr_reader :status
@@ -80,12 +83,21 @@ module RestFtpDaemon
       end
 
       # Prepare sources/target
-      prepare_source
-      prepare_target
+      raise RestFtpDaemon::AttributeMissing, "source" unless params[:source]
+      @source_loc = Location.new(params[:source])
+      #set_info :location_source, params[:source]
+      log_info "Job.initialize source #{@source_loc.uri}"
+
+      raise RestFtpDaemon::AttributeMissing, "target" unless params[:target]
+      @target_loc = Location.new(params[:target])
+      #set_info :location_target, params[:target]
+      log_info "Job.initialize target #{@target_loc.uri}"
 
       # Handle exceptions
-      rescue RestFtpDaemon::UnsupportedScheme => exception
-        return oops :started, exception
+      # rescue RestFtpDaemon::UnresolvedTokens => exception
+      #   return oops :started, exception
+      # rescue RestFtpDaemon::UnsupportedScheme => exception
+      #   return oops :started, exception
     end
 
     def reset
@@ -152,11 +164,11 @@ module RestFtpDaemon
     end
 
     def source_uri
-      @source_loc.uri
+      @source_loc.uri if @source_loc
     end
 
     def target_uri
-      @target_loc.uri
+      @target_loc.uri if @target_loc
     end
 
     def weight
@@ -186,7 +198,8 @@ module RestFtpDaemon
     end
 
     def targethost
-      get_info :target, :host
+      @target_loc.host unless @target_loc.nil?
+      #get_info :target_host
     end
 
      def get_info name
@@ -207,18 +220,6 @@ module RestFtpDaemon
 
     def alert_common_method_called
       log_error "Job PLACEHOLDER METHOD CALLED"
-    end
-
-    def prepare_source
-      raise RestFtpDaemon::AttributeMissing, "source" unless @source
-      @source_loc = Location.new @source
-      log_info "Job.prepare_source #{@source_loc.uri}"
-    end
-
-    def prepare_target
-      raise RestFtpDaemon::AttributeMissing, "target" unless @target
-      @target_loc = Location.new @target
-      log_info "Job.prepare_target #{@target_loc.uri}"
     end
 
   private
