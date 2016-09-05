@@ -353,7 +353,7 @@ Known bugs
 
 * As this project is based on Chamber, and it considers hyphens in filename as namespaces, the global /etc/rest-ftp-daemon.yml config file is not parsed (and thus, ignored). Until this is worked around, please specify a config filename on the commandline.
 
-* If you get ```fatal error: 'openssl/ssl.h' file not found when installing ```eventmachine``` on OSX El Capitan, you can try with:
+* If you get ```fatal error: 'openssl/ssl.h' file not found when installing eventmachine``` on OSX El Capitan, you can try with:
 ```
 gem install eventmachine -v '1.0.8' -- --with-cppflags=-I/usr/local/opt/openssl/include
 bundle install
