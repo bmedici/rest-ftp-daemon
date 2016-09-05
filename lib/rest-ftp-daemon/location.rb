@@ -8,6 +8,7 @@ module RestFtpDaemon
     # Accessors
     attr_accessor :name
 
+    attr_reader :original
     attr_reader :uri
     attr_reader :scheme
     attr_reader :dir
@@ -25,9 +26,10 @@ module RestFtpDaemon
     delegate :scheme, :host, :port, :user, :password, :to_s,
       to: :uri
 
-    def initialize path
+    def initialize original
       # Strip spaces before/after, copying original "path" at the same time
-      location_uri = path.strip
+      @original = original
+      location_uri = original.strip
 
       # Replace tokens, fix scheme for local paths
       resolve_tokens! location_uri
@@ -60,6 +62,7 @@ module RestFtpDaemon
       return @name if @dir.nil?
       File.join(@dir.to_s, @name.to_s)
     end
+    alias :to_s :path
 
     def scan_files
       Dir.glob(path).collect do |file|
@@ -114,7 +117,7 @@ module RestFtpDaemon
       @uri = URI.parse path # rescue nil
       raise RestFtpDaemon::LocationParseError, location_path unless @uri
 
-      # Sanitize path
+      # Path cleanup
       cleaned  = @uri.path.clone
 
       # remove_leading_slashes
