@@ -24,7 +24,7 @@ module RestFtpDaemon
             me[:error] = job.error.encoding.to_s unless job.error.nil?
             me[:status] = job.status.encoding.to_s unless job.status.nil?
 
-            RestFtpDaemon::Job::FIELDS.each do |name|
+            RestFtpDaemon::Job::IMPORTED.each do |name|
               value = job.send(name)
               me[name] = value.encoding.to_s if value.is_a? String
             end
