@@ -33,7 +33,7 @@ module RestFtpDaemon
 
         else
           status 200
-          present job, with: RestFtpDaemon::API::Entities::Job, type: "complete"
+          present job, with: RestFtpDaemon::Entities::Job, type: "complete"
 
         end
       end
@@ -53,7 +53,7 @@ module RestFtpDaemon
 
         else
           status 200
-          present jobs, with: RestFtpDaemon::API::Entities::Job
+          present jobs, with: RestFtpDaemon::Entities::Job
 
         end
       end
@@ -101,7 +101,7 @@ module RestFtpDaemon
           type: Boolean,
           desc: "Upload to a temp file before renaming it to the target filename",
           default: Conf.at(:transfer, :tempfile)
-        # optional :options, desc: "Options passed to FFMPEG (video jobs)", type: API::Entities::Options
+        # optional :options, desc: "Options passed to FFMPEG (video jobs)", type: Entities::Options
       end
 
       post "/" do
@@ -127,7 +127,7 @@ module RestFtpDaemon
 
         else
           status 201
-          present job, with: RestFtpDaemon::API::Entities::Job, hide_params: true
+          present job, with: RestFtpDaemon::Entities::Job, hide_params: true
 
         end
       end

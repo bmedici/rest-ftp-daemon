@@ -50,6 +50,7 @@ require_relative "rest-ftp-daemon/workers/reporter"
 require_relative "rest-ftp-daemon/workers/transfer"
 
 # API
+require_relative "rest-ftp-daemon/api/entities/location"
 require_relative "rest-ftp-daemon/api/entities/options"
 require_relative "rest-ftp-daemon/api/entities/job"
 require_relative "rest-ftp-daemon/api/jobs"
