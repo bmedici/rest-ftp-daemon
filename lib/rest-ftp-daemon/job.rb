@@ -193,18 +193,6 @@ module RestFtpDaemon
       get_info :target, :host
     end
 
-    # def json_target
-    #   utf8 get_info(:target, :method)
-    # end
-
-    def json_error
-      utf8 @error unless @error.nil?
-    end
-
-    def json_status
-      utf8 @status unless @status.nil?
-    end
-
     def get_info level1, level2
       @mutex.synchronize do
         # @infos || {}
@@ -281,10 +269,6 @@ module RestFtpDaemon
         @status = value
       end
       touch_job
-    end
-
-    def utf8 value
-      value.to_s.encode("UTF-8")
     end
 
     def flag_prepare name
