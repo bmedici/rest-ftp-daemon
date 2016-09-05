@@ -7,7 +7,7 @@ PATH
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.422.0)
+    rest-ftp-daemon (0.423.0)
       activesupport (~> 4.2)
       api-auth
       aws-sdk-resources (~> 2)
