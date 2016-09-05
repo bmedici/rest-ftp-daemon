@@ -5,7 +5,6 @@ module RestFtpDaemon
     module Entities
       class Job < Grape::Entity
 
-        RestFtpDaemon::Job::FIELDS.each { |name| expose name }
         # Some formatters
         format_with(:utf8_filter) do |thing|
           thing.to_s.encode("UTF-8") if thing
@@ -14,6 +13,11 @@ module RestFtpDaemon
         # Job-execution related
         expose :id
         expose :wid, unless: lambda { |object, _options| object.wid.nil? }
+
+        # Attributes from API
+        RestFtpDaemon::Job::IMPORTED.each do |field|
+          expose field
+        end
 
         # Work-specific options
         expose :overwrite

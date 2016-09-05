@@ -14,15 +14,11 @@ module RestFtpDaemon
     attr_reader :logger
     include BmcDaemonLib::LoggerHelper
 
-    # Class constants
-    FIELDS = [:type, :source, :target, :label, :priority, :pool, :notify,
-      :overwrite, :mkdir, :tempfile,
-      :video_options, :video_custom
-      ]
+    # Fields to be imported from params
+    IMPORTED = %w(type priority pool label priority source target overwrite mkdir tempfile video_options video_custom)
 
     # Class options
     attr_accessor :wid
-    attr_accessor :type
 
     attr_reader :id
     attr_reader :error
@@ -35,12 +31,13 @@ module RestFtpDaemon
     attr_reader :finished_at
 
     attr_reader :infos
-    attr_reader :pool
 
-    attr_accessor :config
+    # delegate :type, :pool, :label, :priority,
+    #   to: :params
 
-    FIELDS.each do |name|
-      attr_reader name
+    # Define readers from imported fields
+    IMPORTED.each do |field|
+      attr_reader field
     end
 
     def initialize job_id = nil, params = {}
@@ -52,14 +49,14 @@ module RestFtpDaemon
       return if job_id.nil?
 
       # Init context
-      @id = job_id.to_s
-      #@updated_at = nil
-      @started_at = nil
-      @finished_at = nil
-      @error = nil
-      @status = nil
-      @runs = 0
-      @wid = nil
+      @id           = job_id.to_s
+      @started_at   = nil
+      @finished_at  = nil
+      @updated_at   = nil
+      @error        = nil
+      @status       = nil
+      @runs         = 0
+      @wid          = nil
 
       # Prepare configuration
       @config       = Conf[:transfer] || {}
@@ -67,11 +64,12 @@ module RestFtpDaemon
       @pools        = Conf[:pools] || {}
 
       # Logger
-      @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
+      @logger   = BmcDaemonLib::LoggerPool.instance.get :transfer
 
       # Import query params
-      FIELDS.each do |name|
-        instance_variable_set "@#{name}", params[name]
+      set_info :params, params
+      IMPORTED.each do |field|
+        instance_variable_set "@#{field}", params[field]
       end
 
       # Check if pool name exists
@@ -223,16 +221,6 @@ module RestFtpDaemon
       log_info "Job.prepare_target #{@target_loc.uri}"
     end
 
-    def set_info_location prefix, location
-      return unless location.is_a? Location
-      fields = [:uri, :scheme, :user, :host, :port, :dir, :name, :path, :aws_region, :aws_bucket, :aws_id]
-
-      # Add each field to @infos
-      fields.each do |what|
-        set_info prefix, "loc_#{what}".to_sym, location.send(what)
-      end
-    end
-
   private
 
     def log_prefix
@@ -243,6 +231,18 @@ module RestFtpDaemon
       now = Time.now
       @updated_at = now
       Thread.current.thread_variable_set :updated_at, now
+    end
+
+    # Force strings to UTF8
+    def debug_value_utf8 value
+      case value
+      when Symbol
+        return value.to_s.force_encoding(Encoding::UTF_8)
+      when String
+        return value.dup.force_encoding(Encoding::UTF_8) if value.is_a? String
+      else
+        return value
+      end
     end
 
     def set_error value
