@@ -80,13 +80,7 @@ module RestFtpDaemon
           desc: "Priority level of the job (lower is stronger)",
           default: 0
 
-        # optional :video_options,
-        #   type: Hash,
-          # type: Entities::VideoOptions,
-        #   desc: "Video: standard options passed to FFMPEG encoder",
-        #   default: {}
-
-        optional :video_options, type: Hash, desc: "Options passed to FFMPEG encoder" do
+        optional :video_options, type: Hash, desc: "Options passed to FFMPEG encoder", default: {} do
            optional :video_codec,             type: String
            optional :video_bitrate,           type: String
            optional :video_bitrate_tolerance, type: String
