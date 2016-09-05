@@ -34,6 +34,7 @@ module RestFtpDaemon
     attr_reader :finished_at
 
     attr_reader :infos
+    #attr_reader :config
 
     # delegate :type, :pool, :label, :priority,
     #   to: :params
@@ -76,11 +77,7 @@ module RestFtpDaemon
       end
 
       # Check if pool name exists
-      if (@pools.keys.include? params[:pool])
-        @pool = params[:pool].to_s
-      else
-        @pool = DEFAULT_POOL
-      end
+      @pool = DEFAULT_POOL unless @pools.keys.include?(@pool)
 
       # Prepare sources/target
       raise RestFtpDaemon::AttributeMissing, "source" unless params[:source]
