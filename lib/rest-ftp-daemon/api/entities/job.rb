@@ -22,8 +22,11 @@ module RestFtpDaemon
       expose :overwrite
       expose :mkdir
       expose :tempfile
-      expose :video_options
       expose :video_custom
+
+      # Job/Video options
+      expose :video_options
+      #, using: Entities::VideoOptions
 
       # Status and error
       expose :status, format_with: :utf8_filter

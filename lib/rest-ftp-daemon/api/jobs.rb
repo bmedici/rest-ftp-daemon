@@ -80,10 +80,28 @@ module RestFtpDaemon
           desc: "Priority level of the job (lower is stronger)",
           default: 0
 
-        optional :video_options,
-          type: Hash,
-          desc: "Video: standard options passed to FFMPEG encoder",
-          default: {}
+        # optional :video_options,
+        #   type: Hash,
+          # type: Entities::VideoOptions,
+        #   desc: "Video: standard options passed to FFMPEG encoder",
+        #   default: {}
+
+        optional :video_options, type: Hash, desc: "Options passed to FFMPEG encoder" do
+           optional :video_codec,             type: String
+           optional :video_bitrate,           type: String
+           optional :video_bitrate_tolerance, type: String
+           optional :frame_rate,              type: Integer
+           optional :resolution,              type: String
+           optional :aspect,                  type: String
+           optional :keyframe_interval,       type: String
+           optional :x264_vprofile,           type: String
+           optional :x264_preset,             type: String
+           optional :audio_codec,             type: String
+           optional :audio_bitrate,           type: String
+           optional :audio_sample_rate,       type: Integer
+           optional :audio_channels,          type: String
+        end
+
         optional :video_custom,
           type: Hash,
           desc: "video: custom options passed to FFMPEG encoder",
@@ -101,7 +119,6 @@ module RestFtpDaemon
           type: Boolean,
           desc: "Upload to a temp file before renaming it to the target filename",
           default: Conf.at(:transfer, :tempfile)
-        # optional :options, desc: "Options passed to FFMPEG (video jobs)", type: Entities::Options
       end
 
       post "/" do
