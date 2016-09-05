@@ -63,25 +63,22 @@ module RestFtpDaemon
         requires :source, type: String, desc: "Source file pattern"
         requires :target, type: String, desc: "Target remote path"
 
-        optional :label, type: String, desc: "Descriptive label for this job"
+        optional :label, type: String, desc: "Descriptive label (info only)"
         optional :notify, type: String, desc: "URL to get POST'ed notifications back"
-        optional :priority, type: Integer, desc: "Priority level of the job (lower is stronger)"
-        optional :pool, type: String, desc: "Pool of worker to be used"
         optional :type,
           type: String,
           desc: "Type of job",
           default: JOB_TYPE_TRANSFER,
           values: {value: JOB_TYPES, message: "should be one of: #{JOB_TYPES.join', '}"},
           allow_blank: { value: false, message: 'cannot be empty' }
-
-        optional :video_vc,
+        optional :pool,
           type: String,
-          desc: "video: video codec",
-          default: nil
-        optional :video_ac,
-          type: String,
-          desc: "video: audio codec",
-          default: nil
+          desc: "Pool of worker to be used",
+          default: DEFAULT_POOL
+        optional :priority,
+          type: Integer,
+          desc: "Priority level of the job (lower is stronger)",
+          default: 0
 
         optional :video_options,
           type: Hash,
