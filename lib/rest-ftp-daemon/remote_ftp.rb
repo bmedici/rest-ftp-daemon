@@ -16,7 +16,7 @@ module RestFtpDaemon
         prepare_ftp
       end
       @ftp.passive = true
-      @ftp.debug_mode =  @debug
+      @ftp.debug_mode = @debug
 
       # Config
       @chunk_size = DEFAULT_FTP_CHUNK.to_i * 1024

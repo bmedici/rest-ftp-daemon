@@ -6,7 +6,6 @@ module RestFtpDaemon
     # Class options
     attr_reader :logger
     attr_reader :log_prefix
-
     attr_accessor :job
 
     # Delegate set_info info to Job

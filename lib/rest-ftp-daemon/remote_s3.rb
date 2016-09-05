@@ -4,12 +4,15 @@ require 'aws-sdk-resources'
 module RestFtpDaemon
   class RemoteS3 < Remote
 
+    MULTIPART_THRESHOLD_MB = 4
+
     # Class options
     attr_reader :client
     attr_reader :target
 
     def prepare
-      log_debug "RemoteS3.prepare target[#{@target.inspect}]"
+      @multipart_threshold = MULTIPART_THRESHOLD_MB.to_i * 1024 * 1024
+      log_debug "RemoteS3.prepare target[#{@target.inspect}] #{@multipart_threshold}"
     end
 
     def connect
@@ -40,7 +43,7 @@ module RestFtpDaemon
 
       # Do the transfer
       object.upload_file(source.path, {
-        multipart_threshold: S3_MULTIPART_THREASHOLD_MB  *1024 * 1024
+        multipart_threshold: @multipart_threshold
         })
 
       # Wait for transfer to complete

@@ -4,9 +4,7 @@ DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_FTP_CHUNK       = 1024  # 1 MB
 DEFAULT_PAGE_SIZE       = 50    # 50 lines
 DEFAULT_RETRY_AFTER     = 10    # 10s
-
 TARGET_BLANK             = "_blank"
-
 
 # Internal job constants
 JOB_RANDOM_LEN          = 8
@@ -17,17 +15,13 @@ JOB_UPDATE_INTERVAL     = 1
 JOB_FFMPEG_THREADS      = 2
 JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_tolerance, :frame_rate, :resolution, :aspect, :keyframe_interval, :x264_vprofile, :x264_preset, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels]
 
-
-S3_MULTIPART_THREASHOLD_MB = 4
-
-
 # Internal job infos
 INFO_PROGRESS             = :work_progress
 INFO_BITRATE              = :transfer_bitrate
 
 # Constants: logger
 LOG_ROTATION             = "daily"
-LOG_FORMAT_PROGNAME     = "%d\t%s"
+LOG_FORMAT_PROGNAME      = "%d\t%s"
 LOG_HEADER_TIME          = "%Y-%m-%d %H:%M:%S"
 LOG_HEADER_FORMAT        = "%s \t%d\t%-8s %-10s "
 LOG_MESSAGE_TRIM         = 200
