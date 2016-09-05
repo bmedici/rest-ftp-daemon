@@ -1,4 +1,10 @@
 PATH
+  remote: ../bmc-daemon-lib
+  specs:
+    bmc-daemon-lib (0.3.4)
+      chamber (~> 2.9)
+
+PATH
   remote: .
   specs:
     rest-ftp-daemon (0.422.0)
@@ -47,8 +53,6 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    bmc-daemon-lib (0.3.4)
-      chamber (~> 2.9)
     builder (3.2.2)
     chamber (2.9.1)
       hashie (~> 3.3)
@@ -144,7 +148,7 @@ GEM
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
       rspec-mocks (~> 3.5.0)
-    rspec-core (3.5.2)
+    rspec-core (3.5.3)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -189,6 +193,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bmc-daemon-lib!
   bundler (~> 1.6)
   http
   pry
