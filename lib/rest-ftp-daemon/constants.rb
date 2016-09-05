@@ -21,6 +21,10 @@ JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_toleranc
 S3_MULTIPART_THREASHOLD_MB = 4
 
 
+# Internal job infos
+INFO_PROGRESS             = :work_progress
+INFO_BITRATE              = :transfer_bitrate
+
 # Constants: logger
 LOG_ROTATION             = "daily"
 LOG_FORMAT_PROGNAME     = "%d\t%s"

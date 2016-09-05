@@ -42,29 +42,26 @@ module RestFtpDaemon
       FileUtils.mkdir_p @target_loc.dir
 
       # Do the work, for each file
-      set_info :source, :current, @source_loc.name
+      set_info :source_current, @source_loc.name
       ffmpeg_command @source_loc, target_final
 
       # Done
-      set_info :source, :current, nil
+      set_info :source_current, nil
     end
 
     def do_after
       # Done
-      set_info :source, :current, nil
+      set_info :source_current, nil
     end
 
     def ffmpeg_command source, target
-      set_info :source, :current, source.name
+      set_info :source_current, source.name
 
       # Read info about source file
       movie = FFMPEG::Movie.new(source.path)
-      set_info :source, :ffmpeg_size, movie.size
-      set_info :source, :ffmpeg_duration, movie.duration
-      set_info :source, :ffmpeg_resolution, movie.resolution
-
-
-
+      set_info :ffmpeg_size, movie.size
+      set_info :ffmpeg_duration, movie.duration
+      set_info :ffmpeg_resolution, movie.resolution
 
       # Build options
       options = {
@@ -74,7 +71,7 @@ module RestFtpDaemon
       JOB_FFMPEG_ATTRIBUTES.each do |name|
         options[name] = @video_options[name] unless @video_options[name].nil?
       end
-      set_info :work, :ffmpeg_options, options
+      set_info :work_ffmpeg_options, options
 
       # Announce context
       log_info "JobVideo.ffmpeg_command [#{FFMPEG.ffmpeg_binary}] [#{source.name}] > [#{target.name}]", options
@@ -82,7 +79,7 @@ module RestFtpDaemon
       # Build command
       movie.transcode(target.path, options) do |ffmpeg_progress|
         # set_info :work, :ffmpeg_progress, ffmpeg_progress
-        set_info :work, :progress, (100.0 * ffmpeg_progress).round(1)
+        set_info INFO_PROGRESS, (100.0 * ffmpeg_progress).round(1)
         log_debug "progress #{ffmpeg_progress}"
       end
     end

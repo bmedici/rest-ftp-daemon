@@ -1,12 +1,14 @@
 -# coding: utf-8
 - jobs.each do |job|
-  - work_progress     = job.get_info(:work, :progress)
-  - work_bitrate      = job.get_info(:work, :bitrate)
-  - work_sent         = job.get_info(:work, :sent)
+  - work_progress     = job.get_info(INFO_PROGRESS)
+  - error_message     = job.get_info(:error_message)
+  - transfer_total    = job.get_info(:transfer_total)
+  - transfer_bitrate  = job.get_info(:transfer_bitrate)
+  - work_sent         = job.get_info(:work_sent)
 
-  - source_count      = job.get_info(:source, :count) || 0
-  - source_processed  = job.get_info(:source, :processed) || 0
-  - source_current    = job.get_info(:source, :current)
+  - source_count      = job.get_info(:source_count) || 0
+  - source_processed  = job.get_info(:source_processed) || 0
+  - source_current    = job.get_info(:source_current)
 
   - job_working       = [JOB_STATUS_UPLOADING, JOB_STATUS_TRANSFORMING].include? job.status
 
@@ -59,16 +61,16 @@
             = "#{work_progress} %"
 
       - else
-        .error{title: job.get_info(:error, :message)}
+        .error{title: error_message}
           = text_or_empty(job.error)
 
     %td.nobr.text-right
-      = format_bytes(job.get_info(:transfer, :total), "B")
+      = format_bytes(transfer_total, "B")
 
     %td.nobr.text-right{title: "time: #{job.exectime} s"}
-      - if work_bitrate
+      - if transfer_bitrate
         %span.push-bitrate
-          = format_bytes(work_bitrate, "bps")
+          = format_bytes(transfer_bitrate, "bps")
 
     %td
       - unless job.wid.nil?

@@ -102,9 +102,8 @@ module RestFtpDaemon
         next unless job.status == JOB_STATUS_UPLOADING
 
         # Extract current rate, next if not available
-        rate = job.get_info :transfer, :bitrate
+        rate = job.get_info INFO_BITRATE
         next if rate.nil?
-
 
         # Add its current rate
         result[group] ||= 0

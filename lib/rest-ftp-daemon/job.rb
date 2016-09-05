@@ -101,8 +101,6 @@ module RestFtpDaemon
       # Job has been prepared, reset infos
       set_status JOB_STATUS_PREPARED
       @infos = {}
-      set_info_location :source, @source_loc
-      set_info_location :target, @target_loc
 
       # Update job status, send first notification
       set_status JOB_STATUS_QUEUED
@@ -193,26 +191,16 @@ module RestFtpDaemon
       get_info :target, :host
     end
 
-    def get_info level1, level2
+     def get_info name
       @mutex.synchronize do
-        # @infos || {}
-        @infos[level1][level2] if @infos[level1].is_a? Hash
+        @infos[name]
       end
     end
 
-    def set_info level1, level2, value
+    def set_info name, value
       @mutex.synchronize do
         @infos || {}
-        @infos[level1] ||= {}
-
-        # Force strings to UTF8
-        if value.is_a? Symbol
-          @infos[level1][level2] = value.to_s.force_encoding(Encoding::UTF_8)
-        elsif value.is_a? String
-          @infos[level1][level2] = value.dup.force_encoding(Encoding::UTF_8)
-        else
-          @infos[level1][level2] = value
-        end
+        @infos[name] = debug_value_utf8(value)
       end
       touch_job
     end
@@ -323,13 +311,13 @@ module RestFtpDaemon
       # Update job's internal status
       set_status JOB_STATUS_FAILED
       set_error error
-      set_info :error, :exception, exception.class.to_s
-      set_info :error, :message, exception.message
+      set_info :error_exception, exception.class.to_s
+      set_info :error_message,   exception.message
 
       # Build status stack
       notif_status = nil
       if include_backtrace
-        set_info :error, :backtrace, exception.backtrace
+        set_info :error_backtrace, exception.backtrace
         notif_status = {
           backtrace: exception.backtrace,
           }

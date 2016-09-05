@@ -61,8 +61,8 @@ module RestFtpDaemon
       # Dump information about this file
       log_debug "RemoteS3.upload url[#{object.public_url}]"
       log_debug "RemoteS3.upload etag[#{object.etag}]"
-      set_info :target, :aws_public_url, object.public_url
-      set_info :target, :aws_etag, object.etag
+      set_info :target_aws_public_url, object.public_url
+      set_info :target_aws_etag, object.etag
     end
 
     def connected?
