@@ -17,6 +17,10 @@ JOB_UPDATE_INTERVAL     = 1
 JOB_FFMPEG_THREADS      = 2
 JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_tolerance, :frame_rate, :resolution, :aspect, :keyframe_interval, :x264_vprofile, :x264_preset, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels]
 
+
+S3_MULTIPART_THREASHOLD_MB = 4
+
+
 # Constants: logger
 LOG_ROTATION             = "daily"
 LOG_FORMAT_PROGNAME     = "%d\t%s"

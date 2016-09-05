@@ -18,14 +18,13 @@ module RestFtpDaemon
       # Connect init
       log_debug "RemoteS3.connect region[#{target.aws_region}] id[#{target.aws_id}]"
 
-      # Debug level
-      verbosity =  @debug ? Logger::DEBUG : false
-
       # Connect remote server
       @client = Aws::S3::Resource.new(
         region: @target.aws_region,
-        credentials: Aws::Credentials.new(@target.aws_id, @target.aws_secret)
+        credentials: Aws::Credentials.new(@target.aws_id, @target.aws_secret),
+        http_wire_trace: @debug
         )
+      #s3 = Aws::S3::Client.new(http_wire_trace: true)
     end
 
     def upload source, target, use_temp_name = false, &callback
@@ -35,12 +34,25 @@ module RestFtpDaemon
 
       # Update progress before
       #yield 0, target.name
-
-      # Do the transfer
+      # Point to the right bucket and object
       bucket = @client.bucket(target.aws_bucket)
       object = bucket.object(target.name)
-      object.upload_file source.path do |progress, total|
-        log_debug "- progress[#{progress}] total[#{total}]"
+
+      # Do the transfer
+      object.upload_file(source.path, {
+        multipart_threshold: S3_MULTIPART_THREASHOLD_MB  *1024 * 1024
+        })
+
+      # Wait for transfer to complete
+      object.wait_until_exists do |waiter|
+        # waiter.delay = 1
+        # # log_debug "- progress[#{progress}] total[#{total}]"
+        # waiter.before_wait do |attempts, response|
+        #   puts "#{attempts} made"
+        #   puts response.error.inspect
+        #   puts response.data.inspect
+        # end
+        # log_debug "- progress[] #{waiter.inspect}"
       end
 
       # Update progress after
