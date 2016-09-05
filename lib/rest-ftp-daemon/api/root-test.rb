@@ -56,7 +56,7 @@ module RestFtpDaemon
 
         else
           status 200
-          present jobs, with: RestFtpDaemon::API::Entities::Job
+          present jobs, with: RestFtpDaemon::Entities::Job
 
         end
       end

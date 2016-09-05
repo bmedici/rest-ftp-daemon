@@ -55,7 +55,7 @@ desc 'API Root'
           description: "API description for #{BmcDaemonLib::Conf.app_name} #{BmcDaemonLib::Conf.app_ver}",
           }
          # models: [
-         #   RestFtpDaemon::API::Entities::Job,
+         #   RestFtpDaemon::Entities::Job,
          # ]
 
       ### GLOBAL EXCEPTION HANDLING

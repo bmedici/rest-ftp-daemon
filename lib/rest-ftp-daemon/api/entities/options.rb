@@ -1,15 +1,13 @@
 require "grape-entity"
 
 module RestFtpDaemon
-  module API
-    module Entities
-      class Options < Grape::Entity
+  module Entities
+    class Options < Grape::Entity
 
-        # expose :opt1, documentation: { type: 'Boolean', desc: 'opt UN', required: false }
-        expose :opt2
-        # expose :opt6
+      # expose :opt1, documentation: { type: 'Boolean', desc: 'opt UN', required: false }
+      expose :opt2
+      # expose :opt6
 
-      end
     end
   end
 end
