@@ -17,6 +17,7 @@ module RestFtpDaemon
       config              = Conf.to_hash
       config[:users]      = Conf[:users].keys if Conf[:users]
       config[:endpoints]  = Conf[:endpoints].keys if Conf[:endpoints]
+      config[:credentials]  = Conf[:credentials].keys if Conf[:credentials]
       config
     end
 
