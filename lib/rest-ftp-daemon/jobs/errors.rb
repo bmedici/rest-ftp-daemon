@@ -10,6 +10,7 @@ module RestFtpDaemon
     # Common errors
     ERRORS = {
       invalid_argument:         Errno::EINVAL,
+      runtime_error:            RuntimeError,
 
       source_not_supported:     RestFtpDaemon::SourceNotSupported,
       source_not_found:         RestFtpDaemon::SourceNotFound,
@@ -40,6 +41,18 @@ module RestFtpDaemon
       ftp_error:                Net::FTPError,
 
       ffmpeg_error:             FFMPEG::Error,
+
+      s3_no_such_waiter:        Aws::Waiters::Errors::NoSuchWaiterError,
+      s3_failure_state_error:   Aws::Waiters::Errors::FailureStateError,
+      s3_too_many_attempts:     Aws::Waiters::Errors::TooManyAttemptsError,
+      s3_waiter_unexpected:     Aws::Waiters::Errors::UnexpectedError,
+      s3_waiter_failed:         Aws::Waiters::Errors::WaiterFailed,
+
+      s3_permanent_redirect:    Aws::S3::Errors::PermanentRedirect,
+      s3_no_such_key:           Aws::S3::Errors::NoSuchKey,
+      s3_no_such_bucket:        Aws::S3::Errors::NoSuchBucket,
+      s3_no_such_upload:        Aws::S3::Errors::NoSuchUpload,
+      s3_error:                 Aws::S3::Errors::ServiceError,
 
       sftp_exception:           Net::SFTP::StatusException,
       sftp_key_mismatch:        Net::SSH::HostKeyMismatch,
