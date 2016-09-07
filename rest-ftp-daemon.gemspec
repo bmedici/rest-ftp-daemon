@@ -42,7 +42,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "grape-swagger-entity"
   spec.add_runtime_dependency     "grape-swagger-representable"
 
-  spec.add_runtime_dependency     "settingslogic"
   spec.add_runtime_dependency     "rest-client", "~> 1.8"
   spec.add_runtime_dependency     "api-auth"
   spec.add_runtime_dependency     "haml"

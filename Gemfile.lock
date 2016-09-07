@@ -19,7 +19,6 @@ PATH
       net-sftp
       newrelic_rpm
       rest-client (~> 1.8)
-      settingslogic
       rollbar
       streamio-ffmpeg
       sys-cpu
@@ -161,7 +160,6 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.4)
     ruby-progressbar (1.8.1)
-    settingslogic (2.0.9)
     slop (3.6.0)
     streamio-ffmpeg (2.1.0)
       multi_json (~> 1.8)
