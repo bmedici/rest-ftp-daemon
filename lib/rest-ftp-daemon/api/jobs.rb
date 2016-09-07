@@ -35,20 +35,15 @@ module RestFtpDaemon
         requires :id, type: String, desc: "ID of the Job to read"
       end
       get "/:id", requirements: { id: /.*/ } do
-        begin
-          # Get job to display
-          raise RestFtpDaemon::JobNotFound if params[:id].nil?
-          job = RestFtpDaemon::JobQueue.instance.find_by_id(params[:id]) || RestFtpDaemon::JobQueue.instance.find_by_id(params[:id], true)
-          raise RestFtpDaemon::JobNotFound if job.nil?
+        # Get job to display
+        raise RestFtpDaemon::JobNotFound if params[:id].nil?
+        job = RestFtpDaemon::JobQueue.instance.find_by_id(params[:id]) || RestFtpDaemon::JobQueue.instance.find_by_id(params[:id], true)
+        raise RestFtpDaemon::JobNotFound if job.nil?
+        log_debug "found job: #{job.inspect}"
 
-          log_debug "found job: #{job.inspect}"
-
-
-        else
-          status 200
-          present job, with: RestFtpDaemon::Entities::Job, type: "complete"
-
-        end
+        # Prepare response
+        status 200
+        present job, with: RestFtpDaemon::Entities::Job, type: "complete"
       end
 
       desc "List all Jobs", http_codes: [
@@ -56,16 +51,12 @@ module RestFtpDaemon
         ],
         is_array: true
       get "/" do
-        begin
-          # Get jobs to display
-          jobs = RestFtpDaemon::JobQueue.instance.jobs
+        # Get jobs to display
+        jobs = RestFtpDaemon::JobQueue.instance.jobs
 
-
-        else
-          status 200
-          present jobs, with: RestFtpDaemon::Entities::Job
-
-        end
+        # Prepare response
+        status 200
+        present jobs, with: RestFtpDaemon::Entities::Job
       end
 
       desc "Create a new job"
@@ -129,6 +120,21 @@ module RestFtpDaemon
           desc: "video: custom options passed to FFMPEG encoder",
           default: {}
 
+        optional :options, type: Hash, desc: "Options for transfers" do
+          optional :overwrite,
+            type: Boolean,
+            desc: "Overwrites files at target server",
+            default: Conf.at(:transfer, :overwrite)
+          optional :mkdir,
+            type: Boolean,
+            desc: "Create missing directories on target server",
+            default: Conf.at(:transfer, :mkdir)
+          optional :tempfile,
+            type: Boolean,
+            desc: "Upload to a temp file before renaming it to the target filename",
+            default: Conf.at(:transfer, :tempfile)
+        end
+
         optional :overwrite,
           type: Boolean,
           desc: "Overwrites files at target server",
@@ -150,22 +156,15 @@ module RestFtpDaemon
       end
 
       post "/" do
-        # log_debug params.to_json
-        begin
-          # Add up the new job on the queue
-          job = RestFtpDaemon::JobQueue.instance.create_job(params)
+        # Add up the new job on the queue
+        job = RestFtpDaemon::JobQueue.instance.create_job(params)
 
-          # Increment a counter
-          RestFtpDaemon::Counters.instance.increment :jobs, :received
+        # Increment a counter
+        RestFtpDaemon::Counters.instance.increment :jobs, :received
 
-
-
-
-        else
-          status 201
-          present job, with: RestFtpDaemon::Entities::Job, hide_params: true
-
-        end
+        # Prepare response
+        status 201
+        present job, with: RestFtpDaemon::Entities::Job, hide_params: true
       end
 
     end
