@@ -145,7 +145,7 @@ module RestFtpDaemon
 
       # Compute final bitrate
       global_transfer_bitrate = get_bitrate @transfer_total, (Time.now - transfer_started_at)
-      set_info :transfer_bitrate, global_transfer_bitrate.round(0)
+      set_info INFO_BITRATE, global_transfer_bitrate.round(0)
 
       # Done
       set_info :source_current, nil
