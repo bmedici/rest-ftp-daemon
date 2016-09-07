@@ -24,6 +24,7 @@ begin
   cmd_user = nil
   cmd_group = nil
   cmd_daemonize = nil
+  cmd_dump = nil
 
   # Init Chamber-based configuration from Gemspec
   Conf.init File.dirname(__FILE__) + "/../"
@@ -34,6 +35,7 @@ begin
     opts.on("-c", "--config CONFIGFILE")     { |value| cmd_config = File.expand_path(value.to_s)}
     opts.on("-e", "--environment ENV")       { |value| Conf.app_env = value }
     opts.on("",   "--dev")                   { Conf.app_env = "development" }
+    opts.on("",   "--dump", "Dump config as seen by the process")         { |value| cmd_dump = true }
     opts.on("-p", "--port PORT", "use PORT")                              { |value| cmd_port = value.to_i }
     opts.on("-d", "--daemonize", "Run daemonized in the background")      { cmd_daemonize = true }
     opts.on("-f", "--foreground", "Run in the foreground")                { cmd_daemonize = false }
@@ -124,6 +126,10 @@ puts "PID file        \t #{Conf[:pidfile]}"
 puts
 puts "Newrelic        \t #{Conf.feature?(:newrelic) || '-'}"
 puts "Rollbar         \t #{Conf.feature?(:rollbar) || '-'}"
+if cmd_dump
+  puts
+  puts Conf.dump
+end
 puts
 puts "--- Thin ARGV"
 puts argv.flatten.join(" ")
