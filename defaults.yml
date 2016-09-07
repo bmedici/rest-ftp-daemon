@@ -58,17 +58,18 @@ newrelic:
 
 logs:
   path:     "/tmp/"
+  level:    debug
 
-  default:  "rftpd-environment.log"
+  thin:     "rftpd-thin.log"
+  default:  "rftpd-core.log"
 
-  thin:     "rftpd-environment-thin.log"
-  newrelic: "rftpd-environment-newrelic.log"
-  queue:    "rftpd-environment-core.log"
-  api:      "rftpd-environment-core.log"
-  workers:  "rftpd-environment-core.log"
+  queue:    "rftpd-core.log"
+  api:      "rftpd-core.log"
+  workers:  "rftpd-core.log"
+  transfer: "rftpd-workers.log"
+  conchita: "rftpd-workers.log"
+  reporter: "rftpd-workers.log"
+  notify:   "rftpd-workers.log"
 
-  transfer: "rftpd-environment-workers.log"
-  conchita: "rftpd-environment-workers.log"
-  reporter: "rftpd-environment-workers.log"
-  notify:   "rftpd-environment-workers.log"
+  newrelic: "rftpd-newrelic.log"
   rollbar:  "rftpd-rollbar.log"
