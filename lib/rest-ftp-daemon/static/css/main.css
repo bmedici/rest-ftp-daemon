@@ -146,8 +146,24 @@ body {
   margin-top: 5px;
 }
 
+
+
+
+
+
+
 .indicators .btn {
   cursor: pointer;
   opacity: 1;
   filter: alpha(opacity=100);
 }
+
+.transfer-type {
+  width: 30px;
+  }
+
+
+
+
+
+

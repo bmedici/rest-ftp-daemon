@@ -32,11 +32,13 @@
 
     %td= job.label
 
-    %td.text-right= location_label job.source_uri
-    %td= token_highlight job.source
+    %td
+      = location_label job.source_uri
+      = token_highlight job.source
 
-    %td.text-right= location_label job.target_uri
-    %td= token_highlight job.target
+    %td
+      = location_label job.target_uri
+      = token_highlight job.target
 
     %td
       %span.push-status
