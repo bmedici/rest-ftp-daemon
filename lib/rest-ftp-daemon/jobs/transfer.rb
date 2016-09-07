@@ -152,55 +152,71 @@ module RestFtpDaemon
     end
 
     def update_progress transferred, name = ""
-      # What's current time ?
-      now = Time.now
-      notify_after = @config[:notify_after]
-
       # Update counters
       @transfer_sent += transferred
       set_info :work_sent, @transfer_sent
 
       # Update job info
       percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
-      set_info INFO_PROGRESS, percent0
+      set_info INFO_PROGRESS,  percent0
 
-      # Update job status after each NOTIFY_UPADE_STATUS
-      progressed_ago = (now.to_f - @progress_at.to_f)
-      if (!JOB_UPDATE_INTERVAL.to_f.zero?) && (progressed_ago > JOB_UPDATE_INTERVAL.to_f)
-        @current_bitrate = running_bitrate @transfer_sent
-        set_info :transfer_bitrate, @current_bitrate.round(0)
+      # What's current time ?
+      now = Time.now
 
-        # Log progress
-        stack = []
-        stack << "#{percent0} %"
-        stack << (format_bytes @transfer_sent, "B")
-        stack << (format_bytes @transfer_total, "B")
-        stack << (format_bytes @current_bitrate.round(0), "bps")
-        stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
-        log_debug "progress #{stack2} \t#{name}"
-
-        # Remember when we last did it
-        @progress_at = now
-      end
+      # Update job status
+      update_progress_jobinfo now, percent0, name
 
       # Notify if requested
-      notified_ago = (now.to_f - @notified_at.to_f)
-      if (!notify_after.nil?) && (notified_ago > notify_after)
-        # Prepare and send notification
-        notif_status = {
-          progress: percent0,
-          transfer_sent: @transfer_sent,
-          transfer_total: @transfer_total,
-          transfer_bitrate: @current_bitrate.round(0),
-          }
-        client_notify :progress, status: notif_status
-
-        # Remember when we last did it
-        @notified_at = now
-      end
+      update_progress_notify now, percent0, name
     end
 
   private
+
+    def update_progress_jobinfo now, percent0, name
+      # No delay provided ?
+      return if JOB_UPDATE_INTERVAL.to_f.zero?
+
+      # Still too early to notify again ?
+      how_long_ago = (now.to_f - @progress_at.to_f)
+      return unless how_long_ago > JOB_UPDATE_INTERVAL.to_f
+
+      # Update bitrates
+      @current_bitrate = running_bitrate @transfer_sent
+      set_info INFO_BITRATE,   @current_bitrate.round(0)
+
+      # Log progress
+      stack = []
+      stack << "#{percent0} %"
+      stack << (format_bytes @transfer_sent, "B")
+      stack << (format_bytes @transfer_total, "B")
+      stack << (format_bytes @current_bitrate.round(0), "bps")
+      stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
+      log_debug "progress #{stack2} \t#{name}"
+
+      # Remember when we last did it
+      @progress_at = now
+    end
+
+    def update_progress_notify now, percent0, name
+      # No delay provided ?
+      return if @config[:notify_after].nil?
+
+      # Still too early to notify again ?
+      how_long_ago = (now.to_f - @notified_at.to_f)
+      return unless how_long_ago > @config[:notify_after]
+
+      # Prepare and send notification
+      client_notify :progress, status: {
+        progress: percent0,
+        transfer_sent: @transfer_sent,
+        transfer_total: @transfer_total,
+        transfer_bitrate: @current_bitrate.round(0),
+        transfer_current: name,
+        }
+
+      # Remember when we last did it
+      @notified_at = now
+    end
 
     def get_bitrate delta_data, delta_time
       return nil if delta_time.nil? || delta_time.zero?
