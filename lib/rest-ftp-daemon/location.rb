@@ -27,6 +27,10 @@ module RestFtpDaemon
       to: :uri
 
     def initialize original
+      unless original.is_a? String
+        raise RestFtpDaemon::LocationMalformed, original.inspect
+      end
+
       # Strip spaces before/after, copying original "path" at the same time
       @original = original
       location_uri = original.strip
@@ -102,6 +106,7 @@ module RestFtpDaemon
 
       # Replace endpoints defined in config
       vectors.each do |from, to|
+        next unless to.is_a? String
         next if to.to_s.empty?
         path.gsub! tokenize(from), to
       end
