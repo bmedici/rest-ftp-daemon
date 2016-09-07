@@ -14,7 +14,6 @@ Gem::Specification.new do |spec|
   spec.licenses                   = ["MIT"]
   spec.date                       = Time.now.strftime("%Y-%m-%d")
 
-
   # List files and executables
   spec.files                      = `git ls-files -z`.
                                       split("\x0").
@@ -22,7 +21,6 @@ Gem::Specification.new do |spec|
   spec.executables                = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths              = ["lib"]
   spec.required_ruby_version      = ">= 2.2.2"
-
 
   # Development dependencies
   spec.add_development_dependency "bundler", "~> 1.6"
@@ -33,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "http"
 
   # Runtime dependencies
-  spec.add_runtime_dependency     "bmc-daemon-lib", "~> 0.3.4"
+  spec.add_runtime_dependency     "bmc-daemon-lib", "~> 0.3.8"
   spec.add_runtime_dependency     "json", "~> 1.8"
   spec.add_runtime_dependency     "thin", "~> 1.7"
   spec.add_runtime_dependency     "activesupport", "~> 4.2"
@@ -51,14 +49,13 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "facter"
   spec.add_runtime_dependency     "sys-cpu"
   spec.add_runtime_dependency     "get_process_mem"
-  spec.add_runtime_dependency     "newrelic_rpm"
 
+  spec.add_runtime_dependency     "newrelic_rpm"
   spec.add_runtime_dependency     "rollbar"
 
   spec.add_runtime_dependency     "net-sftp"
   spec.add_runtime_dependency     "double-bag-ftps"
   spec.add_runtime_dependency     "aws-sdk-resources", '~> 2'
-
   spec.add_runtime_dependency     "streamio-ffmpeg"
 
 end
