@@ -92,19 +92,19 @@ module RestFtpDaemon
           default: 0
 
         optional :video_options, type: Hash, desc: "Options passed to FFMPEG encoder", default: {} do
-           optional :video_codec,             type: String
-           optional :video_bitrate,           type: String
-           optional :video_bitrate_tolerance, type: String
-           optional :frame_rate,              type: Integer
-           optional :resolution,              type: String
-           optional :aspect,                  type: String
-           optional :keyframe_interval,       type: String
-           optional :x264_vprofile,           type: String
-           optional :x264_preset,             type: String
-           optional :audio_codec,             type: String
-           optional :audio_bitrate,           type: String
-           optional :audio_sample_rate,       type: Integer
-           optional :audio_channels,          type: String
+           optional :video_codec,             type: String,  desc: "video codec (ex: copy, libx264)"
+           optional :video_bitrate,           type: String,  desc: "nominal video bitrate"
+           optional :video_bitrate_tolerance, type: String,  desc: "maximum video bitrate"
+           optional :frame_rate,              type: Integer, desc: "output frames per second"
+           optional :resolution,              type: String,  desc: "output video resolution"
+           optional :aspect,                  type: String,  desc: "output aspect ratio"
+           optional :keyframe_interval,       type: String,  desc: "group of pictures (GOP) size"
+           optional :x264_vprofile,           type: String,  desc: "h264 profile"
+           optional :x264_preset,             type: String,  desc: "h264 preset (fast, low..)"
+           optional :audio_codec,             type: String,  desc: "audio codec (ex: copy, libfaac, ibfdk_aac)"
+           optional :audio_bitrate,           type: String,  desc: "nominal audio bitrate"
+           optional :audio_sample_rate,       type: Integer, desc: "audio sampling rate"
+           optional :audio_channels,          type: String,  desc: "number of audio channels"
         end
 
         optional :video_custom,
