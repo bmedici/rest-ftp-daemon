@@ -59,6 +59,13 @@ module RestFtpDaemon
       end
 
       desc "Create a new job"
+     # desc 'Creates a new app' do
+     #    detail 'It is used to register a new app on the server and get the app_id'
+     #    params Entities::AppsParamsEntity.documentation
+     #    success Entities::AppsEntity
+     #    failure [[400, 'Bad Request', Entities::ErrorEntity]]
+     #    named 'create app'
+     #  end
 
       params do
         requires :source,

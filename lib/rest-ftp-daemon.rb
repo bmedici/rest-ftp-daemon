@@ -41,10 +41,9 @@ require_relative "rest-ftp-daemon/jobs/dummy"
 require_relative "rest-ftp-daemon/jobs/transfer"
 require_relative "rest-ftp-daemon/jobs/video"
 
-require_relative "rest-ftp-daemon/worker_pool"
-
 # Workers
 # require_from :workers
+require_relative "rest-ftp-daemon/worker_pool"
 require_relative "rest-ftp-daemon/workers/worker"
 require_relative "rest-ftp-daemon/workers/conchita"
 require_relative "rest-ftp-daemon/workers/reporter"
