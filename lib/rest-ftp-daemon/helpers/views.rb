@@ -68,11 +68,15 @@ module RestFtpDaemon
     end
 
     def job_type job
+      # sprintf(
+      #     '<span class="glyphicon glyphicon-%s" alt="%s"></span>&nbsp;%s',
+      #     job_style(job),
+      #     job.type,
+      #     job.type
+      #     )
       sprintf(
           '<span class="glyphicon glyphicon-%s" alt="%s"></span>&nbsp;%s',
           job_style(job),
-          job.type,
-          job.type
           )
     end
 
