@@ -8,6 +8,7 @@ require "timeout"
 require "syslog"
 require "thread"
 require "newrelic_rpm"
+require "rollbar"
 
 # Shared libs / monkey-patching
 require_relative "shared/patch_array"

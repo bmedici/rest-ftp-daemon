@@ -71,3 +71,4 @@ logs:
   conchita: "rftpd-environment-workers.log"
   reporter: "rftpd-environment-workers.log"
   notify:   "rftpd-environment-workers.log"
+  rollbar:  "rftpd-rollbar.log"

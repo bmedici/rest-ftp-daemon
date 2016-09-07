@@ -124,6 +124,7 @@ puts "Newrelic        \t #{Conf.newrelic_enabled? ? Conf.at(:newrelic, :license)
 puts "PID file        \t #{Conf[:pidfile]}"
 puts
 puts Conf.dump
+puts "Rollbar         \t #{Conf.feature?(:rollbar) || '-'}"
 puts
 puts "--- Thin ARGV"
 puts argv.flatten.join(" ")
