@@ -35,37 +35,14 @@ module RestFtpDaemon
       job = RestFtpDaemon::JobQueue.instance.pop @pool
 
       # Work on this job
-      work_on_job(job)
+      work_on_job job
 
       # Clean job status
       job.wid = nil
       #sleep 1
 
-      # If job status requires a retry, just restack it
-      if !job.error
-        #log_info "job succeeded"
-
-      elsif !(@config[:retry_on].is_a?(Enumerable) && @config[:retry_on].include?(job.error))
-        log_error "not retrying: error not eligible"
-
-      elsif @config[:retry_for] && (job.age >= @config[:retry_for])
-        log_error "not retrying: max_age reached (#{@config[:retry_for]} s)"
-
-      elsif @config[:retry_max] && (job.runs >= @config[:retry_max])
-        log_error "not retrying: max_runs reached (#{@config[:retry_max]} tries)"
-
-      else
-        # Delay cannot be negative, and will be 1s minimum
-        retry_after = [@config[:retry_after] || DEFAULT_RETRY_AFTER, 1].max
-        log_info "retrying job: waiting for #{retry_after} seconds"
-
-        # Wait !
-        sleep retry_after
-        log_info "retrying job: requeued after delay"
-
-        # Now, requeue this job
-        RestFtpDaemon::JobQueue.instance.requeue job
-      end
+      # Handle the retry if needed
+      handle_job_result job
     end
 
     def work_on_job job
@@ -100,6 +77,33 @@ module RestFtpDaemon
       job.oops_after_crash ex unless job.nil?
     end
 
+    def handle_job_result job
+      # If job status requires a retry, just restack it
+      if !job.error
+        #log_info "job succeeded"
+
+      elsif !(@config[:retry_on].is_a?(Enumerable) && @config[:retry_on].include?(job.error))
+        log_error "not retrying: error not eligible"
+
+      elsif @config[:retry_for] && (job.age >= @config[:retry_for])
+        log_error "not retrying: max_age reached (#{@config[:retry_for]} s)"
+
+      elsif @config[:retry_max] && (job.runs >= @config[:retry_max])
+        log_error "not retrying: max_runs reached (#{@config[:retry_max]} tries)"
+
+      else
+        # Delay cannot be negative, and will be 1s minimum
+        retry_after = [@config[:retry_after] || DEFAULT_RETRY_AFTER, 1].max
+        log_info "retrying job: waiting for #{retry_after} seconds"
+
+        # Wait !
+        sleep retry_after
+        log_info "retrying job: requeued after delay"
+
+        # Now, requeue this job
+        RestFtpDaemon::JobQueue.instance.requeue job
+      end
+    end
 
   end
 end
