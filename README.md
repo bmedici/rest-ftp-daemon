@@ -53,7 +53,7 @@ a while without any glitches at France Télévisions.
 
 #### API Documentation
 
-API documentation was [maintained on Apiary](http://docs.restftpdaemon.apiary.io/) and will me migrated to swagger on day or another.
+API documentation is self-hosted on ```/swagger.html```
 
 #### Expected features in a short-time range
 
@@ -279,10 +279,6 @@ logs:
 TODO for this document
 ------------------------------------------------------------------------------------
 
-* Update Apiary documentation
-* Update Apiary documentation
-* Update Apiary documentation
-* Update Apiary documentation !
 * Document /status
 * Document /routes
 * Document mkdir and overwrite options
