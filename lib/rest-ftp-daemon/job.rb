@@ -15,7 +15,7 @@ module RestFtpDaemon
     include BmcDaemonLib::LoggerHelper
 
     # Fields to be imported from params
-    IMPORTED = %w(type priority pool label priority source target overwrite mkdir tempfile video_options video_custom)
+    IMPORTED = %w(type priority pool label priority source target overwrite notify mkdir tempfile video_options video_custom)
 
     # Class options
     attr_accessor :wid
