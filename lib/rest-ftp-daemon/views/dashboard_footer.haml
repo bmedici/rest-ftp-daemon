@@ -17,26 +17,26 @@
   %a{href: MOUNT_SWAGGER_UI, target: TARGET_BLANK} API Documentation
 
 
-.footer-indicators.pull-right
+.footer-indicators.indicators.pull-right
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-info Host
-    .btn.btn-default= Conf.host
+    .btn.btn-default.btn-info.disabled Host
+    .btn.btn-default.disabled= Conf.host
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-info Features
+    .btn.btn-default.btn-info.disabled  Features
     = dashboard_feature :reload, Conf[:allow_reload], "ACTIVE (config is hot-reloadable)",  "changes at startup only"
     = dashboard_feature :newrelic, Conf.feature?(:newrelic), "ACTIVE (license found)",  "disabled"
     = dashboard_feature :rollbar, Conf.feature?(:rollbar), "ACTIVE (token found)",  "disabled"
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-info IP
-    .btn.btn-default= Facter.value(:ipaddress)
+    .btn.btn-default.btn-info.disabled  IP
+    .btn.btn-default.disabled= Facter.value(:ipaddress)
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-info Cores
-    .btn.btn-default= info_procs
+    .btn.btn-default.btn-info.disabled  Cores
+    .btn.btn-default.disabled= info_procs
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-info Started
-    .btn.btn-default= datetime_short(Conf.app_started)
+    .btn.btn-default.btn-info.disabled  Started
+    .btn.btn-default.disabled= datetime_short(Conf.app_started)

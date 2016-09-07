@@ -15,24 +15,24 @@
       = "v#{Conf.app_ver} [#{Conf.app_env}]"
 
 
-.header-indicators.navbar-header.pull-right
+.header-indicators.indicators.navbar-header.pull-right
+
+  .btn-group.btn-group-sm.disabled
+    .btn.btn-default.btn-warning.disabled Load
+    .btn.btn-default.disabled= info_load.round(1)
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-warning Load
-    .btn.btn-default= info_load.round(1)
+    .btn.btn-default.btn-warning.disabled  CPU
+    .btn.btn-default.disabled= "#{info_norm} %"
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-warning CPU
-    .btn.btn-default= "#{info_norm} %"
+    .btn.btn-default.btn-warning.disabled  Mem
+    .btn.btn-default.disabled= format_bytes(mem.bytes, "B")
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-warning Mem
-    .btn.btn-default= format_bytes(mem.bytes, "B")
+    .btn.btn-default.btn-success.disabled  Processed
+    .btn.btn-default.disabled= info_processed.to_i
 
   .btn-group.btn-group-sm
-    .btn.btn-default.btn-success Processed
-    .btn.btn-default= info_processed.to_i
-
-  .btn-group.btn-group-sm
-    .btn.btn-default.btn-success Transferred
-    .btn.btn-default= format_bytes(info_trans, "B", 1)
+    .btn.btn-default.btn-success.disabled  Transferred
+    .btn.btn-default.disabled= format_bytes(info_trans, "B", 1)

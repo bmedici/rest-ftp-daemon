@@ -4,7 +4,7 @@ module RestFtpDaemon
     def dashboard_feature name, enabled, message_on = "enabled", message_of = "disabled"
       # Build classes
       class_status = enabled ? 'enabled' : 'disabled'
-      classes = "btn btn-default feature-#{class_status}"
+      classes = "btn btn-default feature-#{class_status} disabled"
 
       # Build title
       title_status = enabled ? message_on : message_of

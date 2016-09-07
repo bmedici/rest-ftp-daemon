@@ -139,12 +139,15 @@ body {
   border-top: 1px solid #e7e7e7;
 }
 .footer-signature {
-  /*border: 1px solid blue;*/
   margin-top: 12px;
 }
 
 .footer-indicators {
-  /*border: 1px solid blue;*/
   margin-top: 5px;
-  /*margin-bottom: 2px;*/
+}
+
+.indicators .btn {
+  cursor: pointer;
+  opacity: 1;
+  filter: alpha(opacity=100);
 }
