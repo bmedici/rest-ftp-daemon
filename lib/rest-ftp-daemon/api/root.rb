@@ -71,7 +71,6 @@ module RestFtpDaemon
           }
 
 
-
       ### INITIALIZATION
       def initialize
         super

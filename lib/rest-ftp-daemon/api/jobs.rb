@@ -59,12 +59,23 @@ module RestFtpDaemon
       end
 
       desc "Create a new job"
-      params do
-        requires :source, type: String, desc: "Source file pattern"
-        requires :target, type: String, desc: "Target remote path"
 
-        optional :label, type: String, desc: "Descriptive label (info only)"
-        optional :notify, type: String, desc: "URL to get POST'ed notifications back"
+      params do
+        requires :source,
+          type: String,
+          desc: "Source file pattern",
+          allow_blank: false
+        requires :target,
+          type: String,
+          desc: "Target remote path",
+          allow_blank: false
+        optional :label,
+          type: String,
+          desc: "Descriptive label (info only)"
+        optional :notify,
+          type: String,
+          desc: "URL to get POST'ed notifications back",
+          allow_blank: false
         optional :type,
           type: String,
           desc: "Type of job",
@@ -113,6 +124,12 @@ module RestFtpDaemon
           type: Boolean,
           desc: "Upload to a temp file before renaming it to the target filename",
           default: Conf.at(:transfer, :tempfile)
+        # given :shelf_id do
+        #   requires :bin_id, type: Integer
+        # end
+        # given category: ->(val) { val == 'foo' } do
+        #   requires :description
+        # end
       end
 
       post "/" do

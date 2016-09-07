@@ -20,7 +20,6 @@ INFO_PROGRESS             = :work_progress
 INFO_BITRATE              = :transfer_bitrate
 
 # Constants: logger
-LOG_ROTATION             = "daily"
 LOG_FORMAT_PROGNAME      = "%d\t%s"
 LOG_HEADER_TIME          = "%Y-%m-%d %H:%M:%S"
 LOG_HEADER_FORMAT        = "%s \t%d\t%-8s %-10s "

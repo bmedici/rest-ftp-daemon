@@ -15,6 +15,7 @@ module RestFtpDaemon
   class AttributeMissing          < RestFtpDaemonException; end
   class AssertionFailed           < RestFtpDaemonException; end
   class UnresolvedTokens          < RestFtpDaemonException; end
+  class LocationMalformed         < RestFtpDaemonException; end
   class LocationParseError        < RestFtpDaemonException; end
   class UnsupportedScheme         < RestFtpDaemonException; end
   class MissingFfmpegLibraries    < RestFtpDaemonException; end
