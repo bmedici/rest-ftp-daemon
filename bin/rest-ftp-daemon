@@ -32,10 +32,10 @@ begin
   # Parse options and check compliance
   parser = OptionParser.new do |opts|
     opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
-    opts.on("-c", "--config CONFIGFILE")     { |value| cmd_config = File.expand_path(value.to_s)}
-    opts.on("-e", "--environment ENV")       { |value| Conf.app_env = value }
-    opts.on("",   "--dev")                   { Conf.app_env = "development" }
+    opts.on("-c", "--config CONFIGFILE")                                  { |value| cmd_config = File.expand_path(value.to_s)}
     opts.on("",   "--dump", "Dump config as seen by the process")         { |value| cmd_dump = true }
+    opts.on("-e", "--environment ENV")                                    { |value| Conf.app_env = value }
+    opts.on("",   "--dev")                                                { Conf.app_env = "development" }
     opts.on("-p", "--port PORT", "use PORT")                              { |value| cmd_port = value.to_i }
     opts.on("-d", "--daemonize", "Run daemonized in the background")      { cmd_daemonize = true }
     opts.on("-f", "--foreground", "Run in the foreground")                { cmd_daemonize = false }
