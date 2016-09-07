@@ -50,6 +50,11 @@ module RestFtpDaemon
         put "-----"
       end
 
+      ## GLOBAL EXCEPTION HANDLING
+      rescue_from :all do |exception|
+        Rollbar.error exception
+        error_response(message: "Internal server error: #{exception}", status: 500)
+      end
 
       ### MOUNTPOINTS
       mount RestFtpDaemon::API::Status      => MOUNT_STATUS
