@@ -185,11 +185,11 @@ module RestFtpDaemon
       set_info INFO_BITRATE,   @current_bitrate.round(0)
 
       # Log progress
-      stack = []
-      stack << "#{percent0} %"
-      stack << (format_bytes @transfer_sent, "B")
-      stack << (format_bytes @transfer_total, "B")
-      stack << (format_bytes @current_bitrate.round(0), "bps")
+      stack = [
+        "#{percent0} %",
+        format_bytes(@transfer_sent, "B"),
+        format_bytes(@current_bitrate.round(0), "bps")
+        ]
       stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
       log_debug "progress #{stack2} \t#{name}"
 
