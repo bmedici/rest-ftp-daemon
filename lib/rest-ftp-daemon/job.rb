@@ -303,6 +303,9 @@ module RestFtpDaemon
         log_error message
       end
 
+      # Log to Rollbar
+      Rollbar.error(exception)
+
       # Close ftp connexion if open
       @remote.close unless @remote.nil? || !@remote.connected?
 
