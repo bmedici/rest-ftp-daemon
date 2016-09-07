@@ -5,6 +5,26 @@ module RestFtpDaemon
     class Jobs < Grape::API
       include BmcDaemonLib
 
+
+      ### EXCEPTIONS HANDLERS
+      rescue_from RestFtpDaemon::JobNotFound do |exception|
+        log_error "JobNotFound: #{exception.message}"
+        error!({ error: :api_job_not_found, message: exception.message }, 404)
+      end
+      rescue_from JSON::ParserError do |exception|
+        log_error "JSON::ParserError: #{exception.message}"
+        error!({error: :api_parse_error, message: exception.message}, 422)
+      end
+      rescue_from RestFtpDaemon::QueueCantCreateJob do |exception|
+        log_error "QueueCantCreateJob: #{exception.message}"
+        error!({error: :api_cant_create_job, message: exception.message}, 422)
+      end
+      rescue_from RestFtpDaemonException do |exception|
+        Rollbar.error exception
+        log_error "#{exception.class.to_s} #{exception.message}"
+        error!({error: exception_to_error(exception), message: exception.message}, 500)
+      end
+
       ### ENDPOINTS
       desc "Read job with ID", http_codes: [
         { code: 200, message: "Here is the job you requested" },
@@ -23,13 +43,6 @@ module RestFtpDaemon
 
           log_debug "found job: #{job.inspect}"
 
-        rescue RestFtpDaemon::JobNotFound => exception
-          log_error "JobNotFound: #{exception.message}"
-          error!({ error: :api_job_not_found, message: exception.message }, 404)
-
-        rescue StandardError => exception
-          log_error "Exception: #{exception.message}"
-          error!({ error: :api_exception, message: exception.message }, 500)
 
         else
           status 200
@@ -47,9 +60,6 @@ module RestFtpDaemon
           # Get jobs to display
           jobs = RestFtpDaemon::JobQueue.instance.jobs
 
-        rescue StandardError => exception
-          log_error "Exception: #{exception.message}"
-          error!({ error: :api_exception, message: exception.message }, 500)
 
         else
           status 200
@@ -148,17 +158,8 @@ module RestFtpDaemon
           # Increment a counter
           RestFtpDaemon::Counters.instance.increment :jobs, :received
 
-        rescue JSON::ParserError => exception
-          log_error "JSON::ParserError: #{exception.message}"
-          error!({error: :api_parse_error, message: exception.message}, 422)
 
-        rescue QueueCantCreateJob => exception
-          log_error "QueueCantCreateJob: #{exception.message}"
-          error!({error: :api_cant_create_job, message: exception.message}, 422)
 
-        rescue RestFtpDaemonException => exception
-          log_error "#{exception.class.to_s} #{exception.message}"
-          error!({error: exception_to_error(exception), message: exception.message}, 500)
 
         else
           status 201
