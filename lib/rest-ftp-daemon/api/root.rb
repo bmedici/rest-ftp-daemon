@@ -24,12 +24,13 @@ module RestFtpDaemon
         end
 
         def exception_error name, http_code, exception
+          # Extract message lines
           lines = exception.message.lines.collect(&:strip).reject(&:empty?)
-          if lines.size > 1
-            log_error "[#{http_code}] #{name}", lines
-          else
-            log_error "[#{http_code}] #{name} #{exception.message}"
-          end
+
+          # Log error to file
+          log_error "#{http_code} [#{name}] #{lines.shift} ", lines
+
+          # Return error
           error!({
             error: name,
             http_code: http_code,
