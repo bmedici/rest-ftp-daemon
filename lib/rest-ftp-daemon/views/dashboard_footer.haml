@@ -25,8 +25,8 @@
 
   .btn-group.btn-group-sm
     .btn.btn-default.btn-info Features
-    = dashboard_feature :reload, Conf[:allow_reload], "configuration is hot-reloadable",  "configuration changes at startup only"
-    = dashboard_feature :newrelic, Conf.newrelic_enabled?, "active (license found)",  "disabled"
+    = dashboard_feature :reload, Conf[:allow_reload], "ACTIVE (config is hot-reloadable)",  "changes at startup only"
+    = dashboard_feature :newrelic, Conf.feature?(:newrelic), "ACTIVE (license found)",  "disabled"
     = dashboard_feature :rollbar, Conf.feature?(:rollbar), "ACTIVE (token found)",  "disabled"
 
   .btn-group.btn-group-sm

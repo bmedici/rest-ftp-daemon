@@ -10,7 +10,7 @@ module RestFtpDaemon
       config_section :reporter
 
       # Other configuration options
-      @report_newrelic = Conf.newrelic_enabled?
+      @report_newrelic = Conf.feature?(:newrelic)
 
       # Check that everything is OK
       return "invalid timer"      unless @config[:timer].to_i > 0
@@ -35,7 +35,7 @@ module RestFtpDaemon
 
     def do_metrics
       # What metrics to report?
-      report_newrelic = Conf.newrelic_enabled?
+      report_newrelic = Conf.feature?(:newrelic)
 
       # Get common metrics and dump them to logs
       log_debug "begin metrics sample"
