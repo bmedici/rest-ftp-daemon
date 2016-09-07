@@ -22,11 +22,35 @@ module RestFtpDaemon
         def logger
           Root.logger
         end
+
+        def exception_error name, http_code, exception
+          lines = exception.message.lines.collect(&:strip).reject(&:empty?)
+          if lines.size > 1
+            log_error "[#{http_code}] #{name}", lines
+          else
+            log_error "[#{http_code}] #{name} #{exception.message}"
+          end
+          error!({
+            error: name,
+            http_code: http_code,
+            message: exception.message
+          }, http_code)
+        end
+
       end
 
       before do
         log_request
       end
+
+
+      ## EXCEPTION HANDLERS
+      rescue_from :all do |exception|
+        Rollbar.error exception
+        #error!({error: :internal_server_error, message: exception.message}, 500)
+        exception_error :internal_server_error, 500, exception
+      end
+
 
       ### CLASS CONFIG
       logger BmcDaemonLib::LoggerPool.instance.get :api
@@ -48,12 +72,6 @@ module RestFtpDaemon
           JSON.pretty_generate(object)
         #end
         put "-----"
-      end
-
-      ## GLOBAL EXCEPTION HANDLING
-      rescue_from :all do |exception|
-        Rollbar.error exception
-        error_response(message: "Internal server error: #{exception}", status: 500)
       end
 
       ### MOUNTPOINTS
