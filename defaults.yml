@@ -56,6 +56,10 @@ newrelic:
   prefix: "rftpd"                         # app prefix to build app_name
   # platform: "bigbusiness"               # app platform to build app_name
 
+rollbar:
+  debug: false
+  # token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
 logs:
   path:     "/tmp/"
   level:    debug
