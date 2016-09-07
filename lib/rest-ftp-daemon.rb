@@ -29,10 +29,10 @@ require_relative "rest-ftp-daemon/notification"
 require_relative "rest-ftp-daemon/location"
 
 # Remotes
-require_relative "rest-ftp-daemon/remote"
-require_relative "rest-ftp-daemon/remote_ftp"
-require_relative "rest-ftp-daemon/remote_sftp"
-require_relative "rest-ftp-daemon/remote_s3"
+require_relative "rest-ftp-daemon/remote/base"
+require_relative "rest-ftp-daemon/remote/ftp"
+require_relative "rest-ftp-daemon/remote/sftp"
+require_relative "rest-ftp-daemon/remote/s3"
 
 # Jobs
 require_relative "rest-ftp-daemon/job"
@@ -50,10 +50,10 @@ require_relative "rest-ftp-daemon/workers/conchita"
 require_relative "rest-ftp-daemon/workers/reporter"
 require_relative "rest-ftp-daemon/workers/transfer"
 
-# API
-require_relative "rest-ftp-daemon/api/entities/location"
-require_relative "rest-ftp-daemon/api/entities/options"
-require_relative "rest-ftp-daemon/api/entities/job"
+# Entities and API
+require_relative "rest-ftp-daemon/entities/location"
+require_relative "rest-ftp-daemon/entities/options"
+require_relative "rest-ftp-daemon/entities/job"
 require_relative "rest-ftp-daemon/api/jobs"
 require_relative "rest-ftp-daemon/api/dashboard"
 require_relative "rest-ftp-daemon/api/status"
