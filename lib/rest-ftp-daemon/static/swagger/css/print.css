@@ -508,7 +508,7 @@
   clear: both;
 }
 .swagger-section .swagger-ui-wrap .body-textarea {
-  width: 300px;
+  width: 200px;
   height: 100px;
   border: 1px solid #aaa;
 }
@@ -534,7 +534,7 @@
   font-weight: bold!important;
 }
 .swagger-section .swagger-ui-wrap input.parameter {
-  width: 300px;
+  width: 200px;
   border: 1px solid #aaa;
 }
 .swagger-section .swagger-ui-wrap h1 {
