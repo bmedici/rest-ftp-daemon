@@ -19,25 +19,24 @@
     - trclass = "warning"
 
   %tr{class: trclass.to_s}
-    %td
-      = job_type job
 
     %td
       %a{href: dashboard_job_url(job)}
         %b= job.id
 
+    %td= job_type job
+
     %td= job.pool
 
-    %td= job.label
+    %td= datetime_short(job.queued_at)
 
+    %td= job.label
 
     %td.text-right= location_label job.source_uri
     %td= token_highlight job.source
 
     %td.text-right= location_label job.target_uri
     %td= token_highlight job.target
-
-    %td= datetime_short(job.queued_at)
 
     %td
       %span.push-status
