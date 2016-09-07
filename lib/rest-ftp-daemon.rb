@@ -61,6 +61,10 @@ require_relative "rest-ftp-daemon/api/config"
 require_relative "rest-ftp-daemon/api/debug"
 require_relative "rest-ftp-daemon/api/root"
 
+# Init
+require_relative "rest-ftp-daemon/initialize"
+
+
 # def require_from subdir
 #   path = sprintf(
 #     '%s/rest-ftp-daemon/%s/*.rb',
