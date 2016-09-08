@@ -33,8 +33,9 @@ module RestFtpDaemon
         log_info "JobTransfer.before target_method S3"
         @remote = Remote::RemoteS3.new @target_loc, log_prefix, @config[:debug_s3]
       else
-        log_info "JobTransfer.before unknown scheme [#{@target_loc.scheme}]"
-        raise RestFtpDaemon::TargetNotSupported, @target_loc.scheme
+        message = "unknown scheme [#{@target_loc.scheme}] [#{target_uri.class.name}]"
+        log_info "JobTransfer.before #{message}"
+        raise RestFtpDaemon::TargetNotSupported, message
       end
 
       # Plug this Job into @remote to allow it to log

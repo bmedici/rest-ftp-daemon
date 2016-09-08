@@ -34,10 +34,6 @@ module RestFtpDaemon
     attr_reader :finished_at
 
     attr_reader :infos
-    #attr_reader :config
-
-    # delegate :type, :pool, :label, :priority,
-    #   to: :params
 
     # Define readers from imported fields
     IMPORTED.each do |field|
@@ -82,12 +78,10 @@ module RestFtpDaemon
       # Prepare sources/target
       raise RestFtpDaemon::AttributeMissing, "source" unless params[:source]
       @source_loc = Location.new(params[:source])
-      #set_info :location_source, params[:source]
       log_info "Job.initialize source #{@source_loc.uri}"
 
       raise RestFtpDaemon::AttributeMissing, "target" unless params[:target]
       @target_loc = Location.new(params[:target])
-      #set_info :location_target, params[:target]
       log_info "Job.initialize target #{@target_loc.uri}"
 
       # Handle exceptions
