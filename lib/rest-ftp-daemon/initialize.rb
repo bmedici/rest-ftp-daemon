@@ -2,6 +2,11 @@
 Conf.log :init, "init: Newrelic and Rollbar"
 Conf.prepare_newrelic
 Conf.prepare_rollbar
+
+# Initialize Facter
+Conf.log :init, "init: Facter"
+Facter.loadfacts
+
 # Initialize workers
 Conf.log :init, "init: workers"
 RestFtpDaemon::WorkerPool.instance.start_em_all
