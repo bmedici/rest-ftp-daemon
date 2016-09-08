@@ -29,8 +29,6 @@ unless Conf.app_env == "production"
   # use Rack::MiniProfiler
 end
 
-# Initialize workers
-RestFtpDaemon::WorkerPool.instance.start_em_all
 
 # Launch the API
 Conf.log :init, "rackup: start endpoint"
