@@ -15,10 +15,10 @@ module RestFtpDaemon
       rescue_from RestFtpDaemon::QueueCantCreateJob do |exception|
         exception_error :api_cant_create_job, 422, exception
       end
-      rescue_from RestFtpDaemonException do |exception|
-        exception_error exception_to_error(exception), 500, exception
-        Rollbar.error exception
+      rescue_from RestFtpDaemon::UnresolvedTokens do |exception|
+        exception_error :api_unresolved_tokens, 422, exception
       end
+
 
       ### ENDPOINTS
       desc "Read job with ID", http_codes: [
