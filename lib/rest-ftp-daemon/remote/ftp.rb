@@ -1,7 +1,7 @@
 require "net/ftp"
 require "double_bag_ftps"
 
-# Handle FTP and FTPeS transfers for Remote class
+# Handle FTP and FTPES transfers for Remote class
 module RestFtpDaemon
   module Remote
     class RemoteFTP < RemoteBase
@@ -20,7 +20,7 @@ module RestFtpDaemon
         @ftp.debug_mode = @debug
 
         # Config
-        @chunk_size = DEFAULT_FTP_CHUNK.to_i * 1024
+        @chunk_size = JOB_FTP_CHUNKMB.to_i * 1024
 
         # Announce object
         log_debug "Remote::RemoteFTP.prepare chunk_size:#{@chunk_size}"

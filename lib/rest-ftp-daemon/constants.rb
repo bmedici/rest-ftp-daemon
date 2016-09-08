@@ -1,7 +1,6 @@
 # Configuration defaults
 DEFAULT_POOL            = "default"
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
-DEFAULT_FTP_CHUNK       = 1024  # 1 MB
 DEFAULT_PAGE_SIZE       = 50    # 50 lines
 DEFAULT_RETRY_AFTER     = 10    # 10s
 TARGET_BLANK             = "_blank"
@@ -10,7 +9,7 @@ TARGET_BLANK             = "_blank"
 JOB_RANDOM_LEN          = 8
 JOB_IDENT_LEN           = 4
 JOB_TEMPFILE_LEN        = 8
-JOB_UPDATE_INTERVAL     = 1
+JOB_FTP_CHUNKMB         = 1024   # 1 MB
 
 JOB_FFMPEG_THREADS      = 2
 JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_tolerance, :frame_rate, :resolution, :aspect, :keyframe_interval, :x264_vprofile, :x264_preset, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels]

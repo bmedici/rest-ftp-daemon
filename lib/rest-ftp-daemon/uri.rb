@@ -18,10 +18,9 @@ module URI
     DEFAULT_PORT = 22
   end
 
-
-  @@schemes["FTPS"] = FTPS
-  @@schemes["FTPES"] = FTPES
-  @@schemes["SFTP"] = SFTP
-  @@schemes["S3"] = S3
-  @@schemes["FILE"] = FILE
+  @@schemes["FTPS"]   = FTPS
+  @@schemes["FTPES"]  = FTPES
+  @@schemes["SFTP"]   = SFTP
+  @@schemes["S3"]     = S3
+  @@schemes["FILE"]   = FILE
 end
