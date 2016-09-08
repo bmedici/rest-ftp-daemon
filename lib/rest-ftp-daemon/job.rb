@@ -83,12 +83,6 @@ module RestFtpDaemon
       raise RestFtpDaemon::AttributeMissing, "target" unless params[:target]
       @target_loc = Location.new(params[:target])
       log_info "Job.initialize target #{@target_loc.uri}"
-
-      # Handle exceptions
-      # rescue RestFtpDaemon::UnresolvedTokens => exception
-      #   return oops :started, exception
-      # rescue RestFtpDaemon::UnsupportedScheme => exception
-      #   return oops :started, exception
     end
 
     def reset
@@ -138,6 +132,7 @@ module RestFtpDaemon
       do_after
 
     rescue StandardError => exception
+      Rollbar.error "process: #{exception.class.name}: #{exception.message}"
       return oops current_signal, exception
 
     else
@@ -176,10 +171,12 @@ module RestFtpDaemon
     end
 
     def oops_after_crash exception
+      Rollbar.error "oops_after_crash: #{exception.class.name}: #{exception.message}"
       oops :ended, exception, "crashed"
     end
 
     def oops_you_stop_now exception
+      Rollbar.error "oops_you_stop_now: #{exception.class.name}: #{exception.message}"
       oops :ended, exception, "timeout"
     end
 
