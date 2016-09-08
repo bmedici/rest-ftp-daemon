@@ -48,9 +48,9 @@ module RestFtpDaemon
 
       ## EXCEPTION HANDLERS
       rescue_from :all do |exception|
-        Rollbar.error exception
+        Rollbar.error "#{exception.class.name}: #{exception.message}"
         #error!({error: :internal_server_error, message: exception.message}, 500)
-        exception_error :internal_server_error, 500, exception
+        exception_error :api_unexpected_error, 500, exception
       end
 
 
