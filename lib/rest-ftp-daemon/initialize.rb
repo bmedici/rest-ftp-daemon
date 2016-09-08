@@ -5,7 +5,11 @@ Conf.prepare_rollbar
 
 # Initialize Facter
 Conf.log :init, "init: Facter"
-Facter.loadfacts
+begin
+  Facter.loadfacts
+rescue StandardError => exception
+  Conf.log :init, "init: Facter failed to initialize: #{exception.message}"
+end
 
 # Initialize workers
 Conf.log :init, "init: workers"
