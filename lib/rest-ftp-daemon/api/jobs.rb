@@ -5,20 +5,15 @@ module RestFtpDaemon
     class Jobs < Grape::API
       include BmcDaemonLib
 
-
       ### EXCEPTIONS HANDLERS
       rescue_from RestFtpDaemon::JobNotFound do |exception|
         exception_error :api_job_not_found, 404, exception
       end
       rescue_from JSON::ParserError do |exception|
-        exception_error :api_job_not_found, 404, exception
-
-        log_error "JSON::ParserError: #{exception.message}"
-        error!({error: :api_parse_error, message: exception.message}, 422)
+        exception_error :api_parse_error, 422, exception
       end
       rescue_from RestFtpDaemon::QueueCantCreateJob do |exception|
         exception_error :api_cant_create_job, 422, exception
-        error!({error: :api_cant_create_job, message: exception.message}, 422)
       end
       rescue_from RestFtpDaemonException do |exception|
         exception_error exception_to_error(exception), 500, exception

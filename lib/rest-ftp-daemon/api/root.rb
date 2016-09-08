@@ -23,18 +23,19 @@ module RestFtpDaemon
           Root.logger
         end
 
-        def exception_error name, http_code, exception
+        def exception_error error, http_code, exception
           # Extract message lines
           lines = exception.message.lines.collect(&:strip).reject(&:empty?)
 
           # Log error to file
-          log_error "#{http_code} [#{name}] #{lines.shift} ", lines
+          log_error "#{http_code} [#{error}] #{lines.shift} ", lines
 
           # Return error
           error!({
-            error: name,
+            error: error,
             http_code: http_code,
-            message: exception.message
+            class: exception.class.name,
+            message: exception.message,
           }, http_code)
         end
 
