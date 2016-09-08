@@ -163,7 +163,7 @@ GEM
       ruby-progressbar (~> 1.4)
     ruby-progressbar (1.8.1)
     slop (3.6.0)
-    streamio-ffmpeg (2.1.0)
+    streamio-ffmpeg (3.0.0)
       multi_json (~> 1.8)
     sys-cpu (0.7.2)
       ffi
