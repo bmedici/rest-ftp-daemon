@@ -1,4 +1,5 @@
 # Init Rollbar and Newrelic
+Conf.log :init, "init: Newrelic and Rollbar"
 Conf.prepare_newrelic
 Conf.prepare_rollbar
 # Initialize workers
