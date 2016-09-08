@@ -5,7 +5,7 @@ PATH
       activesupport (~> 4.2)
       api-auth
       aws-sdk-resources (~> 2)
-      bmc-daemon-lib (~> 0.3.8)
+      bmc-daemon-lib (~> 0.3.10)
       double-bag-ftps
       facter
       get_process_mem
