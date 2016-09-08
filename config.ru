@@ -23,12 +23,10 @@ use Rack::Static, root: "#{Conf.app_libs}/static/", urls: [
   MOUNT_SWAGGER_UI,
   ]
 
-# Rack reloader and mini-profiler
-unless Conf.app_env == "production"
+# Rack reloader
+if Conf.app_env == "development"
   # use Rack::Reloader, 1
-  # use Rack::MiniProfiler
 end
-
 
 # Launch the API
 Conf.log :init, "rackup: start endpoint"
