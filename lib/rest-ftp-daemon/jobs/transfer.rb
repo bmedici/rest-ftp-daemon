@@ -156,6 +156,10 @@ module RestFtpDaemon
       percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
       set_info INFO_TRANFER_PROGRESS, percent0
 
+      # Update bitrates
+      @current_bitrate = running_bitrate @transfer_sent
+      set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
+
       # What's current time ?
       now = Time.now
 
@@ -176,9 +180,9 @@ module RestFtpDaemon
       how_long_ago = (now.to_f - @last_notify_at.to_f)
       return unless how_long_ago > @config[:notify_after]
 
-      # Update bitrates
-      @current_bitrate = running_bitrate @transfer_sent
-      set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
+      # # Update bitrates
+      # @current_bitrate = running_bitrate @transfer_sent
+      # set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
 
       # Log progress
       stack = [
