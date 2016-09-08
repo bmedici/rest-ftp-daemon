@@ -1,10 +1,12 @@
 # Load gem files
-# load_path_libs = File.expand_path(File.join(File.dirname(__FILE__), "lib"))
+Conf.log :init, "rackup: project code"
+
 load_path_libs = File.expand_path "lib", File.dirname(__FILE__)
 $LOAD_PATH.unshift(load_path_libs) unless $LOAD_PATH.include?(load_path_libs)
 require "rest-ftp-daemon"
 
 # Rack authent
+Conf.log :init, "rackup: rack setup"
 unless Conf[:adminpwd].nil?
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
     [username, password] == ["admin", Conf[:adminpwd]]
@@ -31,4 +33,6 @@ end
 RestFtpDaemon::WorkerPool.instance.start_em_all
 
 # Launch the API
+Conf.log :init, "rackup: start endpoint"
 run RestFtpDaemon::API::Root
+
