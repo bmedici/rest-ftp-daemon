@@ -128,19 +128,14 @@ module RestFtpDaemon
 
       # Start transfer
       transfer_started_at = Time.now
-      @progress_at = 0
-      @notified_at = transfer_started_at
+      @last_notify_at = transfer_started_at
 
       # Start the transfer, update job status after each block transfer
       set_status JOB_STATUS_UPLOADING
       log_debug "JobTransfer.remote_upload source[#{source.path}] temp[#{@tempfile}]"
       @remote.upload source, target, @tempfile do |transferred, name|
-
         # Update transfer statistics
         update_progress transferred, name
-
-        # Touch my worker status
-        touch_job
       end
 
       # Compute final bitrate
@@ -158,31 +153,31 @@ module RestFtpDaemon
 
       # Update job info
       percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
-      set_info INFO_TRANFER_PROGRESS,  percent0
+      set_info INFO_TRANFER_PROGRESS, percent0
 
       # What's current time ?
       now = Time.now
 
-      # Update job status
-      update_progress_jobinfo now, percent0, name
-
       # Notify if requested
-      update_progress_notify now, percent0, name
+      progress_notify now, percent0, name
+
+      # Touch my worker status
+      touch_job
     end
 
   private
 
-    def update_progress_jobinfo now, percent0, name
+    def progress_notify now, percent0, name
       # No delay provided ?
-      return if JOB_UPDATE_INTERVAL.to_f.zero?
+      return if @config[:notify_after].nil?
 
       # Still too early to notify again ?
-      how_long_ago = (now.to_f - @progress_at.to_f)
-      return unless how_long_ago > JOB_UPDATE_INTERVAL.to_f
+      how_long_ago = (now.to_f - @last_notify_at.to_f)
+      return unless how_long_ago > @config[:notify_after]
 
       # Update bitrates
       @current_bitrate = running_bitrate @transfer_sent
-      set_info INFO_TRANFER_BITRATE,   @current_bitrate.round(0)
+      set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
 
       # Log progress
       stack = [
@@ -192,18 +187,6 @@ module RestFtpDaemon
         ]
       stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
       log_debug "progress #{stack2} \t#{name}"
-
-      # Remember when we last did it
-      @progress_at = now
-    end
-
-    def update_progress_notify now, percent0, name
-      # No delay provided ?
-      return if @config[:notify_after].nil?
-
-      # Still too early to notify again ?
-      how_long_ago = (now.to_f - @notified_at.to_f)
-      return unless how_long_ago > @config[:notify_after]
 
       # Prepare and send notification
       client_notify :progress, status: {
@@ -215,7 +198,7 @@ module RestFtpDaemon
         }
 
       # Remember when we last did it
-      @notified_at = now
+      @last_notify_at = now
     end
 
     def get_bitrate delta_data, delta_time
