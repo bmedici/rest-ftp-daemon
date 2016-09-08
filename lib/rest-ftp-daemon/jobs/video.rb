@@ -44,20 +44,20 @@ module RestFtpDaemon
       FileUtils.mkdir_p @target_loc.dir
 
       # Do the work, for each file
-      set_info :source_current, @source_loc.name
+      set_info INFO_SOURCE_CURRENT, @source_loc.name
       ffmpeg_command @source_loc, target_final
 
       # Done
-      set_info :source_current, nil
+      set_info INFO_SOURCE_CURRENT, nil
     end
 
     def do_after
       # Done
-      set_info :source_current, nil
+      set_info INFO_SOURCE_CURRENT, nil
     end
 
     def ffmpeg_command source, target
-      set_info :source_current, source.name
+      set_info INFO_SOURCE_CURRENT, source.name
 
       # Read info about source file
       movie = FFMPEG::Movie.new(source.path)
@@ -81,7 +81,7 @@ module RestFtpDaemon
       # Build command
       movie.transcode(target.path, options) do |ffmpeg_progress|
         # set_info :work, :ffmpeg_progress, ffmpeg_progress
-        set_info INFO_PROGRESS, (100.0 * ffmpeg_progress).round(1)
+        set_info INFO_TRANFER_PROGRESS, (100.0 * ffmpeg_progress).round(1)
         log_debug "progress #{ffmpeg_progress}"
       end
     end

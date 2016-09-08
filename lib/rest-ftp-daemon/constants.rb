@@ -16,8 +16,22 @@ JOB_FFMPEG_THREADS      = 2
 JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_tolerance, :frame_rate, :resolution, :aspect, :keyframe_interval, :x264_vprofile, :x264_preset, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels]
 
 # Internal job infos
-INFO_PROGRESS             = :progress
-INFO_BITRATE              = :bitrate
+INFO_PARAMS               = :params
+
+
+INFO_ERROR_MESSAGE        = :error_message
+INFO_ERROR_EXCEPTION      = :error_exception
+INFO_ERROR_BACKTRACE      = :error_backtrace
+INFO_SOURCE_COUNT         = :source_count
+INFO_SOURCE_PROCESSED     = :source_processed
+INFO_SOURCE_CURRENT       = :source_current
+INFO_SOURCE_FILES         = :source_files
+INFO_TRANSFER_TOTAL       = :transfer_total
+INFO_TRANFER_SENT         = :transfer_sent
+INFO_TRANFER_PROGRESS     = :progress
+INFO_TRANFER_BITRATE      = :bitrate
+INFO_TARGET_FILES         = :target_files
+
 
 # Constants: logger
 LOG_FORMAT_PROGNAME      = "%d\t%s"

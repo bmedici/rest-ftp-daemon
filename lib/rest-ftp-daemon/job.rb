@@ -71,7 +71,7 @@ module RestFtpDaemon
       @logger   = BmcDaemonLib::LoggerPool.instance.get :transfer
 
       # Import query params
-      set_info :params, params
+      set_info INFO_PARAMS, params
       IMPORTED.each do |field|
         instance_variable_set "@#{field}", params[field]
       end
@@ -312,13 +312,13 @@ module RestFtpDaemon
       # Update job's internal status
       set_status JOB_STATUS_FAILED
       set_error error
-      set_info :error_exception, exception.class.to_s
-      set_info :error_message,   exception.message
+      set_info INFO_ERROR_EXCEPTION, exception.class.to_s
+      set_info INFO_ERROR_MESSAGE,   exception.message
 
       # Build status stack
       notif_status = nil
       if include_backtrace
-        set_info :error_backtrace, exception.backtrace
+        set_info INFO_ERROR_BACKTRACE, exception.backtrace
         notif_status = {
           backtrace: exception.backtrace,
           }

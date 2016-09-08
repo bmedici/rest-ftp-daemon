@@ -13,7 +13,7 @@ module RestFtpDaemon
 
       # Some init
       @transfer_sent = 0
-      set_info :source_processed, 0
+      set_info INFO_SOURCE_PROCESSED, 0
 
       # Ensure source is FILE
       raise RestFtpDaemon::SourceNotSupported, @source_loc.scheme   unless @source_loc.is? URI::FILE
@@ -48,8 +48,8 @@ module RestFtpDaemon
       # Scan local source files from disk
       set_status JOB_STATUS_CHECKING_SRC
       sources = @source_loc.scan_files
-      set_info :source_count, sources.size
-      set_info :source_files, sources.collect(&:name)
+      set_info INFO_SOURCE_COUNT, sources.size
+      set_info INFO_SOURCE_FILES, sources.collect(&:name)
       log_info "JobTransfer.work sources #{sources.collect(&:name)}"
       raise RestFtpDaemon::SourceNotFound if sources.empty?
 
@@ -66,7 +66,7 @@ module RestFtpDaemon
 
       # Compute total files size
       @transfer_total = sources.collect(&:size).sum
-      set_info :transfer_total, @transfer_total
+      set_info INFO_TRANSFER_TOTAL, @transfer_total
 
       # Reset counters
       @last_data = 0
@@ -85,10 +85,10 @@ module RestFtpDaemon
 
         # Add it to transferred target names
         targets << target.name
-        set_info :target_files, targets
+        set_info INFO_TARGET_FILES, targets
 
         # Update counters
-        set_info :source_processed, source_processed += 1
+        set_info INFO_SOURCE_PROCESSED, source_processed += 1
       end
     end
 
@@ -116,7 +116,7 @@ module RestFtpDaemon
 
       # Use source filename if target path provided none (typically with multiple sources)
       log_info "JobTransfer.remote_upload [#{source.name}]: [#{source.path}] > [#{target.path}]"
-      set_info :source_current, source.name
+      set_info INFO_SOURCE_CURRENT, source.name
 
       # Remove any existing version if present, or check if it's there
       if @overwrite
@@ -145,20 +145,20 @@ module RestFtpDaemon
 
       # Compute final bitrate
       global_transfer_bitrate = get_bitrate @transfer_total, (Time.now - transfer_started_at)
-      set_info INFO_BITRATE, global_transfer_bitrate.round(0)
+      set_info INFO_TRANFER_BITRATE, global_transfer_bitrate.round(0)
 
       # Done
-      set_info :source_current, nil
+      set_info INFO_SOURCE_CURRENT, nil
     end
 
     def update_progress transferred, name = ""
       # Update counters
       @transfer_sent += transferred
-      set_info :work_sent, @transfer_sent
+      set_info INFO_TRANFER_SENT, @transfer_sent
 
       # Update job info
       percent0 = (100.0 * @transfer_sent / @transfer_total).round(0)
-      set_info INFO_PROGRESS,  percent0
+      set_info INFO_TRANFER_PROGRESS,  percent0
 
       # What's current time ?
       now = Time.now
@@ -182,7 +182,7 @@ module RestFtpDaemon
 
       # Update bitrates
       @current_bitrate = running_bitrate @transfer_sent
-      set_info INFO_BITRATE,   @current_bitrate.round(0)
+      set_info INFO_TRANFER_BITRATE,   @current_bitrate.round(0)
 
       # Log progress
       stack = [
