@@ -55,10 +55,12 @@ newrelic:
   # app_name: "rftpd-bigbusiness-dev"     # app_name used for naming app (used as-is if provided)
   prefix: "rftpd"                         # app prefix to build app_name
   # platform: "bigbusiness"               # app platform to build app_name
+  enabled: true
 
 rollbar:
   debug: false
   # token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  enabled: true
 
 logs:
   path:     "/tmp/"
