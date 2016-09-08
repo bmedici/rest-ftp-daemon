@@ -27,7 +27,11 @@ module RestFtpDaemon
 
         def build_dashboard filter = ''
           # Initialize Facter
-          Facter.loadfacts
+          begin
+            Facter.loadfacts
+          rescue StandardError => exception
+            log_error "dashboard/build: #{exception.inspect}"
+          end
 
           # Detect QS filters
           @filter = filter.to_s
