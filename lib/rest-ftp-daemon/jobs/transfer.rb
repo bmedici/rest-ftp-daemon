@@ -21,20 +21,20 @@ module RestFtpDaemon
       # Prepare remote object
       case target_uri
       when URI::FTP
-        log_info "JobTransfer.before target_method FTP"
+        log_info "JobTransfer.do_before target_method FTP"
         @remote = Remote::RemoteFTP.new @target_loc, log_prefix, @config[:debug_ftp]
       when URI::FTPES, URI::FTPS
-        log_info "JobTransfer.before target_method FTPES/FTPS"
+        log_info "JobTransfer.do_before target_method FTPES/FTPS"
         @remote = Remote::RemoteFTP.new @target_loc, log_prefix, @config[:debug_ftps], :ftpes
       when URI::SFTP
-        log_info "JobTransfer.before target_method SFTP"
+        log_info "JobTransfer.do_before target_method SFTP"
         @remote = Remote::RemoteSFTP.new @target_loc, log_prefix, @config[:debug_sftp]
       when URI::S3
-        log_info "JobTransfer.before target_method S3"
+        log_info "JobTransfer.do_before target_method S3"
         @remote = Remote::RemoteS3.new @target_loc, log_prefix, @config[:debug_s3]
       else
         message = "unknown scheme [#{@target_loc.scheme}] [#{target_uri.class.name}]"
-        log_info "JobTransfer.before #{message}"
+        log_info "JobTransfer.do_before #{message}"
         raise RestFtpDaemon::TargetNotSupported, message
       end
 
@@ -51,7 +51,7 @@ module RestFtpDaemon
       sources = @source_loc.scan_files
       set_info INFO_SOURCE_COUNT, sources.size
       set_info INFO_SOURCE_FILES, sources.collect(&:name)
-      log_info "JobTransfer.work sources #{sources.collect(&:name)}"
+      log_info "JobTransfer.do_work sources #{sources.collect(&:name)}"
       raise RestFtpDaemon::SourceNotFound if sources.empty?
 
       # Guess target file name, and fail if present while we matched multiple sources
@@ -95,9 +95,10 @@ module RestFtpDaemon
 
     def do_after
       # Close FTP connexion and free up memory
+      log_info "JobTransfer.do_after close connexion, update status and counters"
       @remote.close
 
-      # Free-up remote object
+      # Free @remote object
       @remote = nil
 
       # Update job status

@@ -26,7 +26,7 @@ module RestFtpDaemon
         @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
 
         # Annnounce object
-        log_info "Remote.initialize debug[#{debug}] target[#{target.path}] "
+        log_info "RemoteBase.initialize debug[#{debug}] target[#{target.path}] "
 
         # Prepare real object
         prepare
@@ -54,6 +54,8 @@ module RestFtpDaemon
       end
 
       def close
+        log_debug "RemoteBase.close"
+
         # Debug mode ?
         return unless @debug
         puts "-------------------- SESSION CLOSING --------------------------"

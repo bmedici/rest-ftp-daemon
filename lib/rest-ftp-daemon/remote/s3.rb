@@ -13,14 +13,14 @@ module RestFtpDaemon
 
       def prepare
         @multipart_threshold = MULTIPART_THRESHOLD_MB.to_i * 1024 * 1024
-        log_debug "Remote::RemoteS3.prepare target[#{@target.inspect}] #{@multipart_threshold}"
+        log_debug "RemoteS3.prepare target[#{@target.inspect}] #{@multipart_threshold}"
       end
 
       def connect
         super
 
         # Connect init
-        log_debug "Remote::RemoteS3.connect region[#{target.aws_region}] id[#{target.aws_id}]"
+        log_debug "RemoteS3.connect region[#{target.aws_region}] id[#{target.aws_id}]"
 
         # Connect remote server
         @client = Aws::S3::Resource.new(
@@ -34,7 +34,7 @@ module RestFtpDaemon
       def upload source, target, use_temp_name = false, &callback
         # Push init
         raise RestFtpDaemon::AssertionFailed, "upload/client" if @client.nil?
-        log_debug "Remote::RemoteS3.upload bucket[#{target.aws_bucket}] name[#{target.name}]"
+        log_debug "RemoteS3.upload bucket[#{target.aws_bucket}] name[#{target.name}]"
 
         # Update progress before
         #yield 0, target.name
@@ -63,8 +63,8 @@ module RestFtpDaemon
         #yield target.size, target.name
 
         # Dump information about this file
-        log_debug "Remote::RemoteS3.upload url[#{object.public_url}]"
-        log_debug "Remote::RemoteS3.upload etag[#{object.etag}]"
+        log_debug "RemoteS3.upload url[#{object.public_url}]"
+        log_debug "RemoteS3.upload etag[#{object.etag}]"
         set_info :target_aws_public_url, object.public_url
         set_info :target_aws_etag, object.etag
       end

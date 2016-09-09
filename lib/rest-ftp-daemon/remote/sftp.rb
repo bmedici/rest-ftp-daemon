@@ -15,7 +15,7 @@ module RestFtpDaemon
         super
 
         # Connect init
-        log_debug "Remote::RemoteSFTP.connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
+        log_debug "RemoteSFTP.connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
 
         # Debug level
         verbosity =  @debug ? Logger::DEBUG : false
@@ -31,7 +31,7 @@ module RestFtpDaemon
       end
 
       def present? target
-        log_debug "Remote::RemoteSFTP.present? [#{target.name}]"
+        log_debug "RemoteSFTP.present? [#{target.name}]"
         stat = @sftp.stat! target.path
 
       rescue Net::SFTP::StatusException
@@ -41,7 +41,7 @@ module RestFtpDaemon
       end
 
       def remove! target
-        log_debug "Remote::RemoteSFTP.remove! [#{target.name}]"
+        log_debug "RemoteSFTP.remove! [#{target.name}]"
         @sftp.remove target.path
 
       rescue Net::SFTP::StatusException
@@ -51,7 +51,7 @@ module RestFtpDaemon
       end
 
       def mkdir directory
-        log_debug "Remote::RemoteSFTP.mkdir [#{directory}]"
+        log_debug "RemoteSFTP.mkdir [#{directory}]"
         @sftp.mkdir! directory
 
         rescue StandardError => ex
@@ -60,7 +60,7 @@ module RestFtpDaemon
 
       def chdir_or_create directory, mkdir = false
         # Init, extract my parent name and my own name
-        log_debug "Remote::RemoteSFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
+        log_debug "RemoteSFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
         parent, _current = extract_parent(directory)
 
         # Access this directory
@@ -99,7 +99,7 @@ module RestFtpDaemon
         end
 
         # Do the transfer
-        log_debug "Remote::RemoteSFTP.upload temp[#{use_temp_name}] name[#{dest.name}]"
+        log_debug "RemoteSFTP.upload temp[#{use_temp_name}] name[#{dest.name}]"
         @sftp.upload! source.path, dest.path do |event, _uploader, *args|
           case event
           when :open then
@@ -125,7 +125,7 @@ module RestFtpDaemon
         # Move the file back to its original name
         if use_temp_name
           flags = 0x00000001
-          log_debug "Remote::RemoteSFTP.upload rename [#{dest.name}] > [#{target.name}]"
+          log_debug "RemoteSFTP.upload rename [#{dest.name}] > [#{target.name}]"
           @sftp.rename! dest.path, target.path, flags
         end
 

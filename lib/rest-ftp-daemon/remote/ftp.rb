@@ -23,7 +23,7 @@ module RestFtpDaemon
         @chunk_size = JOB_FTP_CHUNKMB.to_i * 1024
 
         # Announce object
-        log_debug "Remote::RemoteFTP.prepare chunk_size:#{@chunk_size}"
+        log_debug "RemoteFTP.prepare chunk_size:#{@chunk_size}"
       end
 
       def connect
@@ -36,7 +36,7 @@ module RestFtpDaemon
 
       def present? target
         size = @ftp.size target.path
-        log_debug "Remote::RemoteFTP.present? [#{target.name}]"
+        log_debug "RemoteFTP.present? [#{target.name}]"
 
       rescue Net::FTPPermError
         return false
@@ -47,13 +47,13 @@ module RestFtpDaemon
       def remove! target
         @ftp.delete target.path
       rescue Net::FTPPermError
-        log_debug "Remote::RemoteFTP.remove! [#{target.name}] not found"
+        log_debug "RemoteFTP.remove! [#{target.name}] not found"
       else
-        log_debug "Remote::RemoteFTP.remove! [#{target.name}] removed"
+        log_debug "RemoteFTP.remove! [#{target.name}] removed"
       end
 
       def mkdir directory
-        log_debug "Remote::RemoteFTP.mkdir [#{directory}]"
+        log_debug "RemoteFTP.mkdir [#{directory}]"
         @ftp.mkdir directory
 
       rescue StandardError => ex
@@ -62,7 +62,7 @@ module RestFtpDaemon
 
       def chdir_or_create directory, mkdir = false
         # Init, extract my parent name and my own name
-        log_debug "Remote::RemoteFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
+        log_debug "RemoteFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
         parent, current = extract_parent(directory)
 
         #dirname, _current = extract_parent(directory)
@@ -98,11 +98,11 @@ module RestFtpDaemon
         end
 
         # Move to the directory
-        log_debug "Remote::RemoteFTP.upload chdir [#{dest.dir}]"
+        log_debug "RemoteFTP.upload chdir [#{dest.dir}]"
         @ftp.chdir "/#{dest.dir}"
 
         # Do the transfer
-        log_debug "Remote::RemoteFTP.upload putbinaryfile [#{dest.name}]"
+        log_debug "RemoteFTP.upload putbinaryfile [#{dest.name}]"
         @ftp.putbinaryfile source.path, dest.name, @chunk_size do |data|
           # Update job status after this block transfer
           yield data.bytesize, dest.name
@@ -110,7 +110,7 @@ module RestFtpDaemon
 
         # Move the file back to its original name
         if use_temp_name
-          log_debug "Remote::RemoteFTP.upload rename [#{dest.name}] > [#{target.name}]"
+          log_debug "RemoteFTP.upload rename [#{dest.name}] > [#{target.name}]"
           @ftp.rename dest.name, target.name
         end
       end
