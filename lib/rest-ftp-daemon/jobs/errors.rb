@@ -60,7 +60,7 @@ module RestFtpDaemon
       sftp_auth_failed:         Net::SSH::AuthenticationFailed,
       sftp_openssl_error:       OpenSSL::SSL::SSLError,
 
-      video_missing_ffmpeg:     RestFtpDaemon::VideoMissingFfmpeg,
+      video_missing_binary:     RestFtpDaemon::VideoMissingBinary,
       video_movie_error:        RestFtpDaemon::VideoMovieError,
 
       # rescue Encoding::UndefinedConversionError => exception

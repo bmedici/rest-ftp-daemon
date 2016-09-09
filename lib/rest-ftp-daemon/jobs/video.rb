@@ -20,8 +20,8 @@ module RestFtpDaemon
       check_binary_presence FFMPEG.ffprobe_binary
 
       # Ensure source and target are FILE
-      raise RestFtpDaemon::AssertionFailed                          unless @video_options.is_a? Hash
-      raise RestFtpDaemon::AssertionFailed                          unless @video_custom.is_a? Hash
+      raise RestFtpDaemon::AssertionFailed                         unless @video_options.is_a? Hash
+      raise RestFtpDaemon::AssertionFailed                         unless @video_custom.is_a? Hash
       raise RestFtpDaemon::SourceUnsupported, @source_loc.scheme   unless @source_loc.is? URI::FILE
       raise RestFtpDaemon::TargetUnsupported, @target_loc.scheme   unless @target_loc.is? URI::FILE
     end
