@@ -135,7 +135,7 @@ module RestFtpDaemon
       do_after
 
     rescue StandardError => exception
-      Rollbar.error "process: #{exception.class.name}: #{exception.message}"
+      Rollbar.error "Job.process: #{exception.class.name}: #{exception.message}"
       return oops current_signal, exception
 
     else
