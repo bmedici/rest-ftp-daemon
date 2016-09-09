@@ -56,9 +56,6 @@ module RestFtpDaemon
         job.process
       end
 
-      # Processing done
-      worker_status WORKER_STATUS_FINISHED, job
-
       # Increment total processed jobs count
       RestFtpDaemon::Counters.instance.increment :jobs, :processed
 
@@ -80,7 +77,9 @@ module RestFtpDaemon
     def handle_job_result job
       # If job status requires a retry, just restack it
       if !job.error
-        #log_info "job succeeded"
+        # Processing successful
+        log_error "job finished with no error"
+        worker_status WORKER_STATUS_FINISHED, job
 
         log_error "not retrying: error not eligible"
       elsif error_not_eligible(job)
