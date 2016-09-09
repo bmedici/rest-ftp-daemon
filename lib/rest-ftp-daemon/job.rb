@@ -89,6 +89,9 @@ module RestFtpDaemon
       # Update job status
       set_status JOB_STATUS_PREPARING
 
+      # Increment run cours
+      @tentatives +=1
+
       # Flag current job timestamps
       @queued_at = Time.now
       @updated_at = Time.now
@@ -101,7 +104,7 @@ module RestFtpDaemon
       set_status JOB_STATUS_QUEUED
       set_error nil
       client_notify :queued
-      log_info "Job.reset notify[queued]"
+      log_info "Job.reset notify[queued] tentative[#{@tentatives}]"
     end
 
     # Process job
