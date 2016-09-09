@@ -94,11 +94,12 @@ module RestFtpDaemon
       else
         # Delay cannot be negative, and will be 1s minimum
         retry_after = [@config[:retry_after] || DEFAULT_RETRY_AFTER, 1].max
-        log_info "retrying job: waiting for #{retry_after} seconds"
+        log_info "retry job [#{job.id}] in [#{retry_after}s] tried #{tentatives(job)}"
 
         # Wait !
+        worker_status WORKER_STATUS_RETRYING, job
         sleep retry_after
-        log_info "retrying job: requeued after delay"
+        log_info "job [#{job.id}] requeued after [#{retry_after}s] delay"
 
         # Now, requeue this job
         RestFtpDaemon::JobQueue.instance.requeue job
