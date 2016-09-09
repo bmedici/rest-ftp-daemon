@@ -35,8 +35,10 @@ transfer:
   debug_sftp: false
 
   retry_on:                 # job error values that will allow a retry
+    - ftp_temp_error
     - ftp_perm_error
     - net_temp_error
+    - net_perm_error
     - conn_reset_by_peer
     - conn_timed_out
     - conn_refused
