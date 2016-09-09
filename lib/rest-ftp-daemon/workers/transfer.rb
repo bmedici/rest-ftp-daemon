@@ -60,8 +60,8 @@ module RestFtpDaemon
       RestFtpDaemon::Counters.instance.increment :jobs, :processed
 
     rescue RestFtpDaemon::JobTimeout => ex
-      log_error "JOB TIMED OUT", ex.backtrace
-      worker_status WORKER_STATUS_TIMEOUT
+      log_error "JOB TIMEOUT", ex.backtrace
+      worker_status WORKER_STATUS_TIMEOUT, job
 
       # Inform the job
       job.oops_you_stop_now ex unless job.nil?
