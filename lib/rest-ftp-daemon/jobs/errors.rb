@@ -22,9 +22,6 @@ module RestFtpDaemon
       assertion_failed:         RestFtpDaemon::AssertionFailed,
       location_parse_error:     RestFtpDaemon::LocationParseError,
 
-
-
-
       conn_socket_error:        SocketError,
       conn_eof:                 EOFError,
       conn_failed:              Errno::ENOTCONN,
