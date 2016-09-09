@@ -60,7 +60,7 @@ module RestFtpDaemon
       begin
         movie = FFMPEG::Movie.new(source.path)
       rescue StandardError => exception
-        raise RestFtpDaemon::VideoMovieError, source.path
+        raise RestFtpDaemon::VideoMovieError, exception.message
       else
         set_info :ffmpeg_size, movie.size
         set_info :ffmpeg_duration, movie.duration
