@@ -81,14 +81,14 @@ module RestFtpDaemon
         log_error "job finished with no error"
         worker_status WORKER_STATUS_FINISHED, job
 
-        log_error "not retrying: error not eligible"
       elsif error_not_eligible(job)
+        log_error "not retrying [#{job.error}] retry_on not eligible"
 
-        log_error "not retrying: max_age reached (#{@config[:retry_for]} s)"
       elsif error_reached_for(job)
+        log_error "not retrying [#{job.error}] retry_for reached [#{@config[:retry_for]}s]"
 
-        log_error "not retrying: max_runs reached (#{@config[:retry_max]} tries)"
       elsif error_reached_max(job)
+        log_error "not retrying [#{job.error}] retry_max reached #{tentatives(job)}"
 
       else
         # Delay cannot be negative, and will be 1s minimum
@@ -98,7 +98,7 @@ module RestFtpDaemon
         # Wait !
         worker_status WORKER_STATUS_RETRYING, job
         sleep retry_after
-        log_info "job [#{job.id}] requeued after [#{retry_after}s] delay"
+        log_debug "job [#{job.id}] requeued after [#{retry_after}s] delay"
 
         # Now, requeue this job
         RestFtpDaemon::JobQueue.instance.requeue job
@@ -128,5 +128,10 @@ module RestFtpDaemon
       # Job age above this limit
       return job.tentatives >= @config[:retry_max]
     end
+
+    def tentatives job
+      "[#{job.tentatives}/#{@config[:retry_max]}]"
+    end
+
   end
 end
