@@ -16,8 +16,8 @@ module RestFtpDaemon
       log_info "JobVideo.before target_loc.path: #{@target_loc.path}"
 
       # Ensure FFMPEG lib is available
-      check_binary_presence FFMPEG.ffmpeg_binary
-      check_binary_presence FFMPEG.ffprobe_binary
+      check_ffmpeg_binary :ffmpeg_binary
+      check_ffmpeg_binary :ffprobe_binary
 
       # Ensure source and target are FILE
       raise RestFtpDaemon::AssertionFailed                         unless @video_options.is_a? Hash
@@ -103,9 +103,15 @@ module RestFtpDaemon
       return custom_parts
     end
 
-    def check_binary_presence path
-      return if path && File.exists?(path)
-      raise RestFtpDaemon::VideoMissingBinary, path
+    def check_ffmpeg_binary method
+      # Get or evaluate the path which can raise a Errno::ENOENT
+      path = FFMPEG.send method
+
+      # Check that it returns something which exists on disk
+      raise StandardError unless path && File.exists?(path)
+
+    rescue StandardError, Errno::ENOENT => exception
+      raise RestFtpDaemon::VideoMissingBinary, "missing ffmpeg binary: #{method}"
     end
 
   end
