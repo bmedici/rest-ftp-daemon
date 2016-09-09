@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "http"
 
   # Runtime dependencies
-  spec.add_runtime_dependency     "bmc-daemon-lib", "~> 0.3.10"
+  spec.add_runtime_dependency     "bmc-daemon-lib", "~> 0.3.12"
   spec.add_runtime_dependency     "json", "~> 1.8"
   spec.add_runtime_dependency     "thin", "~> 1.7"
   spec.add_runtime_dependency     "activesupport", "~> 4.2"
