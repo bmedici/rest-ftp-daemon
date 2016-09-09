@@ -76,11 +76,11 @@ module RestFtpDaemon
       @pool = DEFAULT_POOL unless @pools.keys.include?(@pool)
 
       # Prepare sources/target
-      raise RestFtpDaemon::AttributeMissing, "source" unless params[:source]
+      raise RestFtpDaemon::JobAttributeMissing, "source" unless params[:source]
       @source_loc = Location.new(params[:source])
       log_info "Job.initialize source #{@source_loc.uri}"
 
-      raise RestFtpDaemon::AttributeMissing, "target" unless params[:target]
+      raise RestFtpDaemon::JobAttributeMissing, "target" unless params[:target]
       @target_loc = Location.new(params[:target])
       log_info "Job.initialize target #{@target_loc.uri}"
     end

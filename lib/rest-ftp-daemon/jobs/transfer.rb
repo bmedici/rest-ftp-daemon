@@ -16,7 +16,7 @@ module RestFtpDaemon
       set_info INFO_SOURCE_PROCESSED, 0
 
       # Ensure source is FILE
-      raise RestFtpDaemon::SourceNotSupported, @source_loc.scheme   unless @source_loc.is? URI::FILE
+      raise RestFtpDaemon::SourceUnsupported, @source_loc.scheme   unless @source_loc.is? URI::FILE
 
       # Prepare remote object
       case target_uri
@@ -35,7 +35,7 @@ module RestFtpDaemon
       else
         message = "unknown scheme [#{@target_loc.scheme}] [#{target_uri.class.name}]"
         log_info "JobTransfer.do_before #{message}"
-        raise RestFtpDaemon::TargetNotSupported, message
+        raise RestFtpDaemon::TargetUnsupported, message
       end
 
       # Plug this Job into @remote to allow it to log

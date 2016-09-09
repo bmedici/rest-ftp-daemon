@@ -28,7 +28,7 @@ module RestFtpDaemon
 
     def initialize original
       unless original.is_a? String
-        raise RestFtpDaemon::LocationMalformed, original.inspect
+        raise RestFtpDaemon::AssertionFailed, "location/original/string: #{original.inspect}"
       end
 
       # Strip spaces before/after, copying original "path" at the same time
@@ -42,7 +42,7 @@ module RestFtpDaemon
       # Ensure result does not contain tokens after replacement
       detected_tokens = detect_tokens(location_uri)
       unless detected_tokens.empty?
-        raise RestFtpDaemon::UnresolvedTokens, detected_tokens.join(' ')
+        raise RestFtpDaemon::JobUnresolvedTokens, detected_tokens.join(' ')
       end
 
       # Parse URL and do specific initializations
@@ -54,7 +54,8 @@ module RestFtpDaemon
 
       # Check that scheme is supported
       unless @uri.scheme
-        raise RestFtpDaemon::UnsupportedScheme, url
+        raise RestFtpDaemon::SchemeUnsupported, url
+        # raise RestFtpDaemon::SchemeUnsupported, @uri
       end
     end
 

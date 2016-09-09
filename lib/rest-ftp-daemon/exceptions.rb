@@ -1,31 +1,31 @@
 module RestFtpDaemon
 
-  class RestFtpDaemonException    < StandardError; end
+  class BaseException             < StandardError; end
 
-  class DummyException            < RestFtpDaemonException; end
+  class AssertionFailed           < BaseException; end
 
-  class MissingPool               < RestFtpDaemonException; end
-  class InvalidWorkerNumber       < RestFtpDaemonException; end
-  class QueueCantCreateJob        < RestFtpDaemonException; end
-  class JobException              < RestFtpDaemonException; end
-  class JobTimeout                < RestFtpDaemonException; end
-  class JobNotFound               < RestFtpDaemonException; end
+  class InvalidWorkerNumber       < BaseException; end
+  class QueueCantCreateJob        < BaseException; end
+  class JobTimeout                < BaseException; end
+  class JobNotFound               < BaseException; end
 
+  class JobException              < BaseException; end
+  class JobAttributeMissing       < BaseException; end
+  class JobUnresolvedTokens       < BaseException; end
 
-  class AttributeMissing          < RestFtpDaemonException; end
-  class AssertionFailed           < RestFtpDaemonException; end
-  class UnresolvedTokens          < RestFtpDaemonException; end
-  class LocationMalformed         < RestFtpDaemonException; end
-  class LocationParseError        < RestFtpDaemonException; end
-  class UnsupportedScheme         < RestFtpDaemonException; end
-  class MissingFfmpegLibraries    < RestFtpDaemonException; end
+  class LocationParseError        < BaseException; end
+  class SchemeUnsupported         < BaseException; end
 
-  class SourceNotSupported        < RestFtpDaemonException; end
-  class SourceNotFound            < RestFtpDaemonException; end
+  class SourceUnsupported         < BaseException; end
+  class SourceNotFound            < BaseException; end
 
-  class TargetNotSupported        < RestFtpDaemonException; end
-  class TargetFileExists          < RestFtpDaemonException; end
-  class TargetDirectoryError      < RestFtpDaemonException; end
-  class TargetPermissionError     < RestFtpDaemonException; end
+  class TargetUnsupported         < BaseException; end
+  class TargetFileExists          < BaseException; end
+  class TargetDirectoryError      < BaseException; end
+  class TargetPermissionError     < BaseException; end
+
+  class VideoMissingFfmpeg        < BaseException; end
+  class VideoMovieError           < BaseException; end
+
 
 end

@@ -13,14 +13,17 @@ module RestFtpDaemon
       runtime_error:            RuntimeError,
 
       job_timeout:              RestFtpDaemon::JobTimeout,
-      source_not_supported:     RestFtpDaemon::SourceNotSupported,
+      source_not_supported:     RestFtpDaemon::SourceUnsupported,
       source_not_found:         RestFtpDaemon::SourceNotFound,
       target_file_exists:       RestFtpDaemon::TargetFileExists,
       target_directory_error:   RestFtpDaemon::TargetDirectoryError,
       target_permission_error:  RestFtpDaemon::TargetPermissionError,
-      target_not_supported:     RestFtpDaemon::TargetNotSupported,
+      target_not_supported:     RestFtpDaemon::TargetUnsupported,
       assertion_failed:         RestFtpDaemon::AssertionFailed,
       location_parse_error:     RestFtpDaemon::LocationParseError,
+
+
+
 
       conn_socket_error:        SocketError,
       conn_eof:                 EOFError,
@@ -59,9 +62,20 @@ module RestFtpDaemon
       sftp_key_mismatch:        Net::SSH::HostKeyMismatch,
       sftp_auth_failed:         Net::SSH::AuthenticationFailed,
       sftp_openssl_error:       OpenSSL::SSL::SSLError,
+
+      video_missing_ffmpeg:     RestFtpDaemon::VideoMissingFfmpeg,
+      video_movie_error:        RestFtpDaemon::VideoMovieError,
+
       # rescue Encoding::UndefinedConversionError => exception
       #   return oops :ended, exception, "encoding_error", true
       }
+
+  class InvalidWorkerNumber       < BaseException; end
+  class QueueCantCreateJob        < BaseException; end
+  class JobException              < BaseException; end
+  class JobNotFound               < BaseException; end
+
+
 
   end
 end

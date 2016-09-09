@@ -18,14 +18,14 @@ module RestFtpDaemon
       # Ensure FFMPEG lib is available
       ffmpeg_binary_path = FFMPEG.ffmpeg_binary
       unless ffmpeg_binary_path && File.exists?(ffmpeg_binary_path)
-        raise RestFtpDaemon::MissingFfmpegLibraries, ffmpeg_binary_path
+        raise RestFtpDaemon::VideoMissingFfmpeg, ffmpeg_binary_path
       end
 
       # Ensure source and target are FILE
       raise RestFtpDaemon::AssertionFailed                          unless @video_options.is_a? Hash
       raise RestFtpDaemon::AssertionFailed                          unless @video_custom.is_a? Hash
-      raise RestFtpDaemon::SourceNotSupported, @source_loc.scheme   unless @source_loc.is? URI::FILE
-      raise RestFtpDaemon::TargetNotSupported, @target_loc.scheme   unless @target_loc.is? URI::FILE
+      raise RestFtpDaemon::SourceUnsupported, @source_loc.scheme   unless @source_loc.is? URI::FILE
+      raise RestFtpDaemon::TargetUnsupported, @target_loc.scheme   unless @target_loc.is? URI::FILE
     end
 
     def do_work
