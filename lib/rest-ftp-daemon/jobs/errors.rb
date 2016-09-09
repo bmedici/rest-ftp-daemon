@@ -12,6 +12,7 @@ module RestFtpDaemon
       invalid_argument:         Errno::EINVAL,
       runtime_error:            RuntimeError,
 
+      job_timeout:              RestFtpDaemon::JobTimeout,
       source_not_supported:     RestFtpDaemon::SourceNotSupported,
       source_not_found:         RestFtpDaemon::SourceNotFound,
       target_file_exists:       RestFtpDaemon::TargetFileExists,
