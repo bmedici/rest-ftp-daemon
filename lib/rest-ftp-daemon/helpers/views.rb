@@ -23,11 +23,11 @@ module RestFtpDaemon
       "#{MOUNT_JOBS}/#{job.id}" if job.respond_to? :id
     end
 
-    def job_runs_style runs
-      return  "label-outline"   if runs <= 0
-      return  "label-info"      if runs == 1
-      return  "label-warning"   if runs == 2
-      return  "label-danger"    if runs > 2
+    def job_tentatives_style count
+      return  "label-outline"   if count <= 0
+      return  "label-info"      if count == 1
+      return  "label-warning"   if count == 2
+      return  "label-danger"    if count > 2
     end
 
     def location_style uri

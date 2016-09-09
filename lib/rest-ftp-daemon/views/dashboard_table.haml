@@ -13,7 +13,6 @@
   - job_working       = [JOB_STATUS_UPLOADING, JOB_STATUS_TRANSFORMING].include? job.status
 
   - trclass = JOB_STYLES[job.status]
-  - runs = job.runs.to_i
 
   - unless job.error.nil?
     - trclass = "warning"
@@ -84,4 +83,4 @@
         .label.label-default.flag.worker-label= job.priority
 
     %td
-      .label.flag.worker-label{class: job_runs_style(runs)}= runs
+      .label.flag.worker-label{class: job_tentatives_style(job.tentatives)}= job.tentatives

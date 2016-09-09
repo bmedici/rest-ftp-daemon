@@ -42,7 +42,7 @@
           %th.text-right{title: "updated every #{JOB_FTP_CHUNKMB} MB block"} rate
           %th{title: "Worker ID"} W
           %th{title: "Priority"} P
-          %th{title: "Runs count"} R
+          %th{title: "Tentatives count"} T
 
         - @jobs_queued.each do |pool, jobs|
           - unless jobs.empty?

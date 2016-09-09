@@ -26,7 +26,7 @@ module RestFtpDaemon
     attr_reader :id
     attr_reader :error
     attr_reader :status
-    attr_reader :runs
+    attr_reader :tentatives
 
     attr_reader :queued_at
     attr_reader :updated_at
@@ -55,7 +55,7 @@ module RestFtpDaemon
       @updated_at   = nil
       @error        = nil
       @status       = nil
-      @runs         = 0
+      @tentatives         = 0
       @wid          = nil
 
       # Prepare configuration
@@ -159,7 +159,7 @@ module RestFtpDaemon
 
     def weight
       @weight = [
-        - @runs.to_i,
+        - @tentatives.to_i,
         + @priority.to_i,
         - @queued_at.to_i,
         ]
