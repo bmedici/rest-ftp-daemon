@@ -55,13 +55,17 @@ module RestFtpDaemon
     end
 
     def ffmpeg_command source, target
-      set_info INFO_SOURCE_CURRENT, source.name
-
       # Read info about source file
-      movie = FFMPEG::Movie.new(source.path)
-      set_info :ffmpeg_size, movie.size
-      set_info :ffmpeg_duration, movie.duration
-      set_info :ffmpeg_resolution, movie.resolution
+      set_info INFO_SOURCE_CURRENT, source.name
+      begin
+        movie = FFMPEG::Movie.new(source.path)
+      rescue StandardError => exception
+        raise RestFtpDaemon::VideoMovieError, source.path
+      else
+        set_info :ffmpeg_size, movie.size
+        set_info :ffmpeg_duration, movie.duration
+        set_info :ffmpeg_resolution, movie.resolution
+      end
 
       # Build options
       options = {
