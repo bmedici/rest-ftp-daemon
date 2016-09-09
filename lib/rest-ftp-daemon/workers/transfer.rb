@@ -82,14 +82,14 @@ module RestFtpDaemon
       if !job.error
         #log_info "job succeeded"
 
-      elsif !(@config[:retry_on].is_a?(Enumerable) && @config[:retry_on].include?(job.error))
         log_error "not retrying: error not eligible"
+      elsif error_not_eligible(job)
 
-      elsif @config[:retry_for] && (job.age >= @config[:retry_for])
         log_error "not retrying: max_age reached (#{@config[:retry_for]} s)"
+      elsif error_reached_for(job)
 
-      elsif @config[:retry_max] && (job.runs >= @config[:retry_max])
         log_error "not retrying: max_runs reached (#{@config[:retry_max]} tries)"
+      elsif error_reached_max(job)
 
       else
         # Delay cannot be negative, and will be 1s minimum
@@ -105,5 +105,28 @@ module RestFtpDaemon
       end
     end
 
+    def error_not_eligible job
+      # No, if no eligible errors
+      return true unless @config[:retry_on].is_a?(Enumerable)
+
+      # Tell if this error is in the list
+      return !@config[:retry_on].include?(job.error.to_s)
+    end
+
+    def error_reached_for job
+      # Not above, if no limit definded
+      return false unless @config[:retry_for]
+
+      # Job age above this limit
+      return job.age >= @config[:retry_for]
+    end
+
+    def error_reached_max job
+      # Not above, if no limit definded
+      return false unless @config[:retry_max]
+
+      # Job age above this limit
+      return job.tentatives >= @config[:retry_max]
+    end
   end
 end
