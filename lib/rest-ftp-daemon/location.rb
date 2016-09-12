@@ -42,7 +42,7 @@ module RestFtpDaemon
       # Ensure result does not contain tokens after replacement
       detected_tokens = detect_tokens(location_uri)
       unless detected_tokens.empty?
-        raise RestFtpDaemon::JobUnresolvedTokens, detected_tokens.join(' ')
+        raise RestFtpDaemon::JobUnresolvedTokens, 'unresolved tokens: ' + detected_tokens.join(' ')
       end
 
       # Parse URL and do specific initializations
