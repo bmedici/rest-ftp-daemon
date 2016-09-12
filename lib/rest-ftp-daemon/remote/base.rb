@@ -63,11 +63,16 @@ module RestFtpDaemon
 
     private
 
-      def extract_parent path
+      def split_path path
         return unless path.is_a? String
-        m = path.match(/^(.*)\/([^\/]+)\/?$/)
-        return m[1], m[2] unless m.nil?
+        return File.dirname(path), File.basename(path)
       end
+
+      # def extract_parent path
+      #   return unless path.is_a? String
+      #   m = path.match(/^(.*)\/([^\/]+)\/?$/)
+      #   return m[1], m[2] unless m.nil?
+      # end
 
       def myname
         self.class.to_s

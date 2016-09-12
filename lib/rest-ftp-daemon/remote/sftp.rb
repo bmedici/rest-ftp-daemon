@@ -61,11 +61,10 @@ module RestFtpDaemon
       def chdir_or_create directory, mkdir = false
         # Init, extract my parent name and my own name
         log_debug "RemoteSFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
-        parent, _current = extract_parent(directory)
+        parent, _current = split_path(directory)
 
         # Access this directory
         begin
-          #log_debug "chdir [/#{directory}]"
           @sftp.opendir! directory
 
         rescue Net::SFTP::StatusException => _e

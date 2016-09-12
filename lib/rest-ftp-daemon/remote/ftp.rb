@@ -60,24 +60,29 @@ module RestFtpDaemon
         raise TargetPermissionError, ex.message
       end
 
-      def chdir_or_create directory, mkdir = false
+      def chdir_or_create thedir, mkdir = true
         # Init, extract my parent name and my own name
-        log_debug "RemoteFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
-        parent, current = extract_parent(directory)
-
-        #dirname, _current = extract_parent(directory)
-
+        parent, current = split_path(thedir)
+        log_debug "RemoteFTP.chdir_or_create mkdir[#{mkdir}] dir[#{thedir}] parent[#{parent}] current[#{current}]"
 
         # Access this directory
         begin
-          @ftp.chdir "/#{directory}"
+          @ftp.chdir "/#{thedir}"
 
         rescue Net::FTPPermError => _e
+
           # If not allowed to create path, that's over, we're stuck
-          return false unless mkdir
+          unless mkdir
+            log_debug "  [#{thedir}] failed > no mkdir > over"
+            return false
+          end
+
+          # Try to go into my parent directory
+          log_debug "  [#{thedir}] failed > chdir_or_create [#{parent}]"
           chdir_or_create parent, mkdir
 
           # Now I was able to chdir into my parent, create the current directory
+          log_debug "  [#{thedir}] failed > mkdir [#{current}]"
           mkdir current
 
           # Finally retry the chdir
@@ -85,6 +90,7 @@ module RestFtpDaemon
         else
           return true
         end
+
       end
 
       def upload source, target, use_temp_name = false, &callback
