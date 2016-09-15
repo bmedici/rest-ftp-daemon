@@ -35,6 +35,8 @@ module RestFtpDaemon
 
     attr_reader :created_since
     attr_reader :started_since
+    attr_reader :finished_in
+
     attr_reader :infos
 
     # Define readers from imported fields
@@ -52,12 +54,10 @@ module RestFtpDaemon
 
       # Init context
       @id           = job_id.to_s
-      @started_at   = nil
-      @finished_at  = nil
       @updated_at   = nil
       @error        = nil
       @status       = nil
-      @tentatives         = 0
+      @tentatives   = 0
       @wid          = nil
 
       # Update timestamps
@@ -96,8 +96,9 @@ module RestFtpDaemon
 
       # Increment run cours
       @tentatives +=1
-
       @updated_at = Time.now
+      @started_at   = nil
+      @finished_at  = nil
 
       # Job has been prepared, reset infos
       set_status JOB_STATUS_PREPARED
@@ -115,6 +116,9 @@ module RestFtpDaemon
       # Check prerequisites
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
+
+      # Remember when we started
+      @started_at = Time.now
 
       # Notify we start working
       log_info "Job.start notify [started]"
@@ -178,6 +182,8 @@ module RestFtpDaemon
     def created_since
       since @created_at
     end
+
+    def finished_in
       return nil if @started_at.nil? || @finished_at.nil?
       (@finished_at - @started_at).round(2)
     end

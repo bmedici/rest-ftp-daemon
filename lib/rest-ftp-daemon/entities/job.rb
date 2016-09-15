@@ -32,16 +32,16 @@ module RestFtpDaemon
       expose :error, format_with: :utf8_filter
 
       # Time stamps
-      expose :updated_at
       expose :created_at
       expose :created_since       #, safe: true
 
       expose :started_at
       expose :started_since
+
       expose :finished_at
+      expose :finished_in
 
-      # Computed fields
-
+      expose :updated_at
 
       # Infos
       expose :infos, unless: :hide_infos
