@@ -118,7 +118,7 @@ module RestFtpDaemon
       return false unless @config[:retry_for]
 
       # Job age above this limit
-      return job.age >= @config[:retry_for]
+      return job.created_since >= @config[:retry_for]
     end
 
     def error_reached_max job

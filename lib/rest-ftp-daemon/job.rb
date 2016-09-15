@@ -33,6 +33,7 @@ module RestFtpDaemon
     attr_reader :started_at
     attr_reader :finished_at
 
+    attr_reader :created_since
     attr_reader :infos
 
     # Define readers from imported fields
@@ -170,6 +171,10 @@ module RestFtpDaemon
     end
 
     def started_since
+
+    def created_since
+      since @created_at
+    end
       return nil if @started_at.nil? || @finished_at.nil?
       (@finished_at - @started_at).round(2)
     end
@@ -182,11 +187,6 @@ module RestFtpDaemon
     def oops_you_stop_now exception
       Rollbar.error "oops_you_stop_now: #{exception.class.name}: #{exception.message}"
       oops :ended, exception, "timeout"
-    end
-
-    def age
-      return nil if @queued_at.nil?
-      (Time.now - @queued_at).round(2)
     end
 
     def targethost
@@ -224,6 +224,12 @@ module RestFtpDaemon
       now = Time.now
       @updated_at = now
       Thread.current.thread_variable_set :updated_at, now
+    end
+
+    # Timestamps calculation
+    def since timestamp
+      return nil if timestamp.nil?
+      return (Time.now - timestamp).round(2)
     end
 
     # Force strings to UTF8

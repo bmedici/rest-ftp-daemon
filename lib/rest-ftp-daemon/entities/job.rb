@@ -34,12 +34,13 @@ module RestFtpDaemon
       # Time stamps
       expose :updated_at
       expose :created_at
+      expose :created_since       #, safe: true
+
       expose :started_at
       expose :started_since
       expose :finished_at
 
       # Computed fields
-      expose :age           #, safe: true
 
 
       # Infos
