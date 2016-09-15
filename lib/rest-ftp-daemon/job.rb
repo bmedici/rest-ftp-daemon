@@ -28,7 +28,7 @@ module RestFtpDaemon
     attr_reader :status
     attr_reader :tentatives
 
-    attr_reader :queued_at
+    attr_reader :created_at
     attr_reader :updated_at
     attr_reader :started_at
     attr_reader :finished_at
@@ -57,6 +57,9 @@ module RestFtpDaemon
       @status       = nil
       @tentatives         = 0
       @wid          = nil
+
+      # Update timestamps
+      @created_at   = Time.now
 
       # Prepare configuration
       @config       = Conf[:transfer] || {}
@@ -92,8 +95,6 @@ module RestFtpDaemon
       # Increment run cours
       @tentatives +=1
 
-      # Flag current job timestamps
-      @queued_at = Time.now
       @updated_at = Time.now
 
       # Job has been prepared, reset infos
@@ -164,7 +165,7 @@ module RestFtpDaemon
       @weight = [
         - @tentatives.to_i,
         + @priority.to_i,
-        - @queued_at.to_i,
+        - @created_at.to_i,
         ]
     end
 

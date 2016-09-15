@@ -32,8 +32,8 @@ module RestFtpDaemon
       expose :error, format_with: :utf8_filter
 
       # Time stamps
-      expose :queued_at
       expose :updated_at
+      expose :created_at
       expose :started_at
       expose :finished_at
 
