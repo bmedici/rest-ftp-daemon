@@ -69,7 +69,7 @@
     %td.nobr.text-right
       = format_bytes(transfer_total, "B")
 
-    %td.nobr.text-right{title: "time: #{job.exectime} s"}
+    %td.nobr.text-right{title: "started since: #{job.started_since} s"}
       - if transfer_bitrate
         %span.push-bitrate
           = format_bytes(transfer_bitrate, "bps")

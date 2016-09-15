@@ -169,7 +169,7 @@ module RestFtpDaemon
         ]
     end
 
-    def exectime
+    def started_since
       return nil if @started_at.nil? || @finished_at.nil?
       (@finished_at - @started_at).round(2)
     end
