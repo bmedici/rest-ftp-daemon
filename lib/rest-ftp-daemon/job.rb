@@ -34,6 +34,7 @@ module RestFtpDaemon
     attr_reader :finished_at
 
     attr_reader :created_since
+    attr_reader :started_since
     attr_reader :infos
 
     # Define readers from imported fields
@@ -171,6 +172,8 @@ module RestFtpDaemon
     end
 
     def started_since
+      since @started_at
+    end
 
     def created_since
       since @created_at
