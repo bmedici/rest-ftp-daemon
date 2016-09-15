@@ -30,6 +30,7 @@ module RestFtpDaemon
       # Status and error
       expose :status, format_with: :utf8_filter
       expose :error, format_with: :utf8_filter
+      expose :tentatives
 
       # Time stamps
       expose :created_at
