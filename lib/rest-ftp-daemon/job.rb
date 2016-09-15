@@ -188,14 +188,9 @@ module RestFtpDaemon
       (@finished_at - @started_at).round(2)
     end
 
-    def oops_after_crash exception
-      Rollbar.error "oops_after_crash: #{exception.class.name}: #{exception.message}"
-      oops :ended, exception, "crashed"
-    end
-
-    def oops_you_stop_now exception
-      Rollbar.error "oops_you_stop_now: #{exception.class.name}: #{exception.message}"
-      oops :ended, exception, "timeout"
+    def oops_end what, exception
+      Rollbar.error "oops_now [#{what}]: #{exception.class.name}: #{exception.message}"
+      oops :ended, exception, what
     end
 
     def targethost
