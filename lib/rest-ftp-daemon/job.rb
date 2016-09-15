@@ -108,40 +108,40 @@ module RestFtpDaemon
     end
 
     # Process job
-    def process
+    def start
       # Check prerequisites
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
 
       # Notify we start working
-      log_info "Job.process notify [started]"
+      log_info "Job.start notify [started]"
       current_signal = :started
       set_status JOB_STATUS_WORKING
       client_notify :started
 
       # Before work
-      log_debug "Job.process do_before"
+      log_debug "Job.start do_before"
       current_signal = :started
       do_before
 
       # Do the hard work
-      log_debug "Job.process do_work"
+      log_debug "Job.start do_work"
       current_signal = :ended
       do_work
 
       # Finalize all this
-      log_debug "Job.process do_after"
+      log_debug "Job.start do_after"
       current_signal = :ended
       do_after
 
     rescue StandardError => exception
-      Rollbar.error "Job.process: #{exception.class.name}: #{exception.message}"
+      Rollbar.error "Job.start: #{exception.class.name}: #{exception.message}"
       return oops current_signal, exception
 
     else
       # All done !
       set_status JOB_STATUS_FINISHED
-      log_info "JobVideo.process notify [ended]"
+      log_info "Job.start notify [ended]"
       client_notify :ended
     end
 

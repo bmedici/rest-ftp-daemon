@@ -53,7 +53,7 @@ module RestFtpDaemon
 
       # Processs this job protected by a timeout
       Timeout.timeout(@config[:timeout], RestFtpDaemon::JobTimeout) do
-        job.process
+        job.start
       end
 
       # Increment total processed jobs count
