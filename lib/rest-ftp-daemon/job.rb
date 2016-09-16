@@ -142,7 +142,7 @@ module RestFtpDaemon
       do_after
 
     rescue StandardError => exception
-      Rollbar.error "Job.start: #{exception.class.name}: #{exception.message}"
+      Rollbar.error exception, "job [#{error}]: #{exception.class.name}: #{exception.message}"
       return oops current_signal, exception
 
     else
@@ -189,7 +189,7 @@ module RestFtpDaemon
     end
 
     def oops_end what, exception
-      Rollbar.error "oops_now [#{what}]: #{exception.class.name}: #{exception.message}"
+      Rollbar.error exception, "oops_end [#{what}]: #{exception.class.name}: #{exception.message}"
       oops :ended, exception, what
     end
 
@@ -309,7 +309,7 @@ module RestFtpDaemon
       end
 
       # Log to Rollbar
-      Rollbar.error(exception)
+      Rollbar.warning e, "oops [#{error}]: #{exception.class.name}: #{exception.message}"
 
       # Close ftp connexion if open
       @remote.close unless @remote.nil? || !@remote.connected?
