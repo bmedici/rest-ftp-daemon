@@ -60,7 +60,8 @@ module RestFtpDaemon
       end
 
       # Don't dump metrics unless we're debugging
-      msg_newrelic = "reported metrics to NewRelic [#{ENV['NEW_RELIC_APP_NAME']}]"
+      newrelic_app_name = Conf.at(:newrelic, :app_name)
+      msg_newrelic = "reported metrics to NewRelic [#{newrelic_app_name}]"
       if @config[:debug]
         log_debug msg_newrelic, metrics_newrelic
       else

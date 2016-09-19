@@ -91,7 +91,7 @@ end
 
 
 # Thin: basic options
-thin_logfile = Conf.logfile_path(:thin)
+thin_logfile = Conf.logfile(:thin)
 
 argv = []
 argv << ["-e",          Conf.app_env]
