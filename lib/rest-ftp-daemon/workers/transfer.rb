@@ -64,14 +64,14 @@ module RestFtpDaemon
       worker_status WORKER_STATUS_TIMEOUT, job
 
       # Inform the job
-      job.oops_end(:timeout) ex unless job.nil?
+      job.oops_end(:timeout, ex) unless job.nil?
 
     rescue RestFtpDaemon::AssertionFailed, RestFtpDaemon::JobAttributeMissing, StandardError => ex
       log_error "JOB CRASHED ex[#{ex.class}] #{ex.message}", ex.backtrace
       worker_status WORKER_STATUS_CRASHED
 
       # Inform the job
-      job.oops_end(:crashed) ex unless job.nil?
+      job.oops_end(:crashed, ex) unless job.nil?
     end
 
     def handle_job_result job
