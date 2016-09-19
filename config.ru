@@ -23,9 +23,17 @@ use Rack::Static, root: "#{Conf.app_libs}/static/", urls: [
   MOUNT_SWAGGER_UI,
   ]
 
-# Rack reloader
-if Conf.app_env == "development"
-  # use Rack::Reloader, 1
+# Env-specific configuration
+case Conf.app_env
+  when "development"
+    # Rack reloader
+    # use Rack::Reloader, 1
+
+    # Newrelic dev mode
+    require 'new_relic/rack/developer_mode'
+    use NewRelic::Rack::DeveloperMode
+
+  when "production"
 end
 
 # Launch the API
