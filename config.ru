@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(load_path_libs) unless $LOAD_PATH.include?(load_path_libs)
 require "rest-ftp-daemon"
 
 # Rack authent
-Conf.log :rackup, "rackup: rack setup"
+Conf.log :rackup, "authentication, assets, env-specific"
 unless Conf[:adminpwd].nil?
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
     [username, password] == ["admin", Conf[:adminpwd]]

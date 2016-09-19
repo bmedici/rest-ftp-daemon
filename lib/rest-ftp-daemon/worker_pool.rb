@@ -94,7 +94,10 @@ module RestFtpDaemon
       log_info "spawning #{klass.name} wid[#{wid}] pool[#{pool}]"
       @workers[wid] = Thread.new do
         begin
+          # Create a worker inside
           worker = klass.new wid, pool
+
+          # FIXME: sleep for a small amount of time to allow correct sequence of logging
           sleep 0.1
         rescue StandardError => ex
           log_error "#{klass.name} EXCEPTION: #{ex.message}"

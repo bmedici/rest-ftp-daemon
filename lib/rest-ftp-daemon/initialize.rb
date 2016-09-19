@@ -3,7 +3,7 @@ Conf.prepare_newrelic
 Conf.prepare_rollbar
 
 # Initialize Facter
-Conf.log :initialize, "Facter"
+Conf.log :initialize, "prepare Facter"
 begin
   Facter.loadfacts
 rescue StandardError => exception
@@ -11,6 +11,5 @@ rescue StandardError => exception
 end
 
 # Initialize workers
-Conf.log :initialize, "workers"
+Conf.log :initialize, "prepare workers"
 RestFtpDaemon::WorkerPool.instance.start_em_all
-
