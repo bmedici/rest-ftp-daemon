@@ -27,7 +27,9 @@
 
     %td= job.pool
 
-    %td= datetime_short(job.created_at)
+    %td
+      %nobr
+        = datetime_short(job.created_at)
 
     %td= job.label
 
