@@ -26,9 +26,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
-  spec.add_development_dependency "rubocop", "~> 0.32.0"
+  spec.add_development_dependency "rubocop"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "http"
+  spec.add_development_dependency "ruby-prof"
 
   # Runtime dependencies
   spec.add_runtime_dependency     "bmc-daemon-lib", "~> 0.3.18"
