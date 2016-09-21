@@ -30,9 +30,6 @@ INFO_TRANFER_BITRATE      = :bitrate
 INFO_TARGET_FILES         = :target_files
 
 # Constants: logger
-LOG_PREFIX_WID           = 8
-LOG_PREFIX_JID           = JOB_IDENT_LEN + 4
-LOG_PREFIX_ID            = 5
 LOGGER_FORMAT = {
   # context:  "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s ",
   # context:  "wid:%-8{wid} jid:%-12{jid} id:%-5{id}",

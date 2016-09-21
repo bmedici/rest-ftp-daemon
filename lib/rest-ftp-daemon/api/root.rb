@@ -72,15 +72,10 @@ module RestFtpDaemon
       default_format :json
 
       # Pretty JSON
-      formatter :json_tmp, ->(object, env) do
-        put "----- formatter"
-        puts object.inspect
-        # JSON.pretty_generate(JSON.parse(object.to_json))
-        #if object.respond_to? to_hash
-          JSON.pretty_generate(object)
-        #end
-        put "-----"
-      end
+      # formatter :json_tmp, ->(object, env) do
+      #   puts object.inspect
+      #   JSON.pretty_generate(object)
+      # end
 
       ### MOUNTPOINTS
       mount RestFtpDaemon::API::Status      => MOUNT_STATUS

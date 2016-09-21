@@ -7,3 +7,4 @@ log/
 DOC/
 rest-ftp-daemon.yml
 .ruby-version
+/.idea

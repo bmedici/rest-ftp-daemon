@@ -18,9 +18,6 @@ module RestFtpDaemon
     attr_reader :aws_id
     attr_reader :aws_secret
 
-    # Logging
-    #include BmcDaemonLib::LoggerHelper
-
     # def_delegators :@uri,
     delegate :scheme, :host, :port, :user, :password, :to_s,
       to: :uri

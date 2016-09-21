@@ -29,7 +29,7 @@ module RestFtpDaemon
       log_pipe :queue
 
       # Identifiers generator
-      @prefix = identifier JOB_IDENT_LEN
+      @prefix = identifier(JOB_IDENT_LEN)
       log_info "JobQueue initialized (prefix: #{@prefix})"
     end
 
