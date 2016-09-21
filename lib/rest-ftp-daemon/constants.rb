@@ -16,8 +16,6 @@ JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_toleranc
 
 # Internal job infos
 INFO_PARAMS               = :params
-
-
 INFO_ERROR_MESSAGE        = :error_message
 INFO_ERROR_EXCEPTION      = :error_exception
 INFO_ERROR_BACKTRACE      = :error_backtrace
@@ -31,22 +29,20 @@ INFO_TRANFER_PROGRESS     = :progress
 INFO_TRANFER_BITRATE      = :bitrate
 INFO_TARGET_FILES         = :target_files
 
-
 # Constants: logger
-LOG_FORMAT_PROGNAME      = "%d\t%s"
-LOG_HEADER_TIME          = "%Y-%m-%d %H:%M:%S"
-LOG_HEADER_FORMAT        = "%s \t%d\t%-8s %-10s "
-LOG_MESSAGE_TRIM         = 200
-LOG_MESSAGE_TEXT         = "%s%s"
-LOG_MESSAGE_ARRAY        = "%s     - %s"
-LOG_MESSAGE_HASH         = "%s     * %-20s %s"
-
-
-# Constants: logger app-specific prefix
 LOG_PREFIX_WID           = 8
 LOG_PREFIX_JID           = JOB_IDENT_LEN + 4
 LOG_PREFIX_ID            = 5
-LOG_PREFIX_FORMAT        = "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s "
+LOGGER_FORMAT = {
+  # context:  "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s ",
+  # context:  "wid:%-8{wid} jid:%-12{jid} id:%-5{id}",
+  context: {
+    caller: "%-17s",
+    wid:    "%-10s",
+    jid:    "%-10s",
+    id:     "%-8s",
+    }
+  }
 
 
 # Constants: logger to be cleaned up
