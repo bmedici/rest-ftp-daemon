@@ -7,11 +7,11 @@ require "securerandom"
 
 module RestFtpDaemon
   class Job
+    include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include CommonHelpers
 
     # Logging
-    include BmcDaemonLib::LoggerHelper
 
     # Fields to be imported from params
     IMPORTED = %w(type priority pool label priority source target overwrite notify mkdir tempfile video_options video_custom)
@@ -58,17 +58,15 @@ module RestFtpDaemon
       @status       = nil
       @tentatives   = 0
       @wid          = nil
-
-      # Update timestamps
       @created_at   = Time.now
+
+      # Logger # FIXME: should be :jobs
+      log_pipe      :transfer
 
       # Prepare configuration
       @config       = Conf[:transfer] || {}
       @endpoints    = Conf[:endpoints] || {}
       @pools        = Conf[:pools] || {}
-
-      # Logger
-      @logger   = BmcDaemonLib::LoggerPool.instance.get :transfer
 
       # Import query params
       set_info INFO_PARAMS, params
