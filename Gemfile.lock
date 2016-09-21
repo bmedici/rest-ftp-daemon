@@ -1,11 +1,11 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (0.434.0)
+    rest-ftp-daemon (0.435.0)
       activesupport (~> 4.2)
       api-auth
       aws-sdk-resources (~> 2)
-      bmc-daemon-lib (~> 0.3.18)
+      bmc-daemon-lib (~> 0.4.1)
       double-bag-ftps
       facter
       get_process_mem
