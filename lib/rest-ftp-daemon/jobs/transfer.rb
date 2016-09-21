@@ -22,16 +22,16 @@ module RestFtpDaemon
       case target_uri
       when URI::FTP
         log_info "JobTransfer.do_before target_method FTP"
-        @remote = Remote::RemoteFTP.new @target_loc, log_prefix, @config[:debug_ftp]
+        @remote = Remote::RemoteFTP.new @target_loc, log_context, @config[:debug_ftp]
       when URI::FTPES, URI::FTPS
         log_info "JobTransfer.do_before target_method FTPES/FTPS"
-        @remote = Remote::RemoteFTP.new @target_loc, log_prefix, @config[:debug_ftps], :ftpes
+        @remote = Remote::RemoteFTP.new @target_loc, log_context, @config[:debug_ftps], :ftpes
       when URI::SFTP
         log_info "JobTransfer.do_before target_method SFTP"
-        @remote = Remote::RemoteSFTP.new @target_loc, log_prefix, @config[:debug_sftp]
+        @remote = Remote::RemoteSFTP.new @target_loc, log_context, @config[:debug_sftp]
       when URI::S3
         log_info "JobTransfer.do_before target_method S3"
-        @remote = Remote::RemoteS3.new @target_loc, log_prefix, @config[:debug_s3]
+        @remote = Remote::RemoteS3.new @target_loc, log_context, @config[:debug_s3]
       else
         message = "unknown scheme [#{@target_loc.scheme}] [#{target_uri.class.name}]"
         log_info "JobTransfer.do_before #{message}"

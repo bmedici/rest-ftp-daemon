@@ -103,8 +103,11 @@ module RestFtpDaemon
         log_error "UNHANDLED EXCEPTION: #{e.message}", e.backtrace
     end
 
-    def log_prefix
-     [nil, @jid, @id]
+    def log_context
+      {
+      jid: @jid,
+      id: @id,
+      }
     end
 
   end

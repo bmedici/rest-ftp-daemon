@@ -219,8 +219,12 @@ module RestFtpDaemon
 
   private
 
-    def log_prefix
-     [@wid, @id, nil]
+    def log_context
+      {
+      wid: @wid,
+      jid: @id,
+      #id: @id,
+      }
     end
 
     def touch_job

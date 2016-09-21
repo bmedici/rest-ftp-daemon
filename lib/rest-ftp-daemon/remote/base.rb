@@ -11,7 +11,7 @@ module RestFtpDaemon
       # Delegate set_info info to Job
       delegate :set_info, to: :job
 
-      def initialize target, log_prefix, debug = false, ftpes = false
+      def initialize target, context, debug = false, ftpes = false
         # Init
         @target = target
         @ftpes = ftpes
@@ -21,7 +21,7 @@ module RestFtpDaemon
         @job = Job.new(nil, {})
 
         # Logger
-        @log_prefix = log_prefix || {}
+        @context = context || {}
         log_pipe :transfer
 
         # Annnounce object
@@ -58,6 +58,12 @@ module RestFtpDaemon
         # Debug mode ?
         return unless @debug
         puts "-------------------- SESSION CLOSING --------------------------"
+      end
+
+    protected
+
+      def log_context
+        @context
       end
 
     private

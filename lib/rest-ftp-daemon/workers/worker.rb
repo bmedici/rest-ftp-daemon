@@ -8,5 +8,15 @@ module RestFtpDaemon
     add_transaction_tracer :worker_init,       category: :task
     add_transaction_tracer :worker_after,      category: :task
     add_transaction_tracer :worker_process,    category: :task
+
+  protected
+
+    def log_context
+      {
+      wid: Thread.current.thread_variable_get(:wid),
+      jid: Thread.current.thread_variable_get(:jid),
+      }
+    end
+
   end
 end
