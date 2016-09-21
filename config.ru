@@ -1,4 +1,7 @@
-# Load gem files
+# FIXME: Newrelic agent bug: we have to define the logfile early
+Conf.prepare_newrelic
+
+# Load code
 Conf.log :rackup, "load project code"
 
 load_path_libs = File.expand_path "lib", File.dirname(__FILE__)

@@ -1,5 +1,4 @@
-# Init Rollbar and Newrelic
-Conf.prepare_newrelic
+# Init Rollbar
 Conf.prepare_rollbar
 
 # Initialize Facter
