@@ -11,6 +11,7 @@ module RestFtpDaemon
       @endpoints        = Conf[:endpoints]
 
       # Timeout and retry config
+      return "timeout disabled"  if disabled?(@config[:timeout])
       return "invalid timeout" unless @config[:timeout].to_i > 0
 
       # Log that

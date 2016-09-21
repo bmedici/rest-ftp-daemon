@@ -10,6 +10,7 @@ module RestFtpDaemon
       config_section :conchita
 
       # Check that everything is OK
+      return "conchita disabled" if disabled?(@config[:timer])
       return "invalid timer" unless @config[:timer].to_i > 0
       return false
     end

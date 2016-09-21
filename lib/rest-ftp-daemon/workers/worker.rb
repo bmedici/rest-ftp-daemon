@@ -18,5 +18,9 @@ module RestFtpDaemon
       }
     end
 
+    def disabled? value
+      value.nil? || value === false || value == 0
+    end
+
   end
 end

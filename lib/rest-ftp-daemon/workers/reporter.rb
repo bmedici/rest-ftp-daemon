@@ -13,6 +13,7 @@ module RestFtpDaemon
       @feature_newrelic = Conf.feature?(:newrelic)
 
       # Check that everything is OK
+      return "reporter disabled"  if disabled?(@config[:timer])
       return "invalid timer"      unless @config[:timer].to_i > 0
       return false
     end
