@@ -80,11 +80,16 @@ module RestFtpDaemon
       # Prepare sources/target
       raise RestFtpDaemon::JobAttributeMissing, "source" unless params[:source]
       @source_loc = Location.new(params[:source])
-      log_info "Job.initialize source #{@source_loc.uri}"
 
       raise RestFtpDaemon::JobAttributeMissing, "target" unless params[:target]
       @target_loc = Location.new(params[:target])
-      log_info "Job.initialize target #{@target_loc.uri}"
+
+      # We're done!
+      log_info "Job.initialized", {
+        source: @source_loc.uri,
+        target: @target_loc.uri,
+        pool: @pool,
+        }
     end
 
     def reset
@@ -310,7 +315,7 @@ module RestFtpDaemon
       end
 
       # Log to Rollbar
-      Rollbar.warning e, "oops [#{error}]: #{exception.class.name}: #{exception.message}"
+      Rollbar.warning exception, "oops [#{error}]: #{exception.class.name}: #{exception.message}"
 
       # Close ftp connexion if open
       @remote.close unless @remote.nil? || !@remote.connected?
