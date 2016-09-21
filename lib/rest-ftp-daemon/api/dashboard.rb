@@ -11,6 +11,10 @@ module RestFtpDaemon
 
       ### HELPERS
       helpers do
+        def log_context
+          {caller: "API::Dashboard"}
+        end
+
         def render name, values={}
           # Prepare template engine
           template = File.read("#{Conf.app_libs}/views/#{name}.haml")

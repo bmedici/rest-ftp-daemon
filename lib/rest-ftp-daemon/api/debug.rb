@@ -7,6 +7,9 @@ module RestFtpDaemon
 
       ### HELPERS
       helpers do
+        def log_context
+          {caller: "API::Debug"}
+        end
 
         def debug_metrics
           Metrics.sample

@@ -6,6 +6,13 @@ module RestFtpDaemon
     class Status < Grape::API
       include BmcDaemonLib
 
+      ### HELPERS
+      helpers do
+        def log_context
+          {caller: "API::Status"}
+        end
+      end
+
       ### ENDPOINTS
       desc "Show daemon status"
       get "/" do

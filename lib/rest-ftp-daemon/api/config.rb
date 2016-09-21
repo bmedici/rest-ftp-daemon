@@ -4,6 +4,14 @@ module RestFtpDaemon
   module API
     class Config < Grape::API
 
+      ### HELPERS
+      helpers do
+        def log_context
+          {caller: "API::Config"}
+        end
+      end
+
+
       ### ENDPOINTS
       desc "Show daemon config"
       get "/" do

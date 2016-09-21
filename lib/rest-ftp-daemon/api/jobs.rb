@@ -5,6 +5,13 @@ module RestFtpDaemon
     class Jobs < Grape::API
       include BmcDaemonLib
 
+      ### HELPERS
+      helpers do
+        def log_context
+          {caller: "API::Jobs"}
+        end
+      end
+
       ### EXCEPTIONS HANDLERS
       rescue_from RestFtpDaemon::JobNotFound do |exception|
         exception_error :api_job_not_found, 404, exception
