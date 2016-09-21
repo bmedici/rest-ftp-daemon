@@ -24,7 +24,7 @@ module RestFtpDaemon
 
     def worker_after
       # Clean worker status
-      worker_jid nil
+      worker_set_jid nil
     end
 
   private
@@ -47,7 +47,7 @@ module RestFtpDaemon
 
     def work_on_job job
       # Prepare job and worker for processing
-      worker_jid job.id
+      worker_set_jid job.id
       worker_status WORKER_STATUS_RUNNING, job
       job.wid = Thread.current.thread_variable_get :wid
 
@@ -127,6 +127,11 @@ module RestFtpDaemon
 
       # Job age above this limit
       return job.tentatives >= @config[:retry_max]
+    end
+
+    def worker_set_jid jid
+      Thread.current.thread_variable_set :jid, jid
+      Thread.current.thread_variable_set :updated_at, Time.now
     end
 
     def tentatives job
