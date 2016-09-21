@@ -8,7 +8,6 @@ module RestFtpDaemon
     include CommonHelpers
 
     # Class options
-    attr_reader :logger
     attr_accessor :job_id
     attr_accessor :signal
     attr_accessor :error
@@ -27,7 +26,7 @@ module RestFtpDaemon
       @jid = nil
 
       # Logger
-      @logger = BmcDaemonLib::LoggerPool.instance.get :notify
+      log_pipe :notify
 
       # Handle the notification
       log_info "initialized [#{@url}]"

@@ -5,7 +5,6 @@ module RestFtpDaemon
       include BmcDaemonLib::LoggerHelper
 
       # Class options
-      attr_reader :logger
       attr_reader :log_prefix
       attr_accessor :job
 
@@ -23,7 +22,7 @@ module RestFtpDaemon
 
         # Logger
         @log_prefix = log_prefix || {}
-        @logger = BmcDaemonLib::LoggerPool.instance.get :transfer
+        log_pipe :transfer
 
         # Annnounce object
         log_info "RemoteBase.initialize debug[#{debug}] target[#{target.path}] "

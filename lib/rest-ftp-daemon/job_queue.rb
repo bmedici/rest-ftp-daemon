@@ -4,13 +4,11 @@ require 'singleton'
 module RestFtpDaemon
   class JobQueue
     include Singleton
-
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include CommonHelpers
 
     # Class options
-    attr_reader :logger
     attr_reader :jobs
 
     def initialize
@@ -28,7 +26,7 @@ module RestFtpDaemon
       @mutex = Mutex.new
 
       # Logger
-      @logger = BmcDaemonLib::LoggerPool.instance.get :queue
+      log_pipe :queue
 
       # Identifiers generator
       @prefix = identifier JOB_IDENT_LEN

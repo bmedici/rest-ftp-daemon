@@ -4,17 +4,15 @@ require 'singleton'
 module RestFtpDaemon
   class WorkerPool
     include Singleton
-
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
     # Class options
-    attr_reader :logger
     attr_reader :wid
 
     def initialize
       # Logger
-      @logger = BmcDaemonLib::LoggerPool.instance.get :workers
+      log_pipe :workers
 
       # Prepare status hash and vars
       @statuses = {}

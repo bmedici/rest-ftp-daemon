@@ -11,7 +11,6 @@ module RestFtpDaemon
     include CommonHelpers
 
     # Logging
-    attr_reader :logger
     include BmcDaemonLib::LoggerHelper
 
     # Fields to be imported from params
