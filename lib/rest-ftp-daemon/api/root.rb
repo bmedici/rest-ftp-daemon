@@ -34,7 +34,7 @@ module RestFtpDaemon
           lines = exception.message.lines.collect(&:strip).reject(&:empty?)
 
           # Log error to file
-          log_error "#{http_code} [#{error}] #{lines.shift} ", lines
+          log_error "[#{error}] [#{http_code}] #{lines.shift} ", lines
 
           # Return error
           error!({
@@ -54,9 +54,10 @@ module RestFtpDaemon
 
       ## EXCEPTION HANDLERS
       rescue_from :all do |exception|
-        Rollbar.error exception, "api [#{error}]: #{exception.class.name}: #{exception.message}"
+        Rollbar.error exception, "api: #{exception.class.name}: #{exception.message}"
+        # Rollbar.error exception, "api [#{error}]: #{exception.class.name}: #{exception.message}"
         #error!({error: :internal_server_error, message: exception.message}, 500)
-        exception_error :api_unexpected_error, 500, exception
+        exception_error :api_error, 500, exception
       end
 
 
