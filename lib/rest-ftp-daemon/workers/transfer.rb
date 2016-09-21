@@ -36,23 +36,24 @@ module RestFtpDaemon
       job = RestFtpDaemon::JobQueue.instance.pop @pool
 
       # Work on this job
-      work_on_job job
+      job_process job
 
       # Clean job status
       job.wid = nil
       #sleep 1
 
       # Handle the retry if needed
-      handle_job_result job
+      job_result job
     end
 
-    def work_on_job job
+    def job_process job
       # Prepare job and worker for processing
       worker_set_jid job.id
       worker_status WORKER_STATUS_RUNNING, job
       job.wid = Thread.current.thread_variable_get :wid
 
       # Processs this job protected by a timeout
+      log_info "job_process: start working"
       Timeout.timeout(@config[:timeout], RestFtpDaemon::JobTimeout) do
         job.start
       end
@@ -61,45 +62,45 @@ module RestFtpDaemon
       RestFtpDaemon::Counters.instance.increment :jobs, :processed
 
     rescue RestFtpDaemon::JobTimeout => ex
-      log_error "JOB TIMEOUT started_at[#{job.started_at}] started_since[#{job.started_since}] #{ex.message}", ex.backtrace
+      log_error "job_process: TIMEOUT: started_at[#{job.started_at}] started_since[#{job.started_since}] #{ex.message}", ex.backtrace
       worker_status WORKER_STATUS_TIMEOUT, job
 
       # Inform the job
       job.oops_end(:timeout, ex) unless job.nil?
 
     rescue RestFtpDaemon::AssertionFailed, RestFtpDaemon::JobAttributeMissing, StandardError => ex
-      log_error "JOB CRASHED ex[#{ex.class}] #{ex.message}", ex.backtrace
+      log_error "job_process: CRASHED: ex[#{ex.class}] #{ex.message}", ex.backtrace
       worker_status WORKER_STATUS_CRASHED
 
       # Inform the job
       job.oops_end(:crashed, ex) unless job.nil?
     end
 
-    def handle_job_result job
+    def job_result job
       # If job status requires a retry, just restack it
       if !job.error
         # Processing successful
-        log_error "job finished with no error"
+        log_info "job_result: finished with success"
         worker_status WORKER_STATUS_FINISHED, job
 
       elsif error_not_eligible(job)
-        log_error "not retrying [#{job.error}] retry_on not eligible"
+        log_error "job_result: not retrying [#{job.error}] retry_on not eligible"
 
       elsif error_reached_for(job)
-        log_error "not retrying [#{job.error}] retry_for reached [#{@config[:retry_for]}s]"
+        log_error "job_result: not retrying [#{job.error}] retry_for reached [#{@config[:retry_for]}s]"
 
       elsif error_reached_max(job)
-        log_error "not retrying [#{job.error}] retry_max reached #{tentatives(job)}"
+        log_error "job_result: not retrying [#{job.error}] retry_max reached #{tentatives(job)}"
 
       else
         # Delay cannot be negative, and will be 1s minimum
         retry_after = [@config[:retry_after] || DEFAULT_RETRY_AFTER, 1].max
-        log_info "retry job [#{job.id}] in [#{retry_after}s] tried #{tentatives(job)}"
+        log_info "job_result: retrying job [#{job.id}] in [#{retry_after}s] - tried #{tentatives(job)}"
 
         # Wait !
         worker_status WORKER_STATUS_RETRYING, job
         sleep retry_after
-        log_debug "job [#{job.id}] requeued after [#{retry_after}s] delay"
+        log_debug "job_result: job [#{job.id}] requeued after [#{retry_after}s] delay"
 
         # Now, requeue this job
         RestFtpDaemon::JobQueue.instance.requeue job
