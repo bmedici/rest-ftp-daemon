@@ -49,6 +49,9 @@ module RestFtpDaemon
       # Build URI from parameters
       build_uri url
 
+      # Extract dir and name
+      build_dir_name
+
       # Specific initializations
       case @uri
       when URI::S3    then init_aws               # Match AWS URL with BUCKET.s3.amazonaws.com
@@ -146,7 +149,13 @@ module RestFtpDaemon
 
     end
 
+    def build_dir_name
+      # Store URL parts (remove leading slashes in dir)
+      @dir      = extract_dirname(@uri.path).gsub(/^\//, '')
+      @name     = extract_filename(@uri.path)
 
+      debug :dir, dir
+      debug :name, name
     end
 
     def init_aws
