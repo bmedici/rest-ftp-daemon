@@ -41,11 +41,6 @@ module RestFtpDaemon
       # First resolve tokens
       resolve_tokens! url
 
-      # Ensure result does not contain tokens after replacement
-      detected_tokens = detect_tokens(location_uri)
-      unless detected_tokens.empty?
-        raise RestFtpDaemon::JobUnresolvedTokens, 'unresolved tokens: ' + detected_tokens.join(' ')
-      end
       # Build URI from parameters
       build_uri url
 
@@ -55,12 +50,6 @@ module RestFtpDaemon
       # Specific initializations
       case @uri
       when URI::S3    then init_aws               # Match AWS URL with BUCKET.s3.amazonaws.com
-      end
-
-      # Check that scheme is supported
-      unless @uri.scheme
-        raise RestFtpDaemon::SchemeUnsupported, url
-        # raise RestFtpDaemon::SchemeUnsupported, @uri
       end
     end
 
@@ -147,6 +136,11 @@ module RestFtpDaemon
         path.gsub! tokenize(from), to
       end
 
+      # Ensure result does not contain tokens after replacement
+      detected = detect_tokens(path)
+      unless detected.empty?
+        raise RestFtpDaemon::JobUnresolvedTokens, 'unresolved tokens: ' + detected.join(' ')
+      end
     end
 
     def build_dir_name
