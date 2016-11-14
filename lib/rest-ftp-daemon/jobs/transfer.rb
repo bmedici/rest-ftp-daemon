@@ -123,7 +123,7 @@ module RestFtpDaemon
       # Remove any existing version if present, or check if it's there
       if @overwrite
         @remote.remove! target
-      elsif size = @remote.present?(target)
+      elsif (size = @remote.size_if_exists(target))  # won't be triggered when NIL or 0 is returned
         log_debug "JobTransfer.remote_upload existing (#{format_bytes size, 'B'})"
         raise RestFtpDaemon::TargetFileExists
       end
