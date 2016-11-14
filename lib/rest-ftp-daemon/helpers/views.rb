@@ -40,6 +40,8 @@ module RestFtpDaemon
         "success"
       when URI::S3
         "primary"
+      when URI::Generic
+        "info"
       else
         "default"
       end
@@ -56,15 +58,6 @@ module RestFtpDaemon
       else
         icon_klass = "label-default"
       end
-    end
-
-    def location_label uri
-      sprintf(
-        '<div class="transfer-type label label-%s" title="%s">%s</div>',
-        location_style(uri),
-        uri.to_s,
-        uri.class.name.split('::').last
-        )
     end
 
     def job_type job
@@ -117,6 +110,32 @@ module RestFtpDaemon
       return unless path.is_a? String
       path.gsub(/\[([^\[]+)\]/, token_to_label('\1'))
     end
+
+    def location_label loc
+      # sprintf(
+      #   '<div class="transfer-type label label-%s" title="%s">%s</div>',
+      #   location_style(loc.uri),
+      #   loc.to_s,
+      #   loc.uri.class.name.split('::').last
+      #   )
+      sprintf(
+        '
+        <span class="label-group">
+          <span class="transfer-type label label-xs label-%s" title="%s">%s</span><span class="label label-simple" title="%s">%s</span>
+        </span>
+        ',
+        location_style(loc.uri),
+        loc.to_s,
+        loc.uri.class.name.split('::').last,
+        loc.tokens.first,
+        loc.tokens.first,
+        )
+    end
+
+    # def token_highlight path
+    #   return unless path.is_a? String
+    #   path.gsub(/\[([^\[]+)\]/, token_to_label('\1'))
+    # end
 
     def text_or_empty text
       return "-" if text.nil? || text.empty?

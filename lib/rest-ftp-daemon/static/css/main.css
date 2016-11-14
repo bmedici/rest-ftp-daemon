@@ -149,16 +149,46 @@ body {
 
 
 
-
-
-
 .indicators .btn {
   cursor: pointer;
   opacity: 1;
   filter: alpha(opacity=100);
+  }
+
+.label-group .label {
+  /*border: 1px solid red;*/
 }
 
+.label-group>.label:not(:last-child) {
+  border-bottom-right-radius: 0; 
+  border-top-right-radius: 0;
+  margin-right: 0;
+  }
+
+.label-group>.label:not(:first-child) {
+  border-bottom-left-radius: 0; 
+  border-top-left-radius: 0; 
+  margin-left: 0;
+  }
+
+.label.label-simple {
+  color: black;
+  border: 1px solid silver;
+  background-color: white;
+  }
+/*
+.label-group>.label:first-child:not(:last-child) {
+     border-bottom-right-radius: 0; 
+     border-top-right-radius: 0; 
+}
+
+.label-group>.label:last-child:not(:first-child) {
+     border-bottom-left-radius: 0; 
+     border-top-left-radius: 0; 
+}
+*/
+
 .transfer-type {
-  width: 40px;
+  /*width: 40px;*/
   }
 
