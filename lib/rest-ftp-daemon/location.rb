@@ -58,8 +58,9 @@ module RestFtpDaemon
     end
 
     def path
-      return @name if @dir.nil?
-      File.join(@dir.to_s, @name.to_s)
+      File.join(@dir.to_s, name.to_s)
+    end
+
     def filedir
       "/@dir"
     end
@@ -78,9 +79,9 @@ module RestFtpDaemon
 
     def size
       return unless uri.is_a? URI::FILE
-      local_fil_path = path
-      return unless File.exist? local_fil_path
-      return File.size local_fil_path
+      local_file_path = filepath
+      return unless File.exist? local_file_path
+      return File.size local_file_path
     end
 
     def generate_temp_name!
