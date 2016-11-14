@@ -49,8 +49,8 @@ module RestFtpDaemon
       # Build URI from parameters
       build_uri url
 
+      # Specific initializations
       case @uri
-      when URI::FILE  then init_file
       when URI::S3    then init_aws               # Match AWS URL with BUCKET.s3.amazonaws.com
       end
 
@@ -147,9 +147,6 @@ module RestFtpDaemon
     end
 
 
-    def init_file
-      # Dir is absolute
-      @dir = File.join('/', @dir.to_s)
     end
 
     def init_aws
@@ -166,9 +163,6 @@ module RestFtpDaemon
       # Credentials from config
       @aws_id     = Conf.at(:credentials, @uri.host, :id)
       @aws_secret = Conf.at(:credentials, @uri.host, :secret)
-
-      # Clear @dir
-      @dir = nil
     end
 
     def extract_filename path
