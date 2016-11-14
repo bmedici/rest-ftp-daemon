@@ -31,7 +31,7 @@ module RestFtpDaemon
 
         def exception_error error, http_code, exception
           # Extract message lines
-          lines = exception.message
+          lines = exception.message.lines
             #.lines.collect(&:strip).reject(&:empty?)
 
           # Log error to file
