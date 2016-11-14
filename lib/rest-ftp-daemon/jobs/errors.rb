@@ -5,6 +5,10 @@ require "net/ftp"
 require 'streamio-ffmpeg'
 
 module RestFtpDaemon
+  class InvalidWorkerNumber       < BaseException; end
+  class QueueCantCreateJob        < BaseException; end
+  class JobException              < BaseException; end
+  class JobNotFound               < BaseException; end
   class Job
 
     # Common errors
@@ -66,12 +70,6 @@ module RestFtpDaemon
       # rescue Encoding::UndefinedConversionError => exception
       #   return oops :ended, exception, "encoding_error", true
       }
-
-  class InvalidWorkerNumber       < BaseException; end
-  class QueueCantCreateJob        < BaseException; end
-  class JobException              < BaseException; end
-  class JobNotFound               < BaseException; end
-
 
 
   end

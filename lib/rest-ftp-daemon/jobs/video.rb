@@ -118,7 +118,6 @@ module RestFtpDaemon
   end
 end
 
-
 # require "stringio"
 # def capture_stderr
 #   real_stderr, $stderr = $stderr, StringIO.new
