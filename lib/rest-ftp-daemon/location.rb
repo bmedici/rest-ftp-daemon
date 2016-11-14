@@ -8,8 +8,9 @@ module RestFtpDaemon
     # Accessors
     attr_accessor :name
 
-    attr_reader :original
+    attr_reader :url
     attr_reader :uri
+    attr_reader :tokens
     attr_reader :scheme
     attr_reader :dir
 
@@ -27,9 +28,10 @@ module RestFtpDaemon
       # unless url.is_a? String
       #   raise RestFtpDaemon::AssertionFailed, "location/init/string: #{url.inspect}"
       # end
+      @url = url
+      debug :url, url
 
       # Strip spaces before/after, copying original "path" at the same time
-      @original = original
       location_uri = original.strip
 
       # Replace tokens, fix scheme for local paths
