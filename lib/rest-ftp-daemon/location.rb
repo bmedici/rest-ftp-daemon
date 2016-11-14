@@ -34,13 +34,12 @@ module RestFtpDaemon
       debug :url, url
       @tokens = []
 
-      # Strip spaces before/after, copying original "path" at the same time
-      location_uri = original.strip
       # Detect tokens in string
       @tokens = detect_tokens(url)
       debug :tokens, @tokens.inspect
 
-      fix_scheme! location_uri
+      # First resolve tokens
+      resolve_tokens! url
 
       # Ensure result does not contain tokens after replacement
       detected_tokens = detect_tokens(location_uri)
@@ -50,8 +49,6 @@ module RestFtpDaemon
       # Build URI from parameters
       build_uri url
 
-      # Parse URL and do specific initializations
-      parse_url location_uri
       case @uri
       when URI::FILE  then init_file
       when URI::S3    then init_aws               # Match AWS URL with BUCKET.s3.amazonaws.com
@@ -146,30 +143,7 @@ module RestFtpDaemon
         next if to.to_s.empty?
         path.gsub! tokenize(from), to
       end
-    end
 
-    def fix_scheme! path
-      # path.gsub!(/^\/(.*)/, 'file:///\1')
-      path.gsub! /^\/(.*)/, 'file:/\1'
-    end
-
-    def parse_url path
-      # Parse that URL
-      @uri = URI.parse path # rescue nil
-      raise RestFtpDaemon::LocationParseError, location_path unless @uri
-
-      # Path cleanup
-      cleaned  = @uri.path.clone
-
-      # remove_leading_slashes
-      cleaned.gsub! /^\//, ''
-
-      # remove_multiple_slashes
-      cleaned.gsub! /([^:])\/\//, '\1/'
-
-      # Store URL parts
-      @dir      = extract_dirname  cleaned
-      @name     = extract_filename cleaned
     end
 
 
