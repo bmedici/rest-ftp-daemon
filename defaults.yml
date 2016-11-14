@@ -5,6 +5,11 @@ user: rftpd
 # host: "myhost"
 allow_reload: false
 
+# FUTURE
+debug:
+    ftp: false
+    location: false
+
 pools:                      # number of workers decidated to each pool value
   default: 2
   urgent: 1
@@ -28,7 +33,6 @@ transfer:
   overwrite: false          # overwrite any target file with the same name
   timeout: 1800             # jobs running for longer than X seconds will be killed
   notify_after: 5           # wait at least X seconds between HTTP notifications
-
   debug_s3: false
   debug_ftp: false
   debug_ftps: false

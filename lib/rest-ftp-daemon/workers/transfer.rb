@@ -80,7 +80,7 @@ module RestFtpDaemon
       # If job status requires a retry, just restack it
       if !job.error
         # Processing successful
-        log_info "job_result: finished with success"
+        log_info "job_result: finished successfully"
         worker_status WORKER_STATUS_FINISHED, job
 
       elsif error_not_eligible(job)

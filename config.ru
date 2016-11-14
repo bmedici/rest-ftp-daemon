@@ -30,7 +30,7 @@ use Rack::Static, root: "#{Conf.app_libs}/static/", urls: [
 case Conf.app_env
   when "development"
     # Rack reloader
-    # use Rack::Reloader, 1
+    use Rack::Reloader, 1
 
     # Newrelic dev mode
     require 'new_relic/rack/developer_mode'
