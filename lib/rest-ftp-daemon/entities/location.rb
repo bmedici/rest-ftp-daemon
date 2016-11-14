@@ -4,8 +4,9 @@ module RestFtpDaemon
   module Entities
     class Location < Grape::Entity
 
-      expose :original, as: '_'
-      expose :uri
+      expose :url
+      #, as: 'raw'
+      # expose :uri
       expose :scheme
 
       expose :host, unless: Proc.new {|obj| obj.host.nil?}
