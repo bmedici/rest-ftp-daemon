@@ -30,9 +30,9 @@ module RestFtpDaemon
             )
       end
 
-      def present? target
-        log_debug "RemoteSFTP.present? [#{target.name}]"
-        stat = @sftp.stat! target.path
+      def size_if_exists target
+        log_debug "RemoteSFTP.size_if_exists [#{target.name}]"
+        stat = @sftp.stat! target.filepath
 
       rescue Net::SFTP::StatusException
         return false
@@ -42,7 +42,7 @@ module RestFtpDaemon
 
       def remove! target
         log_debug "RemoteSFTP.remove! [#{target.name}]"
-        @sftp.remove target.path
+        @sftp.remove target.filepath
 
       rescue Net::SFTP::StatusException
         log_debug "#{LOG_INDENT}[#{target.name}] file not found"
@@ -99,7 +99,7 @@ module RestFtpDaemon
 
         # Do the transfer
         log_debug "RemoteSFTP.upload temp[#{use_temp_name}] name[#{dest.name}]"
-        @sftp.upload! source.path, dest.path do |event, _uploader, *args|
+        @sftp.upload! source.filepath, dest.filepath do |event, _uploader, *args|
           case event
           when :open then
             # args[0] : file metadata
@@ -125,7 +125,7 @@ module RestFtpDaemon
         if use_temp_name
           flags = 0x00000001
           log_debug "RemoteSFTP.upload rename [#{dest.name}] > [#{target.name}]"
-          @sftp.rename! dest.path, target.path, flags
+          @sftp.rename! dest.filepath, target.filepath, flags
         end
 
         # progress:

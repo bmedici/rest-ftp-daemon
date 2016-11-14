@@ -32,19 +32,32 @@ module RestFtpDaemon
         #s3 = Aws::S3::Client.new(http_wire_trace: true)
       end
 
+      def size_if_exists target
+        log_debug "RemoteS3.size_if_exists [#{target.path}]"
+
+        # Update progress before
+        bucket = @client.bucket(target.aws_bucket)
+        object = bucket.object(target.path)
+        # object = @client.get_object(bucket: target.aws_bucket, key: target.name)
+        log_debug "content_length: #{object.content_length}"
+      rescue Aws::S3::Errors::NotFound
+        return false
+      else
+        return object.content_length
+      end
+
       def upload source, target, use_temp_name = false, &callback
         # Push init
         raise RestFtpDaemon::AssertionFailed, "upload/client" if @client.nil?
-        log_debug "RemoteS3.upload bucket[#{target.aws_bucket}] name[#{target.name}]"
+        log_debug "RemoteS3.upload bucket[#{target.aws_bucket}] path[#{target.path}]"
 
         # Update progress before
-        #yield 0, target.name
-        # Point to the right bucket and object
         bucket = @client.bucket(target.aws_bucket)
-        object = bucket.object(target.name)
+        object = bucket.object(target.path)
+        log_debug "RemoteS3.upload object[#{target.path}]"
 
         # Do the transfer
-        object.upload_file(source.path, {
+        object.upload_file(source.filepath, {
           multipart_threshold: @multipart_threshold
           })
 

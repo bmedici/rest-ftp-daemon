@@ -31,6 +31,10 @@ module RestFtpDaemon
         prepare
       end
 
+      def size_if_exists target
+        false
+      end
+
       def prepare
       end
 
