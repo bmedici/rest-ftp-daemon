@@ -22,10 +22,11 @@ module RestFtpDaemon
     delegate :scheme, :host, :port, :user, :password, :to_s,
       to: :uri
 
-    def initialize original
-      unless original.is_a? String
-        raise RestFtpDaemon::AssertionFailed, "location/original/string: #{original.inspect}"
-      end
+    def initialize url
+      # Check parameters
+      # unless url.is_a? String
+      #   raise RestFtpDaemon::AssertionFailed, "location/init/string: #{url.inspect}"
+      # end
 
       # Strip spaces before/after, copying original "path" at the same time
       @original = original
@@ -40,6 +41,8 @@ module RestFtpDaemon
       unless detected_tokens.empty?
         raise RestFtpDaemon::JobUnresolvedTokens, 'unresolved tokens: ' + detected_tokens.join(' ')
       end
+      # Build URI from parameters
+      build_uri url
 
       # Parse URL and do specific initializations
       parse_url location_uri
@@ -95,6 +98,32 @@ module RestFtpDaemon
     def tokenize item
       return unless item.is_a? String
       "[#{item}]"
+    end
+
+    def build_uri url
+      # Fix scheme if URL as none
+      url.gsub! /^\/(.*)/, 'file:/\1'
+
+      # Parse that URL
+      @uri = URI.parse url # rescue nil
+      raise RestFtpDaemon::LocationParseError, location_path unless @uri
+
+      # Set scheme to "file" if missing
+      #@uri.scheme ||= URI_SCHEME_FILE
+      # path.gsub! /^\/(.*)/, 'file:/\1'
+
+      # Remove unnecessary double slahes
+      @uri.path.gsub!(/\/+/, '/')
+
+      # Check we finally have a scheme
+      debug :scheme, @uri.scheme 
+      debug :path, @uri.path
+      debug :host, @uri.host
+      debug :to_s, @uri.to_s
+
+      # Raise if still no scheme #FIXME
+      raise RestFtpDaemon::SchemeUnsupported, url unless @uri.scheme
+      # raise RestFtpDaemon::LocationParseError, base unless @uri
     end
 
     def resolve_tokens! path
