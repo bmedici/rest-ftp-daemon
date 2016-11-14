@@ -27,7 +27,9 @@ module RestFtpDaemon
       # Check parameters
       # unless url.is_a? String
       #   raise RestFtpDaemon::AssertionFailed, "location/init/string: #{url.inspect}"
-      # end
+      # end   
+      debug nil
+
       @url = url
       debug :url, url
       @tokens = []
@@ -75,7 +77,6 @@ module RestFtpDaemon
     def filepath
       "/#{path}"
     end
-    alias :to_s :path
 
     def local_files
       Dir.glob("/#{path}").collect do |file|
@@ -97,6 +98,10 @@ module RestFtpDaemon
       @name = "#{@name}.temp-#{identifier(JOB_TEMPFILE_LEN)}"
     end
 
+    # def scheme? condition
+    #   return @uri.scheme == condition
+    # end
+
   private
 
     def tokenize item
@@ -111,10 +116,6 @@ module RestFtpDaemon
       # Parse that URL
       @uri = URI.parse url # rescue nil
       raise RestFtpDaemon::LocationParseError, location_path unless @uri
-
-      # Set scheme to "file" if missing
-      #@uri.scheme ||= URI_SCHEME_FILE
-      # path.gsub! /^\/(.*)/, 'file:/\1'
 
       # Remove unnecessary double slahes
       @uri.path.gsub!(/\/+/, '/')
@@ -171,9 +172,6 @@ module RestFtpDaemon
       @name     = extract_filename cleaned
     end
 
-    # def init_username
-    #   @uri.user ||= "anonymous"
-    # end
 
     def init_file
       # Dir is absolute
@@ -215,6 +213,20 @@ module RestFtpDaemon
       # item.scan /\[([^\[\]]*)\]/
       item.scan(/\[([^\[\]]*)\]/).map(&:first)
     end
+
+    def debug var, val = nil
+      # Read conf if not already cached
+      @debug ||= Conf.at(:debug, :location)
+
+      # Skip if no debug requeste
+      return unless @debug
+
+      # Dump line
+      if var.nil?
+        printf("|%s \n", "-"*100) 
+      else
+        printf("| %-15s: %s \n", var, val)
+      end
     end
 
   end
