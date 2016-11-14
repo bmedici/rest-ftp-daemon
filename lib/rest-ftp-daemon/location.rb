@@ -30,12 +30,14 @@ module RestFtpDaemon
       # end
       @url = url
       debug :url, url
+      @tokens = []
 
       # Strip spaces before/after, copying original "path" at the same time
       location_uri = original.strip
+      # Detect tokens in string
+      @tokens = detect_tokens(url)
+      debug :tokens, @tokens.inspect
 
-      # Replace tokens, fix scheme for local paths
-      resolve_tokens! location_uri
       fix_scheme! location_uri
 
       # Ensure result does not contain tokens after replacement
@@ -210,7 +212,9 @@ module RestFtpDaemon
     end
 
     def detect_tokens item
-      item.scan /\[[^\[\]]*\]/
+      # item.scan /\[([^\[\]]*)\]/
+      item.scan(/\[([^\[\]]*)\]/).map(&:first)
+    end
     end
 
   end
