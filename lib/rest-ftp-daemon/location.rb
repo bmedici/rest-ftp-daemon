@@ -70,8 +70,8 @@ module RestFtpDaemon
     end
     alias :to_s :path
 
-    def scan_files
-      Dir.glob(path).collect do |file|
+    def local_files
+      Dir.glob("/#{path}").collect do |file|
         next unless File.readable? file
         next unless File.file? file
         # Create a new location object

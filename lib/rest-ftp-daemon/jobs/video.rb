@@ -29,7 +29,7 @@ module RestFtpDaemon
     def do_work
       # Guess source files from disk
       set_status JOB_STATUS_TRANSFORMING
-      sources = @source_loc.scan_files
+      sources = @source_loc.local_files
       raise RestFtpDaemon::SourceNotFound if sources.empty?
 
       # Add the source file name if none found in the target path
