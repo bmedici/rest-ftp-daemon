@@ -27,7 +27,7 @@ module RestFtpDaemon
         # Init
         counts = {}
 
-        RestFtpDaemon::WorkerPool.instance.worker_variables.group_by do |wid, vars|
+        WorkerPool.instance.worker_variables.group_by do |wid, vars|
           vars[:status]
         end.each do |status, workers|
           counts[status] = workers.count

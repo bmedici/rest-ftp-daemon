@@ -79,11 +79,11 @@ module RestFtpDaemon
       # end
 
       ### MOUNTPOINTS
-      mount RestFtpDaemon::API::Status      => MOUNT_STATUS
-      mount RestFtpDaemon::API::Jobs        => MOUNT_JOBS
-      mount RestFtpDaemon::API::Dashboard   => MOUNT_BOARD
-      mount RestFtpDaemon::API::Config      => MOUNT_CONFIG
-      mount RestFtpDaemon::API::Debug       => MOUNT_DEBUG
+      mount API::Status      => MOUNT_STATUS
+      mount API::Jobs        => MOUNT_JOBS
+      mount API::Dashboard   => MOUNT_BOARD
+      mount API::Config      => MOUNT_CONFIG
+      mount API::Debug       => MOUNT_DEBUG
 
 
       ### API Documentation

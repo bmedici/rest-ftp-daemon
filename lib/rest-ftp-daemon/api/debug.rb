@@ -18,7 +18,7 @@ module RestFtpDaemon
         def debug_encodings
           # Encodings
           encodings = {}
-          jobs = RestFtpDaemon::JobQueue.instance.jobs
+          jobs = JobQueue.instance.jobs
 
           jobs.each do |job|
             # here = out[job.id] = {}
@@ -27,7 +27,7 @@ module RestFtpDaemon
             me[:error] = job.error.encoding.to_s unless job.error.nil?
             me[:status] = job.status.encoding.to_s unless job.status.nil?
 
-            RestFtpDaemon::Job::IMPORTED.each do |name|
+            Job::IMPORTED.each do |name|
               value = job.send(name)
               me[name] = value.encoding.to_s if value.is_a? String
             end
@@ -46,7 +46,7 @@ module RestFtpDaemon
 
         # Extract routes
         routes = []
-        RestFtpDaemon::API::Root.routes.each do |route|
+        API::Root.routes.each do |route|
           routes << {
             url: "#{route.options[:method]} #{route.pattern.path}",
             vars: route.instance_variables,
