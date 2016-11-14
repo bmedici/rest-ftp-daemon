@@ -38,8 +38,9 @@ module RestFtpDaemon
       log_info "JobVideo.work target_final.path [#{target_final.path}]"
 
       # Ensure target directory exists
-      log_info "JobVideo.work mkdir_p [#{@target_loc.dir}]"
-      FileUtils.mkdir_p @target_loc.dir
+      t_dir = @target_loc.filedir
+      log_info "JobVideo.work mkdir_p [#{t_dir}]"
+      FileUtils.mkdir_p t_dir
 
       # Do the work, for each file
       set_info INFO_SOURCE_CURRENT, @source_loc.name
@@ -81,7 +82,7 @@ module RestFtpDaemon
       log_info "JobVideo.ffmpeg_command [#{FFMPEG.ffmpeg_binary}] [#{source.name}] > [#{target.name}]", options
 
       # Build command
-      movie.transcode(target.path, options) do |ffmpeg_progress|
+      movie.transcode(target.filepath, options) do |ffmpeg_progress|
         # set_info :work, :ffmpeg_progress, ffmpeg_progress
         set_info INFO_TRANFER_PROGRESS, (100.0 * ffmpeg_progress).round(1)
         log_debug "progress #{ffmpeg_progress}"

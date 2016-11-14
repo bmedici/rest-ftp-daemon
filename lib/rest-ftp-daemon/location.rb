@@ -62,6 +62,11 @@ module RestFtpDaemon
     def path
       return @name if @dir.nil?
       File.join(@dir.to_s, @name.to_s)
+    def filedir
+      "/@dir"
+    end
+    def filepath
+      "/#{path}"
     end
     alias :to_s :path
 

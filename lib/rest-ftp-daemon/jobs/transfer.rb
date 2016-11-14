@@ -48,7 +48,7 @@ module RestFtpDaemon
     def do_work
       # Scan local source files from disk
       set_status JOB_STATUS_CHECKING_SRC
-      sources = @source_loc.scan_files
+      sources = @source_loc.scan_local_files
       set_info INFO_SOURCE_COUNT, sources.size
       set_info INFO_SOURCE_FILES, sources.collect(&:name)
       log_info "JobTransfer.do_work sources #{sources.collect(&:name)}"
@@ -63,7 +63,7 @@ module RestFtpDaemon
 
       # Prepare target path or build it if asked
       set_status JOB_STATUS_CHDIR
-      @remote.chdir_or_create @target_loc.dir, @mkdir
+      @remote.chdir_or_create @target_loc.filedir, @mkdir
 
       # Compute total files size
       @transfer_total = sources.collect(&:size).sum
