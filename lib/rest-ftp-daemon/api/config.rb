@@ -11,7 +11,6 @@ module RestFtpDaemon
         end
       end
 
-
       ### ENDPOINTS
       desc "Show daemon config"
       get "/" do

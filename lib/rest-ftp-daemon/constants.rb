@@ -3,7 +3,7 @@ DEFAULT_POOL            = "default"
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_PAGE_SIZE       = 50    # 50 lines
 DEFAULT_RETRY_AFTER     = 10    # 10s
-TARGET_BLANK             = "_blank"
+TARGET_BLANK            = "_blank"
 
 # Internal job constants
 JOB_RANDOM_LEN          = 8
@@ -123,3 +123,4 @@ MOUNT_CONFIG             = "/config"
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
 NOTIFY_IDENTIFIER_LEN   = 4
+

@@ -53,6 +53,7 @@ module RestFtpDaemon
       s3_waiter_unexpected:     Aws::Waiters::Errors::UnexpectedError,
       s3_waiter_failed:         Aws::Waiters::Errors::WaiterFailed,
 
+      #s3_not_found:             Aws::S3::Errors::NotFound,
       s3_permanent_redirect:    Aws::S3::Errors::PermanentRedirect,
       s3_no_such_key:           Aws::S3::Errors::NoSuchKey,
       s3_no_such_bucket:        Aws::S3::Errors::NoSuchBucket,

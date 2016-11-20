@@ -26,7 +26,6 @@ module RestFtpDaemon
         @client = Aws::S3::Resource.new(
           region: @target.aws_region,
           credentials: Aws::Credentials.new(@target.aws_id, @target.aws_secret),
-          # thread_count: 4,
           http_wire_trace: @debug
           )
         #s3 = Aws::S3::Client.new(http_wire_trace: true)
