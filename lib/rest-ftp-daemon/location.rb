@@ -62,7 +62,7 @@ module RestFtpDaemon
     end
 
     def filedir
-      "/@dir"
+      "/#{@dir}"
     end
     def filepath
       "/#{path}"
