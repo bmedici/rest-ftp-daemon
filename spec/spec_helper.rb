@@ -63,7 +63,7 @@ RSpec.configure do |config|
     puts
     call_server(:start)
     sleep 5
-    puts ">> should be started now"
+    puts ">> server should be running now"
   end
 
   config.after :suite do
