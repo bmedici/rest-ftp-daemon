@@ -36,7 +36,7 @@ module RestFtpDaemon
 
       def size_if_exists target
         size = @ftp.size target.filepath
-        log_debug "RemoteFTP.size_if_exists [#{target.name}]"
+        log_debug "size_if_exists [#{target.name}]"
 
       rescue Net::FTPPermError
         return false
@@ -47,13 +47,13 @@ module RestFtpDaemon
       def remove! target
         @ftp.delete target.filepath
       rescue Net::FTPPermError
-        log_debug "RemoteFTP.remove! [#{target.name}] not found"
+        log_debug "remove! [#{target.name}] not found"
       else
-        log_debug "RemoteFTP.remove! [#{target.name}] removed"
+        log_debug "remove! [#{target.name}] removed"
       end
 
       def mkdir directory
-        log_debug "RemoteFTP.mkdir [#{directory}]"
+        log_debug "mkdir [#{directory}]"
         @ftp.mkdir directory
 
       rescue StandardError => ex
@@ -63,7 +63,7 @@ module RestFtpDaemon
       def chdir_or_create thedir, mkdir = true
         # Init, extract my parent name and my own name
         parent, current = split_path(thedir)
-        log_debug "RemoteFTP.chdir_or_create mkdir[#{mkdir}] dir[#{thedir}] parent[#{parent}] current[#{current}]"
+        log_debug "chdir_or_create mkdir[#{mkdir}] dir[#{thedir}] parent[#{parent}] current[#{current}]"
 
         # Access this directory
         begin
@@ -104,7 +104,7 @@ module RestFtpDaemon
         end
 
         # Move to the directory
-        log_debug "RemoteFTP.upload chdir [#{dest.filedir}]"
+        log_debug "upload chdir [#{dest.filedir}]"
         @ftp.chdir dest.filedir
 
         # Do the transfer
@@ -116,7 +116,7 @@ module RestFtpDaemon
 
         # Move the file back to its original name
         if use_temp_name
-          log_debug "RemoteFTP.upload rename [#{dest.name}] > [#{target.name}]"
+          log_debug "upload rename [#{dest.name}] > [#{target.name}]"
           @ftp.rename dest.name, target.name
         end
       end

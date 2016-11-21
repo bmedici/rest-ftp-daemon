@@ -25,7 +25,7 @@ module RestFtpDaemon
         log_pipe :transfer
 
         # Annnounce object
-        log_info "RemoteBase.initialize debug[#{debug}] target[#{target.path}] "
+        log_info "initialize debug[#{debug}] target[#{target.path}] "
 
         # Prepare real object
         prepare

@@ -85,7 +85,7 @@ module RestFtpDaemon
       @target_loc = Location.new(params[:target])
 
       # We're done!
-      log_info "Job.initialized", {
+      log_info "initialized", {
         source: @source_loc.uri,
         target: @target_loc.uri,
         pool: @pool,
@@ -110,7 +110,7 @@ module RestFtpDaemon
       set_status JOB_STATUS_QUEUED
       set_error nil
       client_notify :queued
-      log_info "Job.reset notify[queued] tentative[#{@tentatives}]"
+      log_info "reset notify[queued] tentative[#{@tentatives}]"
     end
 
     # Process job
@@ -123,23 +123,23 @@ module RestFtpDaemon
       @started_at = Time.now
 
       # Notify we start working
-      log_info "Job.start notify [started]"
+      log_info "client_notify [started]"
       current_signal = :started
       set_status JOB_STATUS_WORKING
       client_notify :started
 
       # Before work
-      log_debug "Job.start do_before"
+      log_debug "do_before"
       current_signal = :started
       do_before
 
       # Do the hard work
-      log_debug "Job.start do_work"
+      log_debug "do_work"
       current_signal = :ended
       do_work
 
       # Finalize all this
-      log_debug "Job.start do_after"
+      log_debug "do_after"
       current_signal = :ended
       do_after
 
@@ -150,7 +150,7 @@ module RestFtpDaemon
     else
       # All done !
       set_status JOB_STATUS_FINISHED
-      log_info "Job.start notify [ended]"
+      log_info "client_notify [ended]"
       client_notify :ended
     end
 
@@ -217,7 +217,7 @@ module RestFtpDaemon
   protected
 
     def alert_common_method_called
-      log_error "Job PLACEHOLDER METHOD CALLED"
+      log_error "PLACEHOLDER METHOD CALLED"
     end
 
   private
@@ -289,7 +289,7 @@ module RestFtpDaemon
       RestFtpDaemon::Notification.new @notify, payload
 
     rescue StandardError => ex
-      log_error "Job.client_notify EXCEPTION: #{ex.inspect}"
+      log_error "client_notify EXCEPTION: #{ex.inspect}"
     end
 
     def oops signal, exception, error = nil#, include_backtrace = false
@@ -307,7 +307,7 @@ module RestFtpDaemon
       end
 
       # Log backtrace ?
-      message = "Job.oops signal[#{signal}] exception[#{exception.class}] error[#{error}] #{exception.message}"
+      message = "oops signal[#{signal}] exception[#{exception.class}] error[#{error}] #{exception.message}"
       if include_backtrace
         log_error message, exception.backtrace
       else

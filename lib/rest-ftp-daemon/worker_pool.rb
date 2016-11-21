@@ -32,7 +32,7 @@ module RestFtpDaemon
       if !(pools.is_a? Hash)
         log_error "create_threads: one JobWorker is the minimum (#{pools.inspect}"
       end
-      log_info "WorkerPool creating all workers with #{pools.to_hash.inspect}"
+      log_info "creating all workers with #{pools.to_hash.inspect}"
 
       # Start ConchitaWorker and ReporterWorker
       create_thread ConchitaWorker, :conchita

@@ -15,7 +15,7 @@ module RestFtpDaemon
       return "invalid timeout" unless @config[:timeout].to_i > 0
 
       # Log that
-      log_info "JobWorker worker_init", {
+      log_info "worker_init", {
         pool: @pool,
         timeout: @config[:timeout]
       }

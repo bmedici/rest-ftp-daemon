@@ -15,7 +15,7 @@ module RestFtpDaemon
         super
 
         # Connect init
-        log_debug "RemoteSFTP.connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
+        log_debug "connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
 
         # Debug level
         verbosity =  @debug ? Logger::DEBUG : false
@@ -31,7 +31,7 @@ module RestFtpDaemon
       end
 
       def size_if_exists target
-        log_debug "RemoteSFTP.size_if_exists [#{target.name}]"
+        log_debug "size_if_exists [#{target.name}]"
         stat = @sftp.stat! target.filepath
 
       rescue Net::SFTP::StatusException
@@ -41,7 +41,7 @@ module RestFtpDaemon
       end
 
       def remove! target
-        log_debug "RemoteSFTP.remove! [#{target.name}]"
+        log_debug "remove! [#{target.name}]"
         @sftp.remove target.filepath
 
       rescue Net::SFTP::StatusException
@@ -51,7 +51,7 @@ module RestFtpDaemon
       end
 
       def mkdir directory
-        log_debug "RemoteSFTP.mkdir [#{directory}]"
+        log_debug "mkdir [#{directory}]"
         @sftp.mkdir! directory
 
         rescue StandardError => ex
@@ -60,7 +60,7 @@ module RestFtpDaemon
 
       def chdir_or_create directory, mkdir = false
         # Init, extract my parent name and my own name
-        log_debug "RemoteSFTP.chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
+        log_debug "chdir_or_create mkdir[#{mkdir}] dir[#{directory}]"
         parent, _current = split_path(directory)
 
         # Access this directory
@@ -98,7 +98,7 @@ module RestFtpDaemon
         end
 
         # Do the transfer
-        log_debug "RemoteSFTP.upload temp[#{use_temp_name}] name[#{dest.name}]"
+        log_debug "upload temp[#{use_temp_name}] name[#{dest.name}]"
         @sftp.upload! source.filepath, dest.filepath do |event, _uploader, *args|
           case event
           when :open then
@@ -124,7 +124,7 @@ module RestFtpDaemon
         # Move the file back to its original name
         if use_temp_name
           flags = 0x00000001
-          log_debug "RemoteSFTP.upload rename [#{dest.name}] > [#{target.name}]"
+          log_debug "upload rename [#{dest.name}] > [#{target.name}]"
           @sftp.rename! dest.filepath, target.filepath, flags
         end
 

@@ -118,14 +118,14 @@ module RestFtpDaemon
       raise RestFtpDaemon::AssertionFailed, "remote_upload/target" if target.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
-      log_info "JobTransfer.remote_upload [#{source.name}]: [#{source.path}] > [#{target.path}]"
+      log_info "remote_upload temp[#{@tempfile}] source[#{source.path}] target[#{target.path}]"
       set_info INFO_SOURCE_CURRENT, source.name
 
       # Remove any existing version if present, or check if it's there
       if @overwrite
         @remote.remove! target
       elsif (size = @remote.size_if_exists(target))  # won't be triggered when NIL or 0 is returned
-        log_debug "JobTransfer.remote_upload existing (#{format_bytes size, 'B'})"
+        log_debug "remote_upload file exists ! (#{format_bytes size, 'B'})"
         raise RestFtpDaemon::TargetFileExists
       end
 

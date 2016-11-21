@@ -30,7 +30,7 @@ module RestFtpDaemon
 
       # Identifiers generator
       @prefix = identifier(JOB_IDENT_LEN)
-      log_info "JobQueue initialized (prefix: #{@prefix})"
+      log_info "initialized (prefix: #{@prefix})"
     end
 
     def create_job params
@@ -42,7 +42,7 @@ module RestFtpDaemon
       # If object not found, don't create a job !
       unless klass && klass < Job
         message = "can't create [#{klass_name}] for type [#{params[:type]}]"
-        log_error "JobQueue.create_job: #{message}"
+        log_error "create_job: #{message}"
         raise QueueCantCreateJob, message
       end
 
@@ -53,7 +53,7 @@ module RestFtpDaemon
       job_id = prefixed_id(@last_id)
 
       # Instantiate it and return the now object
-      log_info "JobQueue.create_job: creating [#{klass.name}] with ID [#{job_id}]"
+      log_info "create_job: creating [#{klass.name}] with ID [#{job_id}]"
       job = klass.new(job_id, params)
 
       # Push it on the queue
@@ -147,10 +147,10 @@ module RestFtpDaemon
 
     def push job
       # Check that item responds to "priorty" method
-      raise "JobQueue.push: job should respond to: priority" unless job.respond_to? :priority
-      raise "JobQueue.push: job should respond to: id" unless job.respond_to? :id
-      raise "JobQueue.push: job should respond to: pool" unless job.respond_to? :pool
-      raise "JobQueue.push: job should respond to: reset" unless job.respond_to? :reset
+      raise "push: job should respond to: priority" unless job.respond_to? :priority
+      raise "push: job should respond to: id" unless job.respond_to? :id
+      raise "push: job should respond to: pool" unless job.respond_to? :pool
+      raise "push: job should respond to: reset" unless job.respond_to? :reset
 
       @mutex.synchronize do
         # Get this job's pool & prepare queue of this pool
@@ -228,7 +228,7 @@ module RestFtpDaemon
 
       # Compute oldest limit
       time_limit = Time.now - maxage.to_i
-      log_info "JobQueue.expire limit [#{time_limit}] status [#{status}]" if verbose
+      log_info "expire limit [#{time_limit}] status [#{status}]" if verbose
 
       @mutex.synchronize do
         # Delete jobs from the queue when they match status and age limits
