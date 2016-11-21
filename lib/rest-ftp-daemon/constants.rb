@@ -34,10 +34,10 @@ LOGGER_FORMAT = {
   # context:  "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s ",
   # context:  "wid:%-8{wid} jid:%-12{jid} id:%-5{id}",
   context: {
-    caller: "%-17s",
     wid:    "%-10s",
     jid:    "%-10s",
     id:     "%-8s",
+    caller: "%18s |",
     }
   }
 
