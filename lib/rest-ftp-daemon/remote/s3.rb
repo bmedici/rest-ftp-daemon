@@ -88,7 +88,7 @@ module RestFtpDaemon
         # Declare multipart upload
         mpu_create_response = @client.create_multipart_upload(options)
         options[:upload_id] = mpu_create_response.upload_id
-        log_debug "created multipart: #{options[:upload_id]}"
+        log_debug "created multipart id[#{options[:upload_id]}]"
 
         # Upload each part
         file.each_part(parts_size) do |part|
