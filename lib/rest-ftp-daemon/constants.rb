@@ -19,6 +19,7 @@ JOB_FTP_CHUNKMB         = 2*MB
 JOB_FFMPEG_THREADS      = 2
 JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_tolerance, :frame_rate, :resolution, :aspect, :keyframe_interval, :x264_vprofile, :x264_preset, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels]
 
+
 # Internal job infos
 INFO_PARAMS               = :params
 INFO_ERROR_MESSAGE        = :error_message

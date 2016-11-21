@@ -50,7 +50,7 @@ module RestFtpDaemon
           routes << {
             url: "#{route.options[:method]} #{route.pattern.path}",
             vars: route.instance_variables,
-            options: route.options
+            options: route.options,
             }
 
         end

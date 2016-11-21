@@ -296,13 +296,11 @@ module RestFtpDaemon
       # Find error code in ERRORS table
       if error.nil?
         error = ERRORS.key(exception.class)
-        # log_debug "Job.oops ERRORS: #{exception.class} > #{error}"
       end
 
       # Default error code derived from exception name
       if error.nil?
         error = exception_to_error(exception)
-        # log_debug "Job.oops derivated: #{exception.class} > #{error}"
         include_backtrace = true
       end
 

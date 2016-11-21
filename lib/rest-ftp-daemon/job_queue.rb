@@ -190,7 +190,6 @@ module RestFtpDaemon
         @waitings[pool] ||= []
         loop do
           if myqueue.empty?
-            #puts "JobQueue.pop(#{pool}): empty"
             raise ThreadError, "queue empty" if non_block
             @waitings[pool].push Thread.current
             @mutex.sleep

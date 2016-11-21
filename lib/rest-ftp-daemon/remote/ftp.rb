@@ -10,6 +10,7 @@ module RestFtpDaemon
       attr_reader :ftp
 
       def prepare
+        
         # Create FTP object
         if @ftpes
           prepare_ftpes
@@ -119,6 +120,7 @@ module RestFtpDaemon
           log_debug "upload rename [#{dest.name}] > [#{target.name}]"
           @ftp.rename dest.name, target.name
         end
+
       end
 
       def close

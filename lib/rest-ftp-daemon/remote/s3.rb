@@ -4,7 +4,6 @@ require 'aws-sdk-resources'
 module RestFtpDaemon
   module Remote
     class RemoteS3 < RemoteBase
-
       MULTIPART_THRESHOLD_MB = 4
 
       # Class options
