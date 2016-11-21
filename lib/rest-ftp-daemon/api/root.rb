@@ -68,9 +68,9 @@ module RestFtpDaemon
       # version 'v1'
 
       # Response formats
-      content_type :json, 'application/json; charset=utf-8'
-      # format :json
-      default_format :json
+      #content_type :json, 'application/json; charset=utf-8'
+      format :json
+      # default_format :json
 
       # Pretty JSON
       # formatter :json_tmp, ->(object, env) do
