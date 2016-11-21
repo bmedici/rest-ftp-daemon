@@ -20,11 +20,8 @@ module RestFtpDaemon
         @ftp.passive = true
         @ftp.debug_mode = @debug
 
-        # Config
-        @chunk_size = JOB_FTP_CHUNKMB.to_i * 1024
-
         # Announce object
-        log_debug "RemoteFTP.prepare chunk_size:#{@chunk_size}"
+        log_debug "prepare chunk_size:#{format_bytes(JOB_FTP_CHUNKMB, "B")}"
       end
 
       def connect
@@ -110,7 +107,7 @@ module RestFtpDaemon
 
         # Do the transfer
         log_debug "RemoteFTP.upload putbinaryfile [#{dest.name}]"
-        @ftp.putbinaryfile source.filepath, dest.name, @chunk_size do |data|
+        @ftp.putbinaryfile source.filepath, dest.name, JOB_FTP_CHUNKMB do |data|
           # Update job status after this block transfer
           yield data.bytesize, dest.name
         end
