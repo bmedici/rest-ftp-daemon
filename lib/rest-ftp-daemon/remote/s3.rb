@@ -25,7 +25,6 @@ module RestFtpDaemon
           credentials: Aws::Credentials.new(@target.aws_id, @target.aws_secret),
           http_wire_trace: @debug
           )
-        #s3 = Aws::S3::Client.new(http_wire_trace: true)
       end
 
       def size_if_exists target
@@ -34,9 +33,9 @@ module RestFtpDaemon
         # Update progress before
         bucket = @client.bucket(target.aws_bucket)
         object = bucket.object(target.path)
-        # object = @client.get_object(bucket: target.aws_bucket, key: target.name)
         log_debug "content_length: #{object.content_length}"
       rescue Aws::S3::Errors::NotFound
+        #log_debug "content_length: #{object.content_length}"
         return false
       else
         return object.content_length
@@ -64,19 +63,12 @@ module RestFtpDaemon
         object.upload_file(source.filepath, {
           multipart_threshold: @multipart_threshold
           })
+      def connected?
+        !@client.nil?
+      end
 
     private
 
-        # Wait for transfer to complete
-        object.wait_until_exists do |waiter|
-          # waiter.delay = 1
-          # # log_debug "- progress[#{progress}] total[#{total}]"
-          # waiter.before_wait do |attempts, response|
-          #   puts "#{attempts} made"
-          #   puts response.error.inspect
-          #   puts response.data.inspect
-          # end
-          # log_debug "- progress[] #{waiter.inspect}"
       def upload_onefile file, s3_bucket, s3_path, s3_name, &callback
         log_debug "upload_onefile"
         @client.put_object(bucket: s3_bucket, key: s3_path, body: file)
@@ -97,9 +89,7 @@ module RestFtpDaemon
       end
       end  
 
-      def connected?
-        !@client.nil?
-      end
+ 
 
     end
   end
