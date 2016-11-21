@@ -72,16 +72,16 @@ logs:
   path:     "/tmp/"
   level:    debug
 
-  thin:     "rftpd-default-thin.log"
-  default:  "rftpd-default-core.log"
+  thin:     "rftpd-default.log"
+  default:  "rftpd-default.log"
 
-  queue:    "rftpd-default-core.log"
-  api:      "rftpd-default-core.log"
-  workers:  "rftpd-default-core.log"
-  transfer: "rftpd-default-workers.log"
-  conchita: "rftpd-default-workers.log"
-  reporter: "rftpd-default-workers.log"
-  notify:   "rftpd-default-workers.log"
+  queue:    "rftpd-default.log"
+  api:      "rftpd-default.log"
+  workers:  "rftpd-default.log"
+  transfer: "rftpd-default.log"
+  conchita: "rftpd-default.log"
+  reporter: "rftpd-default.log"
+  notify:   "rftpd-default.log"
 
-  newrelic: "rftpd-default-newrelic.log"
-  rollbar:  "rftpd-default-rollbar.log"
+  newrelic: "rftpd-newrelic.log"
+  rollbar:  "rftpd-rollbar.log"
