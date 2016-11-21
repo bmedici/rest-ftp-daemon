@@ -60,6 +60,7 @@ module RestFtpDaemon
           metrics: debug_metrics,
           encodings: debug_encodings,
           routes: routes,
+          content_types: Grape::ContentTypes::CONTENT_TYPES
           }
       end
 
