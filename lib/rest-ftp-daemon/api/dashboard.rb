@@ -8,6 +8,8 @@ module RestFtpDaemon
   module API
     class Dashboard < Grape::API
       include BmcDaemonLib
+      content_type :html, 'application/html'
+      format :html
 
       ### HELPERS
       helpers do
@@ -61,10 +63,10 @@ module RestFtpDaemon
           output = render :dashboard
 
           # Send response
-          env["api.format"] = :html
-          format "html"
+          #env["api.format"] = :html
+          # format "html"
           status 200
-          content_type "text/html"
+          content_type "html"
           body output
         end
 
