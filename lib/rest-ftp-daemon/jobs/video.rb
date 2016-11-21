@@ -85,7 +85,7 @@ module RestFtpDaemon
       movie.transcode(target.filepath, options) do |ffmpeg_progress|
         # set_info :work, :ffmpeg_progress, ffmpeg_progress
         set_info INFO_TRANFER_PROGRESS, (100.0 * ffmpeg_progress).round(1)
-        log_debug "progress #{ffmpeg_progress}"
+        log_info "progress #{ffmpeg_progress}"
       end
     end
 

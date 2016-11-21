@@ -192,7 +192,7 @@ module RestFtpDaemon
         format_bytes(@current_bitrate.round(0), "bps")
         ]
       stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
-      log_debug "progress #{stack2} \t#{name}"
+      log_info "progress #{stack2} \t#{name}"
 
       # Prepare and send notification
       client_notify :progress, status: {
