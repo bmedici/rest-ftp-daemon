@@ -28,15 +28,8 @@ module RestFtpDaemon
       end
 
       def size_if_exists target
-        log_debug "RemoteS3.size_if_exists [#{target.path}]"
-
-        # Update progress before
-        bucket = @client.bucket(target.aws_bucket)
-        object = bucket.object(target.path)
-        log_debug "content_length: #{object.content_length}"
-      rescue Aws::S3::Errors::NotFound
-        #log_debug "content_length: #{object.content_length}"
-
+        log_debug "size_if_exists [#{target.path}]"
+        object = @client.get_object(bucket: target.aws_bucket, key: target.path)
       rescue Aws::S3::Errors::NotFound => e
         return false
       else
