@@ -4,7 +4,7 @@ require 'aws-sdk-resources'
 module RestFtpDaemon
   module Remote
     class RemoteS3 < RemoteBase
-      MULTIPART_THRESHOLD_MB = 4
+      include CommonHelpers
 
       # Class options
       attr_reader :client
@@ -39,8 +39,9 @@ module RestFtpDaemon
       def upload source, target, use_temp_name = false, &callback
         # Push init
         raise RestFtpDaemon::AssertionFailed, "upload/client" if @client.nil?
-        log_debug "RemoteS3.upload bucket[#{target.aws_bucket}] path[#{target.path}]"
-        # Do the transfer, handing file to the correct method
+        log_debug "upload bucket[#{target.aws_bucket}] path[#{target.path}]"
+
+        # Do the transfer, passing the file to the best method
         File.open(source.filepath, 'r', encoding: 'BINARY') do |file|
           if file.size >= JOB_S3_MIN_PART
             upload_multipart  file, target.aws_bucket, target.path, target.name, &callback
@@ -49,15 +50,10 @@ module RestFtpDaemon
           end
         end
 
-        # Update progress before
-        bucket = @client.bucket(target.aws_bucket)
-        object = bucket.object(target.path)
-        log_debug "RemoteS3.upload object[#{target.path}]"
+        # We're all set
+        log_debug "RemoteS3.upload done"
+      end
 
-        # Do the transfer
-        object.upload_file(source.filepath, {
-          multipart_threshold: @multipart_threshold
-          })
       def connected?
         !@client.nil?
       end
