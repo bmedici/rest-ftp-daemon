@@ -20,7 +20,7 @@ module RestFtpDaemon
         log_debug "connect region[#{target.aws_region}] id[#{target.aws_id}]"
 
         # Connect remote server
-        @client = Aws::S3::Resource.new(
+        @client = Aws::S3::Client.new(
           region: @target.aws_region,
           credentials: Aws::Credentials.new(@target.aws_id, @target.aws_secret),
           http_wire_trace: @debug
@@ -36,6 +36,8 @@ module RestFtpDaemon
         log_debug "content_length: #{object.content_length}"
       rescue Aws::S3::Errors::NotFound
         #log_debug "content_length: #{object.content_length}"
+
+      rescue Aws::S3::Errors::NotFound => e
         return false
       else
         return object.content_length
