@@ -3,6 +3,7 @@ module RestFtpDaemon
   module Remote
     class RemoteBase
       include BmcDaemonLib::LoggerHelper
+      include CommonHelpers
 
       # Class options
       attr_reader :log_prefix
