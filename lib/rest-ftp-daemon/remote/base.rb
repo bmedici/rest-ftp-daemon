@@ -58,7 +58,7 @@ module RestFtpDaemon
       end
 
       def close
-        log_debug "RemoteBase.close"
+        log_debug "close"
 
         # Debug mode ?
         return unless @debug
