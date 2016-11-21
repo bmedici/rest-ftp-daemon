@@ -71,6 +71,7 @@ module RestFtpDaemon
 
       def upload_multipart file, s3_bucket, s3_path, s3_name, &callback
         # Init
+        current_part  = 1
 
         # Compute parameters
         file_size     = file.size
@@ -82,17 +83,47 @@ module RestFtpDaemon
           parts_count:  parts_count
           }
 
+        # Prepare basic opts
+        options = {
+          bucket: s3_bucket,
+          key:    s3_path,
+          }
+
+        # Declare multipart upload
+        mpu_create_response = @client.create_multipart_upload(options)
+        options[:upload_id] = mpu_create_response.upload_id
+        log_debug "created multipart: #{options[:upload_id]}"
+
+        # Upload each part
+        file.each_part(parts_size) do |part|
+          # Prepare part upload
+          opts = options.merge({
+            body:        part,
+            part_number: current_part,
+            })
+          log_debug "upload_part [#{current_part}/#{parts_count}]"
+          resp = @client.upload_part(opts)  
+          
+          # Send progress info upwards
+          yield parts_size, s3_name
+
+          # Increment part number
+          current_part += 1
         end
 
-        # Update progress after
-        #yield target.size, target.name
+        # Retrieve parts and complete upload
+        log_debug "complete_multipart_upload"
+        parts_resp = @client.list_parts(options)
 
-        # Dump information about this file
-        log_debug "RemoteS3.upload url[#{object.public_url}]"
-        log_debug "RemoteS3.upload etag[#{object.etag}]"
-        set_info :target_aws_public_url, object.public_url
-        set_info :target_aws_etag, object.etag
-      end
+        those_parts = parts_resp.parts.map do |part| 
+          { part_number: part.part_number, etag: part.etag }
+        end
+        opts = options.merge({
+          multipart_upload: {
+            parts: those_parts
+            } 
+          })
+        mpu_complete_response = @client.complete_multipart_upload(opts)
       end  
 
       def compute_parts_size filesize
