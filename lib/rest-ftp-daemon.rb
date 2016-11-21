@@ -13,6 +13,7 @@ require "rollbar"
 # Shared libs / monkey-patching
 require_relative "shared/patch_array"
 require_relative "shared/patch_haml"
+require_relative "shared/patch_file"
 
 # Project's libs
 require_relative "rest-ftp-daemon/constants"
