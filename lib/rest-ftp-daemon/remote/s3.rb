@@ -76,6 +76,17 @@ module RestFtpDaemon
 
       def upload_multipart file, s3_bucket, s3_path, s3_name, &callback
         # Init
+
+        # Compute parameters
+        file_size     = file.size
+        parts_size    = compute_parts_size(file_size)
+        parts_count   = (file_size.to_f / parts_size).ceil
+        log_debug "upload_multipart", {
+          file_size:    format_bytes(file_size, "B"),
+          parts_size:   format_bytes(parts_size, "B"),
+          parts_count:  parts_count
+          }
+
         end
 
         # Update progress after
@@ -89,7 +100,16 @@ module RestFtpDaemon
       end
       end  
 
- 
+      def compute_parts_size filesize
+        # Initial part size is minimal
+        partsize_mini = JOB_S3_MIN_PART
+
+        # Other partsize if too many blocks
+        partsize_bigf = (filesize.to_f / JOB_S3_MAX_COUNT).ceil
+
+        # Decide
+        return [partsize_mini, partsize_bigf].max
+      end
 
     end
   end
