@@ -13,8 +13,8 @@ module RestFtpDaemon
 
     # Common errors
     ERRORS = {
-      invalid_argument:         Errno::EINVAL,
-      runtime_error:            RuntimeError,
+      # oops_invalid_argument:         Errno::EINVAL,
+      oops_runtime_error:            RuntimeError,
 
       job_timeout:              RestFtpDaemon::JobTimeout,
       source_not_supported:     RestFtpDaemon::SourceUnsupported,
@@ -45,7 +45,10 @@ module RestFtpDaemon
       ftp_proto_error:          Net::FTPProtoError,
       ftp_error:                Net::FTPError,
 
-      ffmpeg_error:             FFMPEG::Error,
+      sftp_exception:           Net::SFTP::StatusException,
+      sftp_key_mismatch:        Net::SSH::HostKeyMismatch,
+      sftp_auth_failed:         Net::SSH::AuthenticationFailed,
+      sftp_openssl_error:       OpenSSL::SSL::SSLError,
 
       s3_no_such_waiter:        Aws::Waiters::Errors::NoSuchWaiterError,
       s3_failure_state_error:   Aws::Waiters::Errors::FailureStateError,
@@ -60,13 +63,9 @@ module RestFtpDaemon
       s3_no_such_upload:        Aws::S3::Errors::NoSuchUpload,
       s3_error:                 Aws::S3::Errors::ServiceError,
 
-      sftp_exception:           Net::SFTP::StatusException,
-      sftp_key_mismatch:        Net::SSH::HostKeyMismatch,
-      sftp_auth_failed:         Net::SSH::AuthenticationFailed,
-      sftp_openssl_error:       OpenSSL::SSL::SSLError,
-
       video_missing_binary:     RestFtpDaemon::VideoMissingBinary,
       video_movie_error:        RestFtpDaemon::VideoMovieError,
+      video_ffmpeg_error:             FFMPEG::Error,
 
       # rescue Encoding::UndefinedConversionError => exception
       #   return oops :ended, exception, "encoding_error", true
