@@ -10,6 +10,7 @@ module RestFtpDaemon
       attr_reader :ftp
 
       def prepare
+        super
         
         # Create FTP object
         if @ftpes

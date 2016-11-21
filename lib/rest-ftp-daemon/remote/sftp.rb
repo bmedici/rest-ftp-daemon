@@ -8,8 +8,8 @@ module RestFtpDaemon
       # Class options
       attr_reader :sftp
 
-      def prepare
-      end
+      # def prepare
+      # end
 
       def connect
         super

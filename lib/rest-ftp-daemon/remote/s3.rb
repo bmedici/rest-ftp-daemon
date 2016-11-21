@@ -10,10 +10,8 @@ module RestFtpDaemon
       attr_reader :client
       attr_reader :target
 
-      def prepare
-        @multipart_threshold = MULTIPART_THRESHOLD_MB.to_i * 1024 * 1024
-        log_debug "RemoteS3.prepare target[#{@target.inspect}] #{@multipart_threshold}"
-      end
+      # def prepare
+      # end
 
       def connect
         super
