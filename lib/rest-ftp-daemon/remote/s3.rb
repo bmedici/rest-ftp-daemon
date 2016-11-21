@@ -46,6 +46,14 @@ module RestFtpDaemon
         # Push init
         raise RestFtpDaemon::AssertionFailed, "upload/client" if @client.nil?
         log_debug "RemoteS3.upload bucket[#{target.aws_bucket}] path[#{target.path}]"
+        # Do the transfer, handing file to the correct method
+        File.open(source.filepath, 'r', encoding: 'BINARY') do |file|
+          if file.size >= JOB_S3_MIN_PART
+            upload_multipart  file, target.aws_bucket, target.path, target.name, &callback
+          else
+            upload_onefile    file, target.aws_bucket, target.path, target.name, &callback
+          end
+        end
 
         # Update progress before
         bucket = @client.bucket(target.aws_bucket)
@@ -57,6 +65,8 @@ module RestFtpDaemon
           multipart_threshold: @multipart_threshold
           })
 
+    private
+
         # Wait for transfer to complete
         object.wait_until_exists do |waiter|
           # waiter.delay = 1
@@ -67,6 +77,13 @@ module RestFtpDaemon
           #   puts response.data.inspect
           # end
           # log_debug "- progress[] #{waiter.inspect}"
+      def upload_onefile file, s3_bucket, s3_path, s3_name, &callback
+        log_debug "upload_onefile"
+        @client.put_object(bucket: s3_bucket, key: s3_path, body: file)
+      end
+
+      def upload_multipart file, s3_bucket, s3_path, s3_name, &callback
+        # Init
         end
 
         # Update progress after
@@ -78,6 +95,7 @@ module RestFtpDaemon
         set_info :target_aws_public_url, object.public_url
         set_info :target_aws_etag, object.etag
       end
+      end  
 
       def connected?
         !@client.nil?

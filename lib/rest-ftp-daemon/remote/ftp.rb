@@ -107,7 +107,7 @@ module RestFtpDaemon
         @ftp.chdir dest.filedir
 
         # Do the transfer
-        log_debug "RemoteFTP.upload putbinaryfile [#{dest.name}]"
+        log_debug "upload putbinaryfile [#{source.filepath}] [#{dest.name}]"
         @ftp.putbinaryfile source.filepath, dest.name, JOB_FTP_CHUNKMB do |data|
           # Update job status after this block transfer
           yield data.bytesize, dest.name
