@@ -30,7 +30,7 @@ module RestFtpDaemon
       # end   
       debug nil
 
-      @url = url
+      @url = url.clone
       debug :url, url
       @tokens = []
 
