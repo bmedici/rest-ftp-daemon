@@ -175,6 +175,7 @@ body {
   color: black;
   border: 1px solid silver;
   background-color: white;
+  
   }
 /*
 .label-group>.label:first-child:not(:last-child) {
@@ -189,6 +190,10 @@ body {
 */
 
 .transfer-type {
-  /*width: 40px;*/
+  width: 40px;
   }
 
+.transfer-prefix {
+  /*color: red;*/
+  font-family: inherit;
+}

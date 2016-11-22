@@ -112,30 +112,40 @@ module RestFtpDaemon
     end
 
     def location_label loc
-      # sprintf(
-      #   '<div class="transfer-type label label-%s" title="%s">%s</div>',
-      #   location_style(loc.uri),
-      #   loc.to_s,
-      #   loc.uri.class.name.split('::').last
-      #   )
-      sprintf(
-        '
-        <span class="label-group">
-          <span class="transfer-type label label-xs label-%s" title="%s">%s</span><span class="label label-simple" title="%s">%s</span>
-        </span>
-        ',
-        location_style(loc.uri),
-        loc.to_s,
-        loc.uri.class.name.split('::').last,
-        loc.tokens.first,
-        loc.tokens.first,
-        )
-    end
+      # Open label-group 
+      out = []
+      out << '<span class="label-group">'
 
-    # def token_highlight path
-    #   return unless path.is_a? String
-    #   path.gsub(/\[([^\[]+)\]/, token_to_label('\1'))
-    # end
+      # Add location style
+      out << sprintf(
+        '<span class="transfer-type label label-xs label-%s" title="%s">', 
+        location_style(loc.uri),
+        loc.uri
+        )
+      out << loc.uri.class.name.split('::').last
+      out << '</span>'
+
+      # Try to match a prefix token
+      matches = /^\[([^\[]+)\](.*)/.match(loc.url)
+
+      # Add a prefix label, if matched
+      if matches
+        out <<'<span class="transfer-prefix label label-xs label-simple">'
+        out << matches[1]
+        out << '</span>'
+        text = matches[2]
+      else
+        text = loc.path
+      end
+
+      # Add remaining stuff
+      out << '</span>'
+      out << ' '
+      out << text
+
+      # Output all that stuff
+      return out.join()
+    end
 
     def text_or_empty text
       return "-" if text.nil? || text.empty?

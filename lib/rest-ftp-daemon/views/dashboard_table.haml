@@ -33,16 +33,9 @@
 
     %td= job.label
 
-    %td
-      = location_label job.source_loc
-      = job.source_uri.path
-      =# token_highlight job.source
+    %td= location_label(job.source_loc)
 
-    %td
-      = location_label job.target_loc
-      = job.target_uri.path
-
-      =# token_highlight job.target
+    %td= location_label(job.target_loc)
 
     %td
       %span.push-status
