@@ -11,7 +11,7 @@ RuboCop::RakeTask.new(:rubocop) do |task|
 end
 
 # Load my own tasks
-# Dir.glob('lib/tasks/*.rake').each { |r| import r }
+Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
 # Run specs by default
 desc "Run all tests"
