@@ -13,11 +13,11 @@ describe "Swagger", feature: true do
       expect(JSON.parse(response.body)).to be_an_instance_of(Hash)
     end
 
-    it "writes the API doc" do
-      json_file = File.expand_path "../../swagger.json"
-      puts "YEAH: #{json_file}"
-      File.write(json_file, response.body)
-    end
+    # it "writes the API doc" do
+    #   json_file = File.expand_path "../../swagger.json"
+    #   puts "YEAH: #{json_file}"
+    #   File.write(json_file, response.body)
+    # end
 
   end # GET /swagger.json
 
