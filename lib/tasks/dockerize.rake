@@ -1,4 +1,4 @@
-DOCKER_REPO = "brunom/rest-ftp-daemon"
+DOCKER_REPO = "bmedici/rest-ftp-daemon"
 
 desc "Build docker image from latest tag"
 
