@@ -42,14 +42,15 @@ begin
     opts.on("-P", "--pid FILE", "File to store PID")                      { |value| cmd_pidfile = value }
     opts.on("-u", "--user NAME", "User to run daemon as (use with -g)")   { |value| cmd_user = value }
     opts.on("-g", "--group NAME", "Group to run daemon as (use with -u)") { |value| cmd_group = value }
+    opts.on("-v", "--version", "Show version (#{Conf.app_ver})")          { puts(Conf.app_ver) && exit(0) }
 
     opts.separator ""
     opts.on_tail("-h", "--help", "Show this message")  do
       puts opts
       puts Conf.generate(:config_message) unless File.exist?(Conf.generate(:config_etc))
-      exit
+      exit(0)
     end
-    opts.on_tail("-v", "--version", "Show version (#{Conf.app_ver})")         { puts(Conf.app_ver) && exit }
+    #opts.on_tail("-v", "--version", "Show version (#{Conf.app_ver})")         { puts(Conf.app_ver) && exit(0) }
 
   end
   parser.order!(ARGV)
