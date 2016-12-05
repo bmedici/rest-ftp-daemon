@@ -22,11 +22,21 @@ module RestFtpDaemon
     end
 
     def do_before
-      log_debug "inputs", @inputs.map(&:path)
+      instvar :inputs
     end
 
     def do_after
-      log_debug "outputs", @outputs.map(&:path)
+      instvar :outputs
+    end
+
+    def instvar var
+      items = instance_variable_get("@#{var}")
+
+      if items.is_a? Array
+        log_debug "#{var}  \t #{items.object_id}", items.map(&:path)
+      else
+        log_error "#{var}  \t NOT AN ARRAY" 
+      end
     end
 
   protected
