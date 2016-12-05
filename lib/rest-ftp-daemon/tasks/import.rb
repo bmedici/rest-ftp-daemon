@@ -11,7 +11,21 @@ module RestFtpDaemon
     end
 
     def work
-      work_debug
+      # Scan local source files from disk
+      #set_status JOB_STATUS_CHECKING_SRC
+      files = @input.local_files
+      #set_info INFO_SOURCE_COUNT, sources.size
+      #set_info INFO_SOURCE_FILES, sources.collect(&:name)
+      log_info "local_files", files.collect(&:name)
+      raise RestFtpDaemon::SourceNotFound if files.empty?
+
+      # Sources are OK
+      @outputs.concat files
+    end
+
+    def do_after
+      # # Guess target file name, and fail if present while we matched multiple sources
+      # raise RestFtpDaemon::TargetDirectoryError, "target should be a directory when matching many files" if @target_loc.name && sources.count>1
     end
 
   protected
