@@ -5,23 +5,25 @@ module RestFtpDaemon
     # Class options
     attr_reader :jobs
     attr_reader :name
+    # attr_reader :fileset
     attr_accessor :log_context
     attr_accessor :inputs
     attr_accessor :outputs
+    # @fileset  = "unknown"
 
     def initialize name, opts = {}
       # Init context
-      @name = name
-      # @jid      = jid
-      # @wid      = wid
       @inputs   = []
       @outputs   = []
+      @name     = name
       @log_context = {}
 
-      log_pipe      :workflow
       # Import attributes
       @inputs << opts[:input]   if opts[:input]# || :none
       @outputs << opts[:output] if opts[:output]# || :none
+
+      # Enable logging
+      log_pipe  :workflow
     end
 
     def do_before
