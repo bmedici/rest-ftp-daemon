@@ -41,6 +41,7 @@ require_relative "rest-ftp-daemon/remote/s3"
 # Steps
 require_relative "rest-ftp-daemon/task"
 require_relative "rest-ftp-daemon/tasks/import"
+require_relative "rest-ftp-daemon/tasks/transform"
 require_relative "rest-ftp-daemon/tasks/export"
 
 # Jobs
