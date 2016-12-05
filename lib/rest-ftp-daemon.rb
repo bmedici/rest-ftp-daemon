@@ -38,6 +38,11 @@ require_relative "rest-ftp-daemon/remote/ftp"
 require_relative "rest-ftp-daemon/remote/sftp"
 require_relative "rest-ftp-daemon/remote/s3"
 
+# Steps
+require_relative "rest-ftp-daemon/task"
+require_relative "rest-ftp-daemon/tasks/import"
+require_relative "rest-ftp-daemon/tasks/export"
+
 # Jobs
 require_relative "rest-ftp-daemon/job"
 require_relative "rest-ftp-daemon/jobs/errors"
