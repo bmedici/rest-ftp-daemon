@@ -24,9 +24,13 @@ module RestFtpDaemon
       # Chain every task in the pipe
       pipe.each do |name, family|
 
-        # Instantiate and store task
-        task = family.new(name, self.id, self.wid)
         @tasks[name] = task
+        # Set task context
+        task.log_context = {
+          wid: self.wid,
+          jid: @id,
+          id: task.name,
+        }
 
         # Plug input to previous output
         task.inputs = current

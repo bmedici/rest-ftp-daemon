@@ -5,16 +5,18 @@ module RestFtpDaemon
     # Class options
     attr_reader :jobs
     attr_reader :name
+    attr_accessor :log_context
     attr_accessor :inputs
     attr_accessor :outputs
 
-    def initialize name, jid = nil, wid = nil
+    def initialize name, opts = {}
       # Init context
       @inputs = []
       @outputs = []
       @name = name
-      @jid = jid
-      @wid = wid
+      # @jid      = jid
+      # @wid      = wid
+      @log_context = {}
 
       log_pipe      :workflow
     end
@@ -39,13 +41,14 @@ module RestFtpDaemon
 
   private
 
-    def log_context
-      {
-        wid: @wid,
-        jid: @jid,
-        id: name
-      }
-    end
+  
+    # def log_context
+    #   {
+    #     wid: @wid,
+    #     jid: @jid,
+    #     id: name
+    #   }
+    # end
 
   end
 end
