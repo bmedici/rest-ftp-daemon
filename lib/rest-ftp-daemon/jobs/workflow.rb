@@ -31,6 +31,10 @@ module RestFtpDaemon
         prev_task = task
       end
 
+      # Prepare flags
+      flag_prepare :mkdir
+      flag_prepare :overwrite
+      flag_prepare :tempfile
       #dump :linked
     end
 
