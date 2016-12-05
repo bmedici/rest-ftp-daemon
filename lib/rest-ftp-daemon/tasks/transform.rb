@@ -1,11 +1,8 @@
 module RestFtpDaemon
   class TaskTransform < Task
 
-    def initialize
-      super
-    end
-
     def work
+      work_debug
     end
 
   protected

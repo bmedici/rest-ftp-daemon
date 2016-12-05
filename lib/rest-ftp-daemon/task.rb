@@ -23,11 +23,18 @@ module RestFtpDaemon
       log_debug "inputs", @inputs.map(&:path)
     end
 
-    def work
-    end
-
     def do_after
       log_debug "outputs", @outputs.map(&:path)
+    end
+
+  protected
+
+    def work_debug
+      @inputs.each do |t|
+        out = t.clone
+        out.name = "#{t.name}-#{@name}"
+        @outputs << out
+      end
     end
 
   private
