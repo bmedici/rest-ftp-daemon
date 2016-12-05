@@ -43,6 +43,7 @@ require_relative "rest-ftp-daemon/job"
 require_relative "rest-ftp-daemon/jobs/errors"
 require_relative "rest-ftp-daemon/jobs/dummy"
 require_relative "rest-ftp-daemon/jobs/transfer"
+require_relative "rest-ftp-daemon/jobs/workflow"
 require_relative "rest-ftp-daemon/jobs/video"
 
 # Workers

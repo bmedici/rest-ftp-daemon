@@ -55,6 +55,8 @@ module RestFtpDaemon
         icon_klass = "facetime-video"
       when JOB_TYPE_DUMMY
         icon_klass = "question-sign"
+      when JOB_TYPE_WORKFLOW
+        icon_klass = "cog"
       else
         icon_klass = "label-default"
       end
