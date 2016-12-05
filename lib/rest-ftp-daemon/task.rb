@@ -11,14 +11,17 @@ module RestFtpDaemon
 
     def initialize name, opts = {}
       # Init context
-      @inputs = []
-      @outputs = []
       @name = name
       # @jid      = jid
       # @wid      = wid
+      @inputs   = []
+      @outputs   = []
       @log_context = {}
 
       log_pipe      :workflow
+      # Import attributes
+      @inputs << opts[:input]   if opts[:input]# || :none
+      @outputs << opts[:output] if opts[:output]# || :none
     end
 
     def do_before
