@@ -10,6 +10,7 @@ module RestFtpDaemon
         TaskTransform.new(:video),
         TaskExport.new(:export, output: @target_loc),
       ]
+      #dump :initial
       prev_task = nil
 
       # Chain every task in the tasks list
@@ -34,16 +35,28 @@ module RestFtpDaemon
     end
 
     def do_work
+      # Guess target file name, and fail if present while we matched multiple sources
+      # raise RestFtpDaemon::TargetDirectoryError if @target_loc.name && @sources.count>1
+
       # Run tasks
-      @tasks.each do |n, t|
-        t.do_before
-        t.work
-        t.do_after
+      @tasks.each do |task|
+        task.do_before
+        task.work
+        task.do_after
        end
     end
 
     def do_after
     end
 
+  protected
+
+    def dump title
+      log_debug "DUMP [#{@tasks.count}] #{title}"
+      @tasks.each do |task|
+        task.instvar :inputs
+        task.instvar :outputs
+      end
+    end
   end
 end
