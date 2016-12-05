@@ -6,9 +6,9 @@ module RestFtpDaemon
    def do_before
       # Init
       @tasks = [
-        TaskImport.new(:import, input: @source_loc),
-        TaskTransform.new(:video),
-        TaskExport.new(:export, output: @target_loc),
+        TaskImport.new(     self, :import, input: @source_loc   ),
+        TaskTransform.new(  self, :video                        ),
+        TaskExport.new(     self, :export, output: @target_loc  ),
       ]
       #dump :initial
       prev_task = nil
@@ -20,7 +20,7 @@ module RestFtpDaemon
         # Set task context
         task.log_context = {
           wid: self.wid,
-          jid: @id,
+          jid: self.id,
           id: task.name,
         }
 

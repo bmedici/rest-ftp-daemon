@@ -3,7 +3,7 @@ module RestFtpDaemon
     include BmcDaemonLib::LoggerHelper
 
     # Class options
-    attr_reader :jobs
+    attr_reader :job
     attr_reader :name
     # attr_reader :fileset
     attr_accessor :log_context
@@ -11,12 +11,13 @@ module RestFtpDaemon
     attr_accessor :outputs
     # @fileset  = "unknown"
 
-    def initialize name, opts = {}
+    def initialize job, name, opts = {}
       # Init context
       @inputs   = []
       @outputs   = []
       @name     = name
       @log_context = {}
+      @job          = job
 
       # Import attributes
       @inputs << opts[:input]   if opts[:input]# || :none
