@@ -13,18 +13,18 @@ module RestFtpDaemon
 
     def initialize job, name, opts = {}
       # Init context
-      @inputs   = []
-      @outputs   = []
-      @name     = name
-      @log_context = {}
+      @inputs       = []
+      @outputs      = []
       @job          = job
+      @name         = name
+      @log_context  = {}
 
       # Import attributes
-      @inputs << opts[:input]   if opts[:input]# || :none
-      @outputs << opts[:output] if opts[:output]# || :none
+      @inputs       << opts[:input]   if opts[:input]# || :none
+      @outputs      << opts[:output] if opts[:output]# || :none
 
       # Enable logging
-      log_pipe  :workflow
+      log_pipe      :workflow
     end
 
     def do_before
