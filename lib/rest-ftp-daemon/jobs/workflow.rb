@@ -3,28 +3,19 @@
 module RestFtpDaemon
   class JobWorkflow < Job
 
-  protected
-
-    def do_before
+   def do_before
       # Init
-      pipe = {
-        import: TaskImport,
-        transf: TaskTransform,
-        export: TaskExport,
-      }
-      @tasks = {}
+      @tasks = [
+        TaskImport.new(:import, input: @source_loc),
+        TaskTransform.new(:video),
+        TaskExport.new(:export, output: @target_loc),
+      ]
+      prev_task = nil
 
-      # First input is provided
-      (in1 = @source_loc.clone).name = "in1"
-      (in2 = @source_loc.clone).name = "in2"
-      (in3 = @source_loc.clone).name = "in3"
-      current = [in1, in2, in3]
-      log_debug "WORKFLOW INPUTS", current.map(&:path)
+      # Chain every task in the tasks list
+      @tasks.each do |task|
+        log_info "--- configuring [#{task.name}]"
 
-      # Chain every task in the pipe
-      pipe.each do |name, family|
-
-        @tasks[name] = task
         # Set task context
         task.log_context = {
           wid: self.wid,
@@ -33,11 +24,13 @@ module RestFtpDaemon
         }
 
         # Plug input to previous output
-        task.inputs = current
+        task.inputs = prev_task.outputs if prev_task
 
-        # Remember pointer to this output
-        current = task.outputs
+        # Remember pointer to this task
+        prev_task = task
       end
+
+      #dump :linked
     end
 
     def do_work
