@@ -1,5 +1,7 @@
 module RestFtpDaemon
   class TaskExport < Task
+    include TransferHelpers
+
     def do_before
       super
 
