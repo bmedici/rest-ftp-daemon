@@ -1,0 +1,7 @@
+pkg/
+DOC/
+tmp/
+.bundle/
+.git/
+log/
+.idea/

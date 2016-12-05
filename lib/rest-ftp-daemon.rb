@@ -15,13 +15,15 @@ require_relative "shared/patch_array"
 require_relative "shared/patch_haml"
 require_relative "shared/patch_file"
 
-# Project's libs
-require_relative "rest-ftp-daemon/constants"
-require_relative "rest-ftp-daemon/exceptions"
+# Helpers
 require_relative "rest-ftp-daemon/helpers/common"
 require_relative "rest-ftp-daemon/helpers/views"
 require_relative "rest-ftp-daemon/helpers/api"
 require_relative "rest-ftp-daemon/helpers/transfer"
+
+# Project's libs
+require_relative "rest-ftp-daemon/constants"
+require_relative "rest-ftp-daemon/exceptions"
 require_relative "rest-ftp-daemon/metrics"
 require_relative "rest-ftp-daemon/paginate"
 require_relative "rest-ftp-daemon/uri"
