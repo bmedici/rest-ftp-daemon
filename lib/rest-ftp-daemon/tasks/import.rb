@@ -12,10 +12,10 @@ module RestFtpDaemon
 
     def work
       # Scan local source files from disk
-      #set_status JOB_STATUS_CHECKING_SRC
+      set_status set_status_CHECKING_SRC
       files = @input.local_files
-      #set_info INFO_SOURCE_COUNT, sources.size
-      #set_info INFO_SOURCE_FILES, sources.collect(&:name)
+      set_info INFO_SOURCE_COUNT, files.size
+      set_info INFO_SOURCE_FILES, files.collect(&:name)
       log_info "local_files", files.collect(&:name)
       raise RestFtpDaemon::SourceNotFound if files.empty?
 

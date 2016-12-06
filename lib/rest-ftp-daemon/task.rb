@@ -55,6 +55,18 @@ module RestFtpDaemon
       end
     end
 
+    def set_info name, value
+      @job.set_info name, value
+    end
+
+    # def task_status value
+    #   @job.set_status "#{@name}-#{value}"
+    # end
+
+    def set_status value
+      @job.set_status value
+    end
+
   private
 
   
