@@ -3,16 +3,24 @@ module RestFtpDaemon
     include TransferHelpers
 
     def do_before
+      # Init
       super
+      @output = @outputs.first
 
       # Check source
-      raise RestFtpDaemon::TargetUnsupported, "accepts only one target" if @outputs.size>1
-
-      # Guess target file name, and fail if present while we matched multiple sources
-      @output = @outputs.first
-      raise RestFtpDaemon::TargetDirectoryError, "target should be a directory when matching many files" if @output.name && @inputs.count>1
+      if @outputs.size>1
+        raise RestFtpDaemon::TargetUnsupported, "accepts only one target"
+      end
 
 return
+
+      # Guess target file name, and fail if present while we matched multiple sources
+      if @inputs.count<1
+        raise RestFtpDaemon::SourceUnsupported, "should receive at least one source"
+      end
+      if @output.name && @inputs.count>1
+        raise RestFtpDaemon::TargetDirectoryError, "target should be a directory when matching many files"
+      end
 
       # Some init
       @transfer_sent = 0

@@ -1,13 +1,18 @@
 module RestFtpDaemon
   class TaskImport < Task
     def do_before
+      # Init
       super
+      @input = @inputs.first
 
       # Check source
-      raise RestFtpDaemon::SourceUnsupported, "accepts only one source" if @inputs.size >1
+      if @inputs.size >1
+        raise RestFtpDaemon::SourceUnsupported, "accepts only one source"
+      end
 
-      @input = @inputs.first
-      raise RestFtpDaemon::SourceUnsupported, @input.scheme unless @input.is? URI::FILE
+      unless @input.is? URI::FILE
+        raise RestFtpDaemon::SourceUnsupported, @input.scheme
+      end
     end
 
     def work
