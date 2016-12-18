@@ -5,7 +5,7 @@ PATH
       activesupport (~> 4.2)
       api-auth
       aws-sdk-resources (~> 2)
-      bmc-daemon-lib (~> 0.5.2)
+      bmc-daemon-lib (~> 0.6.0)
       double-bag-ftps
       facter
       get_process_mem
@@ -48,7 +48,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    bmc-daemon-lib (0.5.3)
+    bmc-daemon-lib (0.6.0)
       chamber (~> 2.9.1)
     builder (3.2.2)
     chamber (2.9.1)
