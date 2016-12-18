@@ -81,16 +81,6 @@ Conf[:pidfile]      = cmd_pidfile    unless cmd_pidfile.nil?
 Conf[:pidfile]      ||= Conf.generate(:pidfile)
 
 
-# Validate network configuration
-if command == "start"
-  if !Conf[:port]
-    abort "ABORTING: Network port is missing"
-  elsif Launcher.local_port_used? Conf[:port]
-    abort "ABORTING: Network port #{Conf[:port]} is already in use"
-  end
-end
-
-
 # Thin: basic options
 thin_logfile = Conf.logfile(:thin)
 
@@ -135,6 +125,17 @@ puts
 puts "--- Thin ARGV"
 puts argv.flatten.join(" ")
 puts
+
+
+
+# Validate network configuration
+if command == "start"
+  if !Conf[:port]
+    abort "ABORTING: Network port is missing"
+  elsif Launcher.local_port_used? Conf[:port]
+    abort "ABORTING: Network port #{Conf[:port]} is already in use"
+  end
+end
 
 
 # Start Thin with this rackup configuration, changing to app_root first
