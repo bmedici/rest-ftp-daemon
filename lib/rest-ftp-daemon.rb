@@ -58,7 +58,7 @@ require_relative "rest-ftp-daemon/worker_pool"
 require_relative "rest-ftp-daemon/workers/worker"
 require_relative "rest-ftp-daemon/workers/conchita"
 require_relative "rest-ftp-daemon/workers/reporter"
-require_relative "rest-ftp-daemon/workers/transfer"
+require_relative "rest-ftp-daemon/workers/job"
 
 # Entities and API
 require_relative "rest-ftp-daemon/entities/location"
