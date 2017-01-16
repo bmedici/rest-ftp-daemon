@@ -1,6 +1,6 @@
 # Docker headers
 FROM ruby:2.3.0-slim
-MAINTAINER Bruno MEDICI <opensource@bmconseil.com>
+MAINTAINER Bruno MEDICI <rest-ftp-daemon@bmconseil.com>
 
 
 # Environment
@@ -18,7 +18,7 @@ RUN gem install bundler --no-rdoc --no-ri
 WORKDIR                             $INSTALL_PATH
 ADD Gemfile                         $INSTALL_PATH
 ADD Gemfile.lock                    $INSTALL_PATH
-ADD *.gemspec 		$INSTALL_PATH
+ADD rest-ftp-daemon.gemspec 		$INSTALL_PATH
 RUN bundle install --system --without="development test" -j4
 
 
@@ -29,4 +29,4 @@ ADD . $INSTALL_PATH
 
 # App run
 EXPOSE 3000
-CMD ["bin/*", "-c", "/etc/rftpd.yml", "-f", "start"]
+CMD ["bin/rest-ftp-daemon", "-c", "/etc/rftpd.yml", "-f", "start"]
