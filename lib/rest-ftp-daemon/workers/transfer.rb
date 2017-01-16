@@ -1,7 +1,7 @@
 # Worker used to process Jobs
 
 module RestFtpDaemon
-  class TransferWorker < Worker
+  class JobWorker < Worker
 
   protected
 

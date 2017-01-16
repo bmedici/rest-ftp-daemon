@@ -43,7 +43,7 @@ module RestFtpDaemon
       pools.each do |pool, count|
         count.times do
           my_wid = next_wid()
-          create_thread TransferWorker, my_wid, pool
+          create_thread JobWorker, my_wid, pool
         end
       end
 
