@@ -12,8 +12,8 @@ module RestFtpDaemon
 
     # Process job
     def do_before
-      log_info "JobVideo.before source_loc.filepath: #{@source_loc.filepath}"
-      log_info "JobVideo.before target_loc.filepath: #{@target_loc.filepath}"
+      log_info "JobVideo.before source_loc.path_fs: #{@source_loc.path_fs}"
+      log_info "JobVideo.before target_loc.path_fs: #{@target_loc.path_fs}"
 
       # Ensure FFMPEG lib is available
       check_ffmpeg_binary :ffprobe_binary
@@ -35,10 +35,10 @@ module RestFtpDaemon
       # Add the source file name if none found in the target path
       target_final = @target_loc.clone
       target_final.name = @source_loc.name unless target_final.name
-      log_info "JobVideo.work target_final.filepath [#{target_final.filepath}]"
+      log_info "JobVideo.work target_final.path_fs [#{target_final.path_fs}]"
 
       # Ensure target directory exists
-      t_dir = @target_loc.filedir
+      t_dir = @target_loc.dir_fs
       log_info "JobVideo.work mkdir_p [#{t_dir}]"
       FileUtils.mkdir_p t_dir
 
@@ -85,7 +85,7 @@ module RestFtpDaemon
       log_info "JobVideo.ffmpeg_command [#{FFMPEG.ffmpeg_binary}] [#{source.name}] > [#{target.name}]", options
 
       # Build command
-      movie.transcode(target.filepath, options) do |ffmpeg_progress|
+      movie.transcode(target.path_fs, options) do |ffmpeg_progress|
         # set_info :work, :ffmpeg_progress, ffmpeg_progress
         set_info INFO_TRANFER_PROGRESS, (100.0 * ffmpeg_progress).round(1)
         log_info "progress #{ffmpeg_progress}"

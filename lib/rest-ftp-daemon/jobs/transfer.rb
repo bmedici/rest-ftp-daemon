@@ -64,8 +64,8 @@ module RestFtpDaemon
 
       # Prepare target path or build it if asked
       set_status JOB_STATUS_CHDIR
-      #log_info "do_work chdir_or_create #{@target_loc.filedir}"
-      @remote.chdir_or_create @target_loc.filedir, @mkdir
+      #log_info "do_work chdir_or_create #{@target_loc.dir_fs}"
+      @remote.chdir_or_create @target_loc.dir_fs, @mkdir
 
       # Compute total files size
       @transfer_total = sources.collect(&:size).sum
