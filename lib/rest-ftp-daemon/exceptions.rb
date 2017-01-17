@@ -25,6 +25,7 @@ module RestFtpDaemon
   class TargetPermissionError     < BaseException; end
 
   class VideoMissingBinary        < BaseException; end
+  class VideoNotFound             < BaseException; end
   class VideoMovieError           < BaseException; end
 
 

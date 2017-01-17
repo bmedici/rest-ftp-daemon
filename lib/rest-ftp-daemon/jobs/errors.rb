@@ -64,8 +64,9 @@ module RestFtpDaemon
       s3_error:                 Aws::S3::Errors::ServiceError,
 
       video_missing_binary:     RestFtpDaemon::VideoMissingBinary,
+      video_not_found:          RestFtpDaemon::VideoNotFound,
       video_movie_error:        RestFtpDaemon::VideoMovieError,
-      video_ffmpeg_error:             FFMPEG::Error,
+      video_ffmpeg_error:       FFMPEG::Error,
 
       # rescue Encoding::UndefinedConversionError => exception
       #   return oops :ended, exception, "encoding_error", true
