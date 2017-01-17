@@ -59,7 +59,7 @@ module RestFtpDaemon
       # Read info about source file
       set_info INFO_SOURCE_CURRENT, source.name
       begin
-        movie = FFMPEG::Movie.new(source.path)
+        movie = FFMPEG::Movie.new(source.path_fs)
       rescue Errno::ENOENT => exception
         raise RestFtpDaemon::VideoNotFound, exception.message
       rescue StandardError => exception
