@@ -60,12 +60,13 @@ module RestFtpDaemon
     def path
       File.join(@dir.to_s, name.to_s)
     end
+    def filepath
+      # "/#{path}"
+      File.join('/', @dir.to_s, name.to_s)
+    end
 
     def filedir
       "/#{@dir}"
-    end
-    def filepath
-      "/#{path}"
     end
 
     def local_files
