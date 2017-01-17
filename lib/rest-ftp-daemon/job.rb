@@ -304,14 +304,15 @@ module RestFtpDaemon
         include_backtrace = true
       end
 
-      # Log backtrace ?
-      message = "oops signal[#{signal}] exception[#{exception.class}] error[#{error}] #{exception.message}"
-      if include_backtrace
-        log_error message, exception.backtrace
-      else
-        log_error message
-      end
-
+      # Log message and backtrace ?
+      log_error "OOPS: #{exception.class}", {
+        exception: exception.class.to_s,
+        message: exception.message,
+        error: error,
+        signal: signal,
+        }  
+      log_debug "OOPS: backtrace below", exception.backtrace if include_backtrace
+  
       # Log to Rollbar
       Rollbar.warning exception, "oops [#{error}]: #{exception.class.name}: #{exception.message}"
 
