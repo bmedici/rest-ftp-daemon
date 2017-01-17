@@ -8,7 +8,7 @@ module RestFtpDaemon
       raise RestFtpDaemon::AssertionFailed, "remote_upload/target" if target.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
-      log_info "remote_upload temp[#{@tempfile}] source[#{source.path}] target[#{target.path}]"
+      log_info "remote_upload temp[#{@tempfile}] source[#{source.path_fs}] target[#{target.path}]"
       set_info INFO_SOURCE_CURRENT, source.name
 
       # Remove any existing version if present, or check if it's there
