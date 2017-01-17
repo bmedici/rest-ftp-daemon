@@ -117,10 +117,9 @@ module RestFtpDaemon
            optional :audio_channels,          type: String,  desc: "number of audio channels"
         end
 
-        optional :video_custom,
-          type: Hash,
-          desc: "video: custom options passed to FFMPEG encoder",
-          default: {}
+        optional :video_custom, type: Hash, desc: "video: custom options passed to FFMPEG encoder", default: {} do
+           optional :option1,                 type: String,  desc: "sample option", default: "my_value"
+        end
 
         optional :options, type: Hash, desc: "Options for transfers" do
           optional :overwrite,
