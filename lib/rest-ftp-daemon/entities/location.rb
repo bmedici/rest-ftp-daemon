@@ -16,6 +16,7 @@ module RestFtpDaemon
       expose :dir
       expose :name
       expose :path
+      expose :filepath
 
       expose :aws_region ,unless: Proc.new {|obj| obj.aws_region.nil?}
       expose :aws_bucket, unless: Proc.new {|obj| obj.aws_bucket.nil?}
