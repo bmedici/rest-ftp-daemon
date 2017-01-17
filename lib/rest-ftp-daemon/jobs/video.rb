@@ -60,7 +60,10 @@ module RestFtpDaemon
       set_info INFO_SOURCE_CURRENT, source.name
       begin
         movie = FFMPEG::Movie.new(source.path)
+      rescue Errno::ENOENT => exception
+        raise RestFtpDaemon::VideoNotFound, exception.message
       rescue StandardError => exception
+        log_error "FFMPEG Error [#{exception.class}] : #{exception.message}"
         raise RestFtpDaemon::VideoMovieError, exception.message
       else
         set_info :ffmpeg_size, movie.size
