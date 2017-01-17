@@ -16,8 +16,8 @@ module RestFtpDaemon
       log_info "JobVideo.before target_loc.filepath: #{@target_loc.filepath}"
 
       # Ensure FFMPEG lib is available
-      check_ffmpeg_binary :ffmpeg_binary
       check_ffmpeg_binary :ffprobe_binary
+      check_ffmpeg_binary :ffmpeg_binary
 
       # Ensure source and target are FILE
       raise RestFtpDaemon::AssertionFailed                         unless @video_options.is_a? Hash
@@ -120,12 +120,3 @@ module RestFtpDaemon
 
   end
 end
-
-# require "stringio"
-# def capture_stderr
-#   real_stderr, $stderr = $stderr, StringIO.new
-#   yield
-#   $stderr.string
-# ensure
-#   $stderr = real_stderr
-# end

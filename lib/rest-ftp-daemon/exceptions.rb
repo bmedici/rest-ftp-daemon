@@ -28,5 +28,4 @@ module RestFtpDaemon
   class VideoNotFound             < BaseException; end
   class VideoMovieError           < BaseException; end
 
-
 end
