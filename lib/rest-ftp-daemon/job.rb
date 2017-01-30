@@ -74,6 +74,11 @@ module RestFtpDaemon
         instance_variable_set "@#{field}", params[field]
       end
 
+      # Adjust params according to defaults
+      flag_prepare :overwrite
+      flag_prepare :mkdir
+      flag_prepare :tempfile
+
       # Check if pool name exists
       Conf[:pools] ||= {}
       @pool = DEFAULT_POOL unless Conf[:pools].keys.include?(@pool)
@@ -281,7 +286,7 @@ module RestFtpDaemon
       return if [true, false].include? instance_variable_get(variable)
 
       # Otherwise, set it to the new alt_value
-      instance_variable_set variable, config[name]
+      instance_variable_set variable, @config[name]
     end
 
     def client_notify signal, payload = {}
