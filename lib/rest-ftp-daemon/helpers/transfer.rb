@@ -63,7 +63,7 @@ module RestFtpDaemon
       progress_notify now, percent0, name
 
       # Touch my worker status
-      touch_job
+      job_touch
     end
 
   private
@@ -90,7 +90,7 @@ module RestFtpDaemon
       log_info "progress #{stack2} \t#{name}"
 
       # Prepare and send notification
-      client_notify :progress, status: {
+      job_notify :progress, status: {
         progress: percent0,
         transfer_sent: @transfer_sent,
         transfer_total: @transfer_total,

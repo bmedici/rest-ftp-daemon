@@ -75,9 +75,9 @@ module RestFtpDaemon
       end
 
       # Adjust params according to defaults
-      flag_prepare :overwrite
-      flag_prepare :mkdir
-      flag_prepare :tempfile
+      job_flag_init :transfer, :overwrite
+      job_flag_init :transfer, :mkdir
+      job_flag_init :transfer, :tempfile
 
       # Check if pool name exists
       Conf[:pools] ||= {}
@@ -115,7 +115,7 @@ module RestFtpDaemon
       # Update job status, send first notification
       set_status JOB_STATUS_QUEUED
       set_error nil
-      client_notify :queued
+      job_notify :queued
       log_info "reset notify[queued] tentative[#{@tentatives}]"
     end
 
@@ -129,10 +129,10 @@ module RestFtpDaemon
       @started_at = Time.now
 
       # Notify we start working
-      log_info "client_notify [started]"
+      log_info "job_notify [started]"
       current_signal = :started
       set_status JOB_STATUS_WORKING
-      client_notify :started
+      job_notify :started
 
       # Before work
       log_debug "do_before"
@@ -156,8 +156,8 @@ module RestFtpDaemon
     else
       # All done !
       set_status JOB_STATUS_FINISHED
-      log_info "client_notify [ended]"
-      client_notify :ended
+      log_info "job_notify [ended]"
+      job_notify :ended
     end
 
     def before
@@ -217,6 +217,13 @@ module RestFtpDaemon
         @infos || {}
         @infos[name] = debug_value_utf8(value)
       end
+      job_touch
+    end
+
+    def set_status value
+      @mutex.synchronize do
+        @status = value
+      end
       touch_job
     end
 
@@ -236,7 +243,7 @@ module RestFtpDaemon
       }
     end
 
-    def touch_job
+    def job_touch
       now = Time.now
       @updated_at = now
       Thread.current.thread_variable_set :updated_at, now
@@ -264,7 +271,7 @@ module RestFtpDaemon
       @mutex.synchronize do
         @error = value
       end
-      touch_job
+      job_touch
     end
 
     def set_status value
@@ -278,7 +285,7 @@ module RestFtpDaemon
     #   set_status value
     # end  
 
-    def flag_prepare name
+    def job_flag_init scope, name
       # build the flag instance var name
       variable = "@#{name}"
 
@@ -289,7 +296,7 @@ module RestFtpDaemon
       instance_variable_set variable, @config[name]
     end
 
-    def client_notify signal, payload = {}
+    def job_notify signal, payload = {}
       # Skip if no URL given
       return unless @notify
 
@@ -299,7 +306,7 @@ module RestFtpDaemon
       RestFtpDaemon::Notification.new @notify, payload
 
     rescue StandardError => ex
-      log_error "client_notify EXCEPTION: #{ex.inspect}"
+      log_error "job_notify EXCEPTION: #{ex.inspect}"
     end
 
     def oops signal, exception, error = nil#, include_backtrace = false
@@ -350,11 +357,11 @@ module RestFtpDaemon
 
       # Prepare notification if signal given
       return unless signal
-      client_notify signal, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
+      job_notify signal, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
 
     # NewRelic instrumentation
-    add_transaction_tracer :client_notify,  category: :task
+    add_transaction_tracer :job_notify,  category: :task
     add_transaction_tracer :initialize,     category: :task
 
   end

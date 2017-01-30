@@ -59,8 +59,8 @@ module RestFtpDaemon
     def dump title
       log_debug "DUMP [#{@tasks.count}] #{title}"
       @tasks.each do |task|
-        task.instvar :inputs
-        task.instvar :outputs
+        task.debug_vars :inputs
+        task.debug_vars :outputs
       end
     end
   end

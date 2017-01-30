@@ -28,14 +28,16 @@ module RestFtpDaemon
     end
 
     def do_before
-      instvar :inputs
+      debug_vars :inputs
     end
 
     def do_after
-      instvar :outputs
+      debug_vars :outputs
     end
 
-    def instvar var
+  protected
+
+    def debug_vars var
       items = instance_variable_get("@#{var}")
 
       if items.is_a? Array
@@ -45,9 +47,7 @@ module RestFtpDaemon
       end
     end
 
-  protected
-
-    def work_debug
+    def debug_fake_work
       @inputs.each do |t|
         out = t.clone
         out.name = "#{t.name}-#{@name}"
