@@ -23,7 +23,6 @@ module RestFtpDaemon
 
     def worker_process
       # Announce we are working
-      worker_status WORKER_STATUS_CLEANING
 
       # Cleanup queues according to configured max-age
       RestFtpDaemon::JobQueue.instance.expire STATUS_FINISHED,  maxage(STATUS_FINISHED),  @config[:debug]

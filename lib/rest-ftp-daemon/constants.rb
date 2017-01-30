@@ -105,21 +105,14 @@ WORKER_STATUS_STARTING  = "starting"
 WORKER_STATUS_WAITING   = "waiting"
 WORKER_STATUS_RUNNING   = "running"
 WORKER_STATUS_FINISHED  = "finished"
-WORKER_STATUS_RETRYING  = "retrying"
 WORKER_STATUS_TIMEOUT   = "timeout"
 WORKER_STATUS_CRASHED   = "crashed"
-WORKER_STATUS_CLEANING  = "cleaning"
-WORKER_STATUS_REPORTING = "reporting"
 WORKER_STYLES = {
   WORKER_STATUS_WAITING   => nil,
   WORKER_STATUS_RUNNING   => :info,
-  WORKER_STATUS_REPORTING => :info,
-  WORKER_STATUS_CLEANING  => :info,
-  WORKER_STATUS_RETRYING  => :warning,
   WORKER_STATUS_CRASHED   => :danger,
   WORKER_STATUS_FINISHED  => :success,
   }
-
 
 # API mountpoints
 MOUNT_SWAGGER_JSON        = "/swagger.json"
