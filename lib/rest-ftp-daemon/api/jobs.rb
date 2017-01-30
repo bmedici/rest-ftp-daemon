@@ -26,7 +26,6 @@ module RestFtpDaemon
         exception_error :api_unresolved_tokens, 422, exception
       end
 
-
       ### ENDPOINTS
       desc "Read job with ID", http_codes: [
         { code: 200, message: "Here is the job you requested" },
@@ -101,61 +100,44 @@ module RestFtpDaemon
           desc: "Priority level of the job (lower is stronger)",
           default: 0
 
-        optional :video_options, type: Hash, desc: "Options passed to FFMPEG encoder", default: {} do
-           optional :video_codec,             type: String,  desc: "video codec (ex: copy, libx264)"
-           optional :video_bitrate,           type: String,  desc: "nominal video bitrate"
-           optional :video_bitrate_tolerance, type: String,  desc: "maximum video bitrate"
-           optional :frame_rate,              type: Integer, desc: "output frames per second"
-           optional :resolution,              type: String,  desc: "output video resolution"
-           optional :aspect,                  type: String,  desc: "output aspect ratio"
-           optional :keyframe_interval,       type: String,  desc: "group of pictures (GOP) size"
-           optional :x264_vprofile,           type: String,  desc: "h264 profile"
-           optional :x264_preset,             type: String,  desc: "h264 preset (fast, low..)"
-           optional :audio_codec,             type: String,  desc: "audio codec (ex: copy, libfaac, ibfdk_aac)"
-           optional :audio_bitrate,           type: String,  desc: "nominal audio bitrate"
-           optional :audio_sample_rate,       type: Integer, desc: "audio sampling rate"
-           optional :audio_channels,          type: String,  desc: "number of audio channels"
+        optional :options, type: Hash, desc: "job options", default: {} do
+
+          optional :transfer, type: Hash, desc: "transfer options", default: {} do
+            optional :overwrite,
+              type: Boolean,
+              desc: "Overwrites files at target server",
+              default: Conf.at(:transfer, :overwrite)
+            optional :mkdir,
+              type: Boolean,
+              desc: "Create missing directories on target server",
+              default: Conf.at(:transfer, :mkdir)
+            optional :tempfile,
+              type: Boolean,
+              desc: "Upload to a temp file before renaming it to the target filename",
+              default: Conf.at(:transfer, :tempfile)
+          end
+
+          optional :transform, type: Hash, desc: "transform options", default: {} do
+             optional :audio_codec,             type: String,  desc: "audio codec (ex: copy, libfaac, ibfdk_aac)"
+             optional :audio_bitrate,           type: String,  desc: "nominal audio bitrate"
+             optional :audio_sample_rate,       type: Integer, desc: "audio sampling rate"
+             optional :audio_channels,          type: String,  desc: "number of audio channels"
+
+             optional :video_codec,             type: String,  desc: "video codec (ex: copy, libx264)"
+             optional :video_bitrate,           type: String,  desc: "nominal video bitrate"
+             optional :video_bitrate_tolerance, type: String,  desc: "maximum video bitrate"
+
+             optional :frame_rate,              type: Integer, desc: "output frames per second"
+             optional :resolution,              type: String,  desc: "output video resolution"
+             optional :aspect,                  type: String,  desc: "output aspect ratio"
+             optional :keyframe_interval,       type: String,  desc: "group of pictures (GOP) size"
+             optional :x264_vprofile,           type: String,  desc: "h264 profile"
+             optional :x264_preset,             type: String,  desc: "h264 preset (fast, low..)"
+          end
+
+          optional :ffmpeg, type: Hash, desc: "custom ffmpeg flags", default: {}, documentation: { hidden: false }
+
         end
-
-        optional :video_custom, type: Hash, desc: "video: custom options passed to FFMPEG encoder", default: {},
-          documentation: { hidden: false }
-        #  do
-        #    optional :option1,                 type: String,  desc: "sample option", default: "my_value"
-        # end
-
-        optional :options, type: Hash, desc: "Options for transfers" do
-          optional :overwrite,
-            type: Boolean,
-            desc: "Overwrites files at target server",
-            default: Conf.at(:transfer, :overwrite)
-          optional :mkdir,
-            type: Boolean,
-            desc: "Create missing directories on target server",
-            default: Conf.at(:transfer, :mkdir)
-          optional :tempfile,
-            type: Boolean,
-            desc: "Upload to a temp file before renaming it to the target filename",
-            default: Conf.at(:transfer, :tempfile)
-        end
-
-        optional :overwrite,
-          type: Boolean,
-          desc: "Overwrites files at target server",
-          default: Conf.at(:transfer, :overwrite)
-        optional :mkdir,
-          type: Boolean,
-          desc: "Create missing directories on target server",
-          default: Conf.at(:transfer, :mkdir)
-        optional :tempfile,
-          type: Boolean,
-          desc: "Upload to a temp file before renaming it to the target filename",
-          default: Conf.at(:transfer, :tempfile)
-        # given :shelf_id do
-        #   requires :bin_id, type: Integer
-        # end
-        # given category: ->(val) { val == 'foo' } do
-        #   requires :description
-        # end
       end
 
       post "/" do
