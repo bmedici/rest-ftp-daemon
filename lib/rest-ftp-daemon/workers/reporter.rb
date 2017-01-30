@@ -18,12 +18,6 @@ module RestFtpDaemon
       return false
     end
 
-    def worker_after
-      # Sleep for a few seconds
-      worker_status WORKER_STATUS_WAITING
-      sleep @config[:timer]
-    end
-
     def worker_process
       # Announce we are working
 
