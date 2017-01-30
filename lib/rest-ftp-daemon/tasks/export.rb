@@ -50,6 +50,33 @@ return
     end
 
     def work
+      # Connect to remote server and login
+      set_status JOB_STATUS_CONNECTING
+      @remote.connect
+
+      # Prepare target path or build it if asked
+      set_status JOB_STATUS_CHDIR
+      #log_info "do_work chdir_or_create #{@output.filedir}"
+      @remote.chdir_or_create @output.dir_fs, get_option(:transfer, :mkdir)
+
+      # Compute total files size
+      @transfer_total = @inputs.collect(&:size).sum
+      set_info INFO_TRANSFER_TOTAL, @transfer_total
+
+      # Reset counters
+      @last_data = 0
+      @last_time = Time.now
+
+      # Handle each source file matched, and start a transfer
+      source_processed = 0
+      targets = []
+      @inputs.each do |source|
+        # Build final target, add the source file name if noneh
+        target = @output.clone
+        target.name = source.name unless target.name
+
+        # Do the transfer, for each file
+        remote_upload source, target, get_option(:transfer, :overwrite)
 
       #work_debug
     end

@@ -65,7 +65,7 @@ module RestFtpDaemon
       # Prepare target path or build it if asked
       set_status JOB_STATUS_CHDIR
       #log_info "do_work chdir_or_create #{@target_loc.dir_fs}"
-      @remote.chdir_or_create @target_loc.dir_fs, @mkdir
+      @remote.chdir_or_create @target_loc.dir_fs, get_option(:transfer, :mkdir)
 
       # Compute total files size
       @transfer_total = sources.collect(&:size).sum
@@ -84,7 +84,7 @@ module RestFtpDaemon
         target.name = source.name unless target.name
 
         # Do the transfer, for each file
-        remote_upload source, target
+        remote_upload source, target, get_option(:transfer, :overwrite)
 
         # Add it to transferred target names
         targets << target.name
