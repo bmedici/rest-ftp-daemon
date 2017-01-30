@@ -18,11 +18,12 @@ module RestFtpDaemon
 
     # Class options
     attr_accessor :wid
+    attr_reader :id
 
     attr_reader :source_loc
     attr_reader :target_loc
 
-    attr_reader :id
+    attr_reader :infos
     attr_reader :error
     attr_reader :status
     attr_reader :tentatives
@@ -36,7 +37,7 @@ module RestFtpDaemon
     attr_reader :started_since
     attr_reader :finished_in
 
-    attr_reader :infos
+
 
     # Define readers from imported fields
     IMPORTED.each do |field|
@@ -66,7 +67,6 @@ module RestFtpDaemon
       # Prepare configuration
       @config       = Conf[:transfer] || {}
       @endpoints    = Conf[:endpoints] || {}
-      @pools        = Conf[:pools] || {}
 
       # Import query params
       set_info INFO_PARAMS, params
@@ -75,7 +75,8 @@ module RestFtpDaemon
       end
 
       # Check if pool name exists
-      @pool = DEFAULT_POOL unless @pools.keys.include?(@pool)
+      Conf[:pools] ||= {}
+      @pool = DEFAULT_POOL unless Conf[:pools].keys.include?(@pool)
 
       # Prepare sources/target
       raise RestFtpDaemon::JobAttributeMissing, "source" unless params[:source]
@@ -267,6 +268,10 @@ module RestFtpDaemon
       end
       touch_job
     end
+
+    # def job_status value
+    #   set_status value
+    # end  
 
     def flag_prepare name
       # build the flag instance var name
