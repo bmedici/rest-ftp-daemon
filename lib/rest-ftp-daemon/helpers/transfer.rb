@@ -29,7 +29,7 @@ module RestFtpDaemon
       @last_notify_at = transfer_started_at
 
       # Start the transfer, update job status after each block transfer
-      set_status JOB_STATUS_UPLOADING
+      set_status STATUS_EXPORT_UPLOADING
       @remote.upload source, target, @tempfile do |transferred, name|
         # Update transfer statistics
         update_progress transferred, name

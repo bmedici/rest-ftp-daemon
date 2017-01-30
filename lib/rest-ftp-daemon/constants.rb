@@ -57,32 +57,33 @@ LOG_INDENT              = "\t"
 
 
 # Jobs statuses
-JOB_STATUS_PREPARING    = "preparing"
-JOB_STATUS_WORKING      = "working"
+STATUS_QUEUED               = "queued"
+STATUS_PREPARING            = "preparing"
+STATUS_PREPARED             = "prepared"
+STATUS_WORKING              = "working"
+STATUS_FINISHED             = "finished"
+STATUS_FAILED               = "failed"
 
-JOB_STATUS_TRANSFORMING = "transforming"
+STATUS_IMPORT_LISTING       = "import/list"
 
-JOB_STATUS_CHECKING_SRC = "checking_source"
-JOB_STATUS_CONNECTING   = "remote_connect"
-JOB_STATUS_CHDIR        = "remote_chdir"
-JOB_STATUS_UPLOADING    = "uploading"
-JOB_STATUS_RENAMING     = "renaming"
-JOB_STATUS_PREPARED     = "prepared"
-JOB_STATUS_DISCONNECTING= "remote_disconnect"
-JOB_STATUS_FINISHED     = "finished"
+STATUS_VIDEO_TRANSFORMING   = "video/transform"
 
-JOB_STATUS_FAILED       = "failed"
-JOB_STATUS_QUEUED       = "queued"
+STATUS_EXPORT_CONNECTING    = "export/connect"
+STATUS_EXPORT_CHDIR         = "export/chdir"
+STATUS_EXPORT_UPLOADING     = "export/upload"
+STATUS_EXPORT_RENAMING      = "export/rename"
+STATUS_EXPORT_DISCONNECTING = "export/disconnect"
+
 
 JOB_STYLES = {
-  JOB_STATUS_QUEUED      => :active,
-  JOB_STATUS_FAILED      => :warning,
-  JOB_STATUS_FINISHED    => :success,
+  STATUS_QUEUED      => :active,
+  STATUS_FAILED      => :warning,
+  STATUS_FINISHED    => :success,
 
-  JOB_STATUS_TRANSFORMING   => :info,
+  STATUS_VIDEO_TRANSFORMING   => :info,
 
-  JOB_STATUS_UPLOADING   => :info,
-  JOB_STATUS_RENAMING    => :info,
+  STATUS_EXPORT_UPLOADING   => :info,
+  STATUS_EXPORT_RENAMING    => :info,
   }
 
 

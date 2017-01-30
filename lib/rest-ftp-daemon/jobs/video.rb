@@ -28,7 +28,7 @@ module RestFtpDaemon
 
     def do_work
       # Guess source files from disk
-      set_status JOB_STATUS_TRANSFORMING
+      set_status STATUS_VIDEO_TRANSFORMING
       sources = @source_loc.local_files
       raise RestFtpDaemon::SourceNotFound if sources.empty?
 

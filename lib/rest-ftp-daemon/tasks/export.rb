@@ -51,11 +51,11 @@ return
 
     def work
       # Connect to remote server and login
-      set_status JOB_STATUS_CONNECTING
+      set_status STATUS_EXPORT_CONNECTING
       @remote.connect
 
       # Prepare target path or build it if asked
-      set_status JOB_STATUS_CHDIR
+      set_status STATUS_EXPORT_CHDIR
       #log_info "do_work chdir_or_create #{@output.filedir}"
       @remote.chdir_or_create @output.dir_fs, get_option(:transfer, :mkdir)
 
@@ -82,6 +82,23 @@ return
     end
 
   protected
+
+    def do_after
+      # Close FTP connexion and free up memory
+      set_info "do_after close connexion, update status and counters"
+      @remote.close
+
+      # Free @remote object
+      @remote = nil
+
+      # Update job status
+      set_status STATUS_EXPORT_DISCONNECTING
+      @finished_at = Time.now
+
+      # Update counters
+      RestFtpDaemon::Counters.instance.increment :jobs, :finished
+      RestFtpDaemon::Counters.instance.add :data, :transferred, @transfer_total
+    end
 
   end
 end

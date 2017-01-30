@@ -26,9 +26,9 @@ module RestFtpDaemon
       worker_status WORKER_STATUS_CLEANING
 
       # Cleanup queues according to configured max-age
-      RestFtpDaemon::JobQueue.instance.expire JOB_STATUS_FINISHED,  maxage(JOB_STATUS_FINISHED),  @config[:debug]
-      RestFtpDaemon::JobQueue.instance.expire JOB_STATUS_FAILED,    maxage(JOB_STATUS_FAILED),    @config[:debug]
-      RestFtpDaemon::JobQueue.instance.expire JOB_STATUS_QUEUED,    maxage(JOB_STATUS_QUEUED),    @config[:debug]
+      RestFtpDaemon::JobQueue.instance.expire STATUS_FINISHED,  maxage(STATUS_FINISHED),  @config[:debug]
+      RestFtpDaemon::JobQueue.instance.expire STATUS_FAILED,    maxage(STATUS_FAILED),    @config[:debug]
+      RestFtpDaemon::JobQueue.instance.expire STATUS_QUEUED,    maxage(STATUS_QUEUED),    @config[:debug]
 
       # Force garbage collector
       GC.start if @config["garbage_collector"]

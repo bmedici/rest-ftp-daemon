@@ -104,7 +104,7 @@ module RestFtpDaemon
 
     def reset
       # Update job status
-      set_status JOB_STATUS_PREPARING
+      set_status STATUS_PREPARING
 
       # Increment run cours
       @tentatives +=1
@@ -113,11 +113,11 @@ module RestFtpDaemon
       @finished_at  = nil
 
       # Job has been prepared, reset infos
-      set_status JOB_STATUS_PREPARED
+      set_status STATUS_PREPARED
       @infos = {}
 
       # Update job status, send first notification
-      set_status JOB_STATUS_QUEUED
+      set_status STATUS_QUEUED
       set_error nil
       job_notify :queued
       log_info "reset notify[queued] tentative[#{@tentatives}]"
@@ -135,7 +135,7 @@ module RestFtpDaemon
       # Notify we start working
       log_info "job_notify [started]"
       current_signal = :started
-      set_status JOB_STATUS_WORKING
+      set_status STATUS_WORKING
       job_notify :started
 
       # Before work
@@ -159,7 +159,7 @@ module RestFtpDaemon
 
     else
       # All done !
-      set_status JOB_STATUS_FINISHED
+      set_status STATUS_FINISHED
       log_info "job_notify [ended]"
       job_notify :ended
     end
@@ -352,7 +352,7 @@ module RestFtpDaemon
       @remote.close unless @remote.nil? || !@remote.connected?
 
       # Update job's internal status
-      set_status JOB_STATUS_FAILED
+      set_status STATUS_FAILED
       set_error error
       set_info INFO_ERROR_EXCEPTION, exception.class.to_s
       set_info INFO_ERROR_MESSAGE,   exception.message

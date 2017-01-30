@@ -17,7 +17,7 @@ module RestFtpDaemon
 
     def work
       # Scan local source files from disk
-      set_status JOB_STATUS_CHECKING_SRC
+      set_status STATUS_IMPORT_LISTING
       files = @input.local_files
       set_info INFO_SOURCE_COUNT, files.size
       set_info INFO_SOURCE_FILES, files.collect(&:name)
