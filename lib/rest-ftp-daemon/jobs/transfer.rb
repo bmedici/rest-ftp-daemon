@@ -7,11 +7,6 @@ module RestFtpDaemon
   protected
 
     def do_before
-      # Prepare flags
-      flag_prepare :mkdir
-      flag_prepare :overwrite
-      flag_prepare :tempfile
-
       # Some init
       @transfer_sent = 0
       set_info INFO_SOURCE_PROCESSED, 0

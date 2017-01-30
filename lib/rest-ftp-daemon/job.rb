@@ -14,7 +14,7 @@ module RestFtpDaemon
     # Logging
 
     # Fields to be imported from params
-    IMPORTED = %w(type priority pool label priority source target overwrite notify mkdir tempfile video_options video_custom)
+    IMPORTED = %w(type priority pool label priority source target options overwrite notify mkdir tempfile video_options video_custom)
 
     # Class options
     attr_accessor :wid
@@ -27,6 +27,7 @@ module RestFtpDaemon
     attr_reader :error
     attr_reader :status
     attr_reader :tentatives
+    attr_reader :options
 
     attr_reader :created_at
     attr_reader :updated_at
@@ -73,6 +74,9 @@ module RestFtpDaemon
       IMPORTED.each do |field|
         instance_variable_set "@#{field}", params[field]
       end
+
+      # Ensure @options is a hash
+      @options = {} unless @options.is_a? Hash
 
       # Adjust params according to defaults
       job_flag_init :transfer, :overwrite
@@ -207,6 +211,16 @@ module RestFtpDaemon
     end
 
      def get_info name
+    def get_option scope, name
+      @options[scope] ||= {}
+      @options[scope][name]
+    end
+    
+    def set_option scope, name, value
+      @options[scope] ||= {}
+      @options[scope][name] = value
+    end
+
       @mutex.synchronize do
         @infos[name]
       end
@@ -290,10 +304,11 @@ module RestFtpDaemon
       variable = "@#{name}"
 
       # If it's already true or false, that's ok
-      return if [true, false].include? instance_variable_get(variable)
+      return if [true, false].include? get_option(scope, name)
 
       # Otherwise, set it to the new alt_value
-      instance_variable_set variable, @config[name]
+      set_option(scope, name, Conf.at(scope, name))
+      # instance_variable_set variable, 
     end
 
     def job_notify signal, payload = {}

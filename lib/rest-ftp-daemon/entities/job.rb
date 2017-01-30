@@ -19,13 +19,7 @@ module RestFtpDaemon
       end
 
       # Work-specific options
-      expose :overwrite
-      expose :mkdir
-      expose :tempfile
-
-      # Job/Video options
-      expose :video_options
-      expose :video_custom
+      expose :options
 
       # Status and error
       expose :status, format_with: :utf8_filter
