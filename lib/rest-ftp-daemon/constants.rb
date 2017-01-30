@@ -73,15 +73,11 @@ STATUS_EXPORT_CHDIR         = "export/chdir"
 STATUS_EXPORT_UPLOADING     = "export/upload"
 STATUS_EXPORT_RENAMING      = "export/rename"
 STATUS_EXPORT_DISCONNECTING = "export/disconnect"
-
-
 JOB_STYLES = {
   STATUS_QUEUED      => :active,
   STATUS_FAILED      => :warning,
   STATUS_FINISHED    => :success,
-
   STATUS_VIDEO_TRANSFORMING   => :info,
-
   STATUS_EXPORT_UPLOADING   => :info,
   STATUS_EXPORT_RENAMING    => :info,
   }
@@ -94,6 +90,7 @@ JOB_METHOD_SFTP          = "sftp"
 JOB_METHOD_FILE          = "file"
 
 # Jobs types
+# Jobs types
 JOB_TYPE_TRANSFER        = "transfer"
 JOB_TYPE_VIDEO           = "video"
 JOB_TYPE_WORKFLOW        = "workflow"
@@ -101,17 +98,15 @@ JOB_TYPE_DUMMY           = "dummy"
 JOB_TYPES                = [JOB_TYPE_TRANSFER, JOB_TYPE_VIDEO, JOB_TYPE_WORKFLOW, JOB_TYPE_DUMMY]
 
 # Worker statuses
-WORKER_STATUS_STARTING  = "starting"
-WORKER_STATUS_WAITING   = "waiting"
-WORKER_STATUS_RUNNING   = "running"
-WORKER_STATUS_FINISHED  = "finished"
-WORKER_STATUS_TIMEOUT   = "timeout"
-WORKER_STATUS_CRASHED   = "crashed"
 WORKER_STYLES = {
-  WORKER_STATUS_WAITING   => nil,
-  WORKER_STATUS_RUNNING   => :info,
-  WORKER_STATUS_CRASHED   => :danger,
-  WORKER_STATUS_FINISHED  => :success,
+  WorkerBase::STATUS_READY     => nil,
+  WorkerBase::STATUS_SLEEPING  => nil,
+  WorkerBase::STATUS_WORKING   => :info,
+
+  WorkerBase::STATUS_FINISHED  => :success,
+
+  WorkerBase::STATUS_CRASHED   => :warning,
+  WorkerBase::STATUS_TIMEOUT   => :warning,
   }
 
 # API mountpoints
