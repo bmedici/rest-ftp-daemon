@@ -1,7 +1,7 @@
 module RestFtpDaemon
   module TransferHelpers
 
-    def remote_upload source, target
+    def remote_upload source, target, overwrite = false
       # Method assertions
       raise RestFtpDaemon::AssertionFailed, "remote_upload/remote" if @remote.nil?
       raise RestFtpDaemon::AssertionFailed, "remote_upload/source" if source.nil?
@@ -17,7 +17,7 @@ module RestFtpDaemon
       set_info INFO_SOURCE_CURRENT, source.name
 
       # Remove any existing version if present, or check if it's there
-      if @overwrite
+      if overwrite
         @remote.remove! target
       elsif (size = @remote.size_if_exists(target))  # won't be triggered when NIL or 0 is returned
         log_debug "remote_upload file exists ! (#{format_bytes size, 'B'})"
