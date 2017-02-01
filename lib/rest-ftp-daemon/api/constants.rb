@@ -11,12 +11,12 @@ JOB_STYLES = {
 
 # Worker statuses
 WORKER_STYLES = {
-  WorkerBase::STATUS_READY        => nil,
-  WorkerBase::STATUS_SLEEPING     => nil,
-  WorkerBase::STATUS_WORKING      => :info,
+  Worker::STATUS_READY        => nil,
+  Worker::STATUS_SLEEPING     => nil,
+  Worker::STATUS_WORKING      => :info,
   
-  WorkerBase::STATUS_FINISHED     => :success,
+  Worker::STATUS_FINISHED     => :success,
   
-  WorkerBase::STATUS_CRASHED      => :warning,
-  WorkerBase::STATUS_TIMEOUT      => :warning,
+  Worker::STATUS_CRASHED      => :warning,
+  Worker::STATUS_TIMEOUT      => :warning,
   }

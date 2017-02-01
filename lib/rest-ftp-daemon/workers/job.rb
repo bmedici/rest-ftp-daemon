@@ -31,7 +31,7 @@ module RestFtpDaemon
 
       # Announce we are working on this job
       working_on_job(job, true)
-      worker_status STATUS_WORKING
+      worker_status Worker::STATUS_WORKING
 
       # Work on this job
       job_process job
@@ -55,14 +55,14 @@ module RestFtpDaemon
 
     rescue RestFtpDaemon::JobTimeout => ex
       log_error "job_process: TIMEOUT: started_at[#{job.started_at}] started_since[#{job.started_since}] #{ex.message}", ex.backtrace
-      worker_status STATUS_TIMEOUT
+      worker_status Worker::STATUS_TIMEOUT
 
       # Inform the job
       job.oops_end(:timeout, ex) unless job.nil?
 
     rescue RestFtpDaemon::AssertionFailed, RestFtpDaemon::JobAttributeMissing, StandardError => ex
       log_error "job_process: CRASHED: ex[#{ex.class}] #{ex.message}", ex.backtrace
-      worker_status STATUS_CRASHED
+      worker_status Worker::STATUS_CRASHED
 
       # Inform the job
       job.oops_end(:crashed, ex) unless job.nil?
@@ -73,7 +73,7 @@ module RestFtpDaemon
       if !job.error
         # Processing successful
         log_info "job_result: finished successfully"
-        worker_status STATUS_FINISHED
+        worker_status Worker::STATUS_FINISHED
 
       elsif error_not_eligible(job)
         log_error "job_result: not retrying [#{job.error}] retry_on not eligible"

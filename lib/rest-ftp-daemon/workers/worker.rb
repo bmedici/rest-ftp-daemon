@@ -1,7 +1,7 @@
 # Instrumented WorkerBase
 
 module RestFtpDaemon
-  class Worker < BmcDaemonLib::WorkerBase
+  class Worker < BmcDaemonLib::Worker
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
     # NewRelic instrumentation

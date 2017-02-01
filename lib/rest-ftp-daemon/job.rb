@@ -165,7 +165,7 @@ module RestFtpDaemon
       # Notify we start working
       log_info "job_notify [started]"
       current_signal = :started
-      set_status STATUS_WORKING
+      set_status Worker::STATUS_WORKING
       job_notify :started
 
       # Before work

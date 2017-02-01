@@ -20,6 +20,7 @@ module RestFtpDaemon
 
     def worker_process
       # Announce we are working
+      worker_status Worker::STATUS_WORKING
 
       # Report metrics
       do_metrics
