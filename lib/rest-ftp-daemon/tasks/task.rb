@@ -11,6 +11,9 @@ module RestFtpDaemon
     attr_accessor :outputs
     # @fileset  = "unknown"
 
+    delegate :job_notify, :set_status, :set_info,
+      to: :job
+
     def initialize job, name, opts = {}
       # Init context
       @inputs       = []
@@ -59,12 +62,9 @@ module RestFtpDaemon
       @job.set_info name, value
     end
 
-    # def task_status value
-    #   @job.set_status "#{@name}-#{value}"
-    # end
-
     def set_status value
       @job.set_status value
+      #@job.set_status value
     end
 
   private
