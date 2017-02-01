@@ -56,23 +56,6 @@ LOG_PIPE_LEN            = 10
 LOG_INDENT              = "\t"
 
 
-# Jobs statuses
-STATUS_QUEUED               = "queued"
-STATUS_PREPARING            = "preparing"
-STATUS_PREPARED             = "prepared"
-STATUS_WORKING              = "working"
-STATUS_FINISHED             = "finished"
-STATUS_FAILED               = "failed"
-
-STATUS_IMPORT_LISTING       = "import/list"
-
-STATUS_VIDEO_TRANSFORMING   = "video/transform"
-
-STATUS_EXPORT_CONNECTING    = "export/connect"
-STATUS_EXPORT_CHDIR         = "export/chdir"
-STATUS_EXPORT_UPLOADING     = "export/upload"
-STATUS_EXPORT_RENAMING      = "export/rename"
-STATUS_EXPORT_DISCONNECTING = "export/disconnect"
 JOB_STYLES = {
   STATUS_QUEUED      => :active,
   STATUS_FAILED      => :warning,
@@ -88,14 +71,6 @@ JOB_METHOD_FTP           = "ftp"
 JOB_METHOD_FTPS          = "ftps"
 JOB_METHOD_SFTP          = "sftp"
 JOB_METHOD_FILE          = "file"
-
-# Jobs types
-# Jobs types
-JOB_TYPE_TRANSFER        = "transfer"
-JOB_TYPE_VIDEO           = "video"
-JOB_TYPE_WORKFLOW        = "workflow"
-JOB_TYPE_DUMMY           = "dummy"
-JOB_TYPES                = [JOB_TYPE_TRANSFER, JOB_TYPE_VIDEO, JOB_TYPE_WORKFLOW, JOB_TYPE_DUMMY]
 
 # Worker statuses
 WORKER_STYLES = {

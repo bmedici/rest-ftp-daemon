@@ -88,8 +88,8 @@ module RestFtpDaemon
         optional :type,
           type: String,
           desc: "Type of job",
-          default: JOB_TYPE_TRANSFER,
-          values: {value: JOB_TYPES, message: "should be one of: #{JOB_TYPES.join', '}"},
+          default: Job::TYPE_TRANSFER,
+          values: {value: Job::TYPES, message: "should be one of: #{Job::TYPES.join', '}"},
           allow_blank: { value: false, message: 'cannot be empty' }
         optional :pool,
           type: String,

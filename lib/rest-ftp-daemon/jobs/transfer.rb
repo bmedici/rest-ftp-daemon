@@ -43,7 +43,7 @@ module RestFtpDaemon
 
     def do_work
       # Scan local source files from disk
-      set_status STATUS_IMPORT_LISTING
+      set_status Job::STATUS_IMPORT_LISTING
       sources = @source_loc.local_files
       set_info INFO_SOURCE_COUNT, sources.size
       set_info INFO_SOURCE_FILES, sources.collect(&:name)
@@ -54,11 +54,11 @@ module RestFtpDaemon
       raise RestFtpDaemon::TargetDirectoryError if @target_loc.name && sources.count>1
 
       # Connect to remote server and login
-      set_status STATUS_EXPORT_CONNECTING
+      set_status Job::STATUS_EXPORT_CONNECTING
       @remote.connect
 
       # Prepare target path or build it if asked
-      set_status STATUS_EXPORT_CHDIR
+      set_status Job::STATUS_EXPORT_CHDIR
       #log_info "do_work chdir_or_create #{@target_loc.dir_fs}"
       @remote.chdir_or_create @target_loc.dir_fs, get_option(:transfer, :mkdir)
 
@@ -99,7 +99,7 @@ module RestFtpDaemon
       @remote = nil
 
       # Update job status
-      set_status STATUS_EXPORT_DISCONNECTING
+      set_status Job::STATUS_EXPORT_DISCONNECTING
       @finished_at = Time.now
 
       # Update counters

@@ -51,11 +51,11 @@ return
 
     def work
       # Connect to remote server and login
-      set_status STATUS_EXPORT_CONNECTING
+      set_status Job::STATUS_EXPORT_CONNECTING
       @remote.connect
 
       # Prepare target path or build it if asked
-      set_status STATUS_EXPORT_CHDIR
+      set_status Job::STATUS_EXPORT_CHDIR
       #log_info "do_work chdir_or_create #{@output.filedir}"
       @remote.chdir_or_create @output.dir_fs, get_option(:transfer, :mkdir)
 
@@ -92,7 +92,7 @@ return
       @remote = nil
 
       # Update job status
-      set_status STATUS_EXPORT_DISCONNECTING
+      set_status Job::STATUS_EXPORT_DISCONNECTING
       @finished_at = Time.now
 
       # Update counters

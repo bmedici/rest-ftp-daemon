@@ -97,7 +97,7 @@ module RestFtpDaemon
         result[group] ||= nil
 
         # If job is not uploading, next !
-        next unless job.status == STATUS_EXPORT_UPLOADING
+        next unless job.status == Job::STATUS_EXPORT_UPLOADING
 
         # Extract current rate, next if not available
         rate = job.get_info INFO_TRANFER_BITRATE
@@ -210,7 +210,7 @@ module RestFtpDaemon
     def jobs_with_status status
       # No status filter: return all execept queued
       if status.empty?
-        @jobs.reject { |job| job.status == STATUS_QUEUED }
+        @jobs.reject { |job| job.status == Job::STATUS_QUEUED }
 
       # Status filtering: only those jobs
       else

@@ -49,13 +49,13 @@ module RestFtpDaemon
 
     def job_style job
       case job.type
-      when JOB_TYPE_TRANSFER
+      when Job::TYPE_TRANSFER
         icon_klass = "transfer"
-      when JOB_TYPE_VIDEO
+      when Job::TYPE_VIDEO
         icon_klass = "facetime-video"
-      when JOB_TYPE_DUMMY
+      when Job::TYPE_DUMMY
         icon_klass = "question-sign"
-      when JOB_TYPE_WORKFLOW
+      when Job::TYPE_WORKFLOW
         icon_klass = "cog"
       else
         icon_klass = "label-default"

@@ -11,6 +11,31 @@ module RestFtpDaemon
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include CommonHelpers
 
+    # Statuses
+    STATUS_QUEUED    = "queued"
+    STATUS_FAILED    = "failed"
+
+    STATUS_PREPARING = "preparing"
+    STATUS_PREPARED  = "prepared"
+    STATUS_FINISHED  = "finished"
+
+    STATUS_IMPORT_LISTING       = "import/list"
+
+    STATUS_VIDEO_TRANSFORMING   = "video/transform"
+
+    STATUS_EXPORT_CONNECTING    = "export/connect"
+    STATUS_EXPORT_CHDIR         = "export/chdir"
+    STATUS_EXPORT_UPLOADING     = "export/upload"
+    STATUS_EXPORT_RENAMING      = "export/rename"
+    STATUS_EXPORT_DISCONNECTING = "export/disconnect"
+
+
+    # Types
+    TYPE_TRANSFER    = "transfer"
+    TYPE_VIDEO       = "video"
+    TYPE_WORKFLOW    = "workflow"
+    TYPE_DUMMY       = "dummy"
+    TYPES            = [TYPE_TRANSFER, TYPE_VIDEO, TYPE_WORKFLOW, TYPE_DUMMY]
     # Logging
 
     # Fields to be imported from params
@@ -37,7 +62,6 @@ module RestFtpDaemon
     attr_reader :created_since
     attr_reader :started_since
     attr_reader :finished_in
-
 
 
     # Define readers from imported fields
