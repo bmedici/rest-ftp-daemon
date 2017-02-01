@@ -56,15 +56,6 @@ LOG_PIPE_LEN            = 10
 LOG_INDENT              = "\t"
 
 
-JOB_STYLES = {
-  STATUS_QUEUED      => :active,
-  STATUS_FAILED      => :warning,
-  STATUS_FINISHED    => :success,
-  STATUS_VIDEO_TRANSFORMING   => :info,
-  STATUS_EXPORT_UPLOADING   => :info,
-  STATUS_EXPORT_RENAMING    => :info,
-  }
-
 
 # Jobs statuses
 JOB_METHOD_FTP           = "ftp"
@@ -72,17 +63,7 @@ JOB_METHOD_FTPS          = "ftps"
 JOB_METHOD_SFTP          = "sftp"
 JOB_METHOD_FILE          = "file"
 
-# Worker statuses
-WORKER_STYLES = {
-  WorkerBase::STATUS_READY     => nil,
-  WorkerBase::STATUS_SLEEPING  => nil,
-  WorkerBase::STATUS_WORKING   => :info,
 
-  WorkerBase::STATUS_FINISHED  => :success,
-
-  WorkerBase::STATUS_CRASHED   => :warning,
-  WorkerBase::STATUS_TIMEOUT   => :warning,
-  }
 
 # API mountpoints
 MOUNT_SWAGGER_JSON        = "/swagger.json"

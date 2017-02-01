@@ -64,6 +64,8 @@ require_relative "rest-ftp-daemon/workers/job"
 require_relative "rest-ftp-daemon/entities/location"
 require_relative "rest-ftp-daemon/entities/options"
 require_relative "rest-ftp-daemon/entities/job"
+# API handlers
+require_relative "rest-ftp-daemon/api/constants"
 require_relative "rest-ftp-daemon/api/jobs"
 require_relative "rest-ftp-daemon/api/dashboard"
 require_relative "rest-ftp-daemon/api/status"
