@@ -1,5 +1,3 @@
-require 'aws-sdk-resources'
-
 # Handle sFTP transfers for Remote class
 module RestFtpDaemon
   module Remote

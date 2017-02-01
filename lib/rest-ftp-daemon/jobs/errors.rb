@@ -1,9 +1,3 @@
-require "securerandom"
-require "double_bag_ftps"
-require "net/sftp"
-require "net/ftp"
-require 'streamio-ffmpeg'
-
 module RestFtpDaemon
   class InvalidWorkerNumber       < BaseException; end
   class QueueCantCreateJob        < BaseException; end
