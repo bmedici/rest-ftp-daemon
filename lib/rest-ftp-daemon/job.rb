@@ -36,6 +36,12 @@ module RestFtpDaemon
     TYPE_WORKFLOW    = "workflow"
     TYPE_DUMMY       = "dummy"
     TYPES            = [TYPE_TRANSFER, TYPE_VIDEO, TYPE_WORKFLOW, TYPE_DUMMY]
+
+    # Other constats
+    DEFAULT_POOL     = "default"
+
+
+
     # Logging
 
     # Fields to be imported from params

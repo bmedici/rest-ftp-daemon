@@ -94,7 +94,7 @@ module RestFtpDaemon
         optional :pool,
           type: String,
           desc: "Pool of worker to be used",
-          default: DEFAULT_POOL
+          default: Job::DEFAULT_POOL
         optional :priority,
           type: Integer,
           desc: "Priority level of the job (lower is stronger)",

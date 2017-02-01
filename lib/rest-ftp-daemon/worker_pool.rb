@@ -39,7 +39,7 @@ module RestFtpDaemon
       create_thread ReporterWorker, :reporter
 
       # Start JobWorkers threads, ensure we have at least one worker in default pool
-      pools[DEFAULT_POOL] ||= 1
+      pools[Job::DEFAULT_POOL] ||= 1
       pools.each do |pool, count|
         count.times do
           my_wid = next_wid()

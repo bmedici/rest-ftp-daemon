@@ -1,5 +1,4 @@
 # Configuration defaults
-DEFAULT_POOL            = "default"
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_PAGE_SIZE       = 50    # 50 lines
 DEFAULT_RETRY_AFTER     = 10    # 10s
