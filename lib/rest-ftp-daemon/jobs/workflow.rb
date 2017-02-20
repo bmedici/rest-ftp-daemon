@@ -3,48 +3,6 @@
 module RestFtpDaemon
   class JobWorkflow < Job
 
-   def do_before
-      # Init
-      @tasks = [
-        TaskImport.new(     self, :import, input: @source_loc   ),
-        TaskTransform.new(  self, :video                        ),
-        TaskExport.new(     self, :export, output: @target_loc  ),
-      ]
-      #dump :initial
-      prev_task = nil
-
-      # Chain every task in the tasks list
-      @tasks.each do |task|
-        log_info "--- configuring [#{task.name}]"
-
-        # Set task context
-        task.log_context = {
-          wid: self.wid,
-          jid: self.id,
-          id: task.name,
-        }
-
-        # Plug input to previous output
-        task.inputs = prev_task.outputs if prev_task
-
-        # Remember pointer to this task
-        prev_task = task
-      end
-    end
-
-    def do_work
-      # Guess target file name, and fail if present while we matched multiple sources
-      # raise RestFtpDaemon::TargetDirectoryError if @target_loc.name && @sources.count>1
-
-      # Run tasks
-      @tasks.each do |task|
-        log_info "workflow: starting #{task.name}"
-        task.do_before
-        task.do_work
-        task.do_after
-       end
-    end
-
     def do_after
     end
 

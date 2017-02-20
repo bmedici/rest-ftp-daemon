@@ -69,6 +69,9 @@ module RestFtpDaemon
     attr_reader :started_since
     attr_reader :finished_in
 
+    # Workflow-specific
+    attr_accessor :current
+    attr_reader :tasks
 
     # Define readers from imported fields
     IMPORTED.each do |field|
@@ -91,6 +94,10 @@ module RestFtpDaemon
       @tentatives   = 0
       @wid          = nil
       @created_at   = Time.now
+
+      # Init: worfklow-specific
+      @tasks        = []
+      @current      = []
 
       # Logger # FIXME: should be :jobs
       log_pipe      :transfer
@@ -193,6 +200,34 @@ module RestFtpDaemon
       log_info "job_notify [ended]"
       job_notify :ended
     end
+
+    # Process job if it's a workflow
+    def start_workflow
+      log_info "start_workflow"
+
+      # Register tasks
+      register_task :import,    TaskImport
+      register_task :transform, TaskTransform
+      register_task :export,    TaskExport
+
+      # Run tasks
+      @tasks.each do |task|
+        log_info "task: #{task.name}"
+        
+        # Prepare, run and finish task
+        task.do_before
+        task.do_work
+        task.do_after
+
+        #FIXME
+        sleep JOB_DELAY_TASKS
+
+        # Finish
+        task.error = 0
+        # task.do_finalize
+       end
+    end
+
 
     def before
     end
