@@ -34,8 +34,8 @@ module RestFtpDaemon
       end
 
       def size_if_exists target
-        size = @ftp.size target.path_fs
         log_debug "size_if_exists [#{target.name}]"
+        size = @ftp.size target.path_fs
 
       rescue Net::FTPPermError
         return false

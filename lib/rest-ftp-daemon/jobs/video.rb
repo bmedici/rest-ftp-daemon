@@ -112,7 +112,7 @@ module RestFtpDaemon
       path = FFMPEG.send method
 
       # Check that it returns something which exists on disk
-      raise StandardError unless path && File.exists?(path)
+      raise StandardError unless path && File.exist?(path)
 
     rescue StandardError, Errno::ENOENT => exception
       raise RestFtpDaemon::VideoMissingBinary, "missing ffmpeg binary: #{method}"

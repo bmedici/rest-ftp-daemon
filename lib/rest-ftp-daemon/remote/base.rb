@@ -10,7 +10,8 @@ module RestFtpDaemon
       attr_accessor :job
 
       # Delegate set_info info to Job
-      delegate :set_info, to: :job
+      delegate :set_info,
+        to: :job
 
       def initialize target, context, debug = false, ftpes = false
         # Init
