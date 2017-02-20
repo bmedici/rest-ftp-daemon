@@ -15,7 +15,7 @@ module RestFtpDaemon
       end
     end
 
-    def work
+    def do_work
       # Scan local source files from disk
       set_status Job::STATUS_IMPORT_LISTING
       files = @input.local_files

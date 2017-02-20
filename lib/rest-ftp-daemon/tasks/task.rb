@@ -34,6 +34,9 @@ module RestFtpDaemon
       debug_vars :inputs
     end
 
+    def do_work
+    end
+
     def do_after
       debug_vars :outputs
     end

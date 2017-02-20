@@ -49,7 +49,7 @@ return
       @remote.job = self
     end
 
-    def work
+    def do_work
       # Connect to remote server and login
       set_status Job::STATUS_EXPORT_CONNECTING
       @remote.connect

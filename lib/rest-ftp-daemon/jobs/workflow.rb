@@ -40,7 +40,7 @@ module RestFtpDaemon
       @tasks.each do |task|
         log_info "workflow: starting #{task.name}"
         task.do_before
-        task.work
+        task.do_work
         task.do_after
        end
     end
