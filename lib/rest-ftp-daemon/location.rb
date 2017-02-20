@@ -53,7 +53,7 @@ module RestFtpDaemon
       end
     end
 
-    def is? kind
+    def uri_is? kind
       @uri.is_a? kind
     end
 

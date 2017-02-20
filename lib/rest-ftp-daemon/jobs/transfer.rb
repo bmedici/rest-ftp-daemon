@@ -12,7 +12,7 @@ module RestFtpDaemon
       set_info INFO_SOURCE_PROCESSED, 0
 
       # Ensure source is FILE
-      raise RestFtpDaemon::SourceUnsupported, @source_loc.scheme   unless @source_loc.is? URI::FILE
+      raise RestFtpDaemon::SourceUnsupported, @source_loc.scheme   unless @source_loc.uri_is? URI::FILE
 
       # Prepare remote object
       case target_uri
