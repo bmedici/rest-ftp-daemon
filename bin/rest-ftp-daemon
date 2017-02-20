@@ -47,7 +47,7 @@ begin
     opts.separator ""
     opts.on_tail("-h", "--help", "Show this message")  do
       puts opts
-      puts Conf.generate(:config_message) unless File.exist?(Conf.generate(:config_etc))
+      puts Conf.generate_config_message unless File.exist?(Conf.generate_config_etc)
       exit(0)
     end
     #opts.on_tail("-v", "--version", "Show version (#{Conf.app_ver})")         { puts(Conf.app_ver) && exit(0) }
@@ -78,7 +78,7 @@ Conf[:port]         = cmd_port       unless cmd_port.nil?
 Conf[:user]         = cmd_user       unless cmd_user.nil?
 Conf[:group]        = cmd_group      unless cmd_group.nil?
 Conf[:pidfile]      = cmd_pidfile    unless cmd_pidfile.nil?
-Conf[:pidfile]      ||= Conf.generate(:pidfile)
+Conf[:pidfile]      ||= Conf.generate_pidfile
 
 
 # Thin: basic options
@@ -88,7 +88,7 @@ argv = []
 argv << ["-e",          Conf.app_env]
 argv << ["-p",          Conf[:port].to_s]
 argv << ["--pid",       Conf[:pidfile].to_s]
-argv << ["--tag",       Conf.generate(:process_name)]
+argv << ["--tag",       Conf.generate_process_name]
 argv << ["--daemonize"] if ([1, true].include? Conf[:daemonize])
 argv << ["--log",       thin_logfile] if thin_logfile
 
@@ -115,8 +115,8 @@ puts "Network port    \t #{Conf[:port]}"
 puts "User:group      \t #{Conf[:user]}:#{Conf[:group]}" if Conf[:user] && Conf[:group]
 puts "PID file        \t #{Conf[:pidfile]}"
 puts
-puts "Newrelic        \t #{Conf.feature?(:newrelic) || '-'}"
-puts "Rollbar         \t #{Conf.feature?(:rollbar) || '-'}"
+puts "Newrelic        \t #{Conf.feature_newrelic? || '-'}"
+puts "Rollbar         \t #{Conf.feature_rollbar? || '-'}"
 if cmd_dump
   puts
   puts Conf.dump

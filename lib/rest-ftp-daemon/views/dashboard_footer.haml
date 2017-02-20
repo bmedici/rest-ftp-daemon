@@ -26,8 +26,8 @@
   .btn-group.btn-group-sm
     .btn.btn-default.btn-info.disabled  Features
     = dashboard_feature :reload, Conf[:allow_reload], "ACTIVE (config is hot-reloadable)",  "changes at startup only"
-    = dashboard_feature :newrelic, Conf.feature?(:newrelic), "ACTIVE (license found)",  "disabled"
-    = dashboard_feature :rollbar, Conf.feature?(:rollbar), "ACTIVE (token found)",  "disabled"
+    = dashboard_feature :newrelic, Conf.feature_newrelic?, "ACTIVE (license found)",  "disabled"
+    = dashboard_feature :rollbar, Conf.feature_rollbar?, "ACTIVE (token found)",  "disabled"
 
   .btn-group.btn-group-sm
     .btn.btn-default.btn-info.disabled  IP

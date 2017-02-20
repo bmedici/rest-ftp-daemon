@@ -75,7 +75,7 @@ module RestFtpDaemon
         headers: {
           content_type: :json,
           accept: :json,
-          user_agent: Conf.generate(:user_agent),
+          user_agent: Conf.generate_user_agent,
           }
 
       # Execure request
