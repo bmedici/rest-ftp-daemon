@@ -61,12 +61,6 @@ module RestFtpDaemon
     end
 
     def job_type job
-      # sprintf(
-      #     '<span class="glyphicon glyphicon-%s" alt="%s"></span>&nbsp;%s',
-      #     job_style(job),
-      #     job.type,
-      #     job.type
-      #     )
       sprintf(
           '<span class="glyphicon glyphicon-%s" alt="%s"></span>',
           job_style(job),
@@ -148,7 +142,7 @@ module RestFtpDaemon
     end
 
     def text_or_empty text
-      return "-" if text.nil? || text.empty?
+      return "-" if text.nil? || text.to_s.empty?
       text
     end
 
