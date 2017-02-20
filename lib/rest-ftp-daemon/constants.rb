@@ -37,17 +37,18 @@ INFO_TRANFER_PROGRESS     = :progress
 INFO_TRANFER_BITRATE      = :bitrate
 INFO_TARGET_FILES         = :target_files
 
+
 # Constants: logger
 LOGGER_FORMAT = {
-  # context:  "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s ",
-  # context:  "wid:%-8{wid} jid:%-12{jid} id:%-5{id}",
-  context: {
-    wid:    "%-10s",
-    jid:    "%-10s",
-    id:     "%-8s",
-    caller: "%18s |",
-    }
+# context:  "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s ",
+# context:  "wid:%-8{wid} jid:%-12{jid} id:%-5{id}",
+context: {
+  wid:    "%-10s",
+  jid:    "%-10s",
+  id:     "%-8s",
+  caller: "%18s |",
   }
+}
 
 
 # Constants: logger to be cleaned up
