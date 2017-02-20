@@ -10,7 +10,7 @@ module RestFtpDaemon
       config_section :reporter
 
       # Other configuration options
-      @feature_newrelic = Conf.feature?(:newrelic)
+      @feature_newrelic = Conf.feature_newrelic?
 
       # Check that everything is OK
       return "reporter disabled"  if disabled?(@config[:timer])
