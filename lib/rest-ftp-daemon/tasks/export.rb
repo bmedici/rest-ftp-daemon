@@ -2,6 +2,9 @@ module RestFtpDaemon
   class TaskExport < Task
     include TransferHelpers
 
+    # Task attributes
+    ICON = "export"
+
     def do_before
       # Init
       super

@@ -3,6 +3,10 @@ module RestFtpDaemon
 
     def work
       work_debug
+    # Task attributes
+    # ICON = "facetime-video"
+    ICON = "random"
+ 
     end
 
   protected

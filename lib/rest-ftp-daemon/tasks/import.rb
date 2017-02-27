@@ -9,6 +9,8 @@ module RestFtpDaemon
       if @inputs.size >1
         raise RestFtpDaemon::SourceUnsupported, "accepts only one source"
       end
+    # Task attributes
+    ICON = "import"
 
       unless @input.is? URI::FILE
         raise RestFtpDaemon::SourceUnsupported, @input.scheme

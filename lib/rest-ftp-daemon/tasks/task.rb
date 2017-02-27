@@ -2,6 +2,10 @@ module RestFtpDaemon
   class Task
     include BmcDaemonLib::LoggerHelper
 
+    # Task attributes
+    # ICON = "transfer"
+    ICON = ""
+
     # Class options
     attr_reader :job
     attr_reader :name
