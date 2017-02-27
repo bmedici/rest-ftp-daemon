@@ -98,7 +98,6 @@ module RestFtpDaemon
         end
 
         # Do the transfer
-        log_debug "upload temp[#{use_temp_name}] name[#{dest.name}]"
         @sftp.upload! source.path_fs, dest.path_fs do |event, _uploader, *args|
           case event
           when :open then

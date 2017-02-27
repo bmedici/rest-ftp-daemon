@@ -37,7 +37,7 @@ module RestFtpDaemon
       def upload source, target, use_temp_name = false, &callback
         # Push init
         raise RestFtpDaemon::AssertionFailed, "upload/client" if @client.nil?
-        log_debug "upload bucket[#{target.aws_bucket}] path[#{target.path}]"
+        log_debug "bucket[#{target.aws_bucket}] path[#{target.path}]"
 
         # Do the transfer, passing the file to the best method
         File.open(source.path_fs, 'r', encoding: 'BINARY') do |file|
