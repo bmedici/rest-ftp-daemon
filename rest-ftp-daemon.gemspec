@@ -32,15 +32,15 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "ruby-prof"
 
   # Runtime dependencies
-  spec.add_runtime_dependency     "bmc-daemon-lib", "~> 0.7"
+  spec.add_runtime_dependency     "bmc-daemon-lib", "0.7.4"
   spec.add_runtime_dependency     "json", "~> 1.8"
   spec.add_runtime_dependency     "thin", "~> 1.7"
-  spec.add_runtime_dependency     "activesupport", "~> 4.2"
+  spec.add_runtime_dependency     "activesupport", "4.2.7.1"
 
-  spec.add_runtime_dependency     "grape"
-  spec.add_runtime_dependency     "grape-entity"
-  spec.add_runtime_dependency     "grape-swagger"
-  spec.add_runtime_dependency     "grape-swagger-entity"
+  spec.add_runtime_dependency     "grape", "0.19.1"
+  spec.add_runtime_dependency     "grape-entity", "0.6.0"
+  spec.add_runtime_dependency     "grape-swagger", "0.26.0"
+  spec.add_runtime_dependency     "grape-swagger-entity", "0.1.5"
   spec.add_runtime_dependency     "grape-swagger-representable"
 
   spec.add_runtime_dependency     "rest-client", "~> 1.8"
@@ -55,7 +55,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency     "net-sftp"
   spec.add_runtime_dependency     "double-bag-ftps"
-  spec.add_runtime_dependency     "aws-sdk-resources", '~> 2'
+  spec.add_runtime_dependency     "aws-sdk-resources", '~> 2.6'
   spec.add_runtime_dependency     "streamio-ffmpeg"
 
 end

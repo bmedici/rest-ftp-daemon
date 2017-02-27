@@ -2,17 +2,17 @@ PATH
   remote: .
   specs:
     rest-ftp-daemon (1.0.7)
-      activesupport (~> 4.2)
+      activesupport (= 4.2.7.1)
       api-auth
-      aws-sdk-resources (~> 2)
-      bmc-daemon-lib (~> 0.7)
+      aws-sdk-resources (~> 2.6)
+      bmc-daemon-lib (= 0.7.4)
       double-bag-ftps
       facter
       get_process_mem
-      grape
-      grape-entity
-      grape-swagger
-      grape-swagger-entity
+      grape (= 0.19.1)
+      grape-entity (= 0.6.0)
+      grape-swagger (= 0.26.0)
+      grape-swagger-entity (= 0.1.5)
       grape-swagger-representable
       haml
       json (~> 1.8)
@@ -38,11 +38,11 @@ GEM
       public_suffix (~> 2.0, >= 2.0.2)
     api-auth (2.1.0)
     ast (2.3.0)
-    aws-sdk-core (2.6.46)
+    aws-sdk-core (2.7.15)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.6.46)
-      aws-sdk-core (= 2.6.46)
+    aws-sdk-resources (2.7.15)
+      aws-sdk-core (= 2.7.15)
     aws-sigv4 (1.0.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -206,4 +206,4 @@ DEPENDENCIES
   ruby-prof
 
 BUNDLED WITH
-   1.13.5
+   1.14.4
