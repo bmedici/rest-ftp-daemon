@@ -62,6 +62,45 @@ module RestFtpDaemon
       end
     end
 
+    def job_task_status job
+      # Only works with JobWorkflow
+      return unless job.is_a? JobWorkflow
+      out = []
+
+      out << '<span class="label-group">'
+
+      # For each task
+      job.tasks.each do |task|
+        if task.error.nil?
+          # label_style = "simple blink"
+          label_style = "simple"
+        elsif task.error == 0
+          label_style = "success"
+        elsif task.error
+            label_style = "warning"
+        else
+            label_style = "simple"
+        end
+
+        # '<span class="transfer-type label label-xs label-%s" title="%s">', 
+        out << sprintf(
+          '<span class="task-status label label-xs label-%s">
+            <span class="glyphicon glyphicon-%s" alt="%s">
+            </span>
+          </span>',
+          label_style,
+          task.class.const_get(:ICON),
+          task.error
+          )
+      end
+
+      out << '</span>'
+
+
+      return out.join()
+    end
+
+
     def job_type job
       sprintf(
           '<span class="glyphicon glyphicon-%s" alt="%s"></span>',
