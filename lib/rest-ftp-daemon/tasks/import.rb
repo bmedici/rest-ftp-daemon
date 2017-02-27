@@ -1,7 +1,5 @@
 module RestFtpDaemon
   class TaskImport < Task
-    def do_before
-      # Init
       super
       @input = @inputs.first
 
@@ -13,6 +11,8 @@ module RestFtpDaemon
     ICON = "import"
 
       unless @input.is? URI::FILE
+    def do_before
+      # Check input
         raise RestFtpDaemon::SourceUnsupported, @input.scheme
       end
       dump_locations "input", [@input]
