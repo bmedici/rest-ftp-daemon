@@ -8,3 +8,7 @@ DOC/
 rest-ftp-daemon.yml
 .ruby-version
 /.idea
+
+Gemfile.lock
+.ruby-version
+.ruby-gemset
