@@ -9,11 +9,13 @@ module RestFtpDaemon
       # Init
       super
       @output = @outputs.first
+      dump_locations "input", @inputs
 
       # Check source
       if @outputs.size>1
         raise RestFtpDaemon::TargetUnsupported, "accepts only one target"
       end
+      dump_locations "target_loc", [@output]
 
 return
 
@@ -88,8 +90,8 @@ return
 
     def do_after
       # Close FTP connexion and free up memory
-      set_info "do_after close connexion, update status and counters"
       @remote.close
+      # log_info "do_after close connexion, update status and counters"
 
       # Free @remote object
       @remote = nil

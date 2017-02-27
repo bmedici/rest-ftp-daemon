@@ -15,6 +15,7 @@ module RestFtpDaemon
       unless @input.is? URI::FILE
         raise RestFtpDaemon::SourceUnsupported, @input.scheme
       end
+      dump_locations "input", [@input]
     end
 
     def do_work

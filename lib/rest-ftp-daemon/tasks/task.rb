@@ -35,14 +35,12 @@ module RestFtpDaemon
     end
 
     def do_before
-      debug_vars :inputs
     end
 
     def do_work
     end
 
     def do_after
-      debug_vars :outputs
     end
 
   protected
@@ -62,6 +60,10 @@ module RestFtpDaemon
         out = t.clone
         out.name = "#{t.name}-#{@name}"
         @outputs << out
+    def dump_locations name, files
+      log_info "task #{name}", files.collect(&:to_s)
+    end
+
       end
     end
 
