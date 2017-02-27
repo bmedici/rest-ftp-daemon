@@ -124,7 +124,7 @@ module RestFtpDaemon
 
       # Add a prefix label, if matched
       if matches
-        out <<'<span class="transfer-prefix label label-xs label-simple">'
+        out << '<span class="transfer-prefix label label-xs label-simple">'
         out << matches[1]
         out << '</span>'
         text = matches[2]
