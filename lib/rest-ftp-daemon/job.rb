@@ -120,6 +120,11 @@ module RestFtpDaemon
       job_flag_init :transfer, :mkdir
       job_flag_init :transfer, :tempfile
 
+      # Register tasks
+      register_task :import,    TaskImport
+      register_task :transform, TaskTransform
+      register_task :export,    TaskExport
+
       # Check if pool name exists
       Conf[:pools] ||= {}
       @pool = DEFAULT_POOL unless Conf[:pools].keys.include?(@pool)
@@ -205,29 +210,44 @@ module RestFtpDaemon
     def start_workflow
       log_info "start_workflow"
 
-      # Register tasks
-      register_task :import,    TaskImport
-      register_task :transform, TaskTransform
-      register_task :export,    TaskExport
-
       # Run tasks
       @tasks.each do |task|
-        log_info "task: #{task.name}"
-        
-        # Prepare, run and finish task
-        task.do_before
-        task.do_work
+        begin
+          # Prepare and run task
+          task.do_before
+          task.do_work
+
+        rescue StandardError => exception
+          # Keep the exception with us
+          task.error = exception
+
+          # Otherwise, propagate error
+          Rollbar.error exception, "job [#{error}]: #{exception.class.name}: #{exception.message}"
+
+          # Close ftp connexion if open
+          @remote.close unless @remote.nil? || !@remote.connected?
+
+          # FIXME
+          # Stop tasks from here
+          return oops(:task, exception)
+        end
+
+        # Always execute do_after
         task.do_after
-
-        #FIXME
-        sleep JOB_DELAY_TASKS
-
-        # Finish
         task.error = 0
-        # task.do_finalize
-       end
-    end
+        
+        # FIXME
+        sleep JOB_DELAY_TASKS
+      end
 
+      # All done !
+      set_status STATUS_FINISHED
+      log_info "job_notify [ended]"
+      job_notify :ended      
+
+      # Update counters
+      RestFtpDaemon::Counters.instance.increment :jobs, :finished
+    end
 
     def before
     end
@@ -439,6 +459,23 @@ module RestFtpDaemon
       return unless signal
       job_notify signal, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
+
+    def register_task name, kind
+      # Instantiate task
+      log_info "register_task [#{name}] -> #{kind.to_s}"
+      task = kind.new(self, name)
+
+      # Set task context
+      task.log_context = {
+        wid: self.wid,
+        jid: self.id,
+        id: name,
+      }
+
+      # Store it
+      @tasks << task
+    end
+
 
     # NewRelic instrumentation
     add_transaction_tracer :job_notify,  category: :task
