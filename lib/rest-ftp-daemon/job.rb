@@ -41,14 +41,15 @@ module RestFtpDaemon
     DEFAULT_POOL     = "default"
 
 
-
     # Logging
 
     # Fields to be imported from params
     IMPORTED = %w(type priority pool label priority source target options overwrite notify mkdir tempfile video_options video_custom)
+    # IMPORTED = %w(type priority pool label priority source target options notify)
 
     # Class options
     attr_accessor :wid
+
     attr_reader :id
 
     attr_reader :source_loc
@@ -149,8 +150,8 @@ module RestFtpDaemon
       set_status STATUS_PREPARING
 
       # Increment run cours
-      @tentatives +=1
-      @updated_at = Time.now
+      @tentatives  += 1
+      @updated_at   = Time.now
       @started_at   = nil
       @finished_at  = nil
 
@@ -162,7 +163,7 @@ module RestFtpDaemon
       set_status STATUS_QUEUED
       set_error nil
       job_notify :queued
-      log_info "reset notify[queued] tentative[#{@tentatives}]"
+      log_info "reset: notify[queued] tentative[#{@tentatives}]"
     end
 
     # Process job
@@ -171,33 +172,41 @@ module RestFtpDaemon
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
 
-      # Remember when we started
-      @started_at = Time.now
-
       # Notify we start working
-      log_info "job_notify [started]"
       current_signal = :started
+      log_info "start"
       set_status Worker::STATUS_WORKING
       job_notify :started
 
+      # Remember when we started
+      @started_at = Time.now
+
+      log_info "start_legacy"
+
       # Before work
-      log_debug "do_before"
+      log_debug "start_legacy/do_before"
       current_signal = :started
       do_before
 
       # Do the hard work
-      log_debug "do_work"
+      log_debug "start_legacy/do_work"
       current_signal = :ended
       do_work
 
       # Finalize all this
-      log_debug "do_after"
+      log_debug "start_legacy/do_after"
       current_signal = :ended
       do_after
 
     rescue StandardError => exception
+      # Propagate error
       Rollbar.error exception, "job [#{error}]: #{exception.class.name}: #{exception.message}"
-      return oops current_signal, exception
+
+      # Close ftp connexion if open
+      @remote.close unless @remote.nil? || !@remote.connected?
+
+      # Raise error
+      return oops(current_signal, exception)
 
     else
       # All done !
@@ -295,7 +304,6 @@ module RestFtpDaemon
       #get_info :target_host
     end
 
-     def get_info name
     def get_option scope, name
       @options[scope] ||= {}
       @options[scope][name]
@@ -306,6 +314,7 @@ module RestFtpDaemon
       @options[scope][name] = value
     end
 
+    def get_info name
       @mutex.synchronize do
         @infos[name]
       end
@@ -326,6 +335,25 @@ module RestFtpDaemon
       touch_job
     end
 
+    def job_touch
+      now = Time.now
+      @updated_at = now
+      Thread.current.thread_variable_set :updated_at, now
+    end
+
+    def job_notify signal, payload = {}
+      # Skip if no URL given
+      return unless @notify
+
+      # Ok, create a notification!
+      payload[:id] = @id
+      payload[:signal] = signal
+      RestFtpDaemon::Notification.new @notify, payload
+
+    rescue StandardError => ex
+      log_error "job_notify EXCEPTION: #{ex.inspect}"
+    end
+
   protected
 
     def alert_common_method_called
@@ -340,12 +368,6 @@ module RestFtpDaemon
       jid: @id,
       #id: @id,
       }
-    end
-
-    def job_touch
-      now = Time.now
-      @updated_at = now
-      Thread.current.thread_variable_set :updated_at, now
     end
 
     # Timestamps calculation
@@ -396,19 +418,6 @@ module RestFtpDaemon
       # instance_variable_set variable, 
     end
 
-    def job_notify signal, payload = {}
-      # Skip if no URL given
-      return unless @notify
-
-      # Ok, create a notification!
-      payload[:id] = @id
-      payload[:signal] = signal
-      RestFtpDaemon::Notification.new @notify, payload
-
-    rescue StandardError => ex
-      log_error "job_notify EXCEPTION: #{ex.inspect}"
-    end
-
     def oops signal, exception, error = nil#, include_backtrace = false
       # Find error code in ERRORS table
       if error.nil?
@@ -432,9 +441,6 @@ module RestFtpDaemon
   
       # Log to Rollbar
       Rollbar.warning exception, "oops [#{error}]: #{exception.class.name}: #{exception.message}"
-
-      # Close ftp connexion if open
-      @remote.close unless @remote.nil? || !@remote.connected?
 
       # Update job's internal status
       set_status STATUS_FAILED
