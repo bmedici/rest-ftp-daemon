@@ -3,7 +3,7 @@ require 'active_support/core_ext/module/delegation'
 
 module RestFtpDaemon
   class Location
-    include CommonHelpers
+    #include CommonHelpers
 
     # Accessors
     attr_accessor :name
@@ -22,6 +22,8 @@ module RestFtpDaemon
     # def_delegators :@uri,
     delegate :scheme, :host, :port, :user, :password, :to_s,
       to: :uri
+
+    TEMPFILE_RENDOM_LENGTH = 8
 
     def initialize url
       # Check parameters
@@ -86,7 +88,8 @@ module RestFtpDaemon
     end
 
     def generate_temp_name!
-      @name = "#{@name}.temp-#{identifier(JOB_TEMPFILE_LEN)}"
+      random = rand(36**TEMPFILE_RENDOM_LENGTH).to_s(36)
+      @name = "#{@name}.temp-#{random}"
     end
 
     # def scheme? condition
