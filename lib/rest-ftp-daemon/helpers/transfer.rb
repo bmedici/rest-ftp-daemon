@@ -9,8 +9,8 @@ module RestFtpDaemon
 
       # Use source filename if target path provided none (typically with multiple sources)
       log_info "remote_upload temp[#{@tempfile}] source[#{source.path_fs}] target[#{target.path}]", {
-        source:     source.path_fs,
         target:     target.path,
+        source_abs: source.path_abs,
         overwrite:  overwrite,
         tempfile:   @tempfile,
         }

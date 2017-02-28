@@ -40,7 +40,7 @@ module RestFtpDaemon
         log_debug "bucket[#{target.aws_bucket}] path[#{target.path}]"
 
         # Do the transfer, passing the file to the best method
-        File.open(source.path_fs, 'r', encoding: 'BINARY') do |file|
+        File.open(source.path_abs, 'r', encoding: 'BINARY') do |file|
           if file.size >= JOB_S3_MIN_PART
             upload_multipart  file, target.aws_bucket, target.path, target.name, &callback
           else

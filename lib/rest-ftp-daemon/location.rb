@@ -54,10 +54,10 @@ module RestFtpDaemon
       @uri.is_a? kind
     end
     
-    def path_fs
+    def path_abs
       path
     end
-    def dir_fs
+    def dir_abs
       dir
     end
 
@@ -75,9 +75,9 @@ module RestFtpDaemon
     def size
       return unless uri.is_a? URI::FILE
 
-      local_file_path = path_fs
-      return unless File.exist? path_fs
-      return File.size path_fs
+      local_file_path = path_abs
+      return unless File.exist? local_file_path
+      return File.size local_file_path
     end
 
     def generate_temp_name!

@@ -35,7 +35,7 @@ module RestFtpDaemon
 
       def size_if_exists target
         log_debug "size_if_exists [#{target.name}]"
-        size = @ftp.size target.path_fs
+        size = @ftp.size target.path_abs
 
       rescue Net::FTPPermError
         return false
@@ -103,12 +103,12 @@ module RestFtpDaemon
         end
 
         # Move to the directory
-        log_debug "chdir [#{dest.dir_fs}]"
-        @ftp.chdir dest.dir_fs
+        log_debug "chdir [#{dest.dir_abs}]"
+        @ftp.chdir dest.dir_abs
 
         # Do the transfer
-        log_debug "putbinaryfile [#{source.path_fs}] [#{dest.name}]"
-        @ftp.putbinaryfile source.path_fs, dest.name, JOB_FTP_CHUNKMB do |data|
+        log_debug "putbinaryfile abs[#{source.path_abs}] [#{dest.name}]"
+        @ftp.putbinaryfile source.path_abs, dest.name, JOB_FTP_CHUNKMB do |data|
           # Update job status after this block transfer
           yield data.bytesize, dest.name
         end

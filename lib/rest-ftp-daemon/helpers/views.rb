@@ -170,7 +170,7 @@ module RestFtpDaemon
         out << '</span>'
         text = matches[2]
       else
-        text = loc.path_fs
+        text = loc.path_abs
       end
 
       # Add remaining stuff
