@@ -8,19 +8,27 @@ require "syslog"
 require "thread"
 require "newrelic_rpm"
 require "rollbar"
+require "securerandom"
+require "double_bag_ftps"
+require "net/sftp"
+require "net/ftp"
+require 'aws-sdk-resources'
+require 'streamio-ffmpeg'
+require 'active_support/core_ext/module'
+require "fileutils"
 
 
+# Constants and exceptions
 require_relative "rest-ftp-daemon/constants"
-require 'bmc-daemon-lib'
+require_relative "rest-ftp-daemon/exceptions"
 
 
 # Shared libs / monkey-patching
+require 'bmc-daemon-lib'
 require_relative "shared/patch_array"
 require_relative "shared/patch_haml"
 require_relative "shared/patch_file"
 
-# Exceptions
-require_relative "rest-ftp-daemon/exceptions"
 
 # Helpers
 require_relative "rest-ftp-daemon/helpers/common"
@@ -38,6 +46,7 @@ require_relative "rest-ftp-daemon/jobs/video"
 
 # Remotes
 require_relative "rest-ftp-daemon/remote/base"
+require_relative "rest-ftp-daemon/remote/remote_file"
 require_relative "rest-ftp-daemon/remote/ftp"
 require_relative "rest-ftp-daemon/remote/sftp"
 require_relative "rest-ftp-daemon/remote/s3"
@@ -54,6 +63,13 @@ require_relative "rest-ftp-daemon/tasks/export"
 require_relative "rest-ftp-daemon/entities/location"
 require_relative "rest-ftp-daemon/entities/options"
 require_relative "rest-ftp-daemon/entities/job"
+
+# Workers
+require_relative "rest-ftp-daemon/worker_pool"
+require_relative "rest-ftp-daemon/workers/worker"
+require_relative "rest-ftp-daemon/workers/conchita"
+require_relative "rest-ftp-daemon/workers/reporter"
+require_relative "rest-ftp-daemon/workers/job"
 
 # API handlers
 require_relative "rest-ftp-daemon/api/constants"
@@ -73,12 +89,6 @@ require_relative "rest-ftp-daemon/counters"
 require_relative "rest-ftp-daemon/notification"
 require_relative "rest-ftp-daemon/location"
 
-# Workers
-require_relative "rest-ftp-daemon/worker_pool"
-require_relative "rest-ftp-daemon/workers/worker"
-require_relative "rest-ftp-daemon/workers/conchita"
-require_relative "rest-ftp-daemon/workers/reporter"
-require_relative "rest-ftp-daemon/workers/job"
 
 # Init
 require_relative "rest-ftp-daemon/initialize"
