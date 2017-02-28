@@ -11,24 +11,20 @@ module RestFtpDaemon
     attr_reader :name
     # attr_reader :fileset
     attr_accessor :log_context
-    attr_accessor :inputs
-    attr_accessor :outputs
     # @fileset  = "unknown"
 
-    delegate :job_notify, :set_status, :set_info,
+    # Method delegation to parent Job
+    delegate :job_notify, :set_status, :set_info, :get_option, :job_touch,
+      :source_loc, :target_loc,
       to: :job
 
     def initialize job, name, opts = {}
       # Init context
-      @inputs       = []
-      @outputs      = []
       @job          = job
       @name         = name
       @log_context  = {}
 
       # Import attributes
-      @inputs       << opts[:input]   if opts[:input]# || :none
-      @outputs      << opts[:output] if opts[:output]# || :none
 
       # Enable logging
       log_pipe      :workflow

@@ -12,18 +12,21 @@ module RestFtpDaemon
       dump_locations "input", @inputs
 
       # Check source
-      if @outputs.size>1
-        raise RestFtpDaemon::TargetUnsupported, "accepts only one target"
       end
-      dump_locations "target_loc", [@output]
 
 return
+      # Check outputs
+      #@output = @job.target_loc.clone
+      unless target_loc.uri_is? URI::FILE
+        raise RestFtpDaemon::TargetUnsupported, "task output: invalid file type"
+      end
+      dump_locations "target_loc", [target_loc]
 
       # Guess target file name, and fail if present while we matched multiple sources
       if @inputs.count<1
         raise RestFtpDaemon::SourceUnsupported, "should receive at least one source"
       end
-      if @output.name && @inputs.count>1
+      if target_loc.name && @inputs.count>1
         raise RestFtpDaemon::TargetDirectoryError, "target should be a directory when matching many files"
       end
 
@@ -31,21 +34,23 @@ return
       @transfer_sent = 0
       set_info INFO_SOURCE_PROCESSED, 0
       # Prepare remote object
-      case target_uri
+      case target_loc.uri
       when URI::FTP
         log_info "do_before target_method FTP"
-        @remote = Remote::RemoteFTP.new @target_loc, log_context, @config[:debug_ftp]
+        @remote = Remote::RemoteFTP.new target_loc, log_context, @config[:debug_ftp]
       when URI::FTPES, URI::FTPS
         log_info "do_before target_method FTPES/FTPS"
-        @remote = Remote::RemoteFTP.new @target_loc, log_context, @config[:debug_ftps], :ftpes
+        @remote = Remote::RemoteFTP.new target_loc, log_context, @config[:debug_ftps], :ftpes
       when URI::SFTP
         log_info "do_before target_method SFTP"
-        @remote = Remote::RemoteSFTP.new @target_loc, log_context, @config[:debug_sftp]
+        @remote = Remote::RemoteSFTP.new target_loc, log_context, @config[:debug_sftp]
       when URI::S3
         log_info "do_before target_method S3"
-        @remote = Remote::RemoteS3.new @target_loc, log_context, @config[:debug_s3]
+        @remote = Remote::RemoteS3.new target_loc, log_context, @config[:debug_s3]
+        log_info "do_before target_method FILE"
+        @remote = Remote::RemoteFile.new target_loc, log_context, @config[:debug_file]
       else
-        message = "unknown scheme [#{@target_loc.scheme}] [#{target_uri.class.name}]"
+        message = "unknown scheme [#{target_loc.scheme}] [#{target_uri.class.name}]"
         log_info "do_before #{message}"
         raise RestFtpDaemon::TargetUnsupported, message
       end
@@ -77,8 +82,8 @@ return
       targets = []
       @inputs.each do |source|
         # Build final target, add the source file name if noneh
-        target = @output.clone
         target.name = source.name unless target.name
+        target = target_loc.clone
 
         # Do the transfer, for each file
         remote_upload source, target, get_option(:transfer, :overwrite)

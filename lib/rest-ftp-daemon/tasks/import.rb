@@ -1,27 +1,23 @@
 module RestFtpDaemon
   class TaskImport < Task
       super
-      @input = @inputs.first
 
-      # Check source
-      if @inputs.size >1
-        raise RestFtpDaemon::SourceUnsupported, "accepts only one source"
-      end
     # Task attributes
     ICON = "import"
 
-      unless @input.is? URI::FILE
     def do_before
       # Check input
-        raise RestFtpDaemon::SourceUnsupported, @input.scheme
+      # @input = @job.source_loc.clone
+      unless source_loc.is_a?(Location) && source_loc.uri_is?(URI::FILE)
+        raise RestFtpDaemon::SourceUnsupported, source_loc.scheme
       end
-      dump_locations "input", [@input]
+      dump_locations "source_loc", [source_loc]
     end
 
     def do_work
       # Scan local source files from disk
       set_status Job::STATUS_IMPORT_LISTING
-      files = @input.local_files
+      files = source_loc.local_files
       set_info INFO_SOURCE_COUNT, files.size
       set_info INFO_SOURCE_FILES, files.collect(&:name)
       log_info "local_files", files.collect(&:name)
