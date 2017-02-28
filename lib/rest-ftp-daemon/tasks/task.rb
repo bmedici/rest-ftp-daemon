@@ -11,7 +11,6 @@ module RestFtpDaemon
     attr_reader :name
     # attr_reader :fileset
     attr_accessor :log_context
-    # @fileset  = "unknown"
 
     # Method delegation to parent Job
     delegate :job_notify, :set_status, :set_info, :get_option, :job_touch,
@@ -24,7 +23,6 @@ module RestFtpDaemon
       @name         = name
       @log_context  = {}
 
-      # Import attributes
 
       # Enable logging
       log_pipe      :workflow
@@ -51,11 +49,7 @@ module RestFtpDaemon
       end
     end
 
-    def debug_fake_work
-      @inputs.each do |t|
-        out = t.clone
-        out.name = "#{t.name}-#{@name}"
-        @outputs << out
+
     def dump_locations name, files
       log_info "task #{name}", files.collect(&:to_s)
     end

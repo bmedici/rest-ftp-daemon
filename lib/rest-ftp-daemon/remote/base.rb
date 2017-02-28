@@ -45,10 +45,10 @@ module RestFtpDaemon
         return unless @debug
         puts
         puts "-------------------- SESSION STARTING -------------------------"
-        puts "class\t #{myname}"
-        puts "host\t #{@target.host}"
-        puts "user\t #{@target.user}"
-        puts "port\t #{@target.port}"
+        puts "class #{myname}"
+        puts " host  #{@target.host}"
+        puts " user  #{@target.user}"
+        puts " port  #{@target.port}"
         puts "---------------------------------------------------------------"
       end
 

@@ -118,7 +118,6 @@ module RestFtpDaemon
           log_debug "upload rename [#{dest.name}] > [#{target.name}]"
           @ftp.rename dest.name, target.name
         end
-
       end
 
       def close

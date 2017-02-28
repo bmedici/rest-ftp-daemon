@@ -354,6 +354,22 @@ module RestFtpDaemon
       log_error "job_notify EXCEPTION: #{ex.inspect}"
     end
 
+
+    def set_error value
+      @mutex.synchronize do
+        @error = value
+      end
+      job_touch
+    end
+
+    def set_status value
+      @mutex.synchronize do
+        @status = value
+      end
+      job_touch
+    end
+
+
   protected
 
     def alert_common_method_called
@@ -386,20 +402,6 @@ module RestFtpDaemon
       else
         return value
       end
-    end
-
-    def set_error value
-      @mutex.synchronize do
-        @error = value
-      end
-      job_touch
-    end
-
-    def set_status value
-      @mutex.synchronize do
-        @status = value
-      end
-      touch_job
     end
 
     # def job_status value

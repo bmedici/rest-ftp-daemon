@@ -48,6 +48,7 @@ module RestFtpDaemon
           end
         end
 
+
         # We're all set
         log_debug "RemoteS3.upload done"
       end

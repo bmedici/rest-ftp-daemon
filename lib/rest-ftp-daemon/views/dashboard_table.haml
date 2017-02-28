@@ -54,7 +54,7 @@
           %b= source_current unless source_current.nil?
 
     %td
-      -# unless job.error || job.status == STATUS_FINISHED
+
       - if job_working
         .progress
           .progress-bar{style:"width: #{work_progress}%;"}
@@ -63,6 +63,7 @@
       - else
         .error{title: error_message}
           = text_or_empty(job.error)
+
 
     %td.nobr.text-right
       = format_bytes(transfer_total, "B")
@@ -82,3 +83,4 @@
 
     %td
       .label.flag.worker-label{class: job_tentatives_style(job.tentatives)}= job.tentatives
+

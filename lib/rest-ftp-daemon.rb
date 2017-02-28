@@ -10,7 +10,6 @@ require "newrelic_rpm"
 require "rollbar"
 
 
-
 require_relative "rest-ftp-daemon/constants"
 require 'bmc-daemon-lib'
 

@@ -124,9 +124,6 @@ module RestFtpDaemon
         if use_temp_name
           log_debug "upload rename [#{dest.name}] > [#{target.name}]"
         end
-
-        # progress:
-        # Net::SFTP::StatusException
         @sftp.rename! source.path_abs, target.path_abs, 0x00000001
       end
 

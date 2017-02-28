@@ -8,24 +8,18 @@ module RestFtpDaemon
     def do_before
       # Init
       super
-      @output = @outputs.first
-      dump_locations "input", @inputs
 
-      # Check source
+      # Check input
       end
 
 return
       # Check outputs
-      #@output = @job.target_loc.clone
       unless target_loc.uri_is? URI::FILE
         raise RestFtpDaemon::TargetUnsupported, "task output: invalid file type"
       end
       dump_locations "target_loc", [target_loc]
 
       # Guess target file name, and fail if present while we matched multiple sources
-      if @inputs.count<1
-        raise RestFtpDaemon::SourceUnsupported, "should receive at least one source"
-      end
       if target_loc.name && @inputs.count>1
         raise RestFtpDaemon::TargetDirectoryError, "target should be a directory when matching many files"
       end
@@ -37,6 +31,7 @@ return
       case target_loc.uri
       when URI::FTP
         log_info "do_before target_method FTP"
+        # options[:debug] = @config[:debug_ftp]
         @remote = Remote::RemoteFTP.new target_loc, log_context, @config[:debug_ftp]
       when URI::FTPES, URI::FTPS
         log_info "do_before target_method FTPES/FTPS"
@@ -66,7 +61,6 @@ return
 
       # Prepare target path or build it if asked
       set_status Job::STATUS_EXPORT_CHDIR
-      #log_info "do_work chdir_or_create #{@output.filedir}"
       @remote.chdir_or_create target_loc.dir_abs, get_option(:transfer, :mkdir)
 
       # Compute total files size
@@ -88,7 +82,6 @@ return
         # Do the transfer, for each file
         remote_upload source, target, get_option(:transfer, :overwrite)
 
-      #work_debug
     end
 
   protected
