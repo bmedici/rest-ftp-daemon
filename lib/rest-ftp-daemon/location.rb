@@ -3,9 +3,6 @@ require 'active_support/core_ext/module/delegation'
 
 module RestFtpDaemon
   class Location
-    #include CommonHelpers
-
-    # Accessors
 
     attr_reader :url
     attr_reader :uri
@@ -24,11 +21,10 @@ module RestFtpDaemon
     TEMPFILE_RENDOM_LENGTH = 8
 
     def initialize url
-      # Check parameters
-      # unless url.is_a? String
-      #   raise RestFtpDaemon::AssertionFailed, "location/init/string: #{url.inspect}"
-      # end   
-      debug nil
+      # Debug
+      @debug = Conf.at(:debug, :location)
+
+      debug nil, nil
 
       @url = url.clone
       debug :url, url
@@ -88,11 +84,6 @@ module RestFtpDaemon
       random = rand(36**TEMPFILE_RENDOM_LENGTH).to_s(36)
       @name = "#{@name}.temp-#{random}"
     end
-
-    # def scheme? condition
-    #   return @uri.scheme == condition
-    # end
-
 
     def name
       File.basename(@uri.path)
@@ -191,18 +182,14 @@ module RestFtpDaemon
     # end
 
     def detect_tokens item
-      # item.scan /\[([^\[\]]*)\]/
       item.scan(/\[([^\[\]]*)\]/).map(&:first)
     end
 
     def debug var, val = nil
-      # Read conf if not already cached
-      @debug ||= Conf.at(:debug, :location)
-
-      # Skip if no debug requeste
+      # Skip if no debug requested
       return unless @debug
 
-      # Dump line
+      # debug line
       if var.nil?
         printf("|%s \n", "-"*100) 
       else
