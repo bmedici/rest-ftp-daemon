@@ -6,13 +6,11 @@ module RestFtpDaemon
     #include CommonHelpers
 
     # Accessors
-    attr_accessor :name
 
     attr_reader :url
     attr_reader :uri
     attr_reader :tokens
     attr_reader :scheme
-    attr_reader :dir
 
     attr_reader :aws_region
     attr_reader :aws_bucket
@@ -47,7 +45,8 @@ module RestFtpDaemon
       build_uri url
 
       # Extract dir and name
-      build_dir_name
+      debug :dir, dir
+      debug :name, name
 
       # Specific initializations
       case @uri
@@ -95,6 +94,23 @@ module RestFtpDaemon
     # def scheme? condition
     #   return @uri.scheme == condition
     # end
+
+
+    def name
+      File.basename(@uri.path)
+    end
+
+    def name= value
+      @uri.path = File.join(File.dirname(@uri.path), value)
+    end
+
+    def dir
+      File.dirname(@uri.path)
+    end
+
+    def dir= value
+      @uri.path = File.join(value, File.basename(@uri.path))
+    end
 
   private
 
@@ -146,15 +162,6 @@ module RestFtpDaemon
       unless detected.empty?
         raise RestFtpDaemon::JobUnresolvedTokens, 'unresolved tokens: ' + detected.join(' ')
       end
-    end
-
-    def build_dir_name
-      # Store URL parts (remove leading slashes in dir)
-      @dir      = extract_dirname(@uri.path).gsub(/^\//, '')
-      @name     = extract_filename(@uri.path)
-
-      debug :dir, dir
-      debug :name, name
     end
 
     def init_aws
