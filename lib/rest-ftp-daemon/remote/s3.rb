@@ -37,14 +37,14 @@ module RestFtpDaemon
       def upload source, target, use_temp_name = false, &callback
         # Push init
         raise RestFtpDaemon::AssertionFailed, "upload/client" if @client.nil?
-        log_debug "bucket[#{target.aws_bucket}] path[#{target.path}]"
+        log_debug "bucket[#{target.aws_bucket}] path_rel[#{target.path_rel}]"
 
         # Do the transfer, passing the file to the best method
         File.open(source.path_abs, 'r', encoding: 'BINARY') do |file|
           if file.size >= JOB_S3_MIN_PART
-            upload_multipart  file, target.aws_bucket, target.path, target.name, &callback
+            upload_multipart  file, target.aws_bucket, target.path_rel, target.name, &callback
           else
-            upload_onefile    file, target.aws_bucket, target.path, target.name, &callback
+            upload_onefile    file, target.aws_bucket, target.path_rel, target.name, &callback
           end
         end
 

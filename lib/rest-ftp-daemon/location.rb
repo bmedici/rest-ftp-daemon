@@ -61,6 +61,11 @@ module RestFtpDaemon
       dir
     end
 
+    def path_rel
+      path.sub(/^\//, '')
+    end
+    def dir_rel
+      dir.sub(/^\//, '')
     end
 
     def local_files
