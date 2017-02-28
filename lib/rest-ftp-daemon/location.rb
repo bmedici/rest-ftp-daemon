@@ -18,7 +18,7 @@ module RestFtpDaemon
     attr_reader :aws_secret
 
     # def_delegators :@uri,
-    delegate :scheme, :host, :port, :user, :password, :to_s,
+    delegate :scheme, :host, :port, :user, :password, :path, :to_s,
       to: :uri
 
     TEMPFILE_RENDOM_LENGTH = 8
@@ -57,16 +57,14 @@ module RestFtpDaemon
     def uri_is? kind
       @uri.is_a? kind
     end
-
-    def path
-      File.join(@dir.to_s, name.to_s)
-    end
     
     def path_fs
-      '/' + path
+      path
     end
     def dir_fs
-      '/' + @dir
+      dir
+    end
+
     end
 
     def local_files
@@ -180,17 +178,17 @@ module RestFtpDaemon
       @aws_secret = Conf.at(:credentials, @uri.host, :secret)
     end
 
-    def extract_filename path
-      # match everything that's after a slash at the end of the string
-      m = path.match(/\/?([^\/]+)$/)
-      return m[1].to_s unless m.nil?
-    end
+    # def extract_filename path
+    #   # match everything that's after a slash at the end of the string
+    #   m = path.match(/\/?([^\/]+)$/)
+    #   return m[1].to_s unless m.nil?
+    # end
 
-    def extract_dirname path
-      # match all the beginning of the string up to the last slash
-      m = path.match(/^(.*)\/[^\/]*$/)
-      return m[1].to_s unless m.nil?
-    end
+    # def extract_dirname path
+    #   # match all the beginning of the string up to the last slash
+    #   m = path.match(/^(.*)\/[^\/]*$/)
+    #   return m[1].to_s unless m.nil?
+    # end
 
     def detect_tokens item
       # item.scan /\[([^\[\]]*)\]/
