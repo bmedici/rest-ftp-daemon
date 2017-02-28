@@ -4,7 +4,7 @@ require "double_bag_ftps"
 # Handle FTP and FTPES transfers for Remote class
 module RestFtpDaemon
   module Remote
-    class RemoteFile < RemoteBase
+    class RemoteFile < Remote
 
       def size_if_exists target
         log_debug "size_if_exists [#{target.name}]"

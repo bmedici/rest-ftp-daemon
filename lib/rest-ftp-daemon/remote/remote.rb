@@ -1,7 +1,7 @@
 # Handles transfers for Job class
 module RestFtpDaemon
   module Remote
-    class RemoteBase
+    class Remote
       include BmcDaemonLib::LoggerHelper
       include CommonHelpers
 
@@ -27,7 +27,7 @@ module RestFtpDaemon
         log_pipe :transfer
 
         # Annnounce object
-        log_info "RemoteBase debug[#{debug}] target[#{target.to_s}] "
+        log_info "Remote debug[#{debug}] target[#{target.to_s}] "
 
         # Prepare real object
         prepare

@@ -3,7 +3,7 @@ require "net/sftp"
 # Handle sFTP transfers for Remote class
 module RestFtpDaemon
   module Remote
-    class RemoteSFTP < RemoteBase
+    class RemoteSFTP < Remote
 
       # Class options
       attr_reader :sftp

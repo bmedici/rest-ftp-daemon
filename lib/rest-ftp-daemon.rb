@@ -45,11 +45,11 @@ require_relative "rest-ftp-daemon/jobs/workflow"
 require_relative "rest-ftp-daemon/jobs/video"
 
 # Remotes
-require_relative "rest-ftp-daemon/remote/base"
+require_relative "rest-ftp-daemon/remote/remote"
 require_relative "rest-ftp-daemon/remote/remote_file"
-require_relative "rest-ftp-daemon/remote/ftp"
-require_relative "rest-ftp-daemon/remote/sftp"
-require_relative "rest-ftp-daemon/remote/s3"
+require_relative "rest-ftp-daemon/remote/remote_ftp"
+require_relative "rest-ftp-daemon/remote/remote_sftp"
+require_relative "rest-ftp-daemon/remote/remote_s3"
 
 
 # Tasks

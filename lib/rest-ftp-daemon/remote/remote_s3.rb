@@ -1,7 +1,7 @@
 # Handle sFTP transfers for Remote class
 module RestFtpDaemon
   module Remote
-    class RemoteS3 < RemoteBase
+    class RemoteS3 < Remote
       include CommonHelpers
 
       # Class options
