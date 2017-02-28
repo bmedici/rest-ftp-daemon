@@ -63,11 +63,10 @@ require_relative "rest-ftp-daemon/entities/options"
 require_relative "rest-ftp-daemon/entities/job"
 
 # Workers
-require_relative "rest-ftp-daemon/worker_pool"
 require_relative "rest-ftp-daemon/workers/worker"
-require_relative "rest-ftp-daemon/workers/conchita"
-require_relative "rest-ftp-daemon/workers/reporter"
-require_relative "rest-ftp-daemon/workers/job"
+require_relative "rest-ftp-daemon/workers/worker_conchita"
+require_relative "rest-ftp-daemon/workers/worker_reporter"
+require_relative "rest-ftp-daemon/workers/worker_job"
 
 # API handlers
 require_relative "rest-ftp-daemon/api/constants"
@@ -79,6 +78,7 @@ require_relative "rest-ftp-daemon/api/debug"
 require_relative "rest-ftp-daemon/api/root"
 
 # Project's libs
+require_relative "rest-ftp-daemon/worker_pool"
 require_relative "rest-ftp-daemon/metrics"
 require_relative "rest-ftp-daemon/paginate"
 require_relative "rest-ftp-daemon/uri"

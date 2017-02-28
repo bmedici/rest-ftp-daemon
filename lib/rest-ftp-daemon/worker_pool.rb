@@ -30,20 +30,20 @@ module RestFtpDaemon
 
       # Minimum one worker on DEFAULT_POOL
       if !(pools.is_a? Hash)
-        log_error "create_threads: one JobWorker is the minimum (#{pools.inspect}"
+        log_error "create_threads: one WorkerJob is the minimum (#{pools.inspect}"
       end
       log_info "creating all workers with #{pools.to_hash.inspect}"
 
-      # Start ConchitaWorker and ReporterWorker
-      create_thread ConchitaWorker, :conchita
-      create_thread ReporterWorker, :reporter
+      # Start WorkerConchita and WorkerReporter
+      create_thread WorkerConchita, :conchita
+      create_thread WorkerReporter, :reporter
 
-      # Start JobWorkers threads, ensure we have at least one worker in default pool
+      # Start WorkerJobs threads, ensure we have at least one worker in default pool
       pools[Job::DEFAULT_POOL] ||= 1
       pools.each do |pool, count|
         count.times do
           my_wid = next_wid()
-          create_thread JobWorker, my_wid, pool
+          create_thread WorkerJob, my_wid, pool
         end
       end
 
