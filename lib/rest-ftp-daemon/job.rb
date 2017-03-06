@@ -332,7 +332,7 @@ module RestFtpDaemon
       @mutex.synchronize do
         @status = value
       end
-      touch_job
+      job_touch
     end
 
     def job_touch

@@ -18,7 +18,7 @@ module RestFtpDaemon
     delegate :scheme, :host, :port, :user, :password, :path, :to_s,
       to: :uri
 
-    TEMPFILE_RENDOM_LENGTH = 8
+    TEMPFILE_RANDOM_LENGTH = 8
 
     def initialize url
       # Debug
@@ -86,7 +86,7 @@ module RestFtpDaemon
     end
 
     def generate_temp_name!
-      random = rand(36**TEMPFILE_RENDOM_LENGTH).to_s(36)
+      random = rand(36**TEMPFILE_RANDOM_LENGTH).to_s(36)
       @name = "#{@name}.temp-#{random}"
     end
 
