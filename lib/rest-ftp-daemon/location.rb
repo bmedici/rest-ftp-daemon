@@ -14,6 +14,8 @@ module RestFtpDaemon
     attr_reader :aws_id
     attr_reader :aws_secret
 
+    URI_FILE_SCHEME = "file"
+
     # def_delegators :@uri,
     delegate :scheme, :host, :port, :user, :password, :path, :to_s,
       to: :uri
@@ -23,7 +25,6 @@ module RestFtpDaemon
     def initialize url
       # Debug
       @debug = Conf.at(:debug, :location)
-
       debug nil, nil
 
       @url = url.clone
@@ -33,16 +34,12 @@ module RestFtpDaemon
       # Detect tokens in string
       @tokens = detect_tokens(url)
       debug :tokens, @tokens.inspect
-
+      
       # First resolve tokens
       resolve_tokens! url
 
       # Build URI from parameters
       build_uri url
-
-      # Extract dir and name
-      debug :dir, dir
-      debug :name, name
 
       # Specific initializations
       case @uri
@@ -93,7 +90,6 @@ module RestFtpDaemon
     def name
       File.basename(@uri.path)
     end
-
     def name= value
       @uri.path = File.join(File.dirname(@uri.path), value)
     end
@@ -115,20 +111,31 @@ module RestFtpDaemon
 
     def build_uri url
       # Fix scheme if URL as none
-      url.gsub! /^\/(.*)/, 'file:/\1'
+      # url.gsub! /^\/(.*)/, 'file://\1'
+      # url.gsub! /^\/(.*)/, 'file:///\1'
 
       # Parse that URL
       @uri = URI.parse url # rescue nil
       raise RestFtpDaemon::LocationParseError, location_path unless @uri
 
+      # If no scheme, assume it's a file:/// local file URL
+      unless @uri.scheme
+        @uri.scheme = URI_FILE_SCHEME
+        @uri = URI.parse(@uri.to_s)
+      end
+
       # Remove unnecessary double slahes
-      @uri.path.gsub!(/\/+/, '/')
+      @uri.path.gsub!(/\/+/, '/')     
 
       # Check we finally have a scheme
-      debug :scheme, @uri.scheme 
-      debug :path, @uri.path
-      debug :host, @uri.host
-      debug :to_s, @uri.to_s
+      debug :uri_to_s,  @uri.to_s
+      debug :scheme,    @uri.scheme 
+      debug :host,      @uri.host
+      debug :path,      @uri.path
+      debug :path_abs,  path_abs
+      debug :path_rel,  path_rel
+      debug :dir,       dir
+      debug :name,      name
 
       # Raise if still no scheme #FIXME
       raise RestFtpDaemon::SchemeUnsupported, url unless @uri.scheme
