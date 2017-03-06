@@ -29,7 +29,6 @@ module RestFtpDaemon
     STATUS_EXPORT_RENAMING      = "export/rename"
     STATUS_EXPORT_DISCONNECTING = "export/disconnect"
 
-
     # Types
     TYPE_TRANSFER    = "transfer"
     TYPE_VIDEO       = "video"
@@ -172,15 +171,21 @@ module RestFtpDaemon
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
 
-      # Notify we start working
-      current_signal = :started
-      log_info "start"
+      # Notify we start working and remember when we started
       set_status Worker::STATUS_WORKING
       job_notify :started
-
-      # Remember when we started
       @started_at = Time.now
 
+      # Processing differs if we're on the legacy on the new workflow mode
+      if self.is_a? JobWorkflow
+        start_workflow
+      else
+        start_legacy
+      end
+    end
+
+    # Process job if it's legacy 
+    def start_legacy
       log_info "start_legacy"
 
       # Before work
