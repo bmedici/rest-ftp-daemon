@@ -44,7 +44,7 @@ module RestFtpDaemon
       end
 
       def remove! target
-        @ftp.delete target.path_fs
+        @ftp.delete target.path_abs
       rescue Net::FTPPermError
         log_debug "remove! [#{target.name}] not found"
       else
