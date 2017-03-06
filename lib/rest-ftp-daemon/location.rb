@@ -27,9 +27,9 @@ module RestFtpDaemon
       @debug = Conf.at(:debug, :location)
       debug nil, nil
 
+      # Remember origin url
       @url = url.clone
       debug :url, url
-      @tokens = []
 
       # Detect tokens in string
       @tokens = detect_tokens(url)
@@ -50,25 +50,12 @@ module RestFtpDaemon
     def uri_is? kind
       @uri.is_a? kind
     end
-    
-    def path_abs
-      path
-    end
-    def dir_abs
-      dir
-    end
-
-    def path_rel
-      path.sub(/^\//, '')
-    end
-    def dir_rel
-      dir.sub(/^\//, '')
-    end
-
+  
     def local_files
-      Dir.glob("/#{path}").collect do |file|
+      Dir.glob(path_abs).collect do |file|
         next unless File.readable? file
         next unless File.file? file
+
         # Create a new location object
         self.class.new(file)
       end
@@ -94,12 +81,24 @@ module RestFtpDaemon
       @uri.path = File.join(File.dirname(@uri.path), value)
     end
 
+    def dir= value
+      @uri.path = File.join(value, File.basename(@uri.path))
+    end
     def dir
       File.dirname(@uri.path)
     end
+    def dir_abs
+      dir
+    end
+    def dir_rel
+      dir.sub(/^\//, '')
+    end
 
-    def dir= value
-      @uri.path = File.join(value, File.basename(@uri.path))
+    def path_abs
+      @uri.path
+    end
+    def path_rel
+      @uri.path.sub(/^\//, '')
     end
 
   private
