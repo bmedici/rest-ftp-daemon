@@ -11,17 +11,18 @@ module RestFtpDaemon
 
       # Check input
       end
+      log_debug "stash > inputs", @inputs.collect(&:to_s)
 
 return
       # Check outputs
       unless target_loc.uri_is? URI::FILE
         raise RestFtpDaemon::TargetUnsupported, "task output: invalid file type"
       end
-      dump_locations "target_loc", [target_loc]
+      log_debug "target_loc: #{target_loc.to_s}"
 
       # Guess target file name, and fail if present while we matched multiple sources
       if target_loc.name && @inputs.count>1
-        raise RestFtpDaemon::TargetDirectoryError, "target should be a directory when matching many files"
+        raise RestFtpDaemon::TargetDirectoryError, "target should be a directory if severeal files matched"
       end
 
       # Some init
@@ -74,12 +75,18 @@ return
       # Handle each source file matched, and start a transfer
       source_processed = 0
       targets = []
+
+      log_debug "export_inputs (outside)", @inputs.collect(&:to_s)
       @inputs.each do |source|
+        log_debug "each: #{source.path_abs} = #{source.to_s}"
+        log_debug "export_inputs (inside)", @inputs.collect(&:to_s)
         # Build final target, add the source file name if noneh
         target.name = source.name unless target.name
         target = target_loc.clone
 
         # Do the transfer, for each file
+        log_info "do_work each: source2: #{source.path_abs}"
+        log_info "do_work each: target2: #{target.path_abs}"
         remote_upload source, target, get_option(:transfer, :overwrite)
 
     end

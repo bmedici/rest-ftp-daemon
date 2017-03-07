@@ -31,6 +31,7 @@ module RestFtpDaemon
       # Start the transfer, update job status after each block transfer
       set_status Job::STATUS_EXPORT_UPLOADING
       @remote.upload source, target, @tempfile do |transferred, name|
+      log_debug "remote_upload: upload [#{source.name}] > [#{destination.name}]"
         # Update transfer statistics
         update_progress transferred, name
       end

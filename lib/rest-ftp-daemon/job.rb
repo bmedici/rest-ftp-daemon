@@ -70,7 +70,6 @@ module RestFtpDaemon
     attr_reader :finished_in
 
     # Workflow-specific
-    attr_accessor :current
     attr_reader :tasks
 
     # Define readers from imported fields
@@ -135,13 +134,6 @@ module RestFtpDaemon
 
       raise RestFtpDaemon::JobAttributeMissing, "target" unless params[:target]
       @target_loc = Location.new(params[:target])
-
-      # We're done!
-      log_info "initialized", {
-        source: @source_loc.uri,
-        target: @target_loc.uri,
-        pool: @pool,
-        }
     end
 
     def reset
@@ -162,7 +154,12 @@ module RestFtpDaemon
       set_status STATUS_QUEUED
       set_error nil
       job_notify :queued
-      log_info "reset: notify[queued] tentative[#{@tentatives}]"
+      log_info "job reset: notify[queued]", {
+        pool: @pool,
+        source: @source_loc.to_s,
+        target: @target_loc.to_s,
+        tentative: @tentatives,
+      }
     end
 
     # Process job
@@ -228,6 +225,7 @@ module RestFtpDaemon
       @tasks.each do |task|
         begin
           # Prepare and run task
+          log_info "task #{task.class.to_s}"
           task.do_before
           task.do_work
 
@@ -250,7 +248,7 @@ module RestFtpDaemon
         task.do_after
         task.error = 0
         
-        # FIXME
+        # FIXME Sleep for a few seconds
         sleep JOB_DELAY_TASKS
       end
 
@@ -359,7 +357,6 @@ module RestFtpDaemon
       log_error "job_notify EXCEPTION: #{ex.inspect}"
     end
 
-
     def set_error value
       @mutex.synchronize do
         @error = value
@@ -373,7 +370,6 @@ module RestFtpDaemon
       end
       job_touch
     end
-
 
   protected
 

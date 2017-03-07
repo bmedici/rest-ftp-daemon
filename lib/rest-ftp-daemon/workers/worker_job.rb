@@ -45,7 +45,7 @@ module RestFtpDaemon
 
     def job_process job
       # Processs this job protected by a timeout
-      log_info "job_process: start working"
+      # log_info "job_process: start working"
       Timeout.timeout(@config[:timeout], RestFtpDaemon::JobTimeout) do
         job.start
       end
@@ -54,14 +54,14 @@ module RestFtpDaemon
       RestFtpDaemon::Counters.instance.increment :jobs, :processed
 
     rescue RestFtpDaemon::JobTimeout => ex
-      log_error "job_process: TIMEOUT: started_at[#{job.started_at}] started_since[#{job.started_since}] #{ex.message}", ex.backtrace
+      log_error "job_process error: TIMEOUT: started_at[#{job.started_at}] started_since[#{job.started_since}] #{ex.message}", ex.backtrace
       worker_status Worker::STATUS_TIMEOUT
 
       # Inform the job
       job.oops_end(:timeout, ex) unless job.nil?
 
     rescue RestFtpDaemon::AssertionFailed, RestFtpDaemon::JobAttributeMissing, StandardError => ex
-      log_error "job_process: CRASHED: ex[#{ex.class}] #{ex.message}", ex.backtrace
+      log_error "job_process error: CRASHED: ex[#{ex.class}] #{ex.message}", ex.backtrace
       worker_status Worker::STATUS_CRASHED
 
       # Inform the job

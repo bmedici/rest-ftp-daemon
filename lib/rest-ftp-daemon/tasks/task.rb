@@ -7,9 +7,9 @@ module RestFtpDaemon
     ICON = ""
 
     # Class options
-    attr_reader :job
-    attr_reader :name
     # attr_reader :fileset
+    attr_reader   :job
+    attr_reader   :name
     attr_accessor :log_context
 
     # Method delegation to parent Job
