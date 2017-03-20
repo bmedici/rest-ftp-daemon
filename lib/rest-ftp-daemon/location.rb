@@ -71,7 +71,7 @@ module RestFtpDaemon
 
     def generate_temp_name!
       random = rand(36**TEMPFILE_RANDOM_LENGTH).to_s(36)
-      @name = "#{@name}.temp-#{random}"
+      self.name= "#{self.name}.#{random}.tmp"
     end
 
     def name
