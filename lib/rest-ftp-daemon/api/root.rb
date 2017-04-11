@@ -29,20 +29,25 @@ module RestFtpDaemon
           Root.logger
         end
 
-        def exception_error error, http_code, exception
+        def exception_error error, http_code, exception, message = nil
           # Extract message lines
           lines = exception.message.lines
-            #.lines.collect(&:strip).reject(&:empty?)
 
           # Log error to file
           log_error "[#{error}] [#{http_code}] #{lines.shift} ", lines
 
+          # Default to exeption message if empty
+          message ||= exception.message
+
+          # Send it to rollbar
+          Rollbar.error exception, "api: #{exception.class.name}: #{exception.message}"
+
           # Return error
           error!({
-            error: error,
+            code: error,
+            message: message,
+            exception: exception.class.name,
             http_code: http_code,
-            class: exception.class.name,
-            message: exception.message,
           }, http_code)
         end
 
@@ -54,10 +59,15 @@ module RestFtpDaemon
 
 
       ## EXCEPTION HANDLERS
+      # rescue_from Grape::Exceptions::ValidationErrors do |exception|
+      #   exception_error :api_content_type, 406, exception, "The requested content-type is not supported"
+      # end
+
+      rescue_from Grape::Exceptions::InvalidMessageBody do |exception|
+        exception_error :api_invalid_message_body, 400, exception, "Bad request: message body does not match declared format, check command syntax"
+      end
+
       rescue_from :all do |exception|
-        Rollbar.error exception, "api: #{exception.class.name}: #{exception.message}"
-        # Rollbar.error exception, "api [#{error}]: #{exception.class.name}: #{exception.message}"
-        #error!({error: :internal_server_error, message: exception.message}, 500)
         exception_error :api_error, 500, exception
       end
 
