@@ -2,7 +2,7 @@
 Gem::Specification.new do |spec|
 
   # Project version
-  spec.version                    = "1.0.8"
+  spec.version                    = "1.0.9"
 
   # Project description
   spec.name                       = "rest-ftp-daemon"
@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "http"
   spec.add_development_dependency "ruby-prof"
 
+
   # Runtime dependencies
   spec.add_runtime_dependency     "bmc-daemon-lib", "0.7.4"
   spec.add_runtime_dependency     "json", "~> 1.8"
@@ -46,6 +47,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "rest-client", "~> 1.8"
   spec.add_runtime_dependency     "api-auth"
   spec.add_runtime_dependency     "haml"
+  spec.add_runtime_dependency     "CFPropertyList"
   spec.add_runtime_dependency     "facter"
   spec.add_runtime_dependency     "sys-cpu"
   spec.add_runtime_dependency     "get_process_mem"
@@ -57,5 +59,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "double-bag-ftps"
   spec.add_runtime_dependency     "aws-sdk-resources", '~> 2.6'
   spec.add_runtime_dependency     "streamio-ffmpeg"
+
+
 
 end
