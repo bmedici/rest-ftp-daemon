@@ -147,8 +147,10 @@ module RestFtpDaemon
 
     def build_dir_name
       # Store URL parts (remove leading slashes in dir)
-      @dir      = extract_dirname(@uri.path).gsub(/^\//, '')
+      @dir      = extract_dirname(@uri.path).to_s.gsub(/^\//, '')
       @name     = extract_filename(@uri.path)
+      # @dir      = File.dirname(@uri.path)
+      # @name     = File.basename(@uri.path)
 
       debug :dir, dir
       debug :name, name
