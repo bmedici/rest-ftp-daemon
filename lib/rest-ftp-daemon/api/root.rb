@@ -33,6 +33,12 @@ module RestFtpDaemon
           # Extract message lines
           lines = exception.message.lines
 
+          # Add some backtrace lines 
+          http500_backtrace = LOG_HTP500_BACKTRACE.to_i
+          unless LOG_HTP500_BACKTRACE.to_i.zero?
+            lines += exception.backtrace[0..http500_backtrace] if exception.backtrace.is_a?(Array)
+          end
+
           # Log error to file
           log_error "[#{error}] [#{http_code}] #{lines.shift} ", lines
 

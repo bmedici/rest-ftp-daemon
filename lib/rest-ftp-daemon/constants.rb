@@ -54,6 +54,7 @@ context: {
 # Constants: logger to be cleaned up
 LOG_PIPE_LEN            = 10
 LOG_INDENT              = "\t"
+LOG_HTP500_BACKTRACE    = 5
 
 
 # Jobs statuses
