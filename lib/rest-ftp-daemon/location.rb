@@ -27,11 +27,11 @@ module RestFtpDaemon
       # Check parameters
       # unless url.is_a? String
       #   raise RestFtpDaemon::AssertionFailed, "location/init/string: #{url.inspect}"
-      # end   
+      # end
       debug nil
 
       @url = url.clone
-      debug :url, url
+      debug :url, @url
       @tokens = []
 
       # Detect tokens in string
@@ -39,10 +39,10 @@ module RestFtpDaemon
       debug :tokens, @tokens.inspect
 
       # First resolve tokens
-      resolve_tokens! url
+      resolve_tokens! @url
 
       # Build URI from parameters
-      build_uri url
+      build_uri @url
 
       # Extract dir and name
       build_dir_name
