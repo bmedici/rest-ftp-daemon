@@ -17,6 +17,19 @@
         = render :dashboard_header
 
     .container-fluid
+
+      .progress{style:"width: 400px", display:"inline-block"}
+        .progress-bar.progress-bar-info{style:"width: 20%;"}
+          = "progress %"
+      .progress{style:"width: 400px", display:"inline-block"}
+        .progress-bar.progress-bar-warning{style:"width: 20%;"}
+          = "progress %"
+      .progress{style:"width: 400px"}
+        .progress-bar.progress-bar-danger{style:"width: 50%;"}
+          = "progress %"
+
+      %br
+
       .row
         .col-md-12
           = render :dashboard_jobs

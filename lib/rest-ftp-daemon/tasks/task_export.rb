@@ -6,14 +6,13 @@ module RestFtpDaemon
     ICON = "export"
 
     def do_before
-      # Init
-      super
-
       # Check input
+      @inputs = @job.stash.clone
+      unless @inputs.is_a? Array
+        raise RestFtpDaemon::SourceUnsupported, "task inputs: invalid file list"
       end
       log_debug "stash > inputs", @inputs.collect(&:to_s)
 
-return
       # Check outputs
       unless target_loc.uri_is? URI::FILE
         raise RestFtpDaemon::TargetUnsupported, "task output: invalid file type"
@@ -43,6 +42,7 @@ return
       when URI::S3
         log_info "do_before target_method S3"
         @remote = Remote::RemoteS3.new target_loc, log_context, @config[:debug_s3]
+      when URI::FILE
         log_info "do_before target_method FILE"
         @remote = Remote::RemoteFile.new target_loc, log_context, @config[:debug_file]
       else
@@ -52,10 +52,12 @@ return
       end
 
       # Plug this Job into @remote to allow it to log
-      @remote.job = self
+      @remote.job = self.job
     end
 
     def do_work
+      # outputs = []
+
       # Connect to remote server and login
       set_status Job::STATUS_EXPORT_CONNECTING
       @remote.connect
@@ -80,23 +82,33 @@ return
       @inputs.each do |source|
         log_debug "each: #{source.path_abs} = #{source.to_s}"
         log_debug "export_inputs (inside)", @inputs.collect(&:to_s)
+
+next
         # Build final target, add the source file name if noneh
-        target.name = source.name unless target.name
         target = target_loc.clone
+        target.name = source.name.clone unless target.name
 
         # Do the transfer, for each file
         log_info "do_work each: source2: #{source.path_abs}"
         log_info "do_work each: target2: #{target.path_abs}"
         remote_upload source, target, get_option(:transfer, :overwrite)
 
-    end
+        # Add it to transferred target names
+        targets << target.name
+        set_info INFO_TARGET_FILES, targets
 
-  protected
+        # Update counters
+        set_info INFO_SOURCE_PROCESSED, source_processed += 1
+
+        # Add file to output
+        add_output target
+      end
+    end
 
     def do_after
       # Close FTP connexion and free up memory
-      @remote.close
       # log_info "do_after close connexion, update status and counters"
+      @remote.close if @remote
 
       # Free @remote object
       @remote = nil
@@ -105,8 +117,6 @@ return
       set_status Job::STATUS_EXPORT_DISCONNECTING
       @finished_at = Time.now
 
-      # Update counters
-      RestFtpDaemon::Counters.instance.increment :jobs, :finished
       RestFtpDaemon::Counters.instance.add :data, :transferred, @transfer_total
     end
 

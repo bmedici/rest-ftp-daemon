@@ -119,11 +119,9 @@ module RestFtpDaemon
           end
 
         end
+      end
 
-        # Move the file back to its original name
-        if use_temp_name
-          log_debug "upload rename [#{dest.name}] > [#{target.name}]"
-        end
+      def move source, target
         @sftp.rename! source.path_abs, target.path_abs, 0x00000001
       end
 

@@ -1,3 +1,5 @@
+require 'uri'
+
 module URI
 
   class FILE < Generic

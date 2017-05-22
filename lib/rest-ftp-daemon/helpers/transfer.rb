@@ -24,14 +24,22 @@ module RestFtpDaemon
         raise RestFtpDaemon::TargetFileExists
       end
 
+      # Generate temp file
+      if @tempfile
+        destination = target.clone
+        destination.generate_temp_name!
+      else
+        destination = target
+      end
+
       # Start transfer
       transfer_started_at = Time.now
       @last_notify_at = transfer_started_at
 
       # Start the transfer, update job status after each block transfer
       set_status Job::STATUS_EXPORT_UPLOADING
-      @remote.upload source, target, @tempfile do |transferred, name|
       log_debug "remote_upload: upload [#{source.name}] > [#{destination.name}]"
+      @remote.upload source, destination do |transferred, name|
         # Update transfer statistics
         update_progress transferred, name
       end
@@ -39,6 +47,12 @@ module RestFtpDaemon
       # Compute final bitrate
       global_transfer_bitrate = get_bitrate @transfer_total, (Time.now - transfer_started_at)
       set_info INFO_TRANFER_BITRATE, global_transfer_bitrate.round(0)
+
+      # Rename file to target name
+      if @tempfile
+        log_debug "remote_upload: rename [#{destination.name}] > [#{target.name}]"
+        @remove.move destination, target
+      end
 
       # Done
       set_info INFO_SOURCE_CURRENT, nil

@@ -70,6 +70,7 @@ module RestFtpDaemon
     attr_reader :finished_in
 
     # Workflow-specific
+    attr_reader :stash
     attr_reader :tasks
 
     # Define readers from imported fields
@@ -96,7 +97,7 @@ module RestFtpDaemon
 
       # Init: worfklow-specific
       @tasks        = []
-      @current      = []
+      @stash        = []
 
       # Logger # FIXME: should be :jobs
       log_pipe      :transfer
@@ -247,6 +248,10 @@ module RestFtpDaemon
         # Always execute do_after
         task.do_after
         task.error = 0
+
+        # Dump output locations
+        @stash = task.outputs
+        log_info "task outputs", @stash.collect(&:to_s)
         
         # FIXME Sleep for a few seconds
         sleep JOB_DELAY_TASKS

@@ -54,7 +54,9 @@
           %b= source_current unless source_current.nil?
 
     %td
+      = job_task_status(job)
 
+    %td
       - if job_working
         .progress
           .progress-bar{style:"width: #{work_progress}%;"}
@@ -64,6 +66,10 @@
         .error{title: error_message}
           = text_or_empty(job.error)
 
+      %br
+      .progress
+        .progress-bar{style:"width: 20%;"}
+          = "progress %"
 
     %td.nobr.text-right
       = format_bytes(transfer_total, "B")

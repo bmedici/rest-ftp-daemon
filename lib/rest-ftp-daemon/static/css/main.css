@@ -197,3 +197,26 @@ body {
   /*color: red;*/
   font-family: inherit;
 }
+
+
+
+/* Job and stasks statuses
+-------------------------------------------------- */
+.task-status {
+  min-width: 18px;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.0;
+  }
+}
+@-webkit-keyframes blink {
+  50% {
+    opacity: 0.0;
+  }
+}
+.blink {
+  animation: blink 500ms step-start 0s infinite;
+  -webkit-animation: blink 500ms step-start 0s infinite;
+}

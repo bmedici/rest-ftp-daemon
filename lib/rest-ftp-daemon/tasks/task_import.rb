@@ -21,12 +21,14 @@ module RestFtpDaemon
       # Sump some informations
       set_info INFO_SOURCE_COUNT, files.size
       set_info INFO_SOURCE_FILES, files.collect(&:name)
+
+      # Check we matched at least one file
       raise RestFtpDaemon::SourceNotFound if files.empty?
 
-      @outputs.concat files
-    end
-
-    def do_after
+      # Add file to output
+      files.each do |file|
+        add_output file
+      end
     end
 
   protected

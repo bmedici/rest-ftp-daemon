@@ -8,7 +8,7 @@ require "syslog"
 require "thread"
 require "newrelic_rpm"
 require "rollbar"
-require "securerandom"
+# require "securerandom"
 require "double_bag_ftps"
 require "net/sftp"
 require "net/ftp"
@@ -81,11 +81,13 @@ require_relative "rest-ftp-daemon/api/root"
 require_relative "rest-ftp-daemon/worker_pool"
 require_relative "rest-ftp-daemon/metrics"
 require_relative "rest-ftp-daemon/paginate"
-require_relative "rest-ftp-daemon/uri"
 require_relative "rest-ftp-daemon/job_queue"
 require_relative "rest-ftp-daemon/counters"
 require_relative "rest-ftp-daemon/notification"
+
+require_relative "rest-ftp-daemon/uri"
 require_relative "rest-ftp-daemon/location"
+#require_relative "rest-ftp-daemon/uri_location"
 
 
 # Init

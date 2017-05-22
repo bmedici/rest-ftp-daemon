@@ -34,7 +34,7 @@ module RestFtpDaemon
         return object.content_length
       end
 
-      def upload source, target, use_temp_name = false, &callback
+      def upload source, target, &callback
         # Push init
         raise RestFtpDaemon::AssertionFailed, "upload/client" if @client.nil?
         log_debug "bucket[#{target.aws_bucket}] path_rel[#{target.path_rel}]"
@@ -47,10 +47,15 @@ module RestFtpDaemon
             upload_onefile    file, target.aws_bucket, target.path_rel, target.name, &callback
           end
         end
+      end
 
+      def move source, target
+        # Identify the source object
+        obj = @client.buckets[source.aws_bucket].objects[source.path_rel]
+        raise RestFtpDaemon::AssertionFailed, "move: object not found" unless obj
 
-        # We're all set
-        log_debug "RemoteS3.upload done"
+        # Move the file
+        obj.move_to(target.path_rel, :bucket_name => target.aws_bucket)
       end
 
       def connected?

@@ -20,42 +20,32 @@ module RestFtpDaemon
     delegate :scheme, :host, :port, :user, :password, :path, :to_s,
       to: :uri
 
-    MY_RANDOM_LEN = 8
+    TEMPFILE_RANDOM_LENGTH = 8
 
-    def initialize original, endpoints = nil
+    def initialize url
       # Debug
       @debug = Conf.at(:debug, :location)
       debug nil, nil
 
-      # Fallback endpoints
-      endpoints ||= BmcDaemonLib::Conf[:endpoints]
-
       # Remember origin url
-      @url = original.clone
-      debug :url, original
+      @url = url.clone
+      debug :url, url
 
       # Detect tokens in string
-      @tokens = detect_tokens(original)
+      @tokens = detect_tokens(url)
       debug :tokens, @tokens.inspect
       
       # First resolve tokens
-      resolve_tokens!(original, endpoints)
+      resolve_tokens! url
 
       # Build URI from parameters
-      build_uri original
+      build_uri url
 
       # Specific initializations
       case @uri
       when URI::S3    then init_aws               # Match AWS URL with BUCKET.s3.amazonaws.com
       end
     end
-
-    # Control how the object is cloned, especially for @uri pointed by an instance variable
-    def initialize_clone(other)
-      debug "cloning", "other.object_id"
-      super
-      #initialize_copy(other)
-    end    
 
     def uri_is? kind
       @uri.is_a? kind
@@ -81,62 +71,12 @@ module RestFtpDaemon
     end
 
     def generate_temp_name!
-      random = rand(36**MY_RANDOM_LEN).to_s(36)
+      random = rand(36**TEMPFILE_RANDOM_LENGTH).to_s(36)
       self.name= "#{self.name}.#{random}.tmp"
     end
 
-    def name
-      File.basename(@uri.path)
-    end
-    def name= value
-      @uri.path = File.join(File.dirname(@uri.path), value)
-    end
 
-    def dir= value
-      @uri.path = File.join(value, File.basename(@uri.path))
-    end
-    def dir
-      File.dirname(@uri.path)
-    end
-    def dir_abs
-      dir
-    end
-    def dir_rel
-      dir.sub(/^\//, '')
-    end
-
-    def path_abs
-      @uri.path
-    end
-    def path_rel
-      @uri.path.sub(/^\//, '')
-    end
-
-  private
-
-    def tokenize item
-      return unless item.is_a? String
-      "[#{item}]"
-    end
-
-    def build_uri url
-      # Fix scheme if URL as none
-      # url.gsub! /^\/(.*)/, 'file://\1'
-      # url.gsub! /^\/(.*)/, 'file:///\1'
-
-      # Parse that URL
-      @uri = URI.parse url # rescue nil
-      raise RestFtpDaemon::LocationParseError, location_path unless @uri
-
-      # If no scheme, assume it's a file:/// local file URL
-      unless @uri.scheme
-        @uri.scheme = URI_FILE_SCHEME
-        @uri = URI.parse(@uri.to_s)
-      end
-
-      # Remove unnecessary double slahes
-      @uri.path.gsub!(/\/+/, '/')     
-
+    def build_uri url 
       # Check we finally have a scheme
       debug :uri_to_s,  @uri.to_s
       debug :scheme,    @uri.scheme 
@@ -152,30 +92,6 @@ module RestFtpDaemon
       # raise RestFtpDaemon::LocationParseError, base unless @uri
     end
 
-    def resolve_tokens! path, endpoints = {}
-      # Get endpoints, and copy path string to alter it later
-      if endpoints.is_a? Hash
-        vectors = endpoints.clone 
-      else
-        vectors = {}
-      end
-
-      # Stack RANDOM into vectors
-      vectors["RANDOM"] = SecureRandom.hex(JOB_RANDOM_LEN)
-
-      # Replace endpoints defined in config
-      vectors.each do |from, to|
-        next unless to.is_a? String
-        next if to.to_s.empty?
-        path.gsub! tokenize(from), to
-      end
-
-      # Ensure result does not contain tokens after replacement
-      detected = detect_tokens(path)
-      unless detected.empty?
-        raise RestFtpDaemon::JobUnresolvedTokens, 'unresolved tokens: ' + detected.join(' ')
-      end
-    end
 
     def init_aws
       # Split hostname
@@ -205,9 +121,6 @@ module RestFtpDaemon
     #   return m[1].to_s unless m.nil?
     # end
 
-    def detect_tokens item
-      item.scan(/\[([^\[\]]*)\]/).map(&:first)
-    end
 
     def debug var, val = nil
       # Skip if no debug requested

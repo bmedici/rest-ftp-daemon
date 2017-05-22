@@ -21,6 +21,7 @@ JOB_FFMPEG_THREADS      = 2
 JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_tolerance, :frame_rate, :resolution, :aspect, :keyframe_interval, :x264_vprofile, :x264_preset, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels]
 
 
+JOB_DELAY_TASKS			= 0
 
 
 # Internal job infos
@@ -47,7 +48,7 @@ context: {
   wid:    "%-10s",
   jid:    "%-10s",
   id:     "%-8s",
-  caller: "%18s |",
+  caller: "%-20s |",
   }
 }
 

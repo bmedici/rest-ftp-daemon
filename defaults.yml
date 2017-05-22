@@ -7,8 +7,7 @@ allow_reload: false
 
 # FUTURE
 debug:
-    ftp: false
-    location: false
+  location: false
 
 pools:                      # number of workers decidated to each pool value
   default: 2
@@ -37,6 +36,7 @@ transfer:
   debug_ftp: false
   debug_ftps: false
   debug_sftp: false
+  debug_file: true
 
   retry_on:                 # job error values that will allow a retry
     - ftp_temp_error

@@ -92,14 +92,14 @@ module RestFtpDaemon
 
       end
 
-      def upload source, target, use_temp_name = false, &callback
+      def upload source, target, &callback
         # Push init
         raise RestFtpDaemon::AssertionFailed, "upload/ftp" if @ftp.nil?
 
         # Temp file if needed
         dest = target.clone
-        if use_temp_name
-          dest.generate_temp_name!
+        if temp
+          dest = temp
         end
 
         # Move to the directory
@@ -112,12 +112,11 @@ module RestFtpDaemon
           # Update job status after this block transfer
           yield data.bytesize, dest.name
         end
+      end
 
-        # Move the file back to its original name
-        if use_temp_name
-          log_debug "upload rename [#{dest.name}] > [#{target.name}]"
-          @ftp.rename dest.name, target.name
-        end
+      def move source, target
+        log_debug "move [#{source.name}] > [#{target.name}]"
+        @ftp.rename source.name, target.name
       end
 
       def close
