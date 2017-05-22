@@ -54,10 +54,16 @@ module RestFtpDaemon
 
 
       ## EXCEPTION HANDLERS
+      rescue_from Grape::Exceptions::InvalidMessageBody do |exception|
+        exception_error :api_invalid_message_body, 400, exception, "Bad request: message body does not match declared format, check command syntax (#{exception.message})"
+      end
+      rescue_from RestFtpDaemon::SchemeUnsupported do |exception|
+        exception_error :unsupported_scheme, 422, exception, "Bad request: unsupported scheme (#{exception.message})"
+      end
+      rescue_from RestFtpDaemon::LocationParseError do |exception|
+        exception_error :location_parse_error, 422, exception, "Bad request: location parse error (#{exception.message})"
+      end
       rescue_from :all do |exception|
-        Rollbar.error exception, "api: #{exception.class.name}: #{exception.message}"
-        # Rollbar.error exception, "api [#{error}]: #{exception.class.name}: #{exception.message}"
-        #error!({error: :internal_server_error, message: exception.message}, 500)
         exception_error :api_error, 500, exception
       end
 
