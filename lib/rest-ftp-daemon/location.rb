@@ -58,7 +58,9 @@ module RestFtpDaemon
     end
 
     def path
-      File.join(@dir.to_s, name.to_s)
+      # Don't join if dirname is empty
+      return name.to_s if @dir.to_s.empty?
+      return File.join(@dir.to_s, name.to_s)
     end
     
     def path_fs
