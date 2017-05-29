@@ -50,7 +50,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "sys-cpu"
   spec.add_runtime_dependency     "get_process_mem"
 
-  spec.add_runtime_dependency     "newrelic_rpm"
+  spec.add_runtime_dependency     "newrelic_rpm", '~> 4'
   spec.add_runtime_dependency     "rollbar"
 
   spec.add_runtime_dependency     "net-sftp"

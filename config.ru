@@ -32,10 +32,6 @@ case Conf.app_env
     # Rack reloader
     use Rack::Reloader, 1
 
-    # Newrelic dev mode
-    require 'new_relic/rack/developer_mode'
-    use NewRelic::Rack::DeveloperMode
-
   when "production"
 end
 
