@@ -46,6 +46,10 @@ module RestFtpDaemon
       end
     end
 
+    def clone
+      self.class.new(@uri.clone)     
+    end
+
     # Control how the object is cloned, especially for @uri pointed by an instance variable
     def initialize_clone(other)
       debug "cloning", "other.object_id"
