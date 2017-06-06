@@ -23,27 +23,22 @@ module RestFtpDaemon
     MY_RANDOM_LEN = 8
 
     def initialize original, endpoints = nil
-      # Debug
+      # Init
       @original = nil
       @debug = Conf.at(:debug, :location)
       debug nil, nil
 
-      # Fallback endpoints
-      endpoints ||= BmcDaemonLib::Conf[:endpoints]
+      # Prepare endpoints
+      @endpoints ||= BmcDaemonLib::Conf[:endpoints]
 
-      # Remember origin url
-      @url = original.clone
-      debug :url, original
-
-      # Detect tokens in string
-      @tokens = detect_tokens(original)
-      debug :tokens, @tokens.inspect
-      
-      # First resolve tokens
-      resolve_tokens!(original, endpoints)
-
-      # Build URI from parameters
-      build_uri original
+      # Import URI or parse URL
+      if original.is_a? URI
+        # Take URI as-is
+        @uri = original
+      else
+        # Build URI from parameters
+        build_uri original
+      end
 
       # Specific initializations
       case @uri
@@ -123,7 +118,17 @@ module RestFtpDaemon
     def build_uri url
       # Fix scheme if URL as none
       # url.gsub! /^\/(.*)/, 'file://\1'
-      # url.gsub! /^\/(.*)/, 'file:///\1'
+
+      # Remember origin url
+      @original = url.clone
+      debug :original, url
+
+      # Detect tokens in string
+      @tokens = detect_tokens(url)
+      debug :tokens, @tokens.inspect
+      
+      # First resolve tokens
+      resolve_tokens!(url)
 
       # Parse that URL
       @uri = URI.parse url # rescue nil
@@ -153,10 +158,10 @@ module RestFtpDaemon
       # raise RestFtpDaemon::LocationParseError, base unless @uri
     end
 
-    def resolve_tokens! path, endpoints = {}
+    def resolve_tokens! path
       # Get endpoints, and copy path string to alter it later
-      if endpoints.is_a? Hash
-        vectors = endpoints.clone 
+      if @endpoints.is_a? Hash
+        vectors = @endpoints.clone 
       else
         vectors = {}
       end
