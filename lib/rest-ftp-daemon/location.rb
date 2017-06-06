@@ -17,7 +17,7 @@ module RestFtpDaemon
     URI_FILE_SCHEME = "file"
 
     # def_delegators :@uri,
-    delegate :scheme, :host, :port, :user, :password, :path, :to_s,
+    delegate :scheme, :host, :port, :user, :password, :to_s,
       to: :uri
 
     MY_RANDOM_LEN = 8

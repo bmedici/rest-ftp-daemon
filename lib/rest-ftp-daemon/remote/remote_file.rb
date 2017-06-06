@@ -13,7 +13,7 @@ module RestFtpDaemon
       end
 
       def remove! target
-        File.delete target.path
+        File.delete target.path_abs
       rescue Errno::ENOENT
         log_debug "remove! [#{target.name}] not found"
       else
@@ -50,12 +50,12 @@ module RestFtpDaemon
 
       def upload source, target, &callback
         # Do the transfer
-        FileUtils.copy_file source.path, target.path
+        FileUtils.copy_file source.path_abs, target.path_abs
       end
 
       def move source, target
         log_debug "move [#{source.name}] > [#{target.name}]"
-        FileUtils.move source.path, target.path
+        FileUtils.move source.path_abs, target.path_abs
       end
 
       # def connected?
