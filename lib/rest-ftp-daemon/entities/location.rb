@@ -4,7 +4,7 @@ module RestFtpDaemon
   module Entities
     class Location < Grape::Entity
 
-      expose :url
+      expose :original
       #, as: 'raw'
       # expose :uri
       expose :scheme

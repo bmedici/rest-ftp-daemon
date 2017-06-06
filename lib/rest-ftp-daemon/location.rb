@@ -4,7 +4,7 @@ require 'active_support/core_ext/module/delegation'
 module RestFtpDaemon
   class Location
 
-    attr_reader :url
+    attr_reader :original
     attr_reader :uri
     attr_reader :tokens
     attr_reader :scheme
@@ -24,6 +24,7 @@ module RestFtpDaemon
 
     def initialize original, endpoints = nil
       # Debug
+      @original = nil
       @debug = Conf.at(:debug, :location)
       debug nil, nil
 

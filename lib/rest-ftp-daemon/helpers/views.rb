@@ -161,7 +161,7 @@ module RestFtpDaemon
       out << '</span>'
 
       # Try to match a prefix token
-      matches = /^\[([^\[]+)\](.*)/.match(loc.url)
+      matches = /^\[([^\[]+)\](.*)/.match(loc.original)
 
       # Add a prefix label, if matched
       if matches
