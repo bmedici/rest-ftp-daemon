@@ -23,7 +23,7 @@ module RestFtpDaemon
     MY_RANDOM_LEN = 8
 
     def initialize original, endpoints = nil
-      # Debug
+      # Init
       @original = nil
       @debug = Conf.at(:debug, :location)
       debug nil, nil
@@ -44,6 +44,11 @@ module RestFtpDaemon
 
       # Build URI from parameters
       build_uri original
+      # Import URI or parse URL
+      if original.is_a? URI
+        # Take URI as-is
+        @uri = original
+      end
 
       # Specific initializations
       case @uri
