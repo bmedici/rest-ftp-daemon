@@ -179,54 +179,6 @@ module RestFtpDaemon
       job_notify :started
       @started_at = Time.now
 
-      # Processing differs if we're on the legacy on the new workflow mode
-      if self.is_a? JobWorkflow
-        start_workflow
-      else
-        start_legacy
-      end
-    end
-
-    # Process job if it's legacy 
-    def start_legacy
-      log_info "start_legacy"
-
-      # Before work
-      log_debug "start_legacy/do_before"
-      current_signal = :started
-      do_before
-
-      # Do the hard work
-      log_debug "start_legacy/do_work"
-      current_signal = :ended
-      do_work
-
-      # Finalize all this
-      log_debug "start_legacy/do_after"
-      current_signal = :ended
-      do_after
-
-    rescue StandardError => exception
-      # Propagate error
-      Rollbar.error exception, "job [#{error}]: #{exception.class.name}: #{exception.message}"
-
-      # Close ftp connexion if open
-      @remote.close unless @remote.nil? || !@remote.connected?
-
-      # Raise error
-      return oops(current_signal, exception)
-
-    else
-      # All done !
-      set_status STATUS_FINISHED
-      log_info "job_notify [ended]"
-      job_notify :ended
-    end
-
-    # Process job if it's a workflow
-    def start_workflow
-      log_info "start_workflow"
-
       # Run tasks
       @tasks.each do |task|
         begin
@@ -249,6 +201,7 @@ module RestFtpDaemon
           @remote.close unless @remote.nil? || !@remote.connected?
 
           # Propagate error to Rollbar
+          # FIXME: stop tasks from here
           return oops(:task, exception)
         end
 
@@ -515,7 +468,6 @@ module RestFtpDaemon
       # Store it
       @tasks << task
     end
-
 
     # NewRelic instrumentation
     add_transaction_tracer :job_notify,  category: :task

@@ -17,8 +17,8 @@ module RestFtpDaemon
         @target = target
 
         # Build and empty job to protect set_info delegation
-        @job = Job.new(nil, {})
         @config = config
+        @job = job
 
         # Logger
         @context = context || {}
