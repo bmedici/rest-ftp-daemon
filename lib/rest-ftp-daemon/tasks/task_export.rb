@@ -5,12 +5,12 @@ module RestFtpDaemon
     # Task attributes
     ICON = "export"
 
-    def do_before
       # Check input
       @inputs = @job.stash.clone
       unless @inputs.is_a? Array
         raise RestFtpDaemon::SourceUnsupported, "task inputs: invalid file list"
       end
+    def prepare
 
       # Check outputs
       unless target_loc.uri_is? URI::FILE
@@ -54,9 +54,9 @@ module RestFtpDaemon
       @remote.job = self.job
     end
 
-    def do_work
       # outputs = []
 
+    def process
       # Connect to remote server and login
       set_status Job::STATUS_EXPORT_CONNECTING
       @remote.connect
@@ -103,7 +103,7 @@ module RestFtpDaemon
       end
     end
 
-    def do_after
+    def finalize
       # Close FTP connexion and free up memory
       # log_info "do_after close connexion, update status and counters"
       @remote.close if @remote

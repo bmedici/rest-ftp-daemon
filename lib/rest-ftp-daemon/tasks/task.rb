@@ -33,15 +33,16 @@ module RestFtpDaemon
 
       # Enable logging
       log_pipe      :workflow
+
+    def prepare
     end
 
-    def do_before
+    def process
     end
 
-    def do_work
+    def finalize
     end
 
-    def do_after
     end
 
   protected
