@@ -118,5 +118,64 @@ module RestFtpDaemon
       RestFtpDaemon::Counters.instance.add :data, :transferred, @transfer_total
     end
 
+  private
+
+    def remote_upload source, target, overwrite = false
+      # Method assertions
+      raise RestFtpDaemon::AssertionFailed, "remote_upload/remote" if @remote.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_upload/source" if source.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_upload/target" if target.nil?
+
+      # Use source filename if target path provided none (typically with multiple sources)
+      log_info "Task.remote_upload", {
+        source_abs: source.path_abs,
+        target_rel: target.path_rel,
+        overwrite:  overwrite,
+        tempfile:   @tempfile,
+        }
+      set_info INFO_SOURCE_CURRENT, source.name
+
+      # Remove any existing version if present, or check if it's there
+      if overwrite
+        @remote.try_to_remove target
+      elsif (size = @remote.size_if_exists(target))  # won't be triggered when NIL or 0 is returned
+        log_debug "Task.remote_upload file exists ! (#{format_bytes size, 'B'})"
+        raise RestFtpDaemon::TargetFileExists
+      end
+
+      # Generate temp file
+      if @tempfile
+        destination = target.clone
+        destination.generate_temp_name!
+      else
+        destination = target
+      end
+
+      # Start transfer
+      transfer_started_at = Time.now
+      @last_notify_at = transfer_started_at
+
+      # Start the transfer, update job status after each block transfer
+      set_status Job::STATUS_EXPORT_UPLOADING
+      log_debug "Task.remote_upload: upload [#{source.name}] > [#{destination.name}]"
+      @remote.upload source, destination do |transferred, name|
+        # Update transfer statistics
+        update_progress transferred, name
+      end
+
+      # Compute final bitrate
+      global_transfer_bitrate = get_bitrate @transfer_total, (Time.now - transfer_started_at)
+      set_info INFO_TRANFER_BITRATE, global_transfer_bitrate.round(0)
+
+      # Rename file to target name
+      if @tempfile
+        log_debug "Task.remote_upload: rename [#{destination.name}] > [#{target.name}]"
+        @remove.move destination, target
+      end
+
+      # Done
+      set_info INFO_SOURCE_CURRENT, nil
+    end    
+
   end
 end
