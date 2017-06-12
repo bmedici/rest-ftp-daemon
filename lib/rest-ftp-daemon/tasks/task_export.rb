@@ -4,11 +4,6 @@ module RestFtpDaemon
     # Task attributes
     ICON = "export"
 
-      # Check input
-      @inputs = @job.stash.clone
-      unless @inputs.is_a? Array
-        raise RestFtpDaemon::SourceUnsupported, "task inputs: invalid file list"
-      end
     def prepare
 
       # Check outputs
@@ -62,7 +57,7 @@ module RestFtpDaemon
 
       # Prepare target path or build it if asked
       set_status Job::STATUS_EXPORT_CHDIR
-      @remote.chdir_or_create target_loc.dir_abs, get_option(:transfer, :mkdir)
+      @remote.chdir_or_create @output.dir_abs, get_option(:transfer, :mkdir)
 
       # Compute total files size
       @transfer_total = @inputs.collect(&:size).sum
@@ -76,13 +71,11 @@ module RestFtpDaemon
       source_processed = 0
       targets = []
 
-      log_debug "export_inputs (outside)", @inputs.collect(&:to_s)
       @inputs.each do |source|
-        log_debug "each: #{source.path_abs} = #{source.to_s}"
-        log_debug "export_inputs (inside)", @inputs.collect(&:to_s)
+        log_debug "processing: #{source.to_s}"
 
         # Build final target, add the source file name if noneh
-        target = target_loc.clone
+        target = @output.clone
         target.name = source.name.clone unless target.name
 
         # Do the transfer, for each file
@@ -98,7 +91,8 @@ module RestFtpDaemon
         set_info INFO_SOURCE_PROCESSED, source_processed += 1
 
         # Add file to output
-        add_output target
+        output_add target
+        log_debug "stashed target: #{target.to_s}"
       end
     end
 

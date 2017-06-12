@@ -4,19 +4,24 @@ module RestFtpDaemon
     # Task attributes
     ICON = "import"
 
-      # Check input
-      # @input = @job.source_loc.clone
-      unless source_loc.is_a?(Location) && source_loc.uri_is?(URI::FILE)
-        raise RestFtpDaemon::SourceUnsupported, source_loc.scheme
     def prepare
+      # I can accept only one input
+      unless @inputs.size == 1
+        raise RestFtpDaemon::SourceUnsupported, "cannot accept more than one input"
       end
-      log_debug "source_loc: #{source_loc.to_s}"
+      @input = @inputs.first
+
+      # Check input conformity
+      unless @input.is_a?(Location) && @input.uri_is?(URI::FILE)
+        raise RestFtpDaemon::SourceUnsupported, @input.scheme
+      end
+      # log_debug "input: #{@input.to_s}"
     end
 
     def process
       # Scan local source files from disk
       set_status Job::STATUS_IMPORT_LISTING
-      files = source_loc.local_files
+      files = @input.local_files
 
       # Sump some informations
       set_info INFO_SOURCE_COUNT, files.size
@@ -27,7 +32,7 @@ module RestFtpDaemon
 
       # Add file to output
       files.each do |file|
-        add_output file
+        output_add file
       end
     end
 

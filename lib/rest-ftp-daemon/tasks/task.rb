@@ -12,6 +12,7 @@ module RestFtpDaemon
     attr_reader   :job
     attr_reader   :name
     attr_accessor :error
+    attr_accessor :inputs
     attr_reader   :outputs
     attr_accessor :log_context
 
@@ -58,7 +59,7 @@ module RestFtpDaemon
       end
     end
 
-    def add_output output
+    def output_add output
       @outputs << output
     end
 

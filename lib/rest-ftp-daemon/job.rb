@@ -71,7 +71,6 @@ module RestFtpDaemon
     attr_reader :finished_in
 
     # Workflow-specific
-    attr_reader :stash
     attr_reader :tasks
 
     # Define readers from imported fields
@@ -98,7 +97,7 @@ module RestFtpDaemon
 
       # Init: worfklow-specific
       @tasks        = []
-      @stash        = []
+      @tempfiles    = []
 
       # Logger # FIXME: should be :jobs
       log_pipe      :transfer
@@ -170,6 +169,12 @@ module RestFtpDaemon
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
 
+      # Reset tempfiles
+      tempfiles = []
+
+      # Prepare initial stash with source_loc
+      stash = [source_loc]
+
       # Notify we start working and remember when we started
       set_status Worker::STATUS_WORKING
       job_notify :started
@@ -230,6 +235,9 @@ module RestFtpDaemon
           log_info "task #{task.class.to_s}"
           task.do_before
           task.do_work
+          # Inject stash as inputs
+          # log_debug "Job.start: task inputs", stash.collect(&:to_s)
+          task.inputs = stash
 
         rescue StandardError => exception
           # Keep the exception with us
@@ -251,8 +259,8 @@ module RestFtpDaemon
         task.error = 0
 
         # Dump output locations
-        @stash = task.outputs
-        log_info "STASH", @stash.collect(&:to_s)
+        stash = task.outputs
+        # log_info "Job.start: task output", stash.collect(&:to_s)
         
         # FIXME Sleep for a few seconds
         sleep JOB_DELAY_TASKS

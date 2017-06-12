@@ -5,11 +5,6 @@ module RestFtpDaemon
     # ICON = "facetime-video"
     ICON = "random"
  
-      # Check input
-      @inputs = @job.stash.clone
-      unless @inputs.is_a? Array
-        raise RestFtpDaemon::SourceUnsupported, "task inputs: invalid file list"
-      end
     def prepare
     end
 
@@ -37,7 +32,7 @@ module RestFtpDaemon
           }
 
         # Add file to output
-        add_output target
+        output_add target
       end
     end
 
