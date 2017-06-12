@@ -22,7 +22,7 @@ module RestFtpDaemon
 
     MY_RANDOM_LEN = 8
 
-    def initialize original, endpoints = nil
+    def initialize param
       # Init
       @original = nil
 
@@ -30,12 +30,12 @@ module RestFtpDaemon
       @endpoints ||= BmcDaemonLib::Conf[:endpoints]
 
       # Import URI or parse URL
-      if original.is_a? URI
+      if param.is_a? URI
         # Take URI as-is
-        @uri = original
+        @uri = param.clone
       else
         # Build URI from parameters
-        build_uri original
+        build_uri param
       end
 
       # Specific initializations
@@ -44,15 +44,10 @@ module RestFtpDaemon
       end
     end
 
+    # Control how the object is cloned, especially for @uri pointed by an instance variable
     def clone
       self.class.new(@uri.clone)     
     end
-
-    # Control how the object is cloned, especially for @uri pointed by an instance variable
-    def initialize_clone(other)
-      super
-      #initialize_copy(other)
-    end    
 
     def uri_is? kind
       @uri.is_a? kind
@@ -125,10 +120,8 @@ module RestFtpDaemon
       # Remember origin url
       @original = url.clone
 
-      # Detect tokens in string
+      # Detect tokens in string, then resolve them
       @tokens = detect_tokens(url)
-      
-      # First resolve tokens
       resolve_tokens!(url)
 
       # Parse that URL
