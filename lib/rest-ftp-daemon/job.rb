@@ -1,6 +1,7 @@
 # FIXME: prepare files list ar prepare_common
 # FIXME: scope classes in submodules like Worker::Transfer, Job::Video
 # FIXME: restore HostKeyMismatch and other NEt::SFTP exceptions
+# FIXME: move progress from Job/infos/transfer to Job/progress
 
 # Represents work to be done along with parameters to process it
 require "securerandom"
@@ -266,13 +267,6 @@ module RestFtpDaemon
       RestFtpDaemon::Counters.instance.increment :jobs, :finished
     end
 
-    def before
-    end
-    def work
-    end
-    def after
-    end
-
     def source_uri
       @source_loc.uri if @source_loc
     end
@@ -377,6 +371,14 @@ module RestFtpDaemon
     end
 
   protected
+
+    def dump title
+      log_debug "DUMP [#{@tasks.count}] #{title}"
+      @tasks.each do |task|
+        task.debug_vars :inputs
+        task.debug_vars :outputs
+      end
+    end
 
     def alert_common_method_called
       log_error "PLACEHOLDER METHOD CALLED"

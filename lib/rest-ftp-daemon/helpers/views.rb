@@ -63,8 +63,6 @@ module RestFtpDaemon
     end
 
     def job_task_status job
-      # Only works with JobWorkflow
-      return unless job.is_a? JobWorkflow
       out = []
 
       out << '<span class="label-group">'

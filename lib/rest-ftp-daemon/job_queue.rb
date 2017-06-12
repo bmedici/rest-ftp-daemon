@@ -34,18 +34,6 @@ module RestFtpDaemon
     end
 
     def create_job params
-      # Build class name and chock if it exists
-      # klass = Kernel.const_get("Job#{params[:type].to_s.capitalize}") rescue nil
-      klass_name = "Job#{params[:type].to_s.capitalize}"
-      klass = Kernel.const_get(klass_name) rescue nil
-
-      # If object not found, don't create a job !
-      unless klass && klass < Job
-        message = "can't create [#{klass_name}] for type [#{params[:type]}]"
-        log_error "create_job: #{message}"
-        raise QueueCantCreateJob, message
-      end
-
       # Generate an ID and stack it
       @mutex.synchronize do
         @last_id += 1
@@ -53,8 +41,8 @@ module RestFtpDaemon
       job_id = prefixed_id(@last_id)
 
       # Instantiate it and return the now object
-      log_info "create_job: creating [#{klass.name}] with ID [#{job_id}]"
-      job = klass.new(job_id, params)
+      log_info "create_job: creating Job ##{job_id}"
+      job = Job.new(job_id, params)
 
       # Push it on the queue
       push job
