@@ -82,7 +82,6 @@ module RestFtpDaemon
         log_debug "each: #{source.path_abs} = #{source.to_s}"
         log_debug "export_inputs (inside)", @inputs.collect(&:to_s)
 
-next
         # Build final target, add the source file name if noneh
         target = target_loc.clone
         target.name = source.name.clone unless target.name
