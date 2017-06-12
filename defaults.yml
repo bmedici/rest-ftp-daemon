@@ -76,12 +76,10 @@ logs:
   default:  "rftpd-default.log"
 
   queue:    "rftpd-default.log"
-  api:      "rftpd-default.log"
+  core:     "rftpd-default.log"
   workers:  "rftpd-default.log"
-  transfer: "rftpd-default.log"
-  conchita: "rftpd-default.log"
-  reporter: "rftpd-default.log"
-  notify:   "rftpd-default.log"
+  jobs:     "rftpd-default.log"
+  remote:   "rftpd-default.log"
 
   newrelic: "rftpd-newrelic.log"
   rollbar:  "rftpd-rollbar.log"

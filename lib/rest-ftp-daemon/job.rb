@@ -99,7 +99,7 @@ module RestFtpDaemon
       @tasks        = []
 
       # Logger # FIXME: should be :jobs
-      log_pipe      :transfer
+      log_pipe      :jobs
 
       # Prepare configuration
       @config       = Conf[:transfer] || {}

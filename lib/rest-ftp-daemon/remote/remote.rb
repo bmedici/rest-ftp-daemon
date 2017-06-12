@@ -24,10 +24,10 @@ module RestFtpDaemon
 
         # Logger
         @context = context || {}
-        log_pipe :transfer
 
         # Annnounce object
         log_info "Remote debug[#{debug}] target[#{target.to_s}] "
+        log_pipe :remote
 
         # Prepare real object
         prepare

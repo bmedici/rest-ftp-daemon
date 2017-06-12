@@ -34,7 +34,7 @@ module RestFtpDaemon
       @config       = Conf.at(:transfer) || {}
 
       # Enable logging
-      log_pipe      :workflow
+      log_pipe      :jobs
 
     def prepare
     end

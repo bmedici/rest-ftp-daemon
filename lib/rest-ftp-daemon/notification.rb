@@ -26,7 +26,7 @@ module RestFtpDaemon
       @jid = nil
 
       # Logger
-      log_pipe :notify
+      log_pipe :jobs
 
       # Handle the notification
       log_info "initialized [#{@url}]"

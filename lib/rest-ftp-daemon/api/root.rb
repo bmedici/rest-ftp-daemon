@@ -12,7 +12,7 @@ module RestFtpDaemon
 
 
       ### LOGGING & HELPERS
-      logger  BmcDaemonLib::LoggerPool.instance.get :api
+      logger  BmcDaemonLib::LoggerPool.instance.get :core
       helpers RestFtpDaemon::CommonHelpers
       helpers RestFtpDaemon::ApiHelpers
       helpers BmcDaemonLib::LoggerHelper
