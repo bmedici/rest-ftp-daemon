@@ -25,8 +25,6 @@ module RestFtpDaemon
     def initialize original, endpoints = nil
       # Init
       @original = nil
-      @debug = Conf.at(:debug, :location)
-      debug nil, nil
 
       # Prepare endpoints
       @endpoints ||= BmcDaemonLib::Conf[:endpoints]
@@ -52,7 +50,6 @@ module RestFtpDaemon
 
     # Control how the object is cloned, especially for @uri pointed by an instance variable
     def initialize_clone(other)
-      debug "cloning", "other.object_id"
       super
       #initialize_copy(other)
     end    
@@ -75,7 +72,6 @@ module RestFtpDaemon
       return unless uri.is_a? URI::FILE
 
       local_file_path = path_abs
-      puts "size(#{local_file_path})"
       return unless File.exist? local_file_path
       return File.size local_file_path
     end
@@ -125,11 +121,9 @@ module RestFtpDaemon
 
       # Remember origin url
       @original = url.clone
-      debug :original, url
 
       # Detect tokens in string
       @tokens = detect_tokens(url)
-      debug :tokens, @tokens.inspect
       
       # First resolve tokens
       resolve_tokens!(url)
@@ -146,16 +140,6 @@ module RestFtpDaemon
 
       # Remove unnecessary double slahes
       @uri.path.gsub!(/\/+/, '/')     
-
-      # Check we finally have a scheme
-      debug :uri_to_s,  @uri.to_s
-      debug :scheme,    @uri.scheme 
-      debug :host,      @uri.host
-      debug :path,      @uri.path
-      debug :path_abs,  path_abs
-      debug :path_rel,  path_rel
-      debug :dir,       dir
-      debug :name,      name
 
       # Raise if still no scheme #FIXME
       raise RestFtpDaemon::SchemeUnsupported, url unless @uri.scheme
@@ -219,16 +203,22 @@ module RestFtpDaemon
       item.scan(/\[([^\[\]]*)\]/).map(&:first)
     end
 
-    def debug var, val = nil
-      # Skip if no debug requested
-      return unless @debug
-
-      # debug line
-      if var.nil?
-        printf("|%s \n", "-"*100) 
-      else
-        printf("| %-15s: %s \n", var, val)
-      end
+    def to_debug
+      return {
+        to_s:     @uri.to_s,
+        tokens:   @tokens.join(', '),
+        scheme:   @uri.scheme,
+        user:     @uri.user,
+        host:     @uri.host,
+        port:     @uri.port,
+        dir:      dir,
+        name:     name,
+        aws_region: @aws_region,
+        aws_id:   @aws_id,
+        path_abs: path_abs,
+        path_rel: path_rel,
+        path_rel: path_rel,
+        }
     end
 
   end
