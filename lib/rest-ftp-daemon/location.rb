@@ -82,8 +82,11 @@ module RestFtpDaemon
     end
 
     def name
-      File.basename(@uri.path)
+      # match everything that's after a slash at the end of the string
+      m = @uri.path.match(/\/?([^\/]+)$/)
+      return m[1].to_s unless m.nil?
     end
+
     def name= value
       @uri.path = File.join(File.dirname(@uri.path), value)
     end
