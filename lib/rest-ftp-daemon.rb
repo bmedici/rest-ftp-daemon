@@ -34,7 +34,7 @@ require_relative "shared/patch_file"
 require_relative "rest-ftp-daemon/helpers/common"
 require_relative "rest-ftp-daemon/helpers/views"
 require_relative "rest-ftp-daemon/helpers/api"
-require_relative "rest-ftp-daemon/helpers/transfer"
+require_relative "rest-ftp-daemon/helpers/progress"
 
 # Jobs
 require_relative "rest-ftp-daemon/job_errors"
