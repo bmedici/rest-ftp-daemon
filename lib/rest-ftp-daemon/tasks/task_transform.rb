@@ -20,7 +20,7 @@ module RestFtpDaemon
       @inputs.each do |current|
         # Generate target from current location
         log_debug "do_work 1: #{current.to_s}"
-        target = current.dup
+        target = current.clone
         log_debug "do_work 2: #{current.to_s}"
         target.generate_temp_name!
         log_debug "do_work 3: #{current.to_s}"
