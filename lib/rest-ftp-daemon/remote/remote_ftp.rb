@@ -13,7 +13,7 @@ module RestFtpDaemon
         super
         
         # Create FTP object
-        if @ftpes
+        if @target.secure?
           prepare_ftpes
         else
           prepare_ftp

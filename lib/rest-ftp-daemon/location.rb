@@ -106,6 +106,10 @@ module RestFtpDaemon
       @uri.path.sub(/^\//, '')
     end
 
+    def secure?
+      [URI::FTPS, URI::FTPES, URI::HTTPS].include?(@uri.class)
+    end
+
   private
 
     def tokenize item

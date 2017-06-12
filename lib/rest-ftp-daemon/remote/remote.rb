@@ -13,10 +13,9 @@ module RestFtpDaemon
       delegate :set_info,
         to: :job
 
-      def initialize target, job, config, ftpes = false
+      def initialize target, job, config
         # Init
         @target = target
-        @ftpes = ftpes
 
         # Build and empty job to protect set_info delegation
         @job = Job.new(nil, {})
