@@ -97,7 +97,6 @@ module RestFtpDaemon
 
       # Init: worfklow-specific
       @tasks        = []
-      @tempfiles    = []
 
       # Logger # FIXME: should be :jobs
       log_pipe      :transfer
@@ -151,6 +150,9 @@ module RestFtpDaemon
       set_status STATUS_PREPARED
       @infos = {}
 
+      # Reset temp files
+      @tempfiles = []
+
       # Update job status, send first notification
       set_status STATUS_QUEUED
       set_error nil
@@ -168,9 +170,6 @@ module RestFtpDaemon
       # Check prerequisites
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
-
-      # Reset tempfiles
-      tempfiles = []
 
       # Prepare initial stash with source_loc
       stash = [source_loc]
@@ -270,6 +269,9 @@ module RestFtpDaemon
       set_status STATUS_FINISHED
       log_info "job_notify [ended]"
       job_notify :ended      
+
+      # Identify temp files to be cleant up
+      tempfiles_clean
 
       # Update counters
       RestFtpDaemon::Counters.instance.increment :jobs, :finished
@@ -376,6 +378,21 @@ module RestFtpDaemon
         @status = value
       end
       job_touch
+    end
+
+    def tempfiles_allocate
+      temp = Tempfile.new("rftpd-#{@id}-")
+      tempfile = Location.new("file://#{temp.path}")
+      @tempfiles << tempfile
+      temp.close
+      return tempfile
+    end
+
+    def tempfiles_clean
+      tempfiles_list = @tempfiles.each.map(&:path_abs)
+      tempfiles_deleted = File.delete(*tempfiles_list)     
+      log_info "Job.start: deleted #{tempfiles_deleted} tempfiles out of #{@tempfiles.count} total", @tempfiles.collect(&:to_s)
+      @tempfiles = []
     end
 
   protected

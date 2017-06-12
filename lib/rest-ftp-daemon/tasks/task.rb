@@ -63,13 +63,6 @@ module RestFtpDaemon
       @outputs << output
     end
 
-    def derivate_temp_location loc
-      temp = loc.clone
-      temp.generate_temp_name!
-      #temp.name = "#{temp.name}-{temp}"
-      return temp
-    end
-
     def task_oops exception, error = nil#, include_backtrace = false
       # Find error code in ERRORS table
       if error.nil?
