@@ -76,7 +76,7 @@ module RestFtpDaemon
         target.name = source.name.clone unless target.name
 
         # Do the transfer, for each file
-        remote_upload source, target, get_option(:transfer, :overwrite)
+        remote_push source, target, get_option(:transfer, :overwrite)
 
         # Add it to transferred target names
         targets << target.name
@@ -107,14 +107,14 @@ module RestFtpDaemon
 
   private
 
-    def remote_upload source, target, overwrite = false
+    def remote_push source, target, overwrite = false
       # Method assertions
-      raise RestFtpDaemon::AssertionFailed, "remote_upload/remote" if @remote.nil?
-      raise RestFtpDaemon::AssertionFailed, "remote_upload/source" if source.nil?
-      raise RestFtpDaemon::AssertionFailed, "remote_upload/target" if target.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_push/remote" if @remote.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_push/source" if source.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_push/target" if target.nil?
 
       # Use source filename if target path provided none (typically with multiple sources)
-      log_info "Task.remote_upload", {
+      log_info "remote_push", {
         source_abs: source.path_abs,
         target_rel: target.path_rel,
         overwrite:  overwrite,
@@ -126,7 +126,7 @@ module RestFtpDaemon
       if overwrite
         @remote.try_to_remove target
       elsif (size = @remote.size_if_exists(target))  # won't be triggered when NIL or 0 is returned
-        log_debug "Task.remote_upload file exists ! (#{format_bytes size, 'B'})"
+        log_debug "remote_push: file exists (#{format_bytes size, 'B'})"
         raise RestFtpDaemon::TargetFileExists
       end
 
@@ -144,7 +144,7 @@ module RestFtpDaemon
 
       # Start the transfer, update job status after each block transfer
       set_status Job::STATUS_EXPORT_UPLOADING
-      log_debug "Task.remote_upload: upload [#{source.name}] > [#{destination.name}]"
+      log_debug "remote_push: upload [#{source.name}] > [#{destination.name}]"
       @remote.upload source, destination do |transferred, name|
         # Update transfer statistics
         progress_update transferred, name
@@ -156,7 +156,7 @@ module RestFtpDaemon
 
       # Rename file to target name
       if @tempfile
-        log_debug "Task.remote_upload: rename [#{destination.name}] > [#{target.name}]"
+        log_debug "remote_push: rename [#{destination.name}] > [#{target.name}]"
         @remove.move destination, target
       end
 
