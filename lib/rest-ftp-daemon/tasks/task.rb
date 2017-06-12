@@ -21,7 +21,7 @@ module RestFtpDaemon
       :source_loc, :target_loc,
       to: :job
 
-    def initialize job, name #, opts = {}
+    def initialize job, name
       # Init context
       @job          = job
       @name         = name
@@ -46,7 +46,6 @@ module RestFtpDaemon
     end
 
     end
-
   protected
 
     def debug_vars var
@@ -117,18 +116,7 @@ module RestFtpDaemon
 
     def set_status value
       @job.set_status value
-      #@job.set_status value
     end
-
-  private
-      
-    # def log_context
-    #   {
-    #     wid: @wid,
-    #     jid: @jid,
-    #     id: name
-    #   }
-    # end
 
   end
 end

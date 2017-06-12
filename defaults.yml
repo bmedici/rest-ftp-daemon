@@ -5,10 +5,6 @@ user: rftpd
 # host: "myhost"
 allow_reload: false
 
-# FUTURE
-debug:
-  location: false
-
 pools:                      # number of workers decidated to each pool value
   default: 2
   urgent: 1

@@ -10,8 +10,7 @@ module RestFtpDaemon
       attr_accessor :job
 
       # Delegate set_info info to Job
-      delegate :set_info,
-        to: :job
+      delegate :set_info, to: :job
 
       def initialize target, job, config
         # Init
@@ -43,7 +42,7 @@ module RestFtpDaemon
       def chdir_or_create directory, mkdir = false
       end
 
-      def remove! target
+      def try_to_remove target
       end
 
       def close

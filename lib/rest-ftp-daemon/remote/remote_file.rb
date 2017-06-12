@@ -12,12 +12,12 @@ module RestFtpDaemon
         return File.size target
       end
 
-      def remove! target
+      def try_to_remove target
         File.delete target.path_abs
       rescue Errno::ENOENT
-        log_debug "remove! [#{target.name}] not found"
+        log_debug "try_to_remove [#{target.name}] not found"
       else
-        log_debug "remove! [#{target.name}] removed"
+        log_debug "try_to_remove [#{target.name}] removed"
       end
 
       def mkdir directory
@@ -58,9 +58,6 @@ module RestFtpDaemon
         FileUtils.move source.path_abs, target.path_abs
       end
 
-      # def connected?
-      #   !@ftp.welcome.nil?
-      # end
     private
 
       def debug_enabled

@@ -8,13 +8,9 @@ module RestFtpDaemon
       # Class options
       attr_reader :sftp
 
-      # def prepare
-      # end
-
       def connect
         super
 
-        # Connect init
         log_debug "connect", @target.to_debug
         log_debug "connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
 
@@ -45,8 +41,8 @@ module RestFtpDaemon
         return stat.size
       end
 
-      def remove! target
-        log_debug "remove! [#{target.name}]"
+      def try_to_remove target
+        log_debug "try_to_remove [#{target.name}]"
         @sftp.remove target.path_abs
 
       rescue Net::SFTP::StatusException

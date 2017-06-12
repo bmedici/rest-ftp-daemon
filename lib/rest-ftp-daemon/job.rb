@@ -91,8 +91,8 @@ module RestFtpDaemon
       @updated_at   = nil
       @error        = nil
       @status       = nil
-      @tentatives   = 0
       @wid          = nil
+      @tentatives   = 0
       @created_at   = Time.now
 
       # Init: worfklow-specific
@@ -248,8 +248,7 @@ module RestFtpDaemon
           # Close ftp connexion if open
           @remote.close unless @remote.nil? || !@remote.connected?
 
-          # FIXME
-          # Stop tasks from here
+          # Propagate error to Rollbar
           return oops(:task, exception)
         end
 
@@ -281,9 +280,9 @@ module RestFtpDaemon
       @source_loc.uri if @source_loc
     end
 
-    def target_uri
-      @target_loc.uri if @target_loc
-    end
+    # def target_uri
+    #   @target_loc.uri if @target_loc
+    # end
 
     def weight
       @weight = [
@@ -395,6 +394,14 @@ module RestFtpDaemon
       @tempfiles = []
     end
 
+    def log_context
+      {
+      wid: @wid,
+      jid: @id,
+      #id: @id,
+      }
+    end
+
   protected
 
     def dump title
@@ -410,14 +417,6 @@ module RestFtpDaemon
     end
 
   private
-
-    def log_context
-      {
-      wid: @wid,
-      jid: @id,
-      #id: @id,
-      }
-    end
 
     # Timestamps calculation
     def since timestamp

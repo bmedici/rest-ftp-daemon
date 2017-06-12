@@ -63,8 +63,8 @@ module RestFtpDaemon
     end
 
     def job_task_status job
+      # Init
       out = []
-
       out << '<span class="label-group">'
 
       # For each task

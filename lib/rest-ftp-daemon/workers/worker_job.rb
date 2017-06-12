@@ -45,7 +45,7 @@ module RestFtpDaemon
 
     def job_process job
       # Processs this job protected by a timeout
-      # log_info "job_process: start working"
+      log_info "job_process: id[#{job.id}] timeout[#{@config[:timeout]}]"
       Timeout.timeout(@config[:timeout], RestFtpDaemon::JobTimeout) do
         job.start
       end
@@ -72,7 +72,7 @@ module RestFtpDaemon
       # If job status requires a retry, just restack it
       if !job.error
         # Processing successful
-        log_info "job_result: finished successfully"
+        log_info "job_result: successful"
         worker_status Worker::STATUS_FINISHED
 
       elsif error_not_eligible(job)

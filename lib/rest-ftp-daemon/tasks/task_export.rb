@@ -6,9 +6,9 @@ module RestFtpDaemon
 
     def prepare
 
-      # Check outputs
       unless target_loc.uri_is? URI::FILE
         raise RestFtpDaemon::TargetUnsupported, "task output: invalid file type"
+      # Check output
       end
       log_debug "target_loc: #{target_loc.to_s}"
 
@@ -47,8 +47,6 @@ module RestFtpDaemon
       @remote.job = self.job
     end
 
-      # outputs = []
-
     def process
       # Connect to remote server and login
       set_status Job::STATUS_EXPORT_CONNECTING
@@ -71,15 +69,13 @@ module RestFtpDaemon
       targets = []
 
       @inputs.each do |source|
-        log_debug "processing: #{source.to_s}"
+        log_debug "source[#{source.name}] > target[#{source.name}]"
 
         # Build final target, add the source file name if noneh
         target = @output.clone
         target.name = source.name.clone unless target.name
 
         # Do the transfer, for each file
-        log_info "do_work each: source2: #{source.path_abs}"
-        log_info "do_work each: target2: #{target.path_abs}"
         remote_upload source, target, get_option(:transfer, :overwrite)
 
         # Add it to transferred target names
@@ -97,7 +93,6 @@ module RestFtpDaemon
 
     def finalize
       # Close FTP connexion and free up memory
-      # log_info "do_after close connexion, update status and counters"
       @remote.close if @remote
 
       # Free @remote object

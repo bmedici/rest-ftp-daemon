@@ -45,12 +45,12 @@ module RestFtpDaemon
         return size
       end
 
-      def remove! target
+      def try_to_remove target
         @ftp.delete target.path_abs
       rescue Net::FTPPermError
-        log_debug "remove! [#{target.name}] not found"
+        log_debug "try_to_remove [#{target.name}] not found"
       else
-        log_debug "remove! [#{target.name}] removed"
+        log_debug "try_to_remove [#{target.name}] removed"
       end
 
       def mkdir directory

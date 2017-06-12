@@ -217,7 +217,6 @@ module RestFtpDaemon
         aws_id:   @aws_id,
         path_abs: path_abs,
         path_rel: path_rel,
-        path_rel: path_rel,
         }
     end
 
