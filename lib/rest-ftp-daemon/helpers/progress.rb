@@ -1,7 +1,7 @@
 module RestFtpDaemon
-  module TransferHelpers
+  module ProgressHelpers
 
-    def update_progress transferred, name = ""
+    def progress_update transferred, name = ""
       # Update counters
       @transfer_sent += transferred
       set_info INFO_TRANFER_SENT, @transfer_sent
@@ -11,7 +11,7 @@ module RestFtpDaemon
       set_info INFO_TRANFER_PROGRESS, percent0
 
       # Update bitrates
-      @current_bitrate = running_bitrate @transfer_sent
+      @current_bitrate = progress_running_bitrate @transfer_sent
       set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
 
       # What's current time ?
@@ -35,7 +35,7 @@ module RestFtpDaemon
       return unless how_long_ago > @config[:notify_after]
 
       # # Update bitrates
-      # @current_bitrate = running_bitrate @transfer_sent
+      # @current_bitrate = progress_running_bitrate @transfer_sent
       # set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
 
       # Log progress
@@ -60,12 +60,12 @@ module RestFtpDaemon
       @last_notify_at = now
     end
 
-    def get_bitrate delta_data, delta_time
+    def progress_bitrate_delta delta_data, delta_time
       return nil if delta_time.nil? || delta_time.zero?
       8 * delta_data.to_f.to_f / delta_time
     end
 
-    def running_bitrate current_data
+    def progress_running_bitrate current_data
       return if @last_time.nil?
 
       # Compute deltas
@@ -78,7 +78,7 @@ module RestFtpDaemon
       @last_data = current_data
 
       # Return bitrate
-      get_bitrate delta_data, delta_time
+      progress_bitrate_delta delta_data, delta_time
     end
 
   end

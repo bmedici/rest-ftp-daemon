@@ -2,6 +2,7 @@ module RestFtpDaemon
   class Task
     include BmcDaemonLib::LoggerHelper
     include CommonHelpers
+    include ProgressHelpers
 
     # Task attributes
     # ICON = "transfer"

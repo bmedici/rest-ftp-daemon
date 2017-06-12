@@ -1,6 +1,5 @@
 module RestFtpDaemon
   class TaskExport < Task
-    include TransferHelpers
 
     # Task attributes
     ICON = "export"
@@ -160,11 +159,11 @@ module RestFtpDaemon
       log_debug "Task.remote_upload: upload [#{source.name}] > [#{destination.name}]"
       @remote.upload source, destination do |transferred, name|
         # Update transfer statistics
-        update_progress transferred, name
+        progress_update transferred, name
       end
 
       # Compute final bitrate
-      global_transfer_bitrate = get_bitrate @transfer_total, (Time.now - transfer_started_at)
+      global_transfer_bitrate = progress_bitrate_delta @transfer_total, (Time.now - transfer_started_at)
       set_info INFO_TRANFER_BITRATE, global_transfer_bitrate.round(0)
 
       # Rename file to target name
