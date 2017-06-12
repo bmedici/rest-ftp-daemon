@@ -19,7 +19,7 @@ module RestFtpDaemon
           prepare_ftp
         end
         @ftp.passive = true
-        @ftp.debug_mode = @debug
+        @ftp.debug_mode = debug_enabled
 
         # Announce object
         log_debug "prepare chunk_size:#{format_bytes(JOB_FTP_CHUNKMB, "B")}"
@@ -27,6 +27,8 @@ module RestFtpDaemon
 
       def connect
         super
+        log_debug "connect", @target.to_debug
+        log_debug "connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
 
         # Connect remote server
         @ftp.connect @target.host, @target.port
@@ -141,6 +143,10 @@ module RestFtpDaemon
         @ftp = DoubleBagFTPS.new
         @ftp.ssl_context = DoubleBagFTPS.create_ssl_context(verify_mode: OpenSSL::SSL::VERIFY_NONE)
         @ftp.ftps_mode = DoubleBagFTPS::EXPLICIT
+      end
+
+      def debug_enabled
+        @config[:debug_ftp]
       end
 
     end

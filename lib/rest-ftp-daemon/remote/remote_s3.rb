@@ -15,13 +15,14 @@ module RestFtpDaemon
         super
 
         # Connect init
+        log_debug "connect", @target.to_debug
         log_debug "connect region[#{target.aws_region}] id[#{target.aws_id}]"
 
         # Connect remote server
         @client = Aws::S3::Client.new(
           region: @target.aws_region,
           credentials: Aws::Credentials.new(@target.aws_id, @target.aws_secret),
-          http_wire_trace: @debug
+          http_wire_trace: debug_enabled
           )
       end
 
@@ -135,6 +136,10 @@ module RestFtpDaemon
 
         # Decide
         return [partsize_mini, partsize_bigf].max
+      end
+
+      def debug_enabled
+        @config[:debug_s3]
       end
 
     end

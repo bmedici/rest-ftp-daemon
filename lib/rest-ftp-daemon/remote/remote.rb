@@ -13,20 +13,18 @@ module RestFtpDaemon
       delegate :set_info,
         to: :job
 
-      def initialize target, context, debug = false, ftpes = false
+      def initialize target, job, config, ftpes = false
         # Init
         @target = target
         @ftpes = ftpes
-        @debug = !!debug
 
         # Build and empty job to protect set_info delegation
         @job = Job.new(nil, {})
+        @config = config
 
         # Logger
         @context = context || {}
 
-        # Annnounce object
-        log_info "Remote debug[#{debug}] target[#{target.to_s}] "
         log_pipe :remote
 
         # Prepare real object
@@ -41,15 +39,6 @@ module RestFtpDaemon
       end
 
       def connect
-        # Debug mode ?
-        return unless @debug
-        puts
-        puts "-------------------- SESSION STARTING -------------------------"
-        puts "class #{myname}"
-        puts " host  #{@target.host}"
-        puts " user  #{@target.user}"
-        puts " port  #{@target.port}"
-        puts "---------------------------------------------------------------"
       end
 
       def chdir_or_create directory, mkdir = false
@@ -61,9 +50,6 @@ module RestFtpDaemon
       def close
         log_debug "close"
 
-        # Debug mode ?
-        return unless @debug
-        puts "-------------------- SESSION CLOSING --------------------------"
       end
 
     protected

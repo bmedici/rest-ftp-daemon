@@ -15,10 +15,15 @@ module RestFtpDaemon
         super
 
         # Connect init
+        log_debug "connect", @target.to_debug
         log_debug "connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
 
         # Debug level
-        verbosity =  @debug ? Logger::DEBUG : false
+        if debug_enabled
+          verbosity = Logger::DEBUG 
+        else
+          verbosity = false
+        end
 
         # Connect remote server
         @sftp = Net::SFTP.start(@target.host.to_s, @target.user.to_s,
@@ -132,6 +137,10 @@ module RestFtpDaemon
 
       def connected?
         @sftp && !@sftp.closed?
+      end
+    
+      def debug_enabled
+        @config[:debug_sftp]
       end
 
     end

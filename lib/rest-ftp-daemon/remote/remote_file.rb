@@ -61,6 +61,11 @@ module RestFtpDaemon
       # def connected?
       #   !@ftp.welcome.nil?
       # end
+    private
+
+      def debug_enabled
+        @config[:debug_file]
+      end
 
     end
   end
