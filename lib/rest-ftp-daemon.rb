@@ -37,8 +37,8 @@ require_relative "rest-ftp-daemon/helpers/api"
 require_relative "rest-ftp-daemon/helpers/transfer"
 
 # Jobs
+require_relative "rest-ftp-daemon/job_errors"
 require_relative "rest-ftp-daemon/job"
-require_relative "rest-ftp-daemon/jobs/errors"
 
 # Remotes
 require_relative "rest-ftp-daemon/remote/remote"
