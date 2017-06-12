@@ -125,8 +125,7 @@ module RestFtpDaemon
     end
 
   private
-
-  
+      
     # def log_context
     #   {
     #     wid: @wid,

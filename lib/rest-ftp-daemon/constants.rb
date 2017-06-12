@@ -47,7 +47,7 @@ LOGGER_FORMAT = {
 context: {
   wid:    "%-10s",
   jid:    "%-10s",
-  id:     "%-8s",
+  id:     "%-10s",
   caller: "%-20s |",
   }
 }

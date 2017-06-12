@@ -251,7 +251,7 @@ module RestFtpDaemon
 
         # Dump output locations
         @stash = task.outputs
-        log_info "task outputs", @stash.collect(&:to_s)
+        log_info "STASH", @stash.collect(&:to_s)
         
         # FIXME Sleep for a few seconds
         sleep JOB_DELAY_TASKS

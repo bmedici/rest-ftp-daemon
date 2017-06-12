@@ -11,7 +11,6 @@ module RestFtpDaemon
       unless @inputs.is_a? Array
         raise RestFtpDaemon::SourceUnsupported, "task inputs: invalid file list"
       end
-      log_debug "stash > inputs", @inputs.collect(&:to_s)
 
       # Check outputs
       unless target_loc.uri_is? URI::FILE
