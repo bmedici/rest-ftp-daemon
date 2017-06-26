@@ -39,11 +39,14 @@ module RestFtpDaemon
       global_transfer_bitrate = get_bitrate @transfer_total, (Time.now - transfer_started_at)
       set_info INFO_TRANFER_BITRATE, global_transfer_bitrate.round(0)
 
+      # Explicitely send a 100% notification
+      progress_notify 100, target.name, true
+
       # Done
       set_info INFO_SOURCE_CURRENT, nil
     end
 
-    def update_progress transferred, name = ""
+    def update_progress transferred, name
       # Update counters
       @transfer_sent += transferred
       set_info INFO_TRANFER_SENT, @transfer_sent
@@ -53,14 +56,17 @@ module RestFtpDaemon
       set_info INFO_TRANFER_PROGRESS, percent0
 
       # Update bitrates
-      @current_bitrate = running_bitrate @transfer_sent
-      set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
-
-      # What's current time ?
-      now = Time.now
+      if transferred
+        @current_bitrate = running_bitrate @transfer_sent
+        set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
+      end
+      # log_debug "update_progress", {
+      #   transfer_sent: @transfer_sent,
+      #   current_bitrate: @current_bitrate,
+      # }
 
       # Notify if requested
-      progress_notify now, percent0, name
+      progress_notify percent0, name
 
       # Touch my worker status
       touch_job
@@ -68,13 +74,16 @@ module RestFtpDaemon
 
   private
 
-    def progress_notify now, percent0, name
+    def progress_notify percent0, name, force_notify = false
+      # What's current time ?
+      now = Time.now
+
       # No delay provided ?
       return if @config[:notify_after].nil?
 
       # Still too early to notify again ?
       how_long_ago = (now.to_f - @last_notify_at.to_f)
-      return unless how_long_ago > @config[:notify_after]
+      return unless force_notify || (how_long_ago > @config[:notify_after])
 
       # # Update bitrates
       # @current_bitrate = running_bitrate @transfer_sent
