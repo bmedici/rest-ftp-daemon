@@ -3,7 +3,7 @@ module RestFtpDaemon
 
     # Task attributes
     # ICON = "facetime-video"
-    ICON = "random"
+    ICON = "cog"
  
     def prepare
     end

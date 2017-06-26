@@ -21,25 +21,23 @@ module RestFtpDaemon
       :source_loc, :target_loc,
       to: :job
 
-    def initialize job, name
+    def initialize job, name, options = {}
       # Init context
       @job          = job
       @name         = name
-      @log_context  = {}
-      @error        = nil
-      @outputs      = []
+      @options      = options
 
       # Prepare configuration / import a copy
-      # @config       = Conf[:transfer].clone || {}
       @config       = Conf.at(:transfer) || {}
 
       # Enable logging
       log_pipe      :jobs
-
-    def prepare
     end
 
     def process
+    def reset
+      @status       = nil
+      @error        = nil
     end
 
     def finalize

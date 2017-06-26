@@ -2,7 +2,7 @@ module RestFtpDaemon
   class TaskExport < Task
 
     # Task attributes
-    ICON = "export"
+    ICON = "arrow-up"
 
     def prepare
 

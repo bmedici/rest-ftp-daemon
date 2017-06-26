@@ -2,7 +2,7 @@ module RestFtpDaemon
   class TaskImport < Task
 
     # Task attributes
-    ICON = "import"
+    ICON = "arrow-down"
 
     def prepare
       # I can accept only one input

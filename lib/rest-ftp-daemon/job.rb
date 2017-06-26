@@ -120,9 +120,7 @@ module RestFtpDaemon
       job_flag_init :transfer, :tempfile
 
       # Register tasks
-      register_task :import,    TaskImport
-      register_task :transform, TaskTransform
-      register_task :export,    TaskExport
+      register_tasks
 
       # Check if pool name exists
       Conf[:pools] ||= {}
@@ -153,6 +151,8 @@ module RestFtpDaemon
       # Reset temp files
       @tempfiles = []
 
+      @tasks.map(&:reset)
+     
       # Update job status, send first notification
       set_status STATUS_QUEUED
       set_error nil
@@ -182,8 +182,6 @@ module RestFtpDaemon
       # Run tasks
       @tasks.each do |task|
         begin
-          # Prepare and run task
-          log_info "task #{task.class.to_s}"
           task.do_before
           task.do_work
           # Inject stash as inputs
@@ -455,18 +453,27 @@ module RestFtpDaemon
 
     def register_task name, kind
       # Instantiate task
-      log_info "register_task [#{name}] -> #{kind.to_s}"
-      task = kind.new(self, name)
-
-      # Set task context
-      task.log_context = {
-        wid: self.wid,
-        jid: self.id,
-        id: name,
-      }
+      log_info "register_task: #{clazz.to_s}"
 
       # Store it
-      @tasks << task
+      @tasks << clazz.new(self, name, options)
+    end
+
+
+    def register_tasks
+      # Register IMPORT
+      register_task :import
+      
+      # Register TRANSFORMS if we have some
+      @transforms.each do |tr|
+        register_transform tr
+      end if @transforms.is_a?(Array)
+
+      # Register EXPORT
+      register_task :export
+
+      # Announce registered tasks
+     log_debug "registered following tasks", @tasks.map(&:class)
     end
 
     # NewRelic instrumentation
