@@ -20,7 +20,6 @@ JOB_S3_MAX_COUNT        = 10_000
 JOB_FFMPEG_THREADS      = 2
 JOB_FFMPEG_ATTRIBUTES   = [:video_codec, :video_bitrate, :video_bitrate_tolerance, :frame_rate, :resolution, :aspect, :keyframe_interval, :x264_vprofile, :x264_preset, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels]
 
-
 JOB_DELAY_TASKS			= 0
 
 
@@ -38,19 +37,6 @@ INFO_TRANFER_SENT         = :transfer_sent
 INFO_TRANFER_PROGRESS     = :progress
 INFO_TRANFER_BITRATE      = :bitrate
 INFO_TARGET_FILES         = :target_files
-
-
-# Constants: logger
-LOGGER_FORMAT = {
-# context:  "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s ",
-# context:  "wid:%-8{wid} jid:%-12{jid} id:%-5{id}",
-context: {
-  wid:    "%-10s",
-  jid:    "%-10s",
-  id:     "%-10s",
-  caller: "%-20s |",
-  }
-}
 
 
 # Constants: logger to be cleaned up
@@ -80,4 +66,20 @@ MOUNT_CONFIG             = "/config"
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
 NOTIFY_IDENTIFIER_LEN   = 4
+
+
+
+# Constants: logger
+LOGGER_FORMAT = {
+# context:  "%#{-LOG_PREFIX_WID.to_i}s %#{-LOG_PREFIX_JID.to_i}s %#{-LOG_PREFIX_ID.to_i}s ",
+# context:  "wid:%-8{wid} jid:%-12{jid} id:%-5{id}",
+context: {
+  wid:    "%-8s ",
+  jid:    "%-8s ",
+  id:     "%-#{NOTIFY_IDENTIFIER_LEN}s ",
+  caller: "%-22s | ",
+  }
+}
+
+
 
