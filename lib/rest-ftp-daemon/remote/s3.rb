@@ -97,11 +97,15 @@ module RestFtpDaemon
             body:        part,
             part_number: current_part,
             })
-          log_debug "upload_part [#{current_part}/#{parts_count}]"
-          resp = @client.upload_part(opts)  
+          part_size = part.bytesize
+          log_debug "upload_part [#{current_part}/#{parts_count}] size[#{part_size}]"
+
+          # Push this over there
+          resp = @client.upload_part(opts)
           
           # Send progress info upwards
-          yield parts_size, s3_name
+          log_debug "upload_multipart yield parts_size[#{parts_size}] s3_name[#{s3_name}]"
+          yield part_size, s3_name
 
           # Increment part number
           current_part += 1
@@ -110,7 +114,6 @@ module RestFtpDaemon
         # Retrieve parts and complete upload
         log_debug "complete_multipart_upload"
         parts_resp = @client.list_parts(options)
-
         those_parts = parts_resp.parts.map do |part| 
           { part_number: part.part_number, etag: part.etag }
         end
