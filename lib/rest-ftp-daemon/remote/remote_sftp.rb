@@ -14,8 +14,6 @@ module RestFtpDaemon
         super
       end
 
-        log_debug "connect", @target.to_debug
-        log_debug "connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
         super
 
         # Debug level
@@ -95,7 +93,6 @@ module RestFtpDaemon
       def upload source, target, use_temp_name = false, &callback
         # Push init
         raise RestFtpDaemon::AssertionFailed, "upload/sftp" if @sftp.nil?
-
         # Temp file if needed
         dest = target.clone
         if use_temp_name

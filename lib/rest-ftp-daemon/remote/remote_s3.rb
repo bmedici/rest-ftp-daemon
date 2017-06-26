@@ -15,10 +15,6 @@ module RestFtpDaemon
       def connect
         super
 
-        # Connect init
-        log_debug "connect", @target.to_debug
-        log_debug "connect region[#{target.aws_region}] id[#{target.aws_id}]"
-
         # Connect remote server
         @client = Aws::S3::Client.new(
           region: @target.aws_region,

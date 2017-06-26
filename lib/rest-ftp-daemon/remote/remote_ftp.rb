@@ -27,8 +27,6 @@ module RestFtpDaemon
 
       def connect
         super
-        log_debug "connect", @target.to_debug
-        log_debug "connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
 
         # Connect remote server
         @ftp.connect @target.host, @target.port

@@ -15,16 +15,13 @@ module RestFtpDaemon
       def initialize target, job, config
         # Init
         @target = target
-
-        # Build and empty job to protect set_info delegation
         @config = config
         @job = job
 
         # Logger
-        @context = context || {}
-
         log_pipe :remote
 
+        log_debug "connect: #{@target.to_connection_string}"
       end
 
       def size_if_exists target
@@ -44,10 +41,8 @@ module RestFtpDaemon
         log_debug "SESSION CLOSING"
       end
 
-    protected
-
       def log_context
-        @context
+        @job.log_context
       end
 
     private
