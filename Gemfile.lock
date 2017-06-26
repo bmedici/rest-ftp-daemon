@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest-ftp-daemon (1.0.11)
+    rest-ftp-daemon (1.0.12)
       CFPropertyList
       activesupport (= 4.2.7.1)
       api-auth
