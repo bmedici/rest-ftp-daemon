@@ -8,8 +8,9 @@ module RestFtpDaemon
       attr_reader :client
       attr_reader :target
 
-      # def prepare
-      # end
+      def initialize target, job, config
+        super
+      end
 
       def connect
         super
@@ -94,7 +95,6 @@ module RestFtpDaemon
           parts_size:   format_bytes(parts_size, "B"),
           parts_count:  parts_count
           }
-
 
         # Upload each part
         file.each_part(parts_size) do |part|

@@ -9,10 +9,14 @@ module RestFtpDaemon
       attr_reader :sftp
 
       def connect
+      def initialize target, job, config
+        # Call daddy's initialize() first
         super
+      end
 
         log_debug "connect", @target.to_debug
         log_debug "connect [#{@target.user}]@[#{@target.host}]:[#{@target.port}]"
+        super
 
         # Debug level
         if debug_enabled
@@ -127,7 +131,6 @@ module RestFtpDaemon
       end
 
       def close
-        # Close init
         super
       end
 

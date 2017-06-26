@@ -25,15 +25,10 @@ module RestFtpDaemon
 
         log_pipe :remote
 
-        # Prepare real object
-        prepare
       end
 
       def size_if_exists target
         false
-      end
-
-      def prepare
       end
 
       def connect
@@ -46,8 +41,7 @@ module RestFtpDaemon
       end
 
       def close
-        log_debug "close"
-
+        log_debug "SESSION CLOSING"
       end
 
     protected

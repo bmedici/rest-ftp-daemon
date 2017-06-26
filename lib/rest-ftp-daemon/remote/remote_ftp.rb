@@ -9,9 +9,9 @@ module RestFtpDaemon
       # Class options
       attr_reader :ftp
 
-      def prepare
+      def initialize target, job, config
         super
-        
+
         # Create FTP object
         if @target.secure?
           prepare_ftpes
@@ -33,6 +33,17 @@ module RestFtpDaemon
         # Connect remote server
         @ftp.connect @target.host, @target.port
         @ftp.login @target.user, @target.password
+      end
+
+      def connected?
+        !@ftp.welcome.nil?
+      end
+
+      def close
+        super
+
+        # Close FTP connexion and free up memory
+        @ftp.close if connected?
       end
 
       def size_if_exists target
@@ -121,17 +132,6 @@ module RestFtpDaemon
         @ftp.rename source.name, target.name
       end
 
-      def close
-        # Close init
-        super
-
-        # Close FTP connexion and free up memory
-        @ftp.close
-      end
-
-      def connected?
-        !@ftp.welcome.nil?
-      end
 
     private
 
