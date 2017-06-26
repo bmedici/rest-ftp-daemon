@@ -5,7 +5,7 @@ pkg
 tmp/
 log/
 DOC/
-rest-ftp-daemon.yml
+local.yml
 .ruby-version
 /.idea
 
