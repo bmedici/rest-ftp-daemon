@@ -11,14 +11,13 @@ module RestFtpDaemon
       set_info INFO_TRANFER_PROGRESS, percent0
 
       # Update bitrates
-      @current_bitrate = progress_running_bitrate @transfer_sent
-      set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
-
-      # What's current time ?
-      now = Time.now
+      if transferred
+        @current_bitrate = progress_running_bitrate @transfer_sent
+        set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
+      end
 
       # Notify if requested
-      progress_notify now, percent0, name
+      progress_notify percent0, name
 
       # Touch my worker status
       job_touch
@@ -26,13 +25,16 @@ module RestFtpDaemon
 
   private
 
-    def progress_notify now, percent0, name
+    def progress_notify percent0, name, force_notify = false
       # No delay provided ?
       return if @config[:notify_after].nil?
 
+      # What's current time ?
+      now = Time.now
+
       # Still too early to notify again ?
       how_long_ago = (now.to_f - @last_notify_at.to_f)
-      return unless how_long_ago > @config[:notify_after]
+      return unless force_notify || (how_long_ago > @config[:notify_after])
 
       # # Update bitrates
       # @current_bitrate = progress_running_bitrate @transfer_sent

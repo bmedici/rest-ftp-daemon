@@ -150,6 +150,9 @@ module RestFtpDaemon
         progress_update transferred, name
       end
 
+      # Explicitely send a 100% notification
+      progress_notify 100, destination.name, true
+
       # Compute final bitrate
       global_transfer_bitrate = progress_bitrate_delta @transfer_total, (Time.now - transfer_started_at)
       set_info INFO_TRANFER_BITRATE, global_transfer_bitrate.round(0)
