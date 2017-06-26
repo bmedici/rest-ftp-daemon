@@ -35,7 +35,7 @@ module RestFtpDaemon
         @uri = param.clone
       else
         # Build URI from parameters
-        build_uri param
+        build_uri param.clone
       end
 
       # Specific initializations
@@ -108,6 +108,27 @@ module RestFtpDaemon
 
     def secure?
       [URI::FTPS, URI::FTPES, URI::HTTPS].include?(@uri.class)
+    end
+
+    def to_debug
+      return {
+        to_s:     @uri.to_s,
+        tokens:   @tokens.join(', '),
+        scheme:   @uri.scheme,
+        user:     @uri.user,
+        host:     @uri.host,
+        port:     @uri.port,
+        dir:      dir,
+        name:     name,
+        aws_region: @aws_region,
+        aws_id:   @aws_id,
+        # path_abs: path_abs,
+        # path_rel: path_rel,
+        }
+    end
+
+    def to_connection_string
+      return "region[#{@aws_region}] id[#{@aws_id}] user[#{@uri.user}] host[#{@uri.host}] port[#{@uri.port}] dir[#{dir}] name[#{name}]" 
     end
 
   private
@@ -201,23 +222,6 @@ module RestFtpDaemon
 
     def detect_tokens item
       item.scan(/\[([^\[\]]*)\]/).map(&:first)
-    end
-
-    def to_debug
-      return {
-        to_s:     @uri.to_s,
-        tokens:   @tokens.join(', '),
-        scheme:   @uri.scheme,
-        user:     @uri.user,
-        host:     @uri.host,
-        port:     @uri.port,
-        dir:      dir,
-        name:     name,
-        aws_region: @aws_region,
-        aws_id:   @aws_id,
-        path_abs: path_abs,
-        path_rel: path_rel,
-        }
     end
 
   end
