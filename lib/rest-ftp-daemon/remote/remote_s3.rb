@@ -66,7 +66,7 @@ module RestFtpDaemon
     private
 
       def upload_onefile file, s3_bucket, s3_path, s3_name, &callback
-        log_debug "upload_onefile"
+        log_debug "put_object"
         @client.put_object(bucket: s3_bucket, key: s3_path, body: file)
       end
 
@@ -78,11 +78,6 @@ module RestFtpDaemon
         file_size     = file.size
         parts_size    = compute_parts_size(file_size)
         parts_count   = (file_size.to_f / parts_size).ceil
-        log_debug "upload_multipart", {
-          file_size:    format_bytes(file_size, "B"),
-          parts_size:   format_bytes(parts_size, "B"),
-          parts_count:  parts_count
-          }
 
         # Prepare basic opts
         options = {
@@ -93,7 +88,13 @@ module RestFtpDaemon
         # Declare multipart upload
         mpu_create_response = @client.create_multipart_upload(options)
         options[:upload_id] = mpu_create_response.upload_id
-        log_debug "created multipart id[#{options[:upload_id]}]"
+        log_debug "create_multipart_upload", {
+          id:           options[:upload_id],
+          file_size:    format_bytes(file_size, "B"),
+          parts_size:   format_bytes(parts_size, "B"),
+          parts_count:  parts_count
+          }
+
 
         # Upload each part
         file.each_part(parts_size) do |part|
@@ -102,20 +103,21 @@ module RestFtpDaemon
             body:        part,
             part_number: current_part,
             })
-          log_debug "upload_part [#{current_part}/#{parts_count}]"
-          resp = @client.upload_part(opts)  
+          part_size = part.bytesize
+          log_debug "upload_part [#{current_part}/#{parts_count}] s3_name[#{s3_name}] size[#{part_size}]"
+
+          # Push this over there
+          resp = @client.upload_part(opts)
           
           # Send progress info upwards
-          yield parts_size, s3_name
+          yield part_size, s3_name
 
           # Increment part number
           current_part += 1
         end
 
         # Retrieve parts and complete upload
-        log_debug "complete_multipart_upload"
         parts_resp = @client.list_parts(options)
-
         those_parts = parts_resp.parts.map do |part| 
           { part_number: part.part_number, etag: part.etag }
         end
@@ -124,6 +126,7 @@ module RestFtpDaemon
             parts: those_parts
             } 
           })
+        log_debug "complete_multipart_upload"
         mpu_complete_response = @client.complete_multipart_upload(opts)
       end  
 
