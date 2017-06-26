@@ -29,7 +29,7 @@ module RestFtpDaemon
       log_pipe :core
 
       # Generate queue identifier
-      @prefix = rand(36**JOB_IDENT_LEN).to_s(36)
+      @prefix = identifier(JOB_IDENT_LEN)
       log_info "initialized (prefix: #{@prefix})"
     end
 

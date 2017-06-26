@@ -13,9 +13,9 @@ module RestFtpDaemon
       "#{truncated} #{units[index]}#{unit}"
     end
 
-    # def identifier len
-    #   rand(36**len).to_s(36)
-    # end
+    def identifier len
+      rand(36**len).to_s(36)
+    end
 
     def dashboard_url filter = ''
       "#{MOUNT_BOARD}/#{filter}"
