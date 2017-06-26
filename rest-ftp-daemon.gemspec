@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.name                       = "rest-ftp-daemon"
   spec.authors                    = ["Bruno MEDICI"]
   spec.email                      = "rftpd-project@bmconseil.com"
-  spec.description                = "This is a pretty simple FTP client daemon, controlled through a RESTful API"
-  spec.summary                    = "RESTful FTP client daemon"
+  spec.description                = "A pretty simple transfer daemon, controlled with a RESTful API"
+  spec.summary                    = "RESTful transfer jobs daemon"
   spec.homepage                   = "http://github.com/bmedici/rest-ftp-daemon"
   spec.licenses                   = ["MIT"]
   spec.date                       = Time.now.strftime("%Y-%m-%d")
