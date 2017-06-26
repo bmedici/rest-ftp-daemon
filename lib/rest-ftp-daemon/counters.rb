@@ -27,6 +27,7 @@ module RestFtpDaemon
     end
 
     def add group, name, value
+      return if value.nil?
       @mutex.synchronize do
         @stats[group] ||= {}
         @stats[group][name] ||= 0
