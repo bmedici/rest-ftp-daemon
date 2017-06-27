@@ -103,15 +103,14 @@ module RestFtpDaemon
 
       end
 
-      def upload source, target, &callback
+      def push source, target, &callback
         # Push init
-        raise RestFtpDaemon::AssertionFailed, "upload/ftp" if @ftp.nil?
-
         # Temp file if needed
         dest = target.clone
         if temp
           dest = temp
         end
+        raise RestFtpDaemon::AssertionFailed, "push/ftp" if @ftp.nil?
 
         # Move to the directory
         log_debug "chdir [#{dest.dir_abs}]"

@@ -20,25 +20,27 @@ module RestFtpDaemon
 
         # Logger
         log_pipe :remote
+      end
 
-        log_debug "connect: #{@target.to_connection_string}"
+      def connect
+        log_debug "remote connect: #{@target.to_connection_string}"
       end
 
       def size_if_exists target
         false
       end
 
-      def connect
+      def try_to_remove target
       end
 
       def chdir_or_create directory, mkdir = false
       end
 
-      def try_to_remove target
+      def upload source, target, &callback
       end
 
       def close
-        log_debug "SESSION CLOSING"
+        log_debug "remote close"
       end
 
       def log_context

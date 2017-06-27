@@ -48,7 +48,7 @@ module RestFtpDaemon
 
       end
 
-      def upload source, target, &callback
+      def push source, target, &callback
         # Do the transfer
         FileUtils.copy_file source.path_abs, target.path_abs
       end

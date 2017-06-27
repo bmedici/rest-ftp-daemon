@@ -8,12 +8,12 @@ module RestFtpDaemon
       # Class options
       attr_reader :sftp
 
-      def connect
       def initialize target, job, config
         # Call daddy's initialize() first
         super
       end
 
+      def connect
         super
 
         # Debug level
@@ -90,14 +90,14 @@ module RestFtpDaemon
         raise JobTargetShouldBeDirectory
       end
 
-      def upload source, target, use_temp_name = false, &callback
+      def push source, target, &callback
         # Push init
-        raise RestFtpDaemon::AssertionFailed, "upload/sftp" if @sftp.nil?
         # Temp file if needed
         dest = target.clone
         if use_temp_name
           dest.generate_temp_name!
         end
+        raise RestFtpDaemon::AssertionFailed, "push/sftp" if @sftp.nil?
 
         # Do the transfer
         @sftp.upload! source.path_abs, dest.path_abs do |event, _uploader, *args|

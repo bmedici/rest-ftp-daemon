@@ -32,10 +32,10 @@ module RestFtpDaemon
         return object.content_length
       end
 
-      def upload source, target, &callback
+      def push source, target, &callback
         # Push init
-        raise RestFtpDaemon::AssertionFailed, "upload/client" if @client.nil?
         log_debug "bucket[#{target.aws_bucket}] path_rel[#{target.path_rel}]"
+        raise RestFtpDaemon::AssertionFailed, "push/client" if @client.nil?
 
         # Do the transfer, passing the file to the best method
         File.open(source.path_abs, 'r', encoding: 'BINARY') do |file|
@@ -63,7 +63,10 @@ module RestFtpDaemon
     private
 
       def upload_onefile file, s3_bucket, s3_path, s3_name, &callback
-        log_debug "put_object"
+        log_debug "push: put_object", {
+          s3_bucket:    s3_bucket,
+          s3_path:      s3_path,
+          }
         @client.put_object(bucket: s3_bucket, key: s3_path, body: file)
       end
 
@@ -85,8 +88,10 @@ module RestFtpDaemon
         # Declare multipart upload
         mpu_create_response = @client.create_multipart_upload(options)
         options[:upload_id] = mpu_create_response.upload_id
-        log_debug "create_multipart_upload", {
-          id:           options[:upload_id],
+        log_debug "push: create_multipart_upload", {
+          s3_bucket:    s3_bucket,
+          s3_path:      s3_path,
+          upload_id:    options[:upload_id],
           file_size:    format_bytes(file_size, "B"),
           parts_size:   format_bytes(parts_size, "B"),
           parts_count:  parts_count
@@ -100,7 +105,7 @@ module RestFtpDaemon
             part_number: current_part,
             })
           part_size = part.bytesize
-          log_debug "upload_part [#{current_part}/#{parts_count}] s3_name[#{s3_name}] size[#{part_size}]"
+          log_debug "upload_part [#{current_part}/#{parts_count}] part_size[#{part_size}]"
 
           # Push this over there
           resp = @client.upload_part(opts)
