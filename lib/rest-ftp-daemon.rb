@@ -50,6 +50,7 @@ require_relative "rest-ftp-daemon/remote/remote_s3"
 require_relative "rest-ftp-daemon/tasks/task"
 require_relative "rest-ftp-daemon/tasks/task_import"
 require_relative "rest-ftp-daemon/tasks/task_transform"
+require_relative "rest-ftp-daemon/tasks/task_transform_copy"
 require_relative "rest-ftp-daemon/tasks/task_export"
 
 # API entities
