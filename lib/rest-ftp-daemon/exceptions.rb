@@ -19,12 +19,14 @@ module RestFtpDaemon
 
   class SourceUnsupported         < BaseException; end
   class SourceNotFound            < BaseException; end
+  class SourceShouldBeUnique      < BaseException; end
 
 
   class TargetUnsupported         < BaseException; end
   class TargetFileExists          < BaseException; end
   class TargetDirectoryError      < BaseException; end
   class TargetPermissionError     < BaseException; end
+  class TargetNameRequired        < BaseException; end
 
   class JobUnsupportedTransform   < BaseException; end
   class TransformMissingBinary    < BaseException; end

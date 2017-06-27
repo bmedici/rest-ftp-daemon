@@ -29,7 +29,6 @@ require_relative "shared/patch_array"
 require_relative "shared/patch_haml"
 require_relative "shared/patch_file"
 
-
 # Helpers
 require_relative "rest-ftp-daemon/helpers/common"
 require_relative "rest-ftp-daemon/helpers/views"

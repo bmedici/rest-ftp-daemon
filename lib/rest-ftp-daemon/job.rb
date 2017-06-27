@@ -22,7 +22,7 @@ module RestFtpDaemon
 
     STATUS_IMPORT_LISTING       = "import/list"
 
-    STATUS_VIDEO_TRANSFORMING   = "video/transform"
+    STATUS_TASK_PROCESSING   = "video/transform"
 
     STATUS_EXPORT_CONNECTING    = "export/connect"
     STATUS_EXPORT_CHDIR         = "export/chdir"
@@ -40,8 +40,6 @@ module RestFtpDaemon
     # Other constats
     DEFAULT_POOL     = "default"
 
-
-    # Logging
     # PROCESSORS
     PROCESSORS       = ["copy", "ffmpeg", "mp4split"]
 
@@ -74,6 +72,7 @@ module RestFtpDaemon
 
     # Workflow-specific
     attr_reader :tasks
+    attr_reader :tempfiles
 
     # Define readers from imported fields
     IMPORTED.each do |field|
@@ -150,7 +149,6 @@ module RestFtpDaemon
       # Job has been prepared, reset infos
       set_status STATUS_PREPARED
       @infos = {}
-      @stash = []
 
       # Reset tasks
       @tasks.map(&:reset)
@@ -173,51 +171,48 @@ module RestFtpDaemon
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
 
-      # Prepare initial stash with source_loc
-      stash = [source_loc]
-
       # Notify we start working and remember when we started
       set_status Worker::STATUS_WORKING
       job_notify :started
       @started_at = Time.now
 
-      # Empty stash
-      stash = []
-
       # Run tasks
       @tasks.each do |task|
         begin
-          task.do_before
-          task.do_work
-          # Init
+          # Prepare task
           task.input = stash
+          task.prepare
+
+          # Run task
+          task.status = Task::STATUS_RUNNING
+          task.process
+
+          # FIXME Sleep for a few seconds
+          sleep JOB_DELAY_TASKS
 
         rescue StandardError => exception
           # Keep the exception with us
           task.error = exception
-
-          # Otherwise, propagate error
-          Rollbar.error exception, "job [#{error}]: #{exception.class.name}: #{exception.message}"
+          task.status = Task::STATUS_FAILED
 
           # Close ftp connexion if open
           @remote.close unless @remote.nil? || !@remote.connected?
 
           # Propagate error to Rollbar
+          Rollbar.error exception, "Job.start: error [#{error}]: #{exception.class.name}: #{exception.message}"
+
           # FIXME: stop tasks from here
           return oops(:task, exception)
-        end
 
-        # Always execute do_after
-        task.do_after
-        task.error = 0
+        else
+          task.status = Task::STATUS_FINISHED
           stash = task.output          
 
-        # Dump output locations
-        stash = task.outputs
-        # log_info "Job.start: task output", stash.collect(&:to_s)
-        
-        # FIXME Sleep for a few seconds
-        sleep JOB_DELAY_TASKS
+        ensure
+          # Always execute do_after
+          task.finalize
+
+        end
       end
 
       # All done !
@@ -226,7 +221,7 @@ module RestFtpDaemon
       job_notify :ended      
 
       # Identify temp files to be cleant up
-      clean_tempfiles
+      cleanup
 
       # Update counters
       RestFtpDaemon::Counters.instance.increment :jobs, :finished
@@ -335,10 +330,10 @@ module RestFtpDaemon
       job_touch
     end
 
-    def clean_tempfiles
+    def cleanup
       while f = @tempfiles.pop
         begin
-          log_debug "clean_tempfiles: #{f.path_abs}"
+          log_info "cleanup: #{f.name}"
           f.fs_delete
         rescue Errno::ENOENT
           log_debug "   file has already gone"
@@ -350,7 +345,6 @@ module RestFtpDaemon
       {
       wid: @wid,
       jid: @id,
-      #id: @id,
       }
     end
 

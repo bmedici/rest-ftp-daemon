@@ -18,9 +18,6 @@ module RestFtpDaemon
         expose field
       end
 
-      # Work-specific options
-      expose :options
-
       # Status and error
       expose :status, format_with: :utf8_filter
       expose :error, format_with: :utf8_filter

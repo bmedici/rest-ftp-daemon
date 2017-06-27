@@ -17,6 +17,7 @@ module RestFtpDaemon
       target_directory_error:   RestFtpDaemon::TargetDirectoryError,
       target_permission_error:  RestFtpDaemon::TargetPermissionError,
       target_not_supported:     RestFtpDaemon::TargetUnsupported,
+      target_name_required:     RestFtpDaemon::TargetNameRequired,
       assertion_failed:         RestFtpDaemon::AssertionFailed,
       location_parse_error:     RestFtpDaemon::LocationParseError,
 
