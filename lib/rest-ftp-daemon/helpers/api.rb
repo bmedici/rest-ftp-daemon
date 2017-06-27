@@ -10,7 +10,7 @@ module RestFtpDaemon
       request_method = env['REQUEST_METHOD']
       request_path   = env['REQUEST_PATH']
       request_uri    = env['REQUEST_URI']
-      log_info       "HTTP #{request_method} #{request_uri}", params
+      log_info       "HTTP #{request_method} #{request_uri}", params.to_hash
     end
 
     def get_censored_config

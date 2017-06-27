@@ -39,22 +39,27 @@ module RestFtpDaemon
       # # Update bitrates
       # @current_bitrate = progress_running_bitrate @transfer_sent
       # set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
+      if @current_bitrate.nil?
+        current_bitrate_rounded = nil
+      else
+        current_bitrate_rounded = @current_bitrate.round(0)
+      end
 
       # Log progress
-      stack = [
-        "#{percent0} %",
-        format_bytes(@transfer_sent, "B"),
-        format_bytes(@current_bitrate.round(0), "bps")
-        ]
-      stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
-      log_info "progress #{stack2} \t#{name}"
+      stack = []
+      stack << "#{percent0} %"
+      stack << format_bytes(@transfer_sent, "B")
+      stack << format_bytes(current_bitrate_rounded, "bps")
+
+      stack_string = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
+      log_info "progress #{stack_string} \t#{name}"
 
       # Prepare and send notification
       job_notify :progress, status: {
         progress: percent0,
         transfer_sent: @transfer_sent,
         transfer_total: @transfer_total,
-        transfer_bitrate: @current_bitrate.round(0),
+        transfer_bitrate: current_bitrate_rounded,
         transfer_current: name,
         }
 
