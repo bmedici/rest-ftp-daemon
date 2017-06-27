@@ -1,4 +1,15 @@
 module RestFtpDaemon
+  class SourceUnsupported         < BaseException; end
+  class SourceNotFound            < BaseException; end
+  class SourceShouldBeUnique      < BaseException; end
+
+  class TargetFileExists          < BaseException; end
+  class TargetDirectoryError      < BaseException; end
+  class TargetPermissionError     < BaseException; end
+  class TargetUnsupported         < BaseException; end
+  class TargetNameRequired        < BaseException; end
+
+
   class Task
     include BmcDaemonLib::LoggerHelper
     include CommonHelpers

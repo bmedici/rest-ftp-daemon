@@ -34,10 +34,10 @@ module RestFtpDaemon
       begin
         movie = FFMPEG::Movie.new(input.path_abs)
       rescue Errno::ENOENT => exception
-        raise RestFtpDaemon::VideoNotFound, exception.message
+        raise RestFtpDaemon::TransformVideoNotFound, exception.message
       rescue StandardError => exception
         log_error "FFMPEG Error [#{exception.class}] : #{exception.message}"
-        raise RestFtpDaemon::VideoMovieError, exception.message
+        raise RestFtpDaemon::TransformVideoError, exception.message
       else
         set_info :ffmpeg_size, movie.size
         set_info :ffmpeg_duration, movie.duration

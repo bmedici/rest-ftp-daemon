@@ -7,6 +7,15 @@
 require "securerandom"
 
 module RestFtpDaemon
+  class JobNotFound               < BaseException; end
+
+  class JobTimeout                < BaseException; end
+  class JobUnknownTransform       < BaseException; end
+  class JobNotFound               < BaseException; end
+  class JobAttributeMissing       < BaseException; end
+  class JobUnresolvedTokens       < BaseException; end
+
+
   class Job
     include BmcDaemonLib::LoggerHelper
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
@@ -415,7 +424,7 @@ module RestFtpDaemon
     def oops signal, exception, error = nil#, include_backtrace = false
       # Find error code in ERRORS table
       if error.nil?
-        error = ERRORS.key(exception.class)
+        error = JOB_ERRORS.key(exception.class)
       end
 
       # Default error code derived from exception name
@@ -498,7 +507,7 @@ module RestFtpDaemon
       unless PROCESSORS.include?(processor)
         message = "unsupported processor: #{processor}"
         log_error "initialize: #{message}"
-        raise RestFtpDaemon::JobUnsupportedTransform, message
+        raise RestFtpDaemon::JobUnknownTransform, message
       end
 
       # Extract options, cleaning processor

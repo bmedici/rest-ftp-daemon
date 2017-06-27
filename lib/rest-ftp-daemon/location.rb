@@ -1,7 +1,11 @@
 require 'active_support/core_ext/module/delegation'
-#require 'forwardable'
 
 module RestFtpDaemon
+  class LocationParseError        < BaseException; end
+  class LocationSchemeUnsupported < BaseException; end
+
+
+
   class Location
     include CommonHelpers
 
@@ -179,7 +183,7 @@ module RestFtpDaemon
       @uri.path.gsub!(/\/+/, '/')     
 
       # Raise if still no scheme #FIXME
-      raise RestFtpDaemon::SchemeUnsupported, url unless @uri.scheme
+      raise RestFtpDaemon::LocationSchemeUnsupported, url unless @uri.scheme
       # raise RestFtpDaemon::LocationParseError, base unless @uri
     end
 

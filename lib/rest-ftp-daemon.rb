@@ -18,10 +18,8 @@ require 'active_support/core_ext/module'
 require "fileutils"
 
 
-# Constants and exceptions
+# Constants and base exceptions
 require_relative "rest-ftp-daemon/constants"
-require_relative "rest-ftp-daemon/exceptions"
-
 
 # Shared libs / monkey-patching
 require 'bmc-daemon-lib'
@@ -35,9 +33,10 @@ require_relative "rest-ftp-daemon/helpers/views"
 require_relative "rest-ftp-daemon/helpers/api"
 require_relative "rest-ftp-daemon/helpers/progress"
 
-# Jobs
-require_relative "rest-ftp-daemon/job_errors"
+# Jobs and locations
 require_relative "rest-ftp-daemon/job"
+require_relative "rest-ftp-daemon/location"
+
 
 # Remotes
 require_relative "rest-ftp-daemon/remote/remote"
@@ -82,10 +81,8 @@ require_relative "rest-ftp-daemon/paginate"
 require_relative "rest-ftp-daemon/job_queue"
 require_relative "rest-ftp-daemon/counters"
 require_relative "rest-ftp-daemon/notification"
-
 require_relative "rest-ftp-daemon/uri"
-require_relative "rest-ftp-daemon/location"
-#require_relative "rest-ftp-daemon/uri_location"
+require_relative "rest-ftp-daemon/errors"
 
 
 # Init

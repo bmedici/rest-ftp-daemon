@@ -1,4 +1,10 @@
 module RestFtpDaemon
+  class TransformMissingBinary    < BaseException; end
+  class TransformMissingOutput    < BaseException; end
+  class TransformMissingOptions   < BaseException; end
+  class TransformVideoNotFound    < BaseException; end
+  class TransformVideoError       < BaseException; end
+
   class TaskTransform < Task
 
     # Task attributes

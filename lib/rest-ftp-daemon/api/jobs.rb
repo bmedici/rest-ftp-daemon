@@ -19,9 +19,9 @@ module RestFtpDaemon
       rescue_from JSON::ParserError do |exception|
         exception_error :api_parse_error, 422, exception
       end
-      rescue_from RestFtpDaemon::QueueCantCreateJob do |exception|
-        exception_error :api_cant_create_job, 422, exception
-      end
+      # rescue_from RestFtpDaemon::QueueCantCreateJob do |exception|
+      #   exception_error :api_cant_create_job, 422, exception
+      # end
       rescue_from RestFtpDaemon::JobUnresolvedTokens do |exception|
         exception_error :api_unresolved_tokens, 422, exception
       end
