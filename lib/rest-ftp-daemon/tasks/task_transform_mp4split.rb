@@ -28,9 +28,6 @@ module RestFtpDaemon
     end
 
     def process
-      # Prepare input files list
-      input_paths = @input.collect(&:path_abs)
-
       # Generate temp target from current location
       #output = target_loc.clone
       output = tempfile_for("transform")
@@ -41,12 +38,12 @@ module RestFtpDaemon
       FileUtils.mkdir_p t_dir
 
       # Run command
-      transform input_paths, output
+      mp4split input, output
     end
 
   protected
 
-    def transform inputs, output
+    def mp4split inputs, output
       # Init
       output_file = output.path_abs
       #log_info "transform output[#{output.name}] input:", @input.collect(&:name)
@@ -58,7 +55,7 @@ module RestFtpDaemon
       params["hls.minimum_fragment_length"] = @options["minimum_fragment_length"]
 
       # Run the command
-      command = mp4split_command inputs, output_file, params
+      command = mp4split_command output_file, params
       log_debug "running command with parameters", command
       stdout, stderr, status = Open3.capture3(*command)
 
@@ -73,7 +70,7 @@ module RestFtpDaemon
 
   private
 
-    def mp4split_command inputs, output_file, params
+    def mp4split_command output_file, params
       # Build the command
       command = []
       command << @binary
@@ -88,8 +85,8 @@ module RestFtpDaemon
       end
 
       # Input files
-      inputs.each do |input|
-        command << input
+      @input.each do |input|
+        command << input.path_abs
       end
 
       # We're all set
