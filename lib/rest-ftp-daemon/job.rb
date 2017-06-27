@@ -42,9 +42,11 @@ module RestFtpDaemon
 
 
     # Logging
+    # PROCESSORS
+    PROCESSORS       = ["copy", "ffmpeg", "mp4split"]
 
     # Fields to be imported from params
-    IMPORTED = %w(type priority pool label priority source target options overwrite notify mkdir tempfile video_options video_custom)
+    IMPORTED = %w(type priority pool label priority source target options overwrite notify mkdir tempfile transforms)
     # IMPORTED = %w(type priority pool label priority source target options notify)
 
     # Class options
@@ -94,6 +96,7 @@ module RestFtpDaemon
       @wid          = nil
       @tentatives   = 0
       @created_at   = Time.now
+      @tempfiles    = [] 
 
       # Init: worfklow-specific
       @tasks        = []
@@ -147,9 +150,6 @@ module RestFtpDaemon
       # Job has been prepared, reset infos
       set_status STATUS_PREPARED
       @infos = {}
-
-      # Reset temp files
-      @tempfiles = []
 
       @tasks.map(&:reset)
      
@@ -221,7 +221,7 @@ module RestFtpDaemon
       job_notify :ended      
 
       # Identify temp files to be cleant up
-      tempfiles_clean
+      clean_tempfiles
 
       # Update counters
       RestFtpDaemon::Counters.instance.increment :jobs, :finished
@@ -330,19 +330,15 @@ module RestFtpDaemon
       job_touch
     end
 
-    def tempfiles_allocate
-      temp = Tempfile.new("rftpd-#{@id}-")
-      tempfile = Location.new("file://#{temp.path}")
-      @tempfiles << tempfile
-      temp.close
-      return tempfile
-    end
-
-    def tempfiles_clean
-      tempfiles_list = @tempfiles.each.map(&:path_abs)
-      tempfiles_deleted = File.delete(*tempfiles_list)     
-      log_info "Job.start: deleted #{tempfiles_deleted} tempfiles out of #{@tempfiles.count} total", @tempfiles.collect(&:to_s)
-      @tempfiles = []
+    def clean_tempfiles
+      while f = @tempfiles.pop
+        begin
+          log_debug "clean_tempfiles: #{f.path_abs}"
+          f.fs_delete
+        rescue Errno::ENOENT
+          log_debug "   file has already gone"
+        end
+      end
     end
 
     def log_context
