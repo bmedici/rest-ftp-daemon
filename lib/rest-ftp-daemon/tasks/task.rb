@@ -41,6 +41,10 @@ module RestFtpDaemon
     end
 
     def prepare
+      log_debug "task config", @config
+      log_debug "task options", @options
+      log_debug "task input", @input.collect(&:name)
+
     end
 
     def process

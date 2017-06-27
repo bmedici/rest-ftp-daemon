@@ -17,8 +17,6 @@ module RestFtpDaemon
       # log_debug "input: #{@input.size} / #{@input.class}"
       raise RestFtpDaemon::SourceNotFound unless @input.is_a?Array
       raise RestFtpDaemon::SourceNotFound if @input.empty?
-
-      log_debug "options", @options
     end
 
   protected
@@ -37,7 +35,7 @@ module RestFtpDaemon
         FileUtils.mkdir_p t_dir
 
         # Process this file
-        log_debug "transform input[#{loc.name}] output[#{tempfile.name}]"
+        # log_debug "transform input[#{loc.name}] output[#{tempfile.name}]"
         set_info INFO_SOURCE_CURRENT, loc.name
         transform loc, tempfile
 

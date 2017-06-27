@@ -64,8 +64,8 @@ module RestFtpDaemon
 
       # Announce context
       log_info "ffmpeg_command [#{FFMPEG.ffmpeg_binary}] [#{input.name}] > [#{output.name}]", ffmpeg_options
-      log_debug "input.path_abs  [#{input.path_abs}] [#{File.exist? input.path_abs}]"
-      log_debug "output.path_abs [#{output.path_abs}] [#{File.exist? output.path_abs}]"
+      # log_debug "input.path_abs  [#{input.path_abs}] [#{File.exist? input.path_abs}]"
+      # log_debug "output.path_abs [#{output.path_abs}] [#{File.exist? output.path_abs}]"
 
       # Run command
       movie.transcode(output.path_abs, ffmpeg_options, transcoder_options) do |ffmpeg_progress|

@@ -49,7 +49,7 @@ module RestFtpDaemon
     def transform inputs, output
       # Init
       output_file = output.path_abs
-      log_info "transform output[#{output.name}] inputs:", inputs.collect(&:name)
+      #log_info "transform output[#{output.name}] input:", @input.collect(&:name)
 
       # Build params
       params = {}
