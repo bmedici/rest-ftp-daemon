@@ -40,7 +40,6 @@ module RestFtpDaemon
       end
 
       def close
-        log_debug "remote close"
       end
 
       def log_context

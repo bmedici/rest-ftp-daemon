@@ -38,9 +38,7 @@ module RestFtpDaemon
       end
 
       def close
-        super
-
-        # Close FTP connexion and free up memory
+        log_debug "remote close"
         @ftp.close if connected?
       end
 

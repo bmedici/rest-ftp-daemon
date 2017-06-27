@@ -123,7 +123,7 @@ module RestFtpDaemon
       end
 
       def close
-        super
+        log_debug "remote close"
       end
 
       def connected?
