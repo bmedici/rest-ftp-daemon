@@ -12,42 +12,40 @@ module RestFtpDaemon
 
       # Ensure options are present
       raise RestFtpDaemon::TransformMissingOptions unless @options.is_a? Hash
-      log_debug "options", @options
 
       # Check we have inputs
-      raise RestFtpDaemon::SourceNotFound if @job.units.empty?
-      raise RestFtpDaemon::SourceNotFound unless @options.is_a? Hash
       # log_debug "input: #{@input.size} / #{@input.class}"
       raise RestFtpDaemon::SourceNotFound unless @input.is_a?Array
       raise RestFtpDaemon::SourceNotFound if @input.empty?
 
+      log_debug "options", @options
     end
 
-    def process
-      outputs = []
+  protected
 
-      # Simulate file transformation
-        # Generate temp target from current location       
-        target = @job.tempfiles_allocate
-
-        # Fake transformation
-        log_debug "fake transform (copy)", {
-          current: current.to_s,
-          target: target.to_s,
-          }
-        FileUtils.copy_file current.path_abs, target.path_abs
-        log_debug "fake transform results", {
-          current_size: current.size,
-          target_size: target.size,
-          }
+    def transform_each_input
       @input.each do |loc|
+        # This location is the source and will be replaced byt the target
+        # log_info "loc id: #{loc.object_id}"
+
+        # Generate temp target from current location
+        tempfile = tempfile_for("transform")
+
+        # Ensure target directory exists
+        t_dir = tempfile.dir_abs
+        log_debug "transform mkdir_p [#{t_dir}]"
+        FileUtils.mkdir_p t_dir
+
+        # Process this file
+        log_debug "transform input[#{loc.name}] output[#{tempfile.name}]"
+        set_info INFO_SOURCE_CURRENT, loc.name
+        transform loc, tempfile
 
         # Replace loc by this tempfile
         add_output tempfile
       end
-    end
 
-    def finalize
+      set_info INFO_SOURCE_CURRENT, nil
     end
 
   end
