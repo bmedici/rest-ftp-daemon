@@ -10,7 +10,7 @@
   - source_processed  = job.get_info(INFO_SOURCE_PROCESSED) || 0
   - source_current    = job.get_info(INFO_SOURCE_CURRENT)
 
-  - job_working       = [Job::STATUS_EXPORT_UPLOADING, Job::STATUS_VIDEO_TRANSFORMING].include? job.status
+  - job_working       = [Job::STATUS_EXPORT_UPLOADING, Job::STATUS_TASK_PROCESSING].include? job.status
 
   - trclass = JOB_STYLES[job.status]
 
