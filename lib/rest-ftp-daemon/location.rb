@@ -3,6 +3,7 @@ require 'active_support/core_ext/module/delegation'
 
 module RestFtpDaemon
   class Location
+    include CommonHelpers
 
     attr_reader :original
     attr_reader :uri
@@ -15,12 +16,12 @@ module RestFtpDaemon
     attr_reader :aws_secret
 
     URI_FILE_SCHEME = "file"
+    TEMPFILE_SUFFIX_LENGTH = 8
+
 
     # def_delegators :@uri,
     delegate :scheme, :host, :port, :user, :password, :to_s,
       to: :uri
-
-    MY_RANDOM_LEN = 8
 
     def initialize param
       # Init
@@ -70,11 +71,6 @@ module RestFtpDaemon
       local_file_path = path_abs
       return unless File.exist? local_file_path
       return File.size local_file_path
-    end
-
-    def generate_temp_name!
-      random = rand(36**MY_RANDOM_LEN).to_s(36)
-      self.name= "#{self.name}.#{random}.tmp"
     end
 
     def name
@@ -136,7 +132,22 @@ module RestFtpDaemon
       File.delete path_abs 
     end
 
+    def named_like loc, temp=false
+      # Inherit source_loc's name if no target name specified
+      result = self.clone
+      result.name = loc.name if result.name.blank?
+
+      # Add a temp suffix if requested
+      if temp
+        random = identifier(TEMPFILE_SUFFIX_LENGTH)
+        result.name = "#{result.name}.temp-#{random}"
+      end
+
+      return result
+    end
+
   private
+
 
     def tokenize item
       return unless item.is_a? String
