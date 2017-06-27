@@ -150,7 +150,9 @@ module RestFtpDaemon
       # Job has been prepared, reset infos
       set_status STATUS_PREPARED
       @infos = {}
+      @stash = []
 
+      # Reset tasks and stash
       @tasks.map(&:reset)
      
       # Update job status, send first notification
@@ -179,14 +181,16 @@ module RestFtpDaemon
       job_notify :started
       @started_at = Time.now
 
+      # Empty stash
+      stash = []
+
       # Run tasks
       @tasks.each do |task|
         begin
           task.do_before
           task.do_work
-          # Inject stash as inputs
-          # log_debug "Job.start: task inputs", stash.collect(&:to_s)
-          task.inputs = stash
+          # Init
+          task.input = stash
 
         rescue StandardError => exception
           # Keep the exception with us
@@ -206,6 +210,7 @@ module RestFtpDaemon
         # Always execute do_after
         task.do_after
         task.error = 0
+          stash = task.output          
 
         # Dump output locations
         stash = task.outputs

@@ -11,9 +11,9 @@ module RestFtpDaemon
     attr_reader   :job
     attr_reader   :name
     attr_accessor :error
-    attr_accessor :inputs
-    attr_reader   :outputs
     attr_accessor :log_context
+    attr_accessor :input
+    attr_reader   :output
 
     # Method delegation to parent Job
     delegate :job_notify, :set_status, :set_info, :get_option, :job_touch,
@@ -26,6 +26,7 @@ module RestFtpDaemon
       @name         = name
       @config       = config
       @options      = options
+      @output       = []
 
       # Transfer variables
       # @current_bitrate = 0
@@ -54,10 +55,6 @@ module RestFtpDaemon
       else
         log_error "#{var}  \t NOT AN ARRAY" 
       end
-    end
-
-    def output_add output
-      @outputs << output
     end
 
     def task_oops exception, error = nil#, include_backtrace = false
@@ -116,5 +113,8 @@ module RestFtpDaemon
       @job.set_status value
     end
 
+    def add_output element
+      @output << element
+    end
   end
 end

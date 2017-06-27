@@ -17,9 +17,8 @@ module RestFtpDaemon
     def process
       # Scan local source files from disk
       set_status Job::STATUS_IMPORT_LISTING
-      files = @input.local_files
-
       # Sump some informations
+      files = source_loc.local_files
       set_info INFO_SOURCE_COUNT, files.size
       set_info INFO_SOURCE_FILES, files.collect(&:name)
 
@@ -28,7 +27,7 @@ module RestFtpDaemon
 
       # Add file to output
       files.each do |file|
-        output_add file
+        add_output file
       end
     end
 

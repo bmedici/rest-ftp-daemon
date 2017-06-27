@@ -59,7 +59,7 @@ module RestFtpDaemon
       @remote.chdir_or_create @output.dir_abs, get_option(:transfer, :mkdir)
 
       # Compute total files size
-      @transfer_total = @inputs.collect(&:size).sum
+      @transfer_total = @input.collect(&:size).sum
       set_info INFO_TRANSFER_TOTAL, @transfer_total
 
       # Reset counters

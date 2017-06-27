@@ -15,13 +15,16 @@ module RestFtpDaemon
       # Check we have inputs
       raise RestFtpDaemon::SourceNotFound if @job.units.empty?
       raise RestFtpDaemon::SourceNotFound unless @options.is_a? Hash
+      # log_debug "input: #{@input.size} / #{@input.class}"
+      raise RestFtpDaemon::SourceNotFound unless @input.is_a?Array
+      raise RestFtpDaemon::SourceNotFound if @input.empty?
+
     end
 
     def process
       outputs = []
 
       # Simulate file transformation
-      @inputs.each do |current|
         # Generate temp target from current location       
         target = @job.tempfiles_allocate
 
@@ -35,9 +38,10 @@ module RestFtpDaemon
           current_size: current.size,
           target_size: target.size,
           }
+      @input.each do |loc|
 
-        # Add file to output
-        output_add target
+        # Replace loc by this tempfile
+        add_output tempfile
       end
     end
 
