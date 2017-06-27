@@ -231,10 +231,6 @@ module RestFtpDaemon
       @source_loc.uri if @source_loc
     end
 
-    # def target_uri
-    #   @target_loc.uri if @target_loc
-    # end
-
     def weight
       @weight = [
         - @tentatives.to_i,
@@ -339,6 +335,24 @@ module RestFtpDaemon
           log_debug "   file has already gone"
         end
       end
+    end
+
+    def tempfile_for suffix = nil
+      # Build file name prefix
+      prefix = [:rftpd, @id]
+      prefix << suffix unless suffix.nil?
+      prefix << ''
+    
+      # Build a tempfile with a custom name
+      temp = Tempfile.new([prefix.join('-'), '.tmp'])
+      result = Location.new("file://#{temp.path}")
+      temp.close
+
+      # Keep trace of this tempfile
+      @tempfiles << result
+
+      # Use this new location
+      return result
     end
 
     def log_context
