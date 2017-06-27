@@ -50,12 +50,17 @@ module RestFtpDaemon
 
       def push source, target, &callback
         # Do the transfer
-        FileUtils.copy_file source.path_abs, target.path_abs
+        copy source, target
       end
 
       def move source, target
         log_debug "move [#{source.name}] > [#{target.name}]"
         FileUtils.move source.path_abs, target.path_abs
+      end
+
+      def copy source, target
+        log_debug "copy [#{source.name}] > [#{target.name}]"
+        FileUtils.copy_file source.path_abs, target.path_abs
       end
 
     private

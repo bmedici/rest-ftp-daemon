@@ -105,22 +105,17 @@ module RestFtpDaemon
 
       def push source, target, &callback
         # Push init
-        # Temp file if needed
-        dest = target.clone
-        if temp
-          dest = temp
-        end
         raise RestFtpDaemon::AssertionFailed, "push/ftp" if @ftp.nil?
 
         # Move to the directory
-        log_debug "chdir [#{dest.dir_abs}]"
-        @ftp.chdir dest.dir_abs
+        log_debug "chdir [#{target.dir_abs}]"
+        @ftp.chdir target.dir_abs
 
         # Do the transfer
-        log_debug "putbinaryfile abs[#{source.path_abs}] [#{dest.name}]"
-        @ftp.putbinaryfile source.path_abs, dest.name, JOB_FTP_CHUNKMB do |data|
+        log_debug "putbinaryfile abs[#{source.path_abs}] [#{target.name}]"
+        @ftp.putbinaryfile source.path_abs, target.name, JOB_FTP_CHUNKMB do |data|
           # Update job status after this block transfer
-          yield data.bytesize, dest.name
+          yield data.bytesize, target.name
         end
       end
 

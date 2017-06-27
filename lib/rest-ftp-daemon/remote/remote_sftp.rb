@@ -92,15 +92,10 @@ module RestFtpDaemon
 
       def push source, target, &callback
         # Push init
-        # Temp file if needed
-        dest = target.clone
-        if use_temp_name
-          dest.generate_temp_name!
-        end
         raise RestFtpDaemon::AssertionFailed, "push/sftp" if @sftp.nil?
 
         # Do the transfer
-        @sftp.upload! source.path_abs, dest.path_abs do |event, _uploader, *args|
+        @sftp.upload! source.path_abs, target.path_abs do |event, _uploader, *args|
           case event
           when :open then
             # args[0] : file metadata

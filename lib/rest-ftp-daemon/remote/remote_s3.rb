@@ -34,7 +34,6 @@ module RestFtpDaemon
 
       def push source, target, &callback
         # Push init
-        log_debug "bucket[#{target.aws_bucket}] path_rel[#{target.path_rel}]"
         raise RestFtpDaemon::AssertionFailed, "push/client" if @client.nil?
 
         # Do the transfer, passing the file to the best method
@@ -49,11 +48,18 @@ module RestFtpDaemon
 
       def move source, target
         # Identify the source object
-        obj = @client.buckets[source.aws_bucket].objects[source.path_rel]
-        raise RestFtpDaemon::AssertionFailed, "move: object not found" unless obj
+        # obj = @client.bucket(source.aws_bucket).object(source.path_rel)
+        # raise RestFtpDaemon::AssertionFailed, "move: object not found" unless obj
 
         # Move the file
-        obj.move_to(target.path_rel, :bucket_name => target.aws_bucket)
+        # log_debug "move: copy bucket[#{source.aws_bucket}] source[#{source.path_rel}] target[#{target.path_rel}]"
+        @client.copy_object(bucket: source.aws_bucket, key: target.path_rel, copy_source: "#{source.aws_bucket}/#{source.path_rel}")
+        # log_debug "move: delete bucket[#{source.aws_bucket}] source[#{source.path_rel}]"
+        @client.delete_object(bucket: source.aws_bucket, key: source.path_rel)
+        # log_debug "move: done"
+
+        # Move the file
+        # obj.move_to(target.path_rel, :bucket_name => target.aws_bucket)
       end
 
       def connected?
