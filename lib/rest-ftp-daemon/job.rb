@@ -152,7 +152,7 @@ module RestFtpDaemon
       @infos = {}
       @stash = []
 
-      # Reset tasks and stash
+      # Reset tasks
       @tasks.map(&:reset)
      
       # Update job status, send first notification
@@ -479,6 +479,33 @@ module RestFtpDaemon
 
       # Announce registered tasks
      log_debug "registered following tasks", @tasks.map(&:class)
+    end
+
+    def register_transform options
+      # Check we have a correct config
+      return unless options.is_a?(Hash)
+
+      # Raise if this processor does not exist
+      processor = options['processor']
+      unless PROCESSORS.include?(processor)
+        message = "unsupported processor: #{processor}"
+        log_error "initialize: #{message}"
+        raise RestFtpDaemon::JobUnsupportedTransform, message
+      end
+
+      # Extract options, cleaning processor
+      my_options = options.clone
+      my_options.delete('processor')
+
+      # Extract transform config from app config
+      transform_config = Conf.at(:transforms, processor)
+
+      # Ok to register this task
+      register_task :transform, transform_config, processor, my_options
+    end
+
+    def load_transform name
+      gemname = "rftpd-#{name}"
     end
 
     # NewRelic instrumentation
