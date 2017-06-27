@@ -8,45 +8,32 @@ module RestFtpDaemon
 
     # Task operations
     def prepare      
-      # Check output targer
-      # unless @job.target_loc.uri_is? URI::FILE
-      #   raise RestFtpDaemon::TargetUnsupported, "prepare: target_loc has unsupported scheme"
-      # end
-      log_debug "target_loc[#{@job.target_loc.to_s}] scheme[#{@job.target_loc.uri.scheme.to_s}]"
+      # Check output target
+      log_debug "target_loc: #{target_loc.to_s}]"
 
       # Guess target file name, and fail if present while we matched multiple sources
-      if @job.target_loc.name && @job.units.count > 1
+      if target_loc.name && @input.count > 1
         raise RestFtpDaemon::TargetDirectoryError, "prepare: target should be a directory when severeal files matched"
       end
 
       # Some init
       @transfer_sent = 0
       set_info INFO_SOURCE_PROCESSED, 0
+
       # Prepare remote object
-      case target_loc.uri
-      when URI::FTP
-        log_info "do_before target_method FTP"
-        @remote = Remote::RemoteFTP.new @output, @job, @config
-      when URI::FTPES, URI::FTPS
-        log_info "do_before target_method FTPES/FTPS"
-        @remote = Remote::RemoteFTP.new @output, @job, @config, :ftpes
-      when URI::SFTP
-        log_info "do_before target_method SFTP"
-        @remote = Remote::RemoteSFTP.new @output, @job, @config
-      when URI::S3
-        log_info "do_before target_method S3"
-        @remote = Remote::RemoteS3.new @output, @job, @config
-      when URI::FILE
-        log_info "do_before target_method FILE"
-        @remote = Remote::RemoteFile.new @output, @job, @config
+      remote_class = case target_loc.uri
+      when URI::FTP               then Remote::RemoteFTP
+      when URI::FTPES, URI::FTPS  then Remote::RemoteFTP
+      when URI::SFTP              then Remote::RemoteSFTP
+      when URI::S3                then Remote::RemoteS3
+      when URI::FILE              then Remote::RemoteFile
       else
-        message = "unknown scheme [#{target_loc.scheme}] [#{target_uri.class.name}]"
-        log_info "do_before #{message}"
-        raise RestFtpDaemon::TargetUnsupported, message
+        log_error "prepare: method unknown: #{target_loc.uri.class.name}"
+        raise RestFtpDaemon::TargetUnsupported, "unknown scheme [#{target_loc.scheme}]"
       end
 
-      # Plug this Job into @remote to allow it to log
-      @remote.job = self.job
+      # Create remote
+      @remote = remote_class.new target_loc, @job, @config
     end
 
     def process
@@ -56,7 +43,7 @@ module RestFtpDaemon
 
       # Prepare target path or build it if asked
       set_status Job::STATUS_EXPORT_CHDIR
-      @remote.chdir_or_create @output.dir_abs, get_option(:transfer, :mkdir)
+      @remote.chdir_or_create target_loc.dir_abs, get_option(:transfer, :mkdir)
 
       # Compute total files size
       @transfer_total = @input.collect(&:size).sum
@@ -67,29 +54,12 @@ module RestFtpDaemon
       @last_time = Time.now
 
       # Handle each source file matched, and start a transfer
-      source_processed = 0
-      targets = []
+      @source_processed = 0
 
-      @inputs.each do |source|
-        log_debug "source[#{source.name}] > target[#{source.name}]"
-
-        # Build final target, add the source file name if noneh
-        target = @output.clone
-        target.name = source.name.clone unless target.name
-
-        # Do the transfer, for each file
-        remote_push source, target, get_option(:transfer, :overwrite)
-
-        # Add it to transferred target names
-        targets << target.name
-        set_info INFO_TARGET_FILES, targets
-
-        # Update counters
-        set_info INFO_SOURCE_PROCESSED, source_processed += 1
-
-        # Add file to output
-        output_add target
-        log_debug "stashed target: #{target.to_s}"
+      # Do the transfer, for each file
+      @input.each do |input|
+        # FIXME get_option > @options
+        remote_upload input, get_option(:transfer, :tempfile), get_option(:transfer, :overwrite)
       end
     end
 
@@ -109,24 +79,34 @@ module RestFtpDaemon
 
   private
 
-    def remote_upload unit, tempfile = true, overwrite = false
+    def remote_upload source, tempfile = true, overwrite = false
       # Method assertions
-      raise RestFtpDaemon::AssertionFailed, "remote_push/remote" if @remote.nil?
-      raise RestFtpDaemon::AssertionFailed, "remote_push/source" if source.nil?
-      raise RestFtpDaemon::AssertionFailed, "remote_push/target" if target.nil?
-
-      # Use source filename if target path provided none (typically with multiple sources)
-      log_info "remote_push", {
-        source_abs: source.path_abs,
-        target_rel: target.path_rel,
-        overwrite:  overwrite,
-        tempfile:   @tempfile,
-        }
+      raise RestFtpDaemon::AssertionFailed, "remote_upload/remote" if @remote.nil?
+      raise RestFtpDaemon::AssertionFailed, "remote_upload/source" if source.nil?
       set_info INFO_SOURCE_CURRENT, source.name
+
+      # Build target
+      target = target_loc.named_like(source)
+
+      # Build temp target if necessary
+      if tempfile
+        destination = target_loc.named_like(source, true)
+        log_debug "remote_upload: use tempfile", {
+          source: source.name,
+          destination: destination.name,
+          target: target.name,
+          }
+      else
+        destination = target
+        log_debug "remote_upload: no tempfile", {
+          source: source.name,
+          target: target.name,
+          }
+      end
 
       # Remove any existing version if present, or check if it's there
       if overwrite
-        @remote.try_to_remove target
+        @remote.remote_try_delete target
       elsif (size = @remote.size_if_exists(target))  # won't be triggered when NIL or 0 is returned
         log_debug "remote_upload: file exists (#{format_bytes size, 'B'})"
         raise RestFtpDaemon::TargetFileExists
@@ -138,8 +118,8 @@ module RestFtpDaemon
 
       # Start the transfer, update job status after each block transfer
       set_status Job::STATUS_EXPORT_UPLOADING
-      @remote.upload source, destination do |transferred, name|
-      log_info "remote_upload: upload [#{current.name}] > [#{destination.name}]"
+      log_info "remote_upload: upload [#{source.name}] > [#{destination.name}]"
+      @remote.push source, destination do |transferred, name|
         # Update transfer statistics
         progress_update transferred, name
       end
@@ -157,7 +137,11 @@ module RestFtpDaemon
         @remote.move destination, target
       end
 
-      # Done
+      # Add it to transferred target names
+      set_info INFO_TARGET_FILES, @output.collect(&:name)
+
+      # Update counters
+      set_info INFO_SOURCE_PROCESSED, @source_processed += 1
       set_info INFO_SOURCE_CURRENT, nil
     end    
 
