@@ -21,10 +21,11 @@ module RestFtpDaemon
       :source_loc, :target_loc,
       to: :job
 
-    def initialize job, name, options = {}
+    def initialize job, name, config, options = {}
       # Init context
       @job          = job
       @name         = name
+      @config       = config
       @options      = options
 
       # Prepare configuration / import a copy

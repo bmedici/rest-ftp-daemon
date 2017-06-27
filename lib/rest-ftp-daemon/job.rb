@@ -447,26 +447,30 @@ module RestFtpDaemon
       job_notify signal, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
 
-    def register_task name, kind
+    def register_task name, config, flavour = nil, options = {}
+      # Task class
+      clazz = Object.const_get("Task#{name.to_s.capitalize}#{flavour.to_s.capitalize}")
+
       # Instantiate task
-      log_info "register_task: #{clazz.to_s}"
+      log_info "register_task #{clazz.to_s} with options", options.to_hash
 
       # Store it
-      @tasks << clazz.new(self, name, options)
+      @tasks << clazz.new(self, name, config, options)
     end
 
-
     def register_tasks
+      transfer_config = Conf.at(:transfer)
+
       # Register IMPORT
-      register_task :import
+      register_task :import, transfer_config
       
       # Register TRANSFORMS if we have some
       @transforms.each do |tr|
-        register_transform tr
+        register_transform(tr)
       end if @transforms.is_a?(Array)
 
       # Register EXPORT
-      register_task :export
+      register_task :export, transfer_config
 
       # Announce registered tasks
      log_debug "registered following tasks", @tasks.map(&:class)
