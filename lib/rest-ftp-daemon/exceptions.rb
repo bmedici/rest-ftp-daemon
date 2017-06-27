@@ -13,18 +13,19 @@ module RestFtpDaemon
   class JobAttributeMissing       < BaseException; end
   class JobUnresolvedTokens       < BaseException; end
 
+
   class LocationParseError        < BaseException; end
   class SchemeUnsupported         < BaseException; end
 
   class SourceUnsupported         < BaseException; end
   class SourceNotFound            < BaseException; end
 
+
   class TargetUnsupported         < BaseException; end
   class TargetFileExists          < BaseException; end
   class TargetDirectoryError      < BaseException; end
   class TargetPermissionError     < BaseException; end
 
-  class VideoMissingBinary        < BaseException; end
   class JobUnsupportedTransform   < BaseException; end
   class TransformMissingBinary    < BaseException; end
   class TransformMissingOutput    < BaseException; end

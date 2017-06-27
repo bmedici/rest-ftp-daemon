@@ -57,7 +57,7 @@ module RestFtpDaemon
       s3_no_such_upload:        Aws::S3::Errors::NoSuchUpload,
       s3_error:                 Aws::S3::Errors::ServiceError,
 
-      video_missing_binary:     RestFtpDaemon::VideoMissingBinary,
+      video_missing_binary:     RestFtpDaemon::TransformMissingBinary,
       video_not_found:          RestFtpDaemon::VideoNotFound,
       video_movie_error:        RestFtpDaemon::VideoMovieError,
       video_ffmpeg_error:       FFMPEG::Error,
