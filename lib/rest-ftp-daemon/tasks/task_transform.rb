@@ -2,10 +2,19 @@ module RestFtpDaemon
   class TaskTransform < Task
 
     # Task attributes
-    # ICON = "facetime-video"
-    ICON = "cog"
+    def task_icon
+      "cog"
+    end
  
+    # Task operations
     def prepare
+      # Ensure options are present
+      raise RestFtpDaemon::TransformMissingOptions unless @options.is_a? Hash
+      log_debug "options", @options
+
+      # Check we have inputs
+      raise RestFtpDaemon::SourceNotFound if @job.units.empty?
+      raise RestFtpDaemon::SourceNotFound unless @options.is_a? Hash
     end
 
     def process

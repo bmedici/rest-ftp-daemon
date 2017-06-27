@@ -5,8 +5,7 @@ module RestFtpDaemon
     include ProgressHelpers
 
     # Task attributes
-    # ICON = "transfer"
-    ICON = ""
+    def task_icon; end
 
     # Class options
     attr_reader   :job
@@ -28,8 +27,8 @@ module RestFtpDaemon
       @config       = config
       @options      = options
 
-      # Prepare configuration / import a copy
-      @config       = Conf.at(:transfer) || {}
+      # Transfer variables
+      # @current_bitrate = 0
 
       # Enable logging
       log_pipe      :jobs

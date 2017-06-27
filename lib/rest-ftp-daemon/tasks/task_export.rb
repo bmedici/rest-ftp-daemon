@@ -2,19 +2,21 @@ module RestFtpDaemon
   class TaskExport < Task
 
     # Task attributes
-    ICON = "arrow-up"
+    def task_icon
+      "arrow-up"
+    end
 
-    def prepare
-
-      unless target_loc.uri_is? URI::FILE
-        raise RestFtpDaemon::TargetUnsupported, "task output: invalid file type"
-      # Check output
-      end
-      log_debug "target_loc: #{target_loc.to_s}"
+    # Task operations
+    def prepare      
+      # Check output targer
+      # unless @job.target_loc.uri_is? URI::FILE
+      #   raise RestFtpDaemon::TargetUnsupported, "prepare: target_loc has unsupported scheme"
+      # end
+      log_debug "target_loc[#{@job.target_loc.to_s}] scheme[#{@job.target_loc.uri.scheme.to_s}]"
 
       # Guess target file name, and fail if present while we matched multiple sources
-      if target_loc.name && @inputs.count>1
-        raise RestFtpDaemon::TargetDirectoryError, "target should be a directory if severeal files matched"
+      if @job.target_loc.name && @job.units.count > 1
+        raise RestFtpDaemon::TargetDirectoryError, "prepare: target should be a directory when severeal files matched"
       end
 
       # Some init
@@ -107,7 +109,7 @@ module RestFtpDaemon
 
   private
 
-    def remote_push source, target, overwrite = false
+    def remote_upload unit, tempfile = true, overwrite = false
       # Method assertions
       raise RestFtpDaemon::AssertionFailed, "remote_push/remote" if @remote.nil?
       raise RestFtpDaemon::AssertionFailed, "remote_push/source" if source.nil?
@@ -126,16 +128,8 @@ module RestFtpDaemon
       if overwrite
         @remote.try_to_remove target
       elsif (size = @remote.size_if_exists(target))  # won't be triggered when NIL or 0 is returned
-        log_debug "remote_push: file exists (#{format_bytes size, 'B'})"
+        log_debug "remote_upload: file exists (#{format_bytes size, 'B'})"
         raise RestFtpDaemon::TargetFileExists
-      end
-
-      # Generate temp file
-      if @tempfile
-        destination = target.clone
-        destination.generate_temp_name!
-      else
-        destination = target
       end
 
       # Start transfer
@@ -144,8 +138,8 @@ module RestFtpDaemon
 
       # Start the transfer, update job status after each block transfer
       set_status Job::STATUS_EXPORT_UPLOADING
-      log_debug "remote_push: upload [#{source.name}] > [#{destination.name}]"
       @remote.upload source, destination do |transferred, name|
+      log_info "remote_upload: upload [#{current.name}] > [#{destination.name}]"
         # Update transfer statistics
         progress_update transferred, name
       end
@@ -158,9 +152,9 @@ module RestFtpDaemon
       set_info INFO_TRANFER_BITRATE, global_transfer_bitrate.round(0)
 
       # Rename file to target name
-      if @tempfile
-        log_debug "remote_push: rename [#{destination.name}] > [#{target.name}]"
-        @remove.move destination, target
+      if tempfile
+        log_info "remote_upload: rename [#{destination.name}] > [#{target.name}]"
+        @remote.move destination, target
       end
 
       # Done
