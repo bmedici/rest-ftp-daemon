@@ -30,7 +30,7 @@ module RestFtpDaemon
         false
       end
 
-      def try_to_remove target
+      def remote_try_delete target
       end
 
       def chdir_or_create directory, mkdir = false

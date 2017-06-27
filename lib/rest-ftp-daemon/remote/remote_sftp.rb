@@ -43,8 +43,8 @@ module RestFtpDaemon
         return stat.size
       end
 
-      def try_to_remove target
-        log_debug "try_to_remove [#{target.name}]"
+      def remote_try_delete target
+        log_debug "remote_try_delete [#{target.name}]"
         @sftp.remove target.path_abs
 
       rescue Net::SFTP::StatusException

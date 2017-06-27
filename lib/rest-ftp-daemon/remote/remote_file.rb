@@ -12,12 +12,12 @@ module RestFtpDaemon
         return File.size target
       end
 
-      def try_to_remove target
+      def remote_try_delete target
         File.delete target.path_abs
       rescue Errno::ENOENT
-        log_debug "try_to_remove [#{target.name}] not found"
+        log_debug "remote_try_delete [#{target.name}] not found"
       else
-        log_debug "try_to_remove [#{target.name}] removed"
+        log_debug "remote_try_delete [#{target.name}] removed"
       end
 
       def mkdir directory
