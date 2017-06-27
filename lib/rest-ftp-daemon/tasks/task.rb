@@ -4,20 +4,25 @@ module RestFtpDaemon
     include CommonHelpers
     include ProgressHelpers
 
+    # Statuses
+    STATUS_RUNNING   = "running"
+    STATUS_FAILED    = "failed"
+    STATUS_FINISHED  = "finished"
+
     # Task attributes
     def task_icon; end
 
     # Class options
     attr_reader   :job
     attr_reader   :name
+    attr_accessor :status
     attr_accessor :error
-    attr_accessor :log_context
     attr_accessor :input
     attr_reader   :output
 
     # Method delegation to parent Job
     delegate :job_notify, :set_status, :set_info, :get_option, :job_touch,
-      :source_loc, :target_loc,
+      :source_loc, :target_loc, :tempfile_for,
       to: :job
 
     def initialize job, name, config, options = {}
@@ -35,16 +40,24 @@ module RestFtpDaemon
       log_pipe      :jobs
     end
 
+    def prepare
+    end
+
     def process
-    def reset
-      @status       = nil
-      @error        = nil
     end
 
     def finalize
     end
 
+    def reset
+      @status       = nil
+      @error        = nil
     end
+
+    def log_context
+      @job.log_context
+    end
+
   protected
 
     def debug_vars var

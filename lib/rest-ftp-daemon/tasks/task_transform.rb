@@ -8,6 +8,8 @@ module RestFtpDaemon
  
     # Task operations
     def prepare
+      super
+
       # Ensure options are present
       raise RestFtpDaemon::TransformMissingOptions unless @options.is_a? Hash
       log_debug "options", @options
@@ -47,8 +49,6 @@ module RestFtpDaemon
 
     def finalize
     end
-
-  protected
 
   end
 end
