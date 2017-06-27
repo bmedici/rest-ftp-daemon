@@ -99,6 +99,9 @@ module RestFtpDaemon
       rescue SocketError => e
         log_error "SocketError: #{e.message}"
 
+      rescue Errno::ECONNREFUSED => e
+        log_error "Errno::ECONNREFUSED: #{e.message}"
+
       rescue StandardError => e
         log_error "UNHANDLED EXCEPTION: #{e.message}", e.backtrace
     end
