@@ -25,6 +25,7 @@ module RestFtpDaemon
     def initialize param
       # Init
       @original = nil
+      @tokens = []
 
       # Prepare endpoints
       @endpoints ||= BmcDaemonLib::Conf[:endpoints]
@@ -129,6 +130,10 @@ module RestFtpDaemon
 
     def to_connection_string
       return "region[#{@aws_region}] id[#{@aws_id}] user[#{@uri.user}] host[#{@uri.host}] port[#{@uri.port}] dir[#{dir}] name[#{name}]" 
+    end
+
+    def fs_delete
+      File.delete path_abs 
     end
 
   private
