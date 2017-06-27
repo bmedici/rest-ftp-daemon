@@ -69,31 +69,28 @@ module RestFtpDaemon
 
       # For each task
       job.tasks.each do |task|
-        if task.error.nil?
-          # label_style = "simple blink"
-          label_style = "simple"
-        elsif task.error == 0
+         label_style = "simple"
+
+        case task.status
+        when Task::STATUS_RUNNING
+          label_style = "simple blink"
+        when Task::STATUS_FAILED
+          label_style = "danger"
+        when Task::STATUS_FINISHED
           label_style = "success"
-        elsif task.error
-            label_style = "warning"
-        else
-            label_style = "simple"
         end
 
         # '<span class="transfer-type label label-xs label-%s" title="%s">', 
         out << sprintf(
-          '<span class="task-status label label-xs label-%s">
-            <span class="glyphicon glyphicon-%s" alt="%s">
-            </span>
-          </span>',
+          '<span class="task-status label label-xs label-%s" title="%s">',
           label_style,
-          task.class.const_get(:ICON),
-          task.error
+          task.error.to_s
           )
+        out << sprintf('<i class="glyphicon glyphicon-%s"></i>', task.task_icon)
+        out << '</span>'
       end
 
       out << '</span>'
-
 
       return out.join()
     end

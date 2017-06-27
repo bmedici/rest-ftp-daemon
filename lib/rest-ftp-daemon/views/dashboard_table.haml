@@ -61,15 +61,14 @@
         .progress
           .progress-bar{style:"width: #{work_progress}%;"}
             = "#{work_progress} %"
-
       - else
         .error{title: error_message}
           = text_or_empty(job.error)
 
-      %br
-      .progress
-        .progress-bar{style:"width: 20%;"}
-          = "progress %"
+      -# %br
+      -# .progress
+      -#   .progress-bar{style:"width: 20%;"}
+      -#     = "progress %"
 
     %td.nobr.text-right
       = format_bytes(transfer_total, "B")
