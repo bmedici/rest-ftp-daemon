@@ -176,7 +176,7 @@ module RestFtpDaemon
 
     # Process job
     def start
-      # Check prerequisites
+      # Check prerequisites and init
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
 
@@ -226,7 +226,7 @@ module RestFtpDaemon
 
       # All done !
       set_status STATUS_FINISHED
-      log_info "job_notify [ended]"
+      # log_info "job_notify: ended"
       job_notify :ended      
 
       # Identify temp files to be cleant up
@@ -311,6 +311,7 @@ module RestFtpDaemon
     def job_notify signal, payload = {}
       # Skip if no URL given
       return unless @notify
+      log_info "job_notify: #{signal}"
 
       # Ok, create a notification!
       payload[:id] = @id
@@ -481,6 +482,7 @@ module RestFtpDaemon
     end
 
     def register_tasks
+      # FIXME: no config for IMPORT or EXPORT tasks
       transfer_config = Conf.at(:transfer)
 
       # Register IMPORT
@@ -495,7 +497,7 @@ module RestFtpDaemon
       register_task :export, transfer_config
 
       # Announce registered tasks
-     log_debug "registered following tasks", @tasks.map(&:class)
+     # log_debug "registered following tasks", @tasks.map(&:class)
     end
 
     def register_transform options

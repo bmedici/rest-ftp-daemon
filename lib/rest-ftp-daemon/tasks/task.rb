@@ -9,6 +9,7 @@ module RestFtpDaemon
   class TargetUnsupported         < BaseException; end
   class TargetNameRequired        < BaseException; end
 
+  class TaskFailed                < BaseException; end
 
   class Task
     include BmcDaemonLib::LoggerHelper
