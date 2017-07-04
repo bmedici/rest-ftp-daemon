@@ -21,7 +21,7 @@ module RestFtpDaemon
 
       # Ensure MP4SPLIT licence is available
       @licence = @config[:licence]
-      raise RestFtpDaemon::TransformMissingBinary, "mp4split licence not found: #{@config[:licence]}" unless File.exist? (@licence)
+      raise RestFtpDaemon::TransformMissingBinary, "mp4split licence not found: #{@config[:licence]}" unless @config[:licence]
 
       # Target loc should have a name
       raise RestFtpDaemon::TargetNameRequired, "mp4split requires target to provided a filename"  unless target_loc.name
@@ -38,19 +38,25 @@ module RestFtpDaemon
       FileUtils.mkdir_p t_dir
 
       # Run command
-      mp4split input, output
+
+      # Build a tempfile with a custom name
+      licence_file = Tempfile.new('mp4split-licence-')
+      licence_file.write(@licence)
+      licence_file.close
+
+      mp4split input, output, licence_file.path
     end
 
   protected
 
-    def mp4split inputs, output
+    def mp4split inputs, output, licence_path
       # Init
       output_file = output.path_abs
       #log_info "transform output[#{output.name}] input:", @input.collect(&:name)
 
       # Build params
       params = {}
-      params["license-key"] = @licence
+      params["license-key"] = licence_path
       params["hls.client_manifest_version"] = @options["manifest_version"]
       params["hls.minimum_fragment_length"] = @options["minimum_fragment_length"]
 
@@ -63,6 +69,9 @@ module RestFtpDaemon
       log_debug "command stdout", stdout.split("\n")
       log_debug "command stderr", stderr.split("\n")
       log_info "command status: #{status}"
+
+      # If we get anything on stderr => failed
+      raise RestFtpDaemon::TaskFailed, "stderr: #{stderr}"
 
       # Check we have the expected output file
       raise RestFtpDaemon::TransformMissingOutput, "output file has not been generated: #{output_file}" unless File.exist? (output_file)
