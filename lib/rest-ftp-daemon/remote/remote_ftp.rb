@@ -72,30 +72,32 @@ module RestFtpDaemon
         # Init, extract my parent name and my own name
         parent, current = split_path(thedir)
         log_debug "chdir_or_create mkdir[#{mkdir}] dir[#{thedir}] parent[#{parent}] current[#{current}]"
+        absdir = "/#{thedir}"
 
         # Access this directory
         begin
-          @ftp.chdir "/#{thedir}"
+          @ftp.chdir absdir
 
         rescue Net::FTPPermError => _e
 
           # If not allowed to create path, that's over, we're stuck
           unless mkdir
-            log_debug "  [#{thedir}] failed > no mkdir > over"
+            log_debug "  [#{absdir}] failed > no mkdir > over"
             return false
           end
 
           # Try to go into my parent directory
-          log_debug "  [#{thedir}] failed > chdir_or_create [#{parent}]"
+          log_debug "  [#{absdir}] failed > chdir_or_create [#{parent}]"
           chdir_or_create parent, mkdir
 
           # Now I was able to chdir into my parent, create the current directory
-          log_debug "  [#{thedir}] failed > mkdir [#{current}]"
+          log_debug "  [#{absdir}] failed > mkdir [#{current}]"
           mkdir current
 
           # Finally retry the chdir
           retry
         else
+          log_debug "  [#{absdir}] cd successful"
           return true
         end
 
@@ -106,8 +108,8 @@ module RestFtpDaemon
         raise RestFtpDaemon::AssertionFailed, "push/ftp" if @ftp.nil?
 
         # Move to the directory
-        log_debug "chdir [#{target.dir_abs}]"
-        @ftp.chdir target.dir_abs
+        #log_debug "chdir [#{target.dir_abs}]"
+        # @ftp.chdir target.dir_abs
 
         # Do the transfer
         log_debug "putbinaryfile abs[#{source.path_abs}] [#{target.name}]"

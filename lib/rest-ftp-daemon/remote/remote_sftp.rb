@@ -106,7 +106,7 @@ module RestFtpDaemon
             # puts "writing #{args[2].length} bytes to #{args[0].remote} starting at #{args[1]}"
 
             # Update job status after this block transfer
-            yield args[2].length, dest.name
+            yield args[2].length, target.name
 
           when :close then
             # args[0] : file metadata
