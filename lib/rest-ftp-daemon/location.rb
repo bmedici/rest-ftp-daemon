@@ -179,8 +179,8 @@ module RestFtpDaemon
         @uri = URI.parse(@uri.to_s)
       end
 
-      # Remove unnecessary double slahes
-      @uri.path.gsub!(/\/+/, '/')     
+      # Remove unnecessary double slahes (copying back to @uri.path)
+      @uri.path = @uri.path.gsub('//', '/')
 
       # Raise if still no scheme #FIXME
       raise RestFtpDaemon::LocationSchemeUnsupported, url unless @uri.scheme
