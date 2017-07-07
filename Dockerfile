@@ -9,24 +9,29 @@ ENV INSTALL_PATH /app/
 ENV app /app/
 
 
-# Install packages, and first app gem for caching history only
-RUN apt-get update && apt-get install -y build-essential git --fix-missing --no-install-recommends
+# Install base packages
+RUN apt-get update && apt-get install -y --fix-missing --no-install-recommends build-essential git && apt-get clean
+
+
+# Prepare bundler
 RUN gem install bundler --no-rdoc --no-ri
 
 
 # Change to INSTALL_PATH and install base packages
+RUN mkdir -p                        $INSTALL_PATH
 WORKDIR                             $INSTALL_PATH
 ADD Gemfile                         $INSTALL_PATH
-ADD Gemfile.lock                    $INSTALL_PATH
 ADD rest-ftp-daemon.gemspec 		$INSTALL_PATH
 RUN bundle install --system --without="development test" -j4
 
 
 # Install app code
-RUN mkdir -p                        $INSTALL_PATH
+# ADD $CODE_ARCHIVE					/tmp/$CODE_ARCHIVE
+# RUN ls -lah
+# RUN tar xf /tmp/$CODE_ARCHIVE
 ADD . $INSTALL_PATH
 
 
 # App run
 EXPOSE 3000
-CMD ["bin/rest-ftp-daemon", "-c", "/etc/rftpd.yml", "-f", "start"]
+CMD ["bin/rest-ftp-daemon", "-e", "docker", "-c", "/etc/rftpd.yml", "-f", "start"]
