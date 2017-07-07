@@ -37,6 +37,7 @@ module RestFtpDaemon
       :source_loc, :target_loc, :tempfile_for,
       to: :job
 
+
     def initialize job, name, config, options = {}
       # Init context
       @job          = job

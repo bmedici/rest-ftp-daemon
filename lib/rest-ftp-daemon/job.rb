@@ -50,7 +50,10 @@ module RestFtpDaemon
     DEFAULT_POOL     = "default"
 
     # PROCESSORS
-    PROCESSORS       = ["copy", "ffmpeg", "mp4split"]
+    PROCESSOR_COPY      = "copy"
+    PROCESSOR_FFMPEG    = "ffmpeg"
+    PROCESSOR_MP4SPLIT  = "mp4split"
+    PROCESSORS       = [PROCESSOR_COPY, PROCESSOR_FFMPEG, PROCESSOR_MP4SPLIT]
 
     # Fields to be imported from params
     IMPORTED = %w(type priority pool label priority source target options overwrite notify mkdir tempfile transforms)
@@ -179,6 +182,7 @@ module RestFtpDaemon
       # Check prerequisites and init
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
+      stash = []
 
       # Notify we start working and remember when we started
       set_status Worker::STATUS_WORKING
@@ -475,7 +479,7 @@ module RestFtpDaemon
       clazz = Object.const_get("Task#{name.to_s.capitalize}#{flavour.to_s.capitalize}")
 
       # Instantiate task
-      log_info "register_task #{clazz.to_s} with options", options.to_hash
+      log_debug "register_task #{clazz.to_s}", options
 
       # Store it
       @tasks << clazz.new(self, name, config, options)
