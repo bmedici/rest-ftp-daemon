@@ -61,14 +61,6 @@ module RestFtpDaemon
       end
 
       desc "Create a new job"
-     # desc 'Creates a new app' do
-     #    detail 'It is used to register a new app on the server and get the app_id'
-     #    params Entities::AppsParamsEntity.documentation
-     #    success Entities::AppsEntity
-     #    failure [[400, 'Bad Request', Entities::ErrorEntity]]
-     #    named 'create app'
-     #  end
-
       params do
         requires :source,
           type: String,
@@ -81,16 +73,11 @@ module RestFtpDaemon
         optional :label,
           type: String,
           desc: "Descriptive label (info only)"
+
         optional :notify,
           type: String,
           desc: "URL to get POST'ed notifications back",
           allow_blank: false
-        optional :type,
-          type: String,
-          desc: "Type of job",
-          default: Job::TYPE_TRANSFER,
-          values: {value: Job::TYPES, message: "should be one of: #{Job::TYPES.join', '}"},
-          allow_blank: { value: false, message: 'cannot be empty' }
         optional :pool,
           type: String,
           desc: "Pool of worker to be used",
