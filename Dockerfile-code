@@ -1,0 +1,43 @@
+# Docker headers
+FROM ruby:2.3.0-slim
+MAINTAINER Bruno MEDICI <rest-ftp-daemon@bmconseil.com>
+ENV LANG=C.UTF-8
+
+# Install packages, and first app gem for caching history only
+RUN apt-get update && apt-get install -y build-essential git --fix-missing --no-install-recommends
+RUN gem install rest-ftp-daemon -v 0.501.0 --no-rdoc --no-ri
+
+
+
+# Environment
+ENV LANG=C.UTF-8
+ENV INSTALL_PATH $app
+ENV RAILS_ENV production
+ENV app /app/
+
+
+# Install app dir & base packages
+RUN mkdir -p                        $app
+WORKDIR                             $app
+
+
+# Install app code
+# Bundle app
+# git clone . tmp/docker/
+# git describe --tags
+# Only continue if the comparison has changed
+# ADD https://api.github.com/repos/docker/docker/compare/master...HEAD /dev/null
+# RUN git clone https://github.com/bmedici/rest-ftp-daemon.git/ $app
+ADD Gemfile                         $app
+ADD Gemfile.lock                    $app
+ADD rest-ftp-daemon.gemspec 		$app
+RUN gem install bundler --no-rdoc --no-ri
+RUN bundle install --system --without="development test" -j4
+
+ADD . $app
+
+
+# App run
+ENV RAILS_ENV production
+EXPOSE 3000
+CMD ["./bin/rest-ftp-daemon", "-p", "3000", "-f", "start"]

@@ -1,0 +1,118 @@
+Version 2
+  - logpipe transfer > job
+  
+  conf: logs
+    transfer > jobs
+    conchita > disparait
+    remote
+
+  conf: transfer: à renommer/séparer ?
+
+
+
+- support Amazon S3
+
+
+
+- support multiple job styles, video
+
+
+
+Version 0.251.0
+  Gemspec cleanup, import information from there
+  Switch configuration from SettingsLogic to Chamber
+
+Version 0.250.6
+
+
+Version 0.250.2
+  display bitrate to any pool or any FTP destination currently transferring (API and dashboard)
+
+
+Version 0.245.1
+  bugfix: retry/on_errors not working correctly due to bad error format
+
+Version 0.245
+  added pool support, allowing jobs to be run by dedicated pools of workers - configuration files updated
+
+20151019
+  Retry delay
+  Dashboard show no retry/ one try / red retries
+
+
+
+Version 0.232.0
+  dashboard small improvements
+  reloading of config with POST /config/reload (disable with setting api.allow_reload)
+
+
+-----
+TODO badges
+https://inch-ci.org/
+https://github.com/badges/shields
+https://github.com/badges/gh-badges
+http://badge.fury.io/for/rb/rest-ftp-daemon
+
+
+
+API outputs POSTed jobs at the right DEBUG level
+
+newrelic: provide prefix for application
+allow debug for FTP or SFTP transfer modes
+added sftp transfer mode
+config/update_every_kb now obsolete
+big rewrite of the transfer layer
+------
+
+Version 0.214.0
+  added forced garbage collection
+
+
+Version 0.213.0
+  added pagination on dashboard
+
+Version 0.212.0
+
+Version 0.211.0
+  added NewRelic support
+
+
+  added separate logging options for workers, jobs, and notifications
+  added job timeout for states: finished, failed, queued
+
+
+Version 0.200
+  added config "debug.ftp" to allow FTP transcript output to thin logs
+
+
+Version 0.x
+  logging arbitrary notification POST response
+
+
+Version 0.x
+  hiding passwords in tokens URLs
+
+
+Version 0.102
+  added ability to transfer to a temporary file names, renamed when the transfer finishes successfully
+  added transfer flags default values in config file: mkdir, overwrite, tempfile
+
+Version 0.101
+  added label attribute to jobs
+  bugfixes
+
+Version 0.100.*
+  added job timestamps: started_at, finished_at, started_since
+  improved logging with a logger pool
+  improved dashboard
+  optimizations and bugfixes
+
+Version 0.95.*
+  added option to force process in the foreground
+  improved dashboard
+  bugfixes
+
+Version 0.94.*
+  added queue information in /status
+  improved dashboard (layout, fonts, token highlighting)
+  bugfixes

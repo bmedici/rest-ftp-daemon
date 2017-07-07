@@ -1,0 +1,9 @@
+rftpd:
+  image: bmconseil/rest-ftp-daemon:2.0.0.pre2
+  #build: .
+  ports:
+    - '3800:3800'
+  volumes:
+    - ./local.yml:/etc/rftpd.yml
+    # - ./bin/mp4split/:/tmp/mp4split/
+    - /Users/bruno/TRASH/rftpd:/mnt/rftpd/

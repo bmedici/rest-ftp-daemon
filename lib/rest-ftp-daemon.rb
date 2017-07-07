@@ -57,6 +57,7 @@ require_relative "rest-ftp-daemon/tasks/task_export"
 # API entities
 require_relative "rest-ftp-daemon/entities/location"
 require_relative "rest-ftp-daemon/entities/options"
+require_relative "rest-ftp-daemon/entities/transform"
 require_relative "rest-ftp-daemon/entities/job"
 
 # Workers
