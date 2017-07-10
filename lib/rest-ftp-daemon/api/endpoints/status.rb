@@ -37,13 +37,9 @@ module RestFtpDaemon
           started: Conf.app_started,
           hostname: `hostname`.to_s.chomp,
           jobs_count: RestFtpDaemon::JobQueue.instance.jobs_count,
-
           metrics: Metrics.sample,
-
           counters: counters,
-
           workers: RestFtpDaemon::WorkerPool.instance.worker_variables,
-
           }
       end
 

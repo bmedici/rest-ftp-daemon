@@ -67,11 +67,11 @@ require_relative "rest-ftp-daemon/workers/worker_job"
 
 # API handlers
 require_relative "rest-ftp-daemon/api/constants"
-require_relative "rest-ftp-daemon/api/jobs"
-require_relative "rest-ftp-daemon/api/dashboard"
-require_relative "rest-ftp-daemon/api/status"
-require_relative "rest-ftp-daemon/api/config"
-require_relative "rest-ftp-daemon/api/debug"
+require_relative "rest-ftp-daemon/api/endpoints/jobs"
+require_relative "rest-ftp-daemon/api/endpoints/dashboard"
+require_relative "rest-ftp-daemon/api/endpoints/status"
+require_relative "rest-ftp-daemon/api/endpoints/config"
+require_relative "rest-ftp-daemon/api/endpoints/debug"
 require_relative "rest-ftp-daemon/api/root"
 
 # Project's libs

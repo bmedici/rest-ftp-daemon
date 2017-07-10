@@ -7,7 +7,6 @@ module RestFtpDaemon
   module API
     class Root < Grape::API
       include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
-      #include BmcDaemonLib
       include BmcDaemonLib::LoggerHelper
 
 
@@ -20,10 +19,6 @@ module RestFtpDaemon
       helpers do
 
         include BmcDaemonLib::LoggerHelper
-
-        def log_context
-          {caller: "API::Root"}
-        end
 
         def logger
           Root.logger

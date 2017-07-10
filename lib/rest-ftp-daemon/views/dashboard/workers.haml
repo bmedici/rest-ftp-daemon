@@ -17,7 +17,7 @@
     - variables.each do |wid, vars|
       - status = vars[:status]
       - alive = RestFtpDaemon::WorkerPool.instance.worker_alive? wid
-      - trclass = WORKER_STYLES[status]
+      - trclass = RestFtpDaemon::API::WORKER_STYLES[status]
 
       - unless alive
         - trclass = "danger"

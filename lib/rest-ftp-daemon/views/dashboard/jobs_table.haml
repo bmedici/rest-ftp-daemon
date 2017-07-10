@@ -12,7 +12,7 @@
 
   - job_working       = [Job::STATUS_EXPORT_UPLOADING, Job::STATUS_TASK_PROCESSING].include? job.status
 
-  - trclass = JOB_STYLES[job.status]
+  - trclass = RestFtpDaemon::API::JOB_STYLES[job.status]
 
   - unless job.error.nil?
     - trclass = "warning"
