@@ -106,8 +106,11 @@ module RestFtpDaemon
           title: Conf.app_name,
           version: Conf.app_ver,
           description: "API description for #{Conf.app_name} #{Conf.app_ver}",
-          }
-
+          },
+        tags: [
+            { name: 'jobs', description: 'Job management' },
+            { name: 'status', description: 'Daemon status and configuration' }
+          ]
 
       ### INITIALIZATION
       def initialize

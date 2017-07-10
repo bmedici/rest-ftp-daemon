@@ -12,13 +12,13 @@ module RestFtpDaemon
       end
 
       ### ENDPOINTS
-      desc "Show daemon config"
+      desc "Show daemon config", tags: ['status']
       get "/" do
         status 200
         return get_censored_config
       end
 
-      desc "Reload daemon config"
+      desc "Reload daemon config", tags: ['status']
       post "/reload" do
         if Conf[:allow_reload]==true
           Conf.reload!

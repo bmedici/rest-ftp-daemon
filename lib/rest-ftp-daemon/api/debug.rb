@@ -41,7 +41,7 @@ module RestFtpDaemon
       end
 
       ### ENDPOINTS
-      desc "debug"#, hidden: true
+      desc "Show internal status", hidden: true
       get "/" do
 
         # Extract routes

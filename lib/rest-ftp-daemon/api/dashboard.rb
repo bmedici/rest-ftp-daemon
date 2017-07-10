@@ -73,10 +73,12 @@ module RestFtpDaemon
       end
 
       ### DASHBOARD
-      desc "Show a global dashboard"
+      desc "Show the main dashboard", tags: ['status']
       get "/" do
         build_dashboard()
       end
+
+      desc "Dashboard filtered", hidden: true
 
       params do
         optional :filter, type: String, desc: "Filter for the jobs list"#, regexp: /[^\/]+/

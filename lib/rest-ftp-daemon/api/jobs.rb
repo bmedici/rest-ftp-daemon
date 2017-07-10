@@ -31,7 +31,8 @@ module RestFtpDaemon
         { code: 200, message: "Here is the job you requested" },
         { code: 404, message: "Job not found" }
         ],
-        is_array: false
+        is_array: false,
+        tags: ['jobs']
       params do
         requires :id, type: String, desc: "ID of the Job to read"
       end
@@ -50,7 +51,8 @@ module RestFtpDaemon
       desc "List all Jobs", http_codes: [
         { code: 200, message: "Here are the jobs you requested" },
         ],
-        is_array: true
+        is_array: true,
+        tags: ['jobs']
       get "/" do
         # Get jobs to display
         jobs = RestFtpDaemon::JobQueue.instance.jobs

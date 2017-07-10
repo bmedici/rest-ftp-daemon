@@ -14,7 +14,7 @@ module RestFtpDaemon
       end
 
       ### ENDPOINTS
-      desc "Show daemon status"
+      desc "Show daemon status", tags: ['status']
       get "/" do
         status 200
 
