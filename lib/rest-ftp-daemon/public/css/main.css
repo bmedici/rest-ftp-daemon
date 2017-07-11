@@ -79,8 +79,16 @@ a.class {
   padding: 2px 3px;
   }
 
-#box-jobs .error {
+
+/* Panes
+-------------------------------------------------- */
+
+.panes .jobs .error {
   min-width: 100px;
+}
+
+.panes .tokens .token {
+  margin-bottom: 3px;
 }
 
 

@@ -14,30 +14,30 @@
 
     .navbar.navbar-default.navbar-fixed
       .container-fluid
-        = render "dashboard/header"
+        = render "layout/header"
 
-    .container-fluid
-
-      .row
-        .col-md-12
-          = render "dashboard/jobs"
+    .container-fluid.panes
 
       .row
-        .col-md-4
-          = render "dashboard/workers"
+        .col-md-12.jobs
+          = render "jobs"
 
-        .col-md-3
-          = render "dashboard/rates"
+      .row
+        .col-md-4.workers
+          = render "panes/workers"
 
-        .col-md-3
-          = render "dashboard/counters"
+        .col-md-3.rates
+          = render "panes/rates"
 
-        .col-md-2
-          = render "dashboard/tokens"
+        .col-md-3.counters
+          = render "panes/counters"
+
+        .col-md-2.tokens
+          = render "panes/tokens"
 
     %br
     %br
 
     .footer
       .container-fluid
-        = render "dashboard/footer"
+        = render "layout/footer"

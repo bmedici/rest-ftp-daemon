@@ -44,7 +44,7 @@
         - @jobs_queued.each do |pool, jobs|
           - unless jobs.empty?
             %tbody.jobs
-              = render "dashboard/jobs_table", {jobs: jobs}
+              = render "jobs_table", {jobs: jobs}
 
             %thead
               %tr
@@ -53,4 +53,4 @@
 
         - unless jobs.empty?
           %tbody.jobs
-            = render "dashboard/jobs_table", {jobs: jobs}
+            = render "jobs_table", {jobs: jobs}
