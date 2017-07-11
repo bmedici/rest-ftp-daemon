@@ -42,14 +42,14 @@ module RestFtpDaemon
 
         # Process this file
         # log_debug "transform input[#{loc.name}] output[#{tempfile.name}]"
-        set_info INFO_SOURCE_CURRENT, loc.name
+        set_info INFO_CURRENT, loc.name
         transform loc, tempfile
 
         # Replace loc by this tempfile
         add_output tempfile
       end
 
-      set_info INFO_SOURCE_CURRENT, nil
+      set_info INFO_CURRENT, nil
     end
 
   end

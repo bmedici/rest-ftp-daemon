@@ -30,7 +30,7 @@ module RestFtpDaemon
 
     def transform input, output
       # Read info about source file
-      set_info INFO_SOURCE_CURRENT, input.name
+      set_info INFO_CURRENT, output.name
       begin
         movie = FFMPEG::Movie.new(input.path_abs)
       rescue Errno::ENOENT => exception

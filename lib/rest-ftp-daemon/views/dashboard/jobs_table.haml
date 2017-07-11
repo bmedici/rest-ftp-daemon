@@ -8,7 +8,7 @@
 
   - source_count      = job.get_info(INFO_SOURCE_COUNT) || 0
   - source_processed  = job.get_info(INFO_SOURCE_PROCESSED) || 0
-  - source_current    = job.get_info(INFO_SOURCE_CURRENT)
+  - current           = job.get_info(INFO_CURRENT)
 
   - job_working       = [Job::STATUS_EXPORT_UPLOADING, Job::STATUS_TASK_PROCESSING].include? job.status
 

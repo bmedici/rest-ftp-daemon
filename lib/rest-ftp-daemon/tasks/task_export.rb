@@ -83,10 +83,12 @@ module RestFtpDaemon
       # Method assertions
       raise RestFtpDaemon::AssertionFailed, "remote_upload/remote" if @remote.nil?
       raise RestFtpDaemon::AssertionFailed, "remote_upload/source" if source.nil?
-      set_info INFO_SOURCE_CURRENT, source.name
 
       # Build target
       target = target_loc.named_like(source)
+
+      # Set target name
+      set_info INFO_CURRENT, target.name
 
       # Build temp target if necessary
       if tempfile
@@ -140,7 +142,7 @@ module RestFtpDaemon
 
       # Update counters
       set_info INFO_SOURCE_PROCESSED, @source_processed += 1
-      set_info INFO_SOURCE_CURRENT, nil
+      set_info INFO_CURRENT, nil
     end    
 
   end
