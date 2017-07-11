@@ -7,8 +7,8 @@ module RestFtpDaemon
       RestFtpDaemon::Job::STATUS_FAILED              => :warning,
       RestFtpDaemon::Job::STATUS_FINISHED            => :success,
       RestFtpDaemon::Job::STATUS_TASK_PROCESSING     => :info,
-      RestFtpDaemon::Job::STATUS_EXPORT_UPLOADING    => :info,
-      RestFtpDaemon::Job::STATUS_EXPORT_RENAMING     => :info,
+      RestFtpDaemon::TaskExport::STATUS_EXPORT_UPLOADING    => :info,
+      RestFtpDaemon::TaskExport::STATUS_EXPORT_RENAMING     => :info,
       }
 
 

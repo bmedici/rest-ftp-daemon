@@ -16,13 +16,15 @@ module RestFtpDaemon
     include CommonHelpers
     include TaskHelpers
 
-    # Statuses
+    # Task attributes
+    def task_icon; end
+
+
+    # Task statuses
     STATUS_RUNNING   = "running"
     STATUS_FAILED    = "failed"
     STATUS_FINISHED  = "finished"
 
-    # Task attributes
-    def task_icon; end
 
     # Class options
     attr_reader   :job

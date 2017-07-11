@@ -6,6 +6,13 @@ module RestFtpDaemon
       "arrow-up"
     end
 
+    # Task statuses
+    STATUS_EXPORT_CONNECTING    = "export-connect"
+    STATUS_EXPORT_CHDIR         = "export-chdir"
+    STATUS_EXPORT_UPLOADING     = "export-upload"
+    STATUS_EXPORT_RENAMING      = "export-rename"
+    STATUS_EXPORT_DISCONNECTING = "export-disconnect"
+
     # Task operations
     def prepare      
       # Check output target
@@ -38,11 +45,11 @@ module RestFtpDaemon
 
     def process
       # Connect to remote server and login
-      set_status Job::STATUS_EXPORT_CONNECTING
+      set_status STATUS_EXPORT_CONNECTING
       @remote.connect
 
       # Prepare target path or build it if asked
-      set_status Job::STATUS_EXPORT_CHDIR
+      set_status STATUS_EXPORT_CHDIR
       @remote.chdir_or_create target_loc.dir_abs, get_option(:transfer, :mkdir)
 
       # Compute total files size
@@ -71,7 +78,7 @@ module RestFtpDaemon
       @remote = nil
 
       # Update job status
-      set_status Job::STATUS_EXPORT_DISCONNECTING
+      set_status STATUS_EXPORT_DISCONNECTING
       @finished_at = Time.now
 
       RestFtpDaemon::Counters.instance.add :data, :transferred, @transfer_total
@@ -119,7 +126,7 @@ module RestFtpDaemon
       @last_notify_at = transfer_started_at
 
       # Start the transfer, update job status after each block transfer
-      set_status Job::STATUS_EXPORT_UPLOADING
+      set_status STATUS_EXPORT_UPLOADING
       @remote.push source, destination do |transferred, name|
         progress_update transferred, name
       end

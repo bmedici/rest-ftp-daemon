@@ -6,9 +6,12 @@ module RestFtpDaemon
       "arrow-down"
     end
 
+    # Task statuses
+    STATUS_IMPORT_LISTING       = "import-list"
+
     # Task operations
     def process
-      set_status Job::STATUS_IMPORT_LISTING
+      set_status TaskImport::STATUS_IMPORT_LISTING
 
       # Check input conformity
       unless source_loc.is_a?(Location) && source_loc.uri_is?(URI::FILE)

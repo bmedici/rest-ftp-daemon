@@ -29,15 +29,8 @@ module RestFtpDaemon
     STATUS_PREPARED  = "prepared"
     STATUS_FINISHED  = "finished"
 
-    STATUS_IMPORT_LISTING       = "import/list"
-
     STATUS_TASK_PROCESSING   = "video/transform"
 
-    STATUS_EXPORT_CONNECTING    = "export/connect"
-    STATUS_EXPORT_CHDIR         = "export/chdir"
-    STATUS_EXPORT_UPLOADING     = "export/upload"
-    STATUS_EXPORT_RENAMING      = "export/rename"
-    STATUS_EXPORT_DISCONNECTING = "export/disconnect"
 
     # Types
     TYPE_TRANSFER    = "transfer"
