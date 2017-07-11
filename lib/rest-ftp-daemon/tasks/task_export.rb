@@ -16,7 +16,12 @@ module RestFtpDaemon
     # Task operations
     def prepare      
       # Check output target
-      log_debug "target_loc: #{target_loc.to_s}]"
+      log_debug "prepare", {
+        target_loc:     target_loc.to_s,
+        flag_mkdir:     get_flag(:mkdir),
+        flag_overwrite: get_flag(:overwrite),
+        flag_tempfile:  get_flag(:tempfile),
+        }
 
       # Guess target file name, and fail if present while we matched multiple sources
       if target_loc.name && @input.count > 1
@@ -50,7 +55,7 @@ module RestFtpDaemon
 
       # Prepare target path or build it if asked
       set_status STATUS_EXPORT_CHDIR
-      @remote.chdir_or_create target_loc.dir_abs, get_option(:transfer, :mkdir)
+      @remote.chdir_or_create target_loc.dir_abs, get_flag(:mkdir)
 
       # Compute total files size
       @transfer_total = @input.collect(&:size).sum
@@ -65,8 +70,7 @@ module RestFtpDaemon
 
       # Do the transfer, for each file
       @input.each do |input|
-        # FIXME get_option > @options
-        remote_upload input, get_option(:transfer, :tempfile), get_option(:transfer, :overwrite)
+        remote_upload input, get_flag(:tempfile), get_flag(:overwrite)
       end
     end
 

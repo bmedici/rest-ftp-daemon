@@ -448,31 +448,31 @@ module RestFtpDaemon
       job_notify signal, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
 
-    def register_task name, config, flavour = nil, options = {}
+    def register_task name, config, options, flavour = nil
       # Task class
       clazz = Object.const_get("Task#{name.to_s.capitalize}#{flavour.to_s.capitalize}")
 
       # Instantiate task
-      log_debug "register_task #{clazz.to_s}", options
+      log_debug "register_task #{clazz.to_s}"
 
       # Store it
       @tasks << clazz.new(self, name, config, options)
     end
 
     def register_tasks
-      # FIXME: no config for IMPORT or EXPORT tasks
+      # Read transfer config
       transfer_config = Conf.at(:transfer)
 
       # Register IMPORT
-      register_task :import, transfer_config
+      register_task :import, transfer_config, @transfer
       
       # Register TRANSFORMS if we have some
-      @transforms.each do |tr|
-        register_transform(tr)
+      @transforms.each do |options|
+        register_transform(options)
       end if @transforms.is_a?(Array)
 
       # Register EXPORT
-      register_task :export, transfer_config
+      register_task :export, transfer_config, @transfer
 
       # Announce registered tasks
      # log_debug "registered following tasks", @tasks.map(&:class)
@@ -491,14 +491,15 @@ module RestFtpDaemon
       end
 
       # Extract options, cleaning processor
-      my_options = options.clone
-      my_options.delete('processor')
+      #transform_options = options.clone
+      #transform_options.delete('processor')
 
-      # Extract transform config from app config
-      transform_config = Conf.at(:transforms, processor)
+      # Overwrite with config values
+      config = Conf.at(:transforms, processor)
+      #transform_options.merge(task_config) if transform_config.is_a? Hash
 
       # Ok to register this task
-      register_task :transform, transform_config, processor, my_options
+      register_task :transform, config, options, processor
     end
 
     def load_transform name

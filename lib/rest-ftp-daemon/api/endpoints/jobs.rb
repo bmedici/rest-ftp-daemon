@@ -95,6 +95,22 @@ module RestFtpDaemon
         #   values: {value: Job::TYPES, message: "should be one of: #{Job::TYPES.join', '}"},
         #   allow_blank: { value: false, message: 'cannot be empty' }
 
+
+        optional :transfer, type: Hash, desc: "transfer options", documentation: { collectionFormat: 'multi' } do
+          optional :overwrite,
+            type: Boolean,
+            desc: "Overwrites files at target server",
+            default: Conf.at(:transfer, :overwrite)
+          optional :mkdir,
+            type: Boolean,
+            desc: "Create missing directories on target server",
+            default: Conf.at(:transfer, :mkdir)
+          optional :tempfile,
+            type: Boolean,
+            desc: "Upload to a temp file before renaming it to the target filename",
+            default: Conf.at(:transfer, :tempfile)
+        end
+
           end
 
           # given processor: ->(val) { val == PROCESSOR_FFMPEG } do

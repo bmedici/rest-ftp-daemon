@@ -34,13 +34,16 @@ module RestFtpDaemon
     attr_accessor :input
     attr_reader   :output
 
+    # attr_reader   :config
+    attr_reader   :options
+
     # Method delegation to parent Job
-    delegate :job_notify, :set_status, :set_info, :get_option, :job_touch,
+    delegate :job_notify, :set_status, :set_info, :job_touch,
       :source_loc, :target_loc, :tempfile_for,
       to: :job
 
 
-    def initialize job, name, config, options = {}
+    def initialize job, name, config, options
       # Init context
       @job          = job
       @name         = name
@@ -51,6 +54,10 @@ module RestFtpDaemon
       # Transfer variables
       # @current_bitrate = 0
 
+      # Ensure hashes
+      @config       = {} unless @config.is_a? Hash
+      @options      = {} unless @options.is_a? Hash
+
       # Enable logging
       log_pipe      :jobs
     end
@@ -59,7 +66,6 @@ module RestFtpDaemon
       log_debug "task config", @config
       log_debug "task options", @options
       log_debug "task input", @input.collect(&:name)
-
     end
 
     def process
@@ -78,6 +84,11 @@ module RestFtpDaemon
     end
 
   protected
+
+    def get_flag name
+      return @options[name] if [true, false].include? @options[name]
+      return @config[name]
+    end
 
     def task_oops exception, error = nil#, include_backtrace = false
       # Find error code in ERRORS table
