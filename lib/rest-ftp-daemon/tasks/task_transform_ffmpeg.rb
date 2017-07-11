@@ -12,6 +12,14 @@ module RestFtpDaemon
     def prepare
       super
 
+      # Import command path
+      FFMPEG.ffmpeg_binary = @config[:ffmpeg]
+      FFMPEG.ffprobe_binary = File.join(File.dirname(@config[:ffmpeg]), "ffprobe")
+      log_debug "FFMPEG binaries", {
+        ffmpeg_binary: FFMPEG.ffmpeg_binary,
+        ffprobe_binary: FFMPEG.ffprobe_binary,
+        }
+
       # Ensure FFMPEG lib is available
       ffmpeg_check_binary :ffprobe_binary
       ffmpeg_check_binary :ffmpeg_binary
