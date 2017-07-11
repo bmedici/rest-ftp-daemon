@@ -1,8 +1,6 @@
 # Handle sFTP transfers for Remote class
-module RestFtpDaemon
-  module Remote
-    class RemoteS3 < Remote
-      include CommonHelpers
+module RestFtpDaemon::Remote
+  class RemoteS3 < Base
 
       # Class options
       attr_reader :client
@@ -152,6 +150,5 @@ module RestFtpDaemon
         @config[:debug_s3]
       end
 
-    end
   end
 end

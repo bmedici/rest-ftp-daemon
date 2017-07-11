@@ -1,7 +1,5 @@
-# Handles transfers for Job class
-module RestFtpDaemon
-  module Remote
-    class Remote
+module RestFtpDaemon::Remote
+  class Base
       include BmcDaemonLib::LoggerHelper
       include CommonHelpers
 
@@ -53,16 +51,9 @@ module RestFtpDaemon
         return File.dirname(path), File.basename(path)
       end
 
-      # def extract_parent path
-      #   return unless path.is_a? String
-      #   m = path.match(/^(.*)\/([^\/]+)\/?$/)
-      #   return m[1], m[2] unless m.nil?
-      # end
-
       def myname
         self.class.to_s
       end
 
-    end
   end
 end

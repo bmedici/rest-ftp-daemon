@@ -2,9 +2,8 @@ require "net/ftp"
 require "double_bag_ftps"
 
 # Handle FTP and FTPES transfers for Remote class
-module RestFtpDaemon
-  module Remote
-    class RemoteFTP < Remote
+module RestFtpDaemon::Remote
+  class RemoteFTP < Base
 
       # Class options
       attr_reader :ftp
@@ -141,6 +140,5 @@ module RestFtpDaemon
         @config[:debug_ftp]
       end
 
-    end
   end
 end

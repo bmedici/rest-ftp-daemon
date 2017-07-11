@@ -1,9 +1,8 @@
 require "net/sftp"
 
 # Handle sFTP transfers for Remote class
-module RestFtpDaemon
-  module Remote
-    class RemoteSFTP < Remote
+module RestFtpDaemon::Remote
+  class RemoteSFTP < Base
 
       # Class options
       attr_reader :sftp
@@ -134,6 +133,5 @@ module RestFtpDaemon
         @config[:debug_sftp]
       end
 
-    end
   end
 end

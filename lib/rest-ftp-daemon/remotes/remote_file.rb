@@ -2,9 +2,8 @@ require "net/ftp"
 require "double_bag_ftps"
 
 # Handle FTP and FTPES transfers for Remote class
-module RestFtpDaemon
-  module Remote
-    class RemoteFile < Remote
+module RestFtpDaemon::Remote
+  class RemoteFile < Base
 
       def size_if_exists target
         log_debug "size_if_exists [#{target.name}]"
@@ -69,6 +68,5 @@ module RestFtpDaemon
         @config[:debug_file]
       end
 
-    end
   end
 end
