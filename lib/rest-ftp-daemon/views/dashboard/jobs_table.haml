@@ -38,29 +38,26 @@
     %td= location_label(job.target_loc)
 
     %td
+      = job_task_status(job)
+
+    %td
       %span.push-status
         = job.status
 
       - if (job.status != Job::STATUS_FINISHED) && (source_processed < source_count)
         = " (#{source_processed}/#{source_count})"
 
-      - if job_working
-
-        - unless work_progress.nil?
-          %span.push-progress
-            = "#{work_progress}%"
-        %br
-        %span.push-filename
-          %b= source_current unless source_current.nil?
-
-    %td
-      = job_task_status(job)
-
     %td
       - if job_working
         .progress
           .progress-bar{style:"width: #{work_progress}%;"}
-            = "#{work_progress} %"
+            = "#{work_progress}%"
+        %span.push-filename
+          %b= current unless current.nil?
+        - unless work_progress.nil?
+          %span.push-progress
+            = "#{work_progress}%"
+
       - else
         .error{title: error_message}
           = text_or_empty(job.error)

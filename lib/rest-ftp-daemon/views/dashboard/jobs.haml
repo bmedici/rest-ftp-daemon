@@ -27,14 +27,14 @@
 
       %thead
         %tr
-          %th{title: "Job identifier"} ID
           %th{title: "Job type"} T
+          %th{title: "Job identifier"} job
           %th pool
           %th created
           %th label
           %th source
           %th target
-          %th.error status
+          %th.error tasks
           %th{colspan: 2, "min-width" => 150} progress
           %th.text-right size
           %th.text-right{title: "updated every #{JOB_FTP_CHUNKMB} MB block"} rate
