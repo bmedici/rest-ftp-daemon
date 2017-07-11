@@ -53,20 +53,19 @@ require_relative "rest-ftp-daemon/tasks/task_transform_ffmpeg"
 require_relative "rest-ftp-daemon/tasks/task_transform_mp4split"
 require_relative "rest-ftp-daemon/tasks/task_export"
 
-# API entities
-require_relative "rest-ftp-daemon/entities/location"
-require_relative "rest-ftp-daemon/entities/options"
-require_relative "rest-ftp-daemon/entities/job"
-
 # Workers
 require_relative "rest-ftp-daemon/workers/worker"
 require_relative "rest-ftp-daemon/workers/worker_conchita"
 require_relative "rest-ftp-daemon/workers/worker_reporter"
 require_relative "rest-ftp-daemon/workers/worker_job"
 
-# API handlers
-require_relative "rest-ftp-daemon/api/constants"
+# API
+require_relative "rest-ftp-daemon/api/api_constants"
 require_relative "rest-ftp-daemon/api/api_helpers"
+require_relative "rest-ftp-daemon/api/entities/location"
+require_relative "rest-ftp-daemon/api/entities/options"
+require_relative "rest-ftp-daemon/api/entities/transform"
+require_relative "rest-ftp-daemon/api/entities/job"
 require_relative "rest-ftp-daemon/api/endpoints/jobs"
 require_relative "rest-ftp-daemon/api/endpoints/dashboard"
 require_relative "rest-ftp-daemon/api/endpoints/status"
