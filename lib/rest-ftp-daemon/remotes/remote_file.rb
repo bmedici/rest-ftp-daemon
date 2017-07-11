@@ -8,7 +8,7 @@ module RestFtpDaemon
 
       def size_if_exists target
         log_debug "size_if_exists [#{target.name}]"
-        return false unless File.exist? target
+        return false unless File.exist? target.path_abs
         return File.size target
       end
 
