@@ -14,7 +14,7 @@ module RestFtpDaemon
   class Task
     include BmcDaemonLib::LoggerHelper
     include CommonHelpers
-    include ProgressHelpers
+    include TaskHelpers
 
     # Statuses
     STATUS_RUNNING   = "running"

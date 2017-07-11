@@ -1,5 +1,5 @@
 module RestFtpDaemon
-  module ProgressHelpers
+  module TaskHelpers
 
     def progress_update transferred, name = ""
       # Update counters

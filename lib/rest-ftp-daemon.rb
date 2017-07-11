@@ -28,10 +28,8 @@ require_relative "shared/patch_haml"
 require_relative "shared/patch_file"
 
 # Helpers
-require_relative "rest-ftp-daemon/helpers/common"
-require_relative "rest-ftp-daemon/helpers/views"
-require_relative "rest-ftp-daemon/helpers/api"
-require_relative "rest-ftp-daemon/helpers/progress"
+require_relative "rest-ftp-daemon/common_helpers"
+require_relative "rest-ftp-daemon/views/views_helpers"
 
 # Jobs and locations
 require_relative "rest-ftp-daemon/job"
@@ -46,6 +44,7 @@ require_relative "rest-ftp-daemon/remote/remote_sftp"
 require_relative "rest-ftp-daemon/remote/remote_s3"
 
 # Tasks
+require_relative "rest-ftp-daemon/tasks/task_helpers"
 require_relative "rest-ftp-daemon/tasks/task"
 require_relative "rest-ftp-daemon/tasks/task_import"
 require_relative "rest-ftp-daemon/tasks/task_transform"
@@ -67,6 +66,7 @@ require_relative "rest-ftp-daemon/workers/worker_job"
 
 # API handlers
 require_relative "rest-ftp-daemon/api/constants"
+require_relative "rest-ftp-daemon/api/api_helpers"
 require_relative "rest-ftp-daemon/api/endpoints/jobs"
 require_relative "rest-ftp-daemon/api/endpoints/dashboard"
 require_relative "rest-ftp-daemon/api/endpoints/status"
