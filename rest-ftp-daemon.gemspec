@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version      = ">= 2.3"
 
   # Development dependencies
-  spec.add_development_dependency "bundler", "~> 1.6"
+  spec.add_development_dependency "bundler", "~> 1.14"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rubocop"
@@ -37,11 +37,12 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "thin", "~> 1.7"
   spec.add_runtime_dependency     "activesupport", "4.2.7.1"
 
-  spec.add_runtime_dependency     "grape", "0.19.1"
-  spec.add_runtime_dependency     "grape-entity", "0.6.0"
-  spec.add_runtime_dependency     "grape-swagger", "0.26.0"
-  spec.add_runtime_dependency     "grape-swagger-entity", "0.1.5"
-  spec.add_runtime_dependency     "grape-swagger-representable"
+  # spec.add_runtime_dependency     "grape", "0.19.1"
+  spec.add_runtime_dependency     "grape", "~> 1.0.0"
+  spec.add_runtime_dependency     "grape-entity", "~> 0.6"
+  spec.add_runtime_dependency     "grape-swagger", "~> 0.27"
+  spec.add_runtime_dependency     "grape-swagger-entity", "~> 0.2"
+  # spec.add_runtime_dependency     "grape-swagger-representable"
 
   spec.add_runtime_dependency     "rest-client", "~> 1.8"
   spec.add_runtime_dependency     "api-auth"
