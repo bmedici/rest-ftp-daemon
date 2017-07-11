@@ -47,11 +47,12 @@ require_relative "rest-ftp-daemon/remotes/remote_s3"
 require_relative "rest-ftp-daemon/tasks/task_helpers"
 require_relative "rest-ftp-daemon/tasks/task"
 require_relative "rest-ftp-daemon/tasks/task_import"
-require_relative "rest-ftp-daemon/tasks/task_transform"
-require_relative "rest-ftp-daemon/tasks/task_transform_copy"
-require_relative "rest-ftp-daemon/tasks/task_transform_ffmpeg"
-require_relative "rest-ftp-daemon/tasks/task_transform_mp4split"
 require_relative "rest-ftp-daemon/tasks/task_export"
+# Task: transforms
+require_relative "rest-ftp-daemon/transforms/transform"
+require_relative "rest-ftp-daemon/transforms/transform_copy"
+require_relative "rest-ftp-daemon/transforms/transform_ffmpeg"
+require_relative "rest-ftp-daemon/transforms/transform_mp4split"
 
 # Workers
 require_relative "rest-ftp-daemon/workers/worker"

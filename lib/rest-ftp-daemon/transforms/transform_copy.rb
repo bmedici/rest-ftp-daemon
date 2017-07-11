@@ -1,5 +1,5 @@
-module RestFtpDaemon
-  class TaskTransformCopy < TaskTransform
+module RestFtpDaemon::Transform
+  class Copy < Base
 
     def process
       transform_each_input

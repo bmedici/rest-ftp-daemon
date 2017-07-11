@@ -1,7 +1,7 @@
 require 'open3'
 
-module RestFtpDaemon
-  class TaskTransformMp4split < TaskTransform
+module RestFtpDaemon::Transform
+  class Mp4split < Base
 
     # Task attributes
     def task_icon
@@ -16,12 +16,12 @@ module RestFtpDaemon
       @command = @config[:command]
 
       # Ensure MP4SPLIT lib is available
-      raise RestFtpDaemon::TransformMissingBinary, "mp4split binary not found: #{@config[:command]}" unless File.exist? (@command)
-      raise RestFtpDaemon::TransformMissingBinary, "mp4split binary not executable: #{@config[:command]}" unless File.executable? (@command)
+      raise RestFtpDaemon::Transform::ErrorMissingBinary, "mp4split binary not found: #{@config[:command]}" unless File.exist? (@command)
+      raise RestFtpDaemon::Transform::ErrorMissingBinary, "mp4split binary not executable: #{@config[:command]}" unless File.executable? (@command)
 
       # Ensure MP4SPLIT licence is available
       @licence = @config[:licence]
-      raise RestFtpDaemon::TransformMissingBinary, "mp4split licence not found: #{@config[:licence]}" unless @config[:licence]
+      raise RestFtpDaemon::Transform::ErrorMissingBinary, "mp4split licence not found: #{@config[:licence]}" unless @config[:licence]
 
       # Target loc should have a name
       raise RestFtpDaemon::TargetNameRequired, "mp4split requires target to provided a filename"  unless target_loc.name
@@ -75,7 +75,7 @@ module RestFtpDaemon
 
       # Check we have the expected output file
       unless File.exist? (output_file)
-        raise RestFtpDaemon::TransformMissingOutput, "can't find the expected output file at: #{output_file}"
+        raise RestFtpDaemon::Transform::ErrorMissingOutput, "can't find the expected output file at: #{output_file}"
       end
     end
 

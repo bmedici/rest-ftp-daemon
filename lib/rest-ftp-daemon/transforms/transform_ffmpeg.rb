@@ -1,7 +1,7 @@
 require 'streamio-ffmpeg'
 
-module RestFtpDaemon
-  class TaskTransformFfmpeg < TaskTransform
+module RestFtpDaemon::Transform
+  class Ffmpeg < Base
 
     # Task attributes
     def task_icon
@@ -42,10 +42,10 @@ module RestFtpDaemon
       begin
         movie = FFMPEG::Movie.new(input.path_abs)
       rescue Errno::ENOENT => exception
-        raise RestFtpDaemon::TransformVideoNotFound, exception.message
+        raise RestFtpDaemon::ErrorVideoNotFound, exception.message
       rescue StandardError => exception
         log_error "FFMPEG Error [#{exception.class}] : #{exception.message}"
-        raise RestFtpDaemon::TransformVideoError, exception.message
+        raise RestFtpDaemon::Transform::ErrorVideoError, exception.message
       else
         set_info :ffmpeg_size, movie.size
         set_info :ffmpeg_duration, movie.duration
@@ -104,7 +104,7 @@ module RestFtpDaemon
       raise StandardError unless path && File.exist?(path)
 
     rescue StandardError, Errno::ENOENT => exception
-      raise RestFtpDaemon::TransformMissingBinary, "missing ffmpeg binary: #{method}"
+      raise RestFtpDaemon::Transform::ErrorMissingBinary, "missing ffmpeg binary: #{method}"
     end
 
   end
