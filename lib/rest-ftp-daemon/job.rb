@@ -56,8 +56,7 @@ module RestFtpDaemon
     PROCESSORS       = [PROCESSOR_COPY, PROCESSOR_FFMPEG, PROCESSOR_MP4SPLIT]
 
     # Fields to be imported from params
-    IMPORTED = %w(type priority pool label priority source target options overwrite notify mkdir tempfile transforms)
-    # IMPORTED = %w(type priority pool label priority source target options notify)
+    IMPORTED = %w(priority pool label priority source target options overwrite notify mkdir tempfile transforms)
 
     # Class options
     attr_accessor :wid

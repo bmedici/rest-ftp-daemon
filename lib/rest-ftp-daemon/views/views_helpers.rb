@@ -47,21 +47,6 @@ module RestFtpDaemon
       end
     end
 
-    def job_style job
-      case job.type
-      when Job::TYPE_TRANSFER
-        icon_klass = "transfer"
-      when Job::TYPE_VIDEO
-        icon_klass = "facetime-video"
-      when Job::TYPE_DUMMY
-        icon_klass = "question-sign"
-      when Job::TYPE_WORKFLOW
-        icon_klass = "cog"
-      else
-        icon_klass = "label-default"
-      end
-    end
-
     def job_task_status job
       # Init
       out = []
@@ -93,15 +78,6 @@ module RestFtpDaemon
       out << '</span>'
 
       return out.join()
-    end
-
-
-    def job_type job
-      sprintf(
-          '<span class="glyphicon glyphicon-%s" alt="%s"></span>',
-          job_style(job),
-          job.type
-          )
     end
 
     def datetime_short datetime
