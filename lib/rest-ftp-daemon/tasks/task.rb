@@ -77,16 +77,6 @@ module RestFtpDaemon
 
   protected
 
-    def debug_vars var
-      items = instance_variable_get("@#{var}")
-
-      if items.is_a? Array
-        log_debug "#{var}  \t #{items.object_id}", items.map(&:path)
-      else
-        log_error "#{var}  \t NOT AN ARRAY" 
-      end
-    end
-
     def task_oops exception, error = nil#, include_backtrace = false
       # Find error code in ERRORS table
       if error.nil?
@@ -146,5 +136,6 @@ module RestFtpDaemon
     def add_output element
       @output << element
     end
+
   end
 end

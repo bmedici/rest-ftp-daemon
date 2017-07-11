@@ -23,6 +23,16 @@ module RestFtpDaemon
       job_touch
     end
 
+    def debug_vars var
+      items = instance_variable_get("@#{var}")
+
+      if items.is_a? Array
+        log_debug "#{var}  \t #{items.object_id}", items.map(&:path)
+      else
+        log_error "#{var}  \t NOT AN ARRAY" 
+      end
+    end
+
   private
 
     def progress_notify percent0, name, force_notify = false

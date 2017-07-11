@@ -88,45 +88,44 @@ module RestFtpDaemon
           type: Integer,
           desc: "Priority level of the job (lower is stronger)",
           default: 0
+        # optional :type,
+        #   type: String,
+        #   desc: "Type of job",
+        #   default: Job::TYPE_TRANSFER,
+        #   values: {value: Job::TYPES, message: "should be one of: #{Job::TYPES.join', '}"},
+        #   allow_blank: { value: false, message: 'cannot be empty' }
 
-        optional :options, type: Hash, desc: "job options", default: {} do
-
-          optional :transfer, type: Hash, desc: "transfer options", default: {} do
-            optional :overwrite,
-              type: Boolean,
-              desc: "Overwrites files at target server",
-              default: Conf.at(:transfer, :overwrite)
-            optional :mkdir,
-              type: Boolean,
-              desc: "Create missing directories on target server",
-              default: Conf.at(:transfer, :mkdir)
-            optional :tempfile,
-              type: Boolean,
-              desc: "Upload to a temp file before renaming it to the target filename",
-              default: Conf.at(:transfer, :tempfile)
           end
 
-          optional :transform, type: Hash, desc: "transform options", default: {} do
-             optional :audio_codec,             type: String,  desc: "audio codec (ex: copy, libfaac, ibfdk_aac)"
-             optional :audio_bitrate,           type: String,  desc: "nominal audio bitrate"
-             optional :audio_sample_rate,       type: Integer, desc: "audio sampling rate"
-             optional :audio_channels,          type: String,  desc: "number of audio channels"
+          # given processor: ->(val) { val == PROCESSOR_FFMPEG } do
+          #   optional :audio_codec,             type: String,  desc: "ffmpeg: audio codec (ex: copy, libfaac, ibfdk_aac)"
+          #   optional :audio_bitrate,           type: String,  desc: "ffmpeg: nominal audio bitrate"
+          #   optional :audio_sample_rate,       type: Integer, desc: "ffmpeg: audio sampling rate"
+          #   optional :audio_channels,          type: String,  desc: "ffmpeg: number of audio channels"
 
-             optional :video_codec,             type: String,  desc: "video codec (ex: copy, libx264)"
-             optional :video_bitrate,           type: String,  desc: "nominal video bitrate"
-             optional :video_bitrate_tolerance, type: String,  desc: "maximum video bitrate"
+          #   optional :video_codec,             type: String,  desc: "ffmpeg: video codec (ex: copy, libx264)"
+          #   optional :video_bitrate,           type: String,  desc: "ffmpeg: nominal video bitrate"
+          #   optional :video_bitrate_tolerance, type: String,  desc: "ffmpeg: maximum video bitrate"
 
-             optional :frame_rate,              type: Integer, desc: "output frames per second"
-             optional :resolution,              type: String,  desc: "output video resolution"
-             optional :aspect,                  type: String,  desc: "output aspect ratio"
-             optional :keyframe_interval,       type: String,  desc: "group of pictures (GOP) size"
-             optional :x264_vprofile,           type: String,  desc: "h264 profile"
-             optional :x264_preset,             type: String,  desc: "h264 preset (fast, low..)"
-          end
+          #   optional :frame_rate,              type: Integer, desc: "ffmpeg: output frames per second"
+          #   optional :resolution,              type: String,  desc: "ffmpeg: output video resolution"
+          #   optional :aspect,                  type: String,  desc: "ffmpeg: output aspect ratio"
+          #   optional :keyframe_interval,       type: String,  desc: "ffmpeg: group of pictures (GOP) size"
+          #   optional :x264_vprofile,           type: String,  desc: "ffmpeg: h264 profile"
+          #   optional :x264_preset,             type: String,  desc: "ffmpeg: h264 preset (fast, low..)"
+          # end
 
-          optional :ffmpeg, type: Hash, desc: "custom ffmpeg flags", default: {}, documentation: { hidden: false }
+          # given processor: ->(val) { val == PROCESSOR_MP4SPLIT } do
+          #   optional :manifest_version,        type: String,  desc: "mp4split: manifest_version"
+          #   optional :minimum_fragment_length, type: String,  desc: "mp4split: minimum_fragment_length"
+          # end
 
         end
+
+
+        #, using: Entities::Transform.documentation
+        # optional :transforms2, type: Collection, desc: "transform options", using: Entities::Transform.documentation
+
       end
 
       post "/" do
