@@ -15,7 +15,6 @@ module RestFtpDaemon
         input_size: input.size,
         output_size: output.size,
         }
-
     end
 
   end

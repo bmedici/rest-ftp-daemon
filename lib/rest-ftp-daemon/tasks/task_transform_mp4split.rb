@@ -52,7 +52,6 @@ module RestFtpDaemon
     def mp4split inputs, output, licence_path
       # Init
       output_file = output.path_abs
-      #log_info "transform output[#{output.name}] input:", @input.collect(&:name)
 
       # Build params
       params = {}
@@ -68,7 +67,6 @@ module RestFtpDaemon
       # Result
       log_info "result pid[#{status.pid}] exitstatus[#{status.exitstatus}] success[#{status.success?}]", stdout.lines
       log_debug "command stderr", stderr.lines unless stderr.blank?
-      # log_debug "size: #{stderr.size}"
 
       # If we get anything on stderr => failed
       unless status.success?

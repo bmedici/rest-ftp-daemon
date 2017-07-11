@@ -88,12 +88,6 @@ module RestFtpDaemon
           type: Integer,
           desc: "Priority level of the job (lower is stronger)",
           default: 0
-        # optional :type,
-        #   type: String,
-        #   desc: "Type of job",
-        #   default: Job::TYPE_TRANSFER,
-        #   values: {value: Job::TYPES, message: "should be one of: #{Job::TYPES.join', '}"},
-        #   allow_blank: { value: false, message: 'cannot be empty' }
 
 
         optional :transfer, type: Hash, desc: "transfer options", documentation: { collectionFormat: 'multi' } do
@@ -111,6 +105,15 @@ module RestFtpDaemon
             default: Conf.at(:transfer, :tempfile)
         end
 
+        optional :transforms, type: Array, desc: "transform options", documentation: { hidden: true, collectionFormat: 'multi' } do
+          requires :processor,
+            type: String,
+            desc: "Processor used on this transformation",
+            values: Job::PROCESSORS
+            # values: {value: TaskTransform::TYPES, message: "should be one of: #{TaskTransform::TYPES.join(', ')}"}
+
+          given processor: ->(val) { val == PROCESSOR_COPY } do
+            optional :really
           end
 
           # given processor: ->(val) { val == PROCESSOR_FFMPEG } do

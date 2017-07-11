@@ -47,8 +47,6 @@ module RestFtpDaemon
       return unless force_notify || (how_long_ago > @config[:notify_after])
 
       # # Update bitrates
-      # @current_bitrate = progress_running_bitrate @transfer_sent
-      # set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
       if @current_bitrate.nil?
         current_bitrate_rounded = nil
       else

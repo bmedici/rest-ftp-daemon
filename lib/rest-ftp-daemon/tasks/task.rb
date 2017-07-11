@@ -25,7 +25,6 @@ module RestFtpDaemon
     STATUS_FAILED    = "failed"
     STATUS_FINISHED  = "finished"
 
-
     # Class options
     attr_reader   :job
     attr_reader   :name
