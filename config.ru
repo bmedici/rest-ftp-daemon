@@ -17,7 +17,7 @@ unless Conf[:adminpwd].nil?
 end
 
 # Serve static assets
-use Rack::Static, root: "#{Conf.app_libs}/static/", urls: [
+use Rack::Static, root: "#{Conf.app_libs}/public/", urls: [
   "/css/",
   "/js/",
   "/fonts/",
