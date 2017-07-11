@@ -46,6 +46,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "rest-client", "~> 1.8"
   spec.add_runtime_dependency     "api-auth"
   spec.add_runtime_dependency     "haml"
+  spec.add_runtime_dependency     "CFPropertyList"
   spec.add_runtime_dependency     "facter"
   spec.add_runtime_dependency     "sys-cpu"
   spec.add_runtime_dependency     "get_process_mem"
