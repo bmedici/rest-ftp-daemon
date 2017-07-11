@@ -97,7 +97,7 @@ Usage and examples
 #### Launching rest-ftp-daemon
 
 You must provide a configuration file for the daemon to start, either explicitly using
-option `--config` or implicitly at `/etc/rest-ftp-daemon.yml`. A sample file is provided, issue
+option `--config` or implicitly at `/etc/rftpd.yml`. A sample file is provided, issue
 `--help` to get more info.
 
 You then simply start the daemon on its standard port, or on a specific port using `-p`
@@ -194,7 +194,7 @@ Configuration priority is defined as follows (from most important to last resort
 * config file environment section
 * application internal defaults
 
-As a starting point, `rest-ftp-daemon.yml.sample` is an example config file that can be  copied into the expected location ``/etc/rest-ftp-daemon.yml``.
+As a starting point, `defaults.yml` is an example config file that can be  copied into the expected location ``/etc/rftpd.yml``.
 
 Default administrator credentials are `admin/admin`. Please change the password in this configuration file before starting any kind of production.
 
@@ -347,7 +347,7 @@ Known bugs
 
 * As this project is based on the Psyck YAML parser, configuration merge from "defaults" section and environment-specific section are broken. A sub-tree defined for a specific environment, will overwrite the corresponding subtree from "defaults". Please repeat whole sections from "defaults".
 
-* As this project is based on Chamber, and it considers hyphens in filename as namespaces, the global /etc/rest-ftp-daemon.yml config file is not parsed (and thus, ignored). Until this is worked around, please specify a config filename on the commandline.
+* As this project is based on Chamber, and it considers hyphens in filename as namespaces, the global /etc/rftpd.yml config file is not parsed (and thus, ignored). Until this is worked around, please specify a config filename on the commandline.
 
 * If you get ```fatal error: 'openssl/ssl.h' file not found when installing eventmachine``` on OSX El Capitan, you can try with:
 ```
