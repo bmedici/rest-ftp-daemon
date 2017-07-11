@@ -49,7 +49,7 @@ module RestFtpDaemon
     PROCESSORS       = [PROCESSOR_COPY, PROCESSOR_FFMPEG, PROCESSOR_MP4SPLIT]
 
     # Fields to be imported from params
-    IMPORTED = %w(priority pool label priority source target options overwrite notify mkdir tempfile transforms)
+    IMPORTED = %w(priority pool label priority source target overwrite notify mkdir tempfile transfer transforms)
 
     # Class options
     attr_accessor :wid
@@ -63,7 +63,6 @@ module RestFtpDaemon
     attr_reader :error
     attr_reader :status
     attr_reader :tentatives
-    attr_reader :options
 
     attr_reader :created_at
     attr_reader :updated_at
@@ -116,14 +115,6 @@ module RestFtpDaemon
       IMPORTED.each do |field|
         instance_variable_set "@#{field}", params[field]
       end
-
-      # Ensure @options is a hash
-      @options = {} unless @options.is_a? Hash
-
-      # Adjust params according to defaults
-      job_flag_init :transfer, :overwrite
-      job_flag_init :transfer, :mkdir
-      job_flag_init :transfer, :tempfile
 
       # Register tasks
       register_tasks
@@ -267,16 +258,6 @@ module RestFtpDaemon
       #get_info :target_host
     end
 
-    def get_option scope, name
-      @options[scope] ||= {}
-      @options[scope][name]
-    end
-    
-    def set_option scope, name, value
-      @options[scope] ||= {}
-      @options[scope][name] = value
-    end
-
     def get_info name
       @mutex.synchronize do
         @infos[name]
@@ -406,17 +387,18 @@ module RestFtpDaemon
     #   set_status value
     # end  
 
-    def job_flag_init scope, name
-      # build the flag instance var name
-      variable = "@#{name}"
+    # def transfer_flag_import options, name
+    #   return unless @transfer.is_a?(Hash)
 
-      # If it's already true or false, that's ok
-      return if [true, false].include? get_option(scope, name)
+    #   # Check if flag is already true or false
+    #   return unless [true, false].include?(@transfer[name])
 
-      # Otherwise, set it to the new alt_value
-      set_option(scope, name, Conf.at(scope, name))
-      # instance_variable_set variable, 
-    end
+    #   # Otherwise, set it to the config value
+    #   options[:QUERY] ||= {}
+    #   options[:QUERY] << name
+    #   options[name] = @transfer[name]
+    #   options["#{name}-from"] = :query
+    # end
 
     def oops signal, exception, error = nil#, include_backtrace = false
       # Find error code in ERRORS table
