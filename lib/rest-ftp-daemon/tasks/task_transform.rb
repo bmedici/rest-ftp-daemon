@@ -29,9 +29,6 @@ module RestFtpDaemon
 
     def transform_each_input
       @input.each do |loc|
-        # This location is the source and will be replaced byt the target
-        # log_info "loc id: #{loc.object_id}"
-
         # Generate temp target from current location
         tempfile = tempfile_for("transform")
 
@@ -41,7 +38,6 @@ module RestFtpDaemon
         FileUtils.mkdir_p t_dir
 
         # Process this file
-        # log_debug "transform input[#{loc.name}] output[#{tempfile.name}]"
         set_info INFO_CURRENT, loc.name
         transform loc, tempfile
 

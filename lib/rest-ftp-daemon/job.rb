@@ -32,13 +32,6 @@ module RestFtpDaemon
     STATUS_TASK_PROCESSING   = "video/transform"
 
 
-    # Types
-    TYPE_TRANSFER    = "transfer"
-    TYPE_VIDEO       = "video"
-    TYPE_WORKFLOW    = "workflow"
-    TYPE_DUMMY       = "dummy"
-    TYPES            = [TYPE_TRANSFER, TYPE_VIDEO, TYPE_WORKFLOW, TYPE_DUMMY]
-
     # Other constats
     DEFAULT_POOL     = "default"
 
