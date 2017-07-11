@@ -13,11 +13,11 @@ module RestFtpDaemon
       super
 
       # Init
-      @binary = @config[:command]
+      @command = @config[:command]
 
       # Ensure MP4SPLIT lib is available
-      raise RestFtpDaemon::TransformMissingBinary, "mp4split binary not found: #{@config[:command]}" unless File.exist? (@binary)
-      raise RestFtpDaemon::TransformMissingBinary, "mp4split binary not executable: #{@config[:command]}" unless File.executable? (@binary)
+      raise RestFtpDaemon::TransformMissingBinary, "mp4split binary not found: #{@config[:command]}" unless File.exist? (@command)
+      raise RestFtpDaemon::TransformMissingBinary, "mp4split binary not executable: #{@config[:command]}" unless File.executable? (@command)
 
       # Ensure MP4SPLIT licence is available
       @licence = @config[:licence]
@@ -66,23 +66,26 @@ module RestFtpDaemon
       stdout, stderr, status = Open3.capture3(*command)
 
       # Result
-      log_debug "command stdout", stdout.split("\n")
-      log_debug "command stderr", stderr.split("\n")
-      log_info "command status: #{status}"
+      log_info "result pid[#{status.pid}] exitstatus[#{status.exitstatus}] success[#{status.success?}]", stdout.lines
+      log_debug "command stderr", stderr.lines unless stderr.blank?
+      # log_debug "size: #{stderr.size}"
 
       # If we get anything on stderr => failed
-      raise RestFtpDaemon::TaskFailed, "stderr: #{stderr}"
+      unless status.success?
+        raise RestFtpDaemon::TaskFailed, "stderr: #{stderr}"
+      end
 
       # Check we have the expected output file
-      raise RestFtpDaemon::TransformMissingOutput, "output file has not been generated: #{output_file}" unless File.exist? (output_file)
-    end
+      unless File.exist? (output_file)
+        raise RestFtpDaemon::TransformMissingOutput, "can't find the expected output file at: #{output_file}"
+      end
 
   private
 
     def mp4split_command output_file, params
       # Build the command
       command = []
-      command << @binary
+      command << @command
 
       # Output file
       command << "-o #{output_file}" 
