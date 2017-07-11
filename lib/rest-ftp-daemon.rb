@@ -37,11 +37,11 @@ require_relative "rest-ftp-daemon/location"
 
 
 # Remotes
-require_relative "rest-ftp-daemon/remote/remote"
-require_relative "rest-ftp-daemon/remote/remote_file"
-require_relative "rest-ftp-daemon/remote/remote_ftp"
-require_relative "rest-ftp-daemon/remote/remote_sftp"
-require_relative "rest-ftp-daemon/remote/remote_s3"
+require_relative "rest-ftp-daemon/remotes/remote"
+require_relative "rest-ftp-daemon/remotes/remote_file"
+require_relative "rest-ftp-daemon/remotes/remote_ftp"
+require_relative "rest-ftp-daemon/remotes/remote_sftp"
+require_relative "rest-ftp-daemon/remotes/remote_s3"
 
 # Tasks
 require_relative "rest-ftp-daemon/tasks/task_helpers"
