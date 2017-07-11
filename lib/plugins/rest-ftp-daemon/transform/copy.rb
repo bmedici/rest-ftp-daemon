@@ -1,3 +1,5 @@
+require "rest-ftp-daemon"
+
 module RestFtpDaemon::Transform
   class Copy < Base
 

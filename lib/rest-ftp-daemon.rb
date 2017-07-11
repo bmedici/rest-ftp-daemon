@@ -50,7 +50,6 @@ require_relative "rest-ftp-daemon/remotes/remote_s3"
 
 # Task: transforms
 require_relative "rest-ftp-daemon/transforms/transform"
-require_relative "rest-ftp-daemon/transforms/transform_copy"
 require_relative "rest-ftp-daemon/transforms/transform_ffmpeg"
 require_relative "rest-ftp-daemon/transforms/transform_mp4split"
 
