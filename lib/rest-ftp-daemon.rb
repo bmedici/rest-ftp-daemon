@@ -35,6 +35,11 @@ require_relative "rest-ftp-daemon/views/views_helpers"
 require_relative "rest-ftp-daemon/job"
 require_relative "rest-ftp-daemon/location"
 
+# Tasks
+require_relative "rest-ftp-daemon/tasks/task_helpers"
+require_relative "rest-ftp-daemon/tasks/task"
+require_relative "rest-ftp-daemon/tasks/task_import"
+require_relative "rest-ftp-daemon/tasks/task_export"
 
 # Remotes
 require_relative "rest-ftp-daemon/remotes/remote"
@@ -43,11 +48,6 @@ require_relative "rest-ftp-daemon/remotes/remote_ftp"
 require_relative "rest-ftp-daemon/remotes/remote_sftp"
 require_relative "rest-ftp-daemon/remotes/remote_s3"
 
-# Tasks
-require_relative "rest-ftp-daemon/tasks/task_helpers"
-require_relative "rest-ftp-daemon/tasks/task"
-require_relative "rest-ftp-daemon/tasks/task_import"
-require_relative "rest-ftp-daemon/tasks/task_export"
 # Task: transforms
 require_relative "rest-ftp-daemon/transforms/transform"
 require_relative "rest-ftp-daemon/transforms/transform_copy"

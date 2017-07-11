@@ -5,7 +5,7 @@ module RestFtpDaemon::Transform
   class ErrorVideoNotFound    < BaseException; end
   class ErrorVideoError       < BaseException; end
 
-  class Base < RestFtpDaemon::Task
+  class Base < RestFtpDaemon::Task::Base
 
     # Task attributes
     def task_icon

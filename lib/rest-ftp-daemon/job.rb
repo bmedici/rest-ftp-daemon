@@ -173,7 +173,7 @@ module RestFtpDaemon
           task.prepare
 
           # Run task
-          task.status = Task::STATUS_RUNNING
+          task.status = Task::Base::STATUS_RUNNING
           task.process
 
           # FIXME Sleep for a few seconds
@@ -182,7 +182,7 @@ module RestFtpDaemon
         rescue StandardError => exception
           # Keep the exception with us
           task.error = exception
-          task.status = Task::STATUS_FAILED
+          task.status = Task::Base::STATUS_FAILED
 
           # Close ftp connexion if open
           @remote.close unless @remote.nil? || !@remote.connected?
@@ -194,7 +194,7 @@ module RestFtpDaemon
           return oops(:task, exception)
 
         else
-          task.status = Task::STATUS_FINISHED
+          task.status = Task::Base::STATUS_FAILED
           stash = task.output          
 
         ensure
@@ -441,15 +441,9 @@ module RestFtpDaemon
       job_notify signal, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
 
-    def register_task name, config, options, flavour = nil
-      # Task class
-      clazz = Object.const_get("Task#{name.to_s.capitalize}#{flavour.to_s.capitalize}")
-
-      # Instantiate task
-      log_debug "register_task #{clazz.to_s}"
-
-      # Store it
-      @tasks << clazz.new(self, name, config, options)
+    def register_task klass, config, options
+      log_debug "register_task #{klass.to_s}"
+      @tasks << klass.new(self, config, options)
     end
 
     def register_tasks
@@ -457,7 +451,7 @@ module RestFtpDaemon
       transfer_config = Conf.at(:transfer)
 
       # Register IMPORT
-      register_task :import, transfer_config, @transfer
+      register_task Task::Import, transfer_config, @transfer
       
       # Register TRANSFORMS if we have some
       @transforms.each do |options|
@@ -465,7 +459,7 @@ module RestFtpDaemon
       end if @transforms.is_a?(Array)
 
       # Register EXPORT
-      register_task :export, transfer_config, @transfer
+      register_task Task::Export, transfer_config, @transfer
 
       # Announce registered tasks
      # log_debug "registered following tasks", @tasks.map(&:class)
@@ -483,16 +477,17 @@ module RestFtpDaemon
         raise RestFtpDaemon::JobUnknownTransform, message
       end
 
-      # Extract options, cleaning processor
-      #transform_options = options.clone
-      #transform_options.delete('processor')
-
       # Overwrite with config values
       config = Conf.at(:transforms, processor)
+      options.delete('processor')
       #transform_options.merge(task_config) if transform_config.is_a? Hash
 
+      # Build class name
+      # Task class
+      klass = Object.const_get("Transform::#{processor.to_s.capitalize}")
+
       # Ok to register this task
-      register_task :transform, config, options, processor
+      register_task klass, config, options
     end
 
     def load_transform name

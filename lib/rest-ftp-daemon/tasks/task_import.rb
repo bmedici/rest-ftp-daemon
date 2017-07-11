@@ -1,5 +1,5 @@
-module RestFtpDaemon
-  class TaskImport < Task
+module RestFtpDaemon::Task
+  class Import < Base
 
     # Task attributes
     def task_icon
@@ -7,11 +7,12 @@ module RestFtpDaemon
     end
 
     # Task statuses
-    STATUS_IMPORT_LISTING       = "import-list"
+    STATUS_LISTING       = "import-list"
+    STATUS_DOWNLOADING   = "import-download"
 
     # Task operations
     def process
-      set_status TaskImport::STATUS_IMPORT_LISTING
+      set_status Task::Import::STATUS_LISTING
 
       # Check input conformity
       unless source_loc.is_a?(Location) && source_loc.uri_is?(URI::FILE)

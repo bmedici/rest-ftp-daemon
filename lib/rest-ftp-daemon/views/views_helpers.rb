@@ -57,11 +57,11 @@ module RestFtpDaemon
          label_style = "simple"
 
         case task.status
-        when Task::STATUS_RUNNING
+        when Task::Base::STATUS_RUNNING
           label_style = "simple blink"
-        when Task::STATUS_FAILED
+        when Task::Base::STATUS_FAILED
           label_style = "danger"
-        when Task::STATUS_FINISHED
+        when Task::Base::STATUS_FINISHED
           label_style = "success"
         end
 

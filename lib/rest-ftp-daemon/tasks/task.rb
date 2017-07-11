@@ -10,15 +10,16 @@ module RestFtpDaemon
   class TargetNameRequired        < BaseException; end
 
   class TaskFailed                < BaseException; end
+end
 
-  class Task
+module RestFtpDaemon::Task
+  class Base
     include BmcDaemonLib::LoggerHelper
     include CommonHelpers
     include TaskHelpers
 
     # Task attributes
     def task_icon; end
-
 
     # Task statuses
     STATUS_RUNNING   = "running"
@@ -42,10 +43,10 @@ module RestFtpDaemon
       to: :job
 
 
-    def initialize job, name, config, options
+    def initialize job, config, options
       # Init context
       @job          = job
-      @name         = name
+      # @name         = name
       @config       = config
       @options      = options
       @output       = []
