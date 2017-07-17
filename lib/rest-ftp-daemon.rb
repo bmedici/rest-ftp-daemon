@@ -13,7 +13,6 @@ require "double_bag_ftps"
 require "net/sftp"
 require "net/ftp"
 require 'aws-sdk-resources'
-require 'streamio-ffmpeg'
 require 'active_support/core_ext/module'
 require "fileutils"
 require 'pluginator'
