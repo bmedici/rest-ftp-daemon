@@ -16,6 +16,7 @@ require 'aws-sdk-resources'
 require 'streamio-ffmpeg'
 require 'active_support/core_ext/module'
 require "fileutils"
+require 'pluginator'
 
 
 # Constants and base exceptions
