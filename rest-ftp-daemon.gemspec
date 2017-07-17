@@ -58,6 +58,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "net-sftp"
   spec.add_runtime_dependency     "double-bag-ftps"
   spec.add_runtime_dependency     "aws-sdk-resources", '~> 2.6'
-  spec.add_runtime_dependency     "streamio-ffmpeg"
 
 end
