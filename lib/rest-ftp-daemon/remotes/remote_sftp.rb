@@ -1,4 +1,6 @@
 require "net/sftp"
+require "rbnacl"
+require "bcrypt_pbkdf"
 
 # Handle sFTP transfers for Remote class
 module RestFtpDaemon::Remote
