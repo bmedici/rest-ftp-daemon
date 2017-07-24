@@ -40,6 +40,7 @@ require_relative "rest-ftp-daemon/tasks/task_helpers"
 require_relative "rest-ftp-daemon/tasks/task"
 require_relative "rest-ftp-daemon/tasks/task_import"
 require_relative "rest-ftp-daemon/tasks/task_export"
+require_relative "rest-ftp-daemon/tasks/task_transform"
 
 # Remotes
 require_relative "rest-ftp-daemon/remotes/remote"
@@ -47,9 +48,6 @@ require_relative "rest-ftp-daemon/remotes/remote_file"
 require_relative "rest-ftp-daemon/remotes/remote_ftp"
 require_relative "rest-ftp-daemon/remotes/remote_sftp"
 require_relative "rest-ftp-daemon/remotes/remote_s3"
-
-# Task: transforms
-require_relative "rest-ftp-daemon/transforms/transform"
 
 # Workers
 require_relative "rest-ftp-daemon/workers/worker"
@@ -84,6 +82,8 @@ require_relative "rest-ftp-daemon/errors"
 
 # Init
 require_relative "rest-ftp-daemon/initialize"
+
+
 
 
 # def require_from subdir

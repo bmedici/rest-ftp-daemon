@@ -7,6 +7,17 @@ module RestFtpDaemon::Transform
 
   class Base < RestFtpDaemon::Task::Base
 
+    def self.available
+      Pluginator.find(Conf.app_name, extends: %i[plugins_map]).
+        plugins_map(:transform).
+        keys.
+        map(&:downcase)
+    end
+    # def self.find(name)
+    #   plugins = Pluginator.find(Conf.app_name, extends: %i[first_class])
+    #   plugins.first_class(:transform, name)
+    # end
+
     # Task attributes
     def task_icon
       "cog"
