@@ -30,6 +30,11 @@ module RestFtpDaemon::Remote
             non_interactive: true,
             timeout: DEFAULT_SFTP_TIMEOUT
             )
+      # rescue NotImplementedError => exception
+      #   raise RemoteConnectError, "RemoteConnectError: #{exception.class}: #{exception.message}"
+
+      rescue Exception => exception
+        raise RemoteConnectError, "#{exception.class}: #{exception.message}"
       end
 
       def size_if_exists target

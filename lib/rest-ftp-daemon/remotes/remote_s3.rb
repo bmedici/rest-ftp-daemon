@@ -19,6 +19,9 @@ module RestFtpDaemon::Remote
           credentials: Aws::Credentials.new(@target.aws_id, @target.aws_secret),
           http_wire_trace: debug_enabled
           )
+
+      rescue Exception => exception
+        raise RemoteConnectError, "#{exception.class}: #{exception.message}"
       end
 
       def size_if_exists target

@@ -30,6 +30,9 @@ module RestFtpDaemon::Remote
         # Connect remote server
         @ftp.connect @target.host, @target.port
         @ftp.login @target.user, @target.password
+
+      rescue Exception => exception
+        raise RemoteConnectError, "#{exception.class}: #{exception.message}"
       end
 
       def connected?
