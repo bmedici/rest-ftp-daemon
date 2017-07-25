@@ -1,7 +1,7 @@
 # Worker used to report metrics to various services
 
-module RestFtpDaemon
   class WorkerReporter < Worker
+module RestFtpDaemon::Worker
 
   protected
 

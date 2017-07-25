@@ -35,15 +35,15 @@ module RestFtpDaemon
       log_info "creating all workers with #{pools.to_hash.inspect}"
 
       # Start WorkerConchita and WorkerReporter
-      create_thread WorkerConchita, :conchita
-      create_thread WorkerReporter, :reporter
+      create_thread Worker::WorkerConchita, :conchita
+      create_thread Worker::WorkerReporter, :reporter
 
       # Start WorkerJobs threads, ensure we have at least one worker in default pool
       pools[Job::DEFAULT_POOL] ||= 1
       pools.each do |pool, count|
         count.times do
           my_wid = next_wid()
-          create_thread WorkerJob, my_wid, pool
+          create_thread Worker::WorkerJob, my_wid, pool
         end
       end
 

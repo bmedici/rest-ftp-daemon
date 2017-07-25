@@ -1,7 +1,7 @@
 # Worker used to process Jobs
 
-module RestFtpDaemon
   class WorkerJob < Worker
+module RestFtpDaemon::Worker
 
   protected
 
