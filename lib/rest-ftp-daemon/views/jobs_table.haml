@@ -12,12 +12,7 @@
 
   - job_working       = [Task::Import::STATUS_DOWNLOADING, Task::Export::STATUS_UPLOADING, Job::STATUS_TASK_PROCESSING].include? job.status
 
-  - trclass = RestFtpDaemon::API::JOB_STYLES[job.status]
-
-  - unless job.error.nil?
-    - trclass = "warning"
-
-  %tr{class: trclass.to_s}
+  %tr{class: dashboard_job_class(job)}
 
     %td
       %a{href: dashboard_job_url(job)}

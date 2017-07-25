@@ -9,6 +9,12 @@ module RestFtpDaemon
   class TargetUnsupported         < BaseException; end
   class TargetNameRequired        < BaseException; end
 
+  # Statuses
+  STATUS_READY     = "ready"
+  STATUS_RUNNING   = "running"
+  STATUS_FINISHED  = "finished"
+  STATUS_FAILED    = "failed"
+
   class TaskFailed                < BaseException; end
 end
 
@@ -20,11 +26,6 @@ module RestFtpDaemon::Task
 
     # Task attributes
     def task_icon; end
-
-    # Task statuses
-    STATUS_RUNNING   = "running"
-    STATUS_FAILED    = "failed"
-    STATUS_FINISHED  = "finished"
 
     # Class options
     attr_reader   :job

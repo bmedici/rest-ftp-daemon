@@ -47,6 +47,23 @@ module RestFtpDaemon
       end
     end
 
+    def dashboard_job_class job
+      pick_class_from job.status, {
+        Job::STATUS_READY     => :active,
+        Job::STATUS_RUNNING   => :info,
+        Job::STATUS_FINISHED  => :success,
+        Job::STATUS_FAILED    => :warning,
+      }
+    end
+
+    def dashboard_task_class task
+      pick_class_from task.status, {
+        Task::STATUS_READY    => "simple",
+        Task::STATUS_RUNNING  => "simple blink",
+        Task::STATUS_FINISHED => :success,
+        Task::STATUS_FAILED   => :danger,
+      }
+    end
 
     def dashboard_worker_class status
       pick_class_from status, {
@@ -59,6 +76,11 @@ module RestFtpDaemon
         Worker::STATUS_DOWN     => :danger,
       }
     end
+
+    def pick_class_from key, classes
+      return classes[key]
+    end
+
     def job_task_status job
       # Init
       out = []
@@ -66,16 +88,8 @@ module RestFtpDaemon
 
       # For each task
       job.tasks.each do |task|
-         label_style = "simple"
+        label_style = dashboard_task_class(task)
 
-        case task.status
-        when Task::Base::STATUS_RUNNING
-          label_style = "simple blink"
-        when Task::Base::STATUS_FAILED
-          label_style = "danger"
-        when Task::Base::STATUS_FINISHED
-          label_style = "success"
-        end
 
         # '<span class="transfer-type label label-xs label-%s" title="%s">', 
         out << sprintf(
