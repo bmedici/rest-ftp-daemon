@@ -315,11 +315,52 @@ module RestFtpDaemon
       }
     end
 
+    def oops task, exception, error = nil, include_backtrace = false
       # Error code derived from exception name
       error = object_to_name(exception) if error.nil?
 
+      # Log message and backtrace ?
+      log_error "oops: #{exception.class}", {
+        task: task,
+        exception: exception.class.to_s,
+        error: error,
+        message: exception.message,
+        inc_backtrace: include_backtrace,
+        }  
+      log_debug "oops: backtrace below", exception.backtrace if include_backtrace
 
+      # Propagate error to Rollbar
+      # Rollbar.error exception, "task_error: error [#{error}]: #{exception.class.name}: #{exception.message}"
+      Rollbar.warning exception, "oops [#{error}]: #{exception.class.name}: #{exception.message}"
+
+      # Update job's internal status
+      # set_status STATUS_FAILED
+      log_debug "oops: backtrace below", exception.backtrace if include_backtrace
+      transition_to_failed error
+      set_info INFO_ERROR_EXCEPTION, exception.class.to_s
+      set_info INFO_ERROR_MESSAGE,   exception.message
+
+      # Build status stack
+      status = {}
+      if include_backtrace
+        set_info INFO_ERROR_BACKTRACE, exception.backtrace
+        status[:backtrace] = exception.backtrace
+      end
+
+      # Increment counter for this error
+      RestFtpDaemon::Counters.instance.increment :errors, error
+      RestFtpDaemon::Counters.instance.increment :jobs, :failed
+
+      # Prepare notification if signal given
+      return unless task
+      job_notify task,
+        error: error,
+        status: status,
+        message: "#{exception.class} | #{exception.message}"
     end
+
+    def running_and_transferring?
+      @status == STATUS_RUNNING && @task && [Task::Import::STATUS_DOWNLOADING, Task::Export::STATUS_UPLOADING].include?(@task.status)
     end
 
     def transition_to_queued
@@ -392,52 +433,6 @@ module RestFtpDaemon
       else
         return value
       end
-    end
-
-    def oops signal, exception, error = nil#, include_backtrace = false
-      # Find error code in ERRORS table
-      if error.nil?
-        error = JOB_ERRORS.key(exception.class)
-      end
-
-      if error.nil?
-        include_backtrace = true
-      end
-
-      # Log message and backtrace ?
-      log_error "OOPS: #{exception.class}", {
-        exception: exception.class.to_s,
-        message: exception.message,
-        error: error,
-        signal: signal,
-        }  
-      log_debug "OOPS: backtrace below", exception.backtrace if include_backtrace
-  
-      # Log to Rollbar
-      Rollbar.warning exception, "oops [#{error}]: #{exception.class.name}: #{exception.message}"
-
-      # Update job's internal status
-      set_status STATUS_FAILED
-      set_error error
-      set_info INFO_ERROR_EXCEPTION, exception.class.to_s
-      set_info INFO_ERROR_MESSAGE,   exception.message
-
-      # Build status stack
-      notif_status = nil
-      if include_backtrace
-        set_info INFO_ERROR_BACKTRACE, exception.backtrace
-        notif_status = {
-          backtrace: exception.backtrace,
-          }
-      end
-
-      # Increment counter for this error
-      RestFtpDaemon::Counters.instance.increment :errors, error
-      RestFtpDaemon::Counters.instance.increment :jobs, :failed
-
-      # Prepare notification if signal given
-      return unless signal
-      job_notify signal, error: error, status: notif_status, message: "#{exception.class} | #{exception.message}"
     end
 
     def register_task klass, config, options
