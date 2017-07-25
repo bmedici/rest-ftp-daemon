@@ -1,3 +1,11 @@
+# Dependencies
+
+# Register this handler
+module URI
+  class S3 < Generic; end
+  @@schemes["S3"]     = S3
+end
+
 # Handle sFTP transfers for Remote class
 module RestFtpDaemon::Remote
   class RemoteS3 < Base

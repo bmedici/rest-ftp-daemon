@@ -1,6 +1,15 @@
+# Dependencies
 require "net/sftp"
 require "rbnacl"
 require "bcrypt_pbkdf"
+
+# Register this handler
+module URI
+  class SFTP < Generic
+    DEFAULT_PORT = 22
+  end
+  @@schemes["SFTP"]   = SFTP
+end
 
 # Handle sFTP transfers for Remote class
 module RestFtpDaemon::Remote

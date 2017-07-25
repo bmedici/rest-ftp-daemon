@@ -1,9 +1,19 @@
+# Dependencies
 require "net/ftp"
-require "double_bag_ftps"
+
+# Register this handler
+module URI
+  class FILE < Generic; end
+  class FTPS < Generic; end
+  class FTPES < Generic; end
+  @@schemes["FILE"]   = FILE
+  @@schemes["FTPS"]   = FTPS
+  @@schemes["FTPES"]  = FTPES
+end
+
 
 # Handle FTP and FTPES transfers for Remote class
 module RestFtpDaemon::Remote
-
   class RemoteFTP < Base
 
       # Defaults
