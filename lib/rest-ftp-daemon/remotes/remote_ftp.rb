@@ -3,7 +3,11 @@ require "double_bag_ftps"
 
 # Handle FTP and FTPES transfers for Remote class
 module RestFtpDaemon::Remote
+
   class RemoteFTP < Base
+
+      # Defaults
+      FTP_CHUNK_MB         = 2*MB
 
       # Class options
       attr_reader :ftp
@@ -21,7 +25,7 @@ module RestFtpDaemon::Remote
         @ftp.debug_mode = debug_enabled
 
         # Announce object
-        log_debug "prepare chunk_size:#{format_bytes(JOB_FTP_CHUNKMB, "B")}"
+        log_debug "prepare chunk_size:#{format_bytes(FTP_CHUNK_MB, "B")}"
       end
 
       def connect
@@ -115,7 +119,7 @@ module RestFtpDaemon::Remote
 
         # Do the transfer
         log_debug "putbinaryfile abs[#{source.path_abs}] [#{target.name}]"
-        @ftp.putbinaryfile source.path_abs, target.name, JOB_FTP_CHUNKMB do |data|
+        @ftp.putbinaryfile source.path_abs, target.name, FTP_CHUNK_MB do |data|
           # Update job status after this block transfer
           yield data.bytesize, target.name
         end
