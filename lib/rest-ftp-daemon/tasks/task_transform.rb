@@ -25,8 +25,6 @@ module RestFtpDaemon::Transform
  
     # Task operations
     def prepare
-      super
-
       # Ensure options are present
       raise Transform::TransformMissingOptions unless @options.is_a? Hash
 

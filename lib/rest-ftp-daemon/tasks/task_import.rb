@@ -12,6 +12,10 @@ module RestFtpDaemon::Task
     STATUS_LISTING       = "import-list"
     STATUS_DOWNLOADING   = "import-download"
 
+    def prepare
+      # raise Task::ImportError, "this is a fake task error from RestFtpDaemon::Task::Import"
+    end
+
     # Task operations
     def process
       set_status Task::Import::STATUS_LISTING
@@ -23,7 +27,6 @@ module RestFtpDaemon::Task
 
       # Scan local source files from disk
       files = source_loc.local_files
-      set_info INFO_SOURCE_COUNT, files.size
       set_info INFO_SOURCE_FILES, files.collect(&:name)
 
       # Check we matched at least one file
