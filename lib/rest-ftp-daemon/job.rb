@@ -36,7 +36,8 @@ module RestFtpDaemon
     DEFAULT_POOL     = "default"
 
     # Fields to be imported from params
-    IMPORTED = %w(priority pool label priority source target overwrite notify mkdir tempfile transfer transforms)
+    # IMPORTED = %w(priority pool label priority source target overwrite notify mkdir tempfile transfer transforms)
+    IMPORTED = %w(priority pool label priority source target notify transfer transforms)
 
     # Class options
     attr_accessor :wid
@@ -122,9 +123,6 @@ module RestFtpDaemon
     end
 
     def reset
-      # Update job status
-      #transition_to_preparing
-
       # Increment run cours
       @tentatives  += 1
       @updated_at   = Time.now
@@ -208,6 +206,19 @@ module RestFtpDaemon
       RestFtpDaemon::Counters.instance.increment :jobs, :finished
     end
 
+    # def task_status
+    #   elements = []
+
+    #   unless @task.nil?
+    #     elements << @task.name
+    #     elements << @task.status
+    #   else
+    #     elements << "no_task"
+    #   end
+
+    #   return elements.join(' > ')
+    # end
+
     def source_uri
       @source_loc.uri if @source_loc
     end
@@ -260,7 +271,7 @@ module RestFtpDaemon
     def job_notify signal, payload = {}
       # Skip if no URL given
       return unless @notify
-      log_info "job_notify: #{signal}"
+      log_info "notify: #{signal}"
 
       # Ok, create a notification!
       payload[:id] = @id
@@ -268,7 +279,7 @@ module RestFtpDaemon
       RestFtpDaemon::Notification.new @notify, payload
 
     rescue StandardError => ex
-      log_error "job_notify EXCEPTION: #{ex.inspect}"
+      log_error "notify EXCEPTION: #{ex.inspect}"
     end
 
     def job_touch
@@ -357,15 +368,6 @@ module RestFtpDaemon
       set_status STATUS_READY
     end
 
-    def transition_to_finished
-      log_info "transition to finished"
-      set_error nil
-      set_status STATUS_FINISHED
-
-      @finished_at   = Time.now
-      job_notify :ended
-    end
-
     def transition_to_running
       log_info "transition to running"
       set_error nil
@@ -373,6 +375,15 @@ module RestFtpDaemon
 
       @started_at = Time.now
       job_notify :start
+    end
+
+    def transition_to_finished
+      log_info "transition to finished"
+      set_error nil
+      set_status STATUS_FINISHED
+
+      @finished_at   = Time.now
+      job_notify :ended
     end
 
     def transition_to_failed error
@@ -415,19 +426,6 @@ module RestFtpDaemon
         return value
       end
     end
-
-    # def transfer_flag_import options, name
-    #   return unless @transfer.is_a?(Hash)
-
-    #   # Check if flag is already true or false
-    #   return unless [true, false].include?(@transfer[name])
-
-    #   # Otherwise, set it to the config value
-    #   options[:QUERY] ||= {}
-    #   options[:QUERY] << name
-    #   options[name] = @transfer[name]
-    #   options["#{name}-from"] = :query
-    # end
 
     def oops signal, exception, error = nil#, include_backtrace = false
       # Find error code in ERRORS table
@@ -531,7 +529,7 @@ module RestFtpDaemon
     end
 
     # NewRelic instrumentation
-    add_transaction_tracer :job_notify,  category: :task
+    add_transaction_tracer :job_notify,     category: :task
     add_transaction_tracer :initialize,     category: :task
 
   end
