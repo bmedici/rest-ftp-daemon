@@ -7,14 +7,14 @@
 require "securerandom"
 
 module RestFtpDaemon
-  class JobNotFound               < BaseException; end
+  class JobNotFound               < StandardError; end
+  class JobTimeout                < StandardError; end
+  class JobUnknownTransform       < StandardError; end
+  class JobNotFound               < StandardError; end
+  class JobAttributeMissing       < StandardError; end
+  class JobUnresolvedTokens       < StandardError; end
 
-  class JobTimeout                < BaseException; end
-  class JobUnknownTransform       < BaseException; end
-  class JobNotFound               < BaseException; end
-  class JobAttributeMissing       < BaseException; end
-  class JobUnresolvedTokens       < BaseException; end
-
+  class AssertionFailed           < StandardError; end
 
   class Job
     include BmcDaemonLib::LoggerHelper

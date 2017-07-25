@@ -1,8 +1,8 @@
 require 'active_support/core_ext/module/delegation'
 
 module RestFtpDaemon
-  class LocationParseError        < BaseException; end
-  class LocationSchemeUnsupported < BaseException; end
+  class LocationParseError        < StandardError; end
+  class LocationSchemeUnsupported < StandardError; end
 
 
 

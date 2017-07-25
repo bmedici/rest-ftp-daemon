@@ -1,8 +1,3 @@
-module RestFtpDaemon
-  class BaseException             < StandardError; end
-  class AssertionFailed           < BaseException; end
-end
-
 # Configuration defaults
 DEFAULT_SFTP_TIMEOUT    = 600   # 10mn
 DEFAULT_PAGE_SIZE       = 50    # 50 lines
