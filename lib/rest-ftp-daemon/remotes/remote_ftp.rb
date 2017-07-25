@@ -1,16 +1,16 @@
 # Dependencies
 require "net/ftp"
+require "double_bag_ftps"
 
 # Register this handler
 module URI
-  class FILE < Generic; end
+  class FTP < Generic; end
   class FTPS < Generic; end
   class FTPES < Generic; end
-  @@schemes["FILE"]   = FILE
+  @@schemes["FTP"]    = FTP
   @@schemes["FTPS"]   = FTPS
   @@schemes["FTPES"]  = FTPES
 end
-
 
 # Handle FTP and FTPES transfers for Remote class
 module RestFtpDaemon::Remote
@@ -21,6 +21,11 @@ module RestFtpDaemon::Remote
 
       # Class options
       attr_reader :ftp
+
+      # URI schemes handled by this plugin
+      def self.handles
+        [URI::FTP, URI::FTPS, URI::FTPES]
+      end
 
       def initialize target, job, config
         super

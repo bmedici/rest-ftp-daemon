@@ -1,4 +1,5 @@
 # Dependencies
+require 'aws-sdk-resources'
 
 # Register this handler
 module URI
@@ -8,7 +9,7 @@ end
 
 # Handle sFTP transfers for Remote class
 module RestFtpDaemon::Remote
-  class RemoteS3 < Base
+  class RemoteS3 < RemoteBase
 
     # Defaults
     S3_MIN_PART         = 5*MB
@@ -17,6 +18,11 @@ module RestFtpDaemon::Remote
     # Class options
     attr_reader :client
     attr_reader :target
+
+    # URI schemes handled by this plugin
+    def self.handles
+      [URI::S3]
+    end
 
     def initialize target, job, config
       super

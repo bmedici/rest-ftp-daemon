@@ -9,10 +9,6 @@ require "thread"
 require "newrelic_rpm"
 require "rollbar"
 # require "securerandom"
-require "double_bag_ftps"
-require "net/sftp"
-require "net/ftp"
-require 'aws-sdk-resources'
 require 'active_support/core_ext/module'
 require "fileutils"
 require 'pluginator'
