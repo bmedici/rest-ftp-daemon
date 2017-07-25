@@ -16,14 +16,9 @@
   %tbody
     - variables.each do |wid, vars|
       - status = vars[:status]
-      - alive = RestFtpDaemon::WorkerPool.instance.worker_alive? wid
-      - trclass = RestFtpDaemon::API::WORKER_STYLES[status]
+      - status = Worker::STATUS_DOWN unless RestFtpDaemon::WorkerPool.instance.worker_alive?(wid)
 
-      - unless alive
-        - trclass = "danger"
-        - status = "DOWN"
-
-      %tr{class: trclass.to_s}
+      %tr{class: dashboard_worker_class(status)}
         %td= wid
         %td= vars[:pool]
         %td= status

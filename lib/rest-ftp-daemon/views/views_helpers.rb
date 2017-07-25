@@ -47,6 +47,18 @@ module RestFtpDaemon
       end
     end
 
+
+    def dashboard_worker_class status
+      pick_class_from status, {
+        Worker::STATUS_READY    => nil,
+        Worker::STATUS_SLEEPING => nil,
+        Worker::STATUS_WORKING  => :info,
+        Worker::STATUS_FINISHED => :success,
+        Worker::STATUS_CRASHED  => :warning,
+        Worker::STATUS_TIMEOUT  => :warning,
+        Worker::STATUS_DOWN     => :danger,
+      }
+    end
     def job_task_status job
       # Init
       out = []
