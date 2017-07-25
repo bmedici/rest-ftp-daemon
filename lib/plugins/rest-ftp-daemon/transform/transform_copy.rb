@@ -1,5 +1,7 @@
+# Dependencies
 require "rest-ftp-daemon"
 
+# Simple file copy, mainly for testing purposes
 module RestFtpDaemon::Transform
   class TransformCopy < TaskTransform
 
