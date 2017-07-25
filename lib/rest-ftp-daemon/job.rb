@@ -169,6 +169,14 @@ module RestFtpDaemon
         stash = task.run(stash)
       end
 
+    rescue Remote::RemoteError, Task::TaskError, RestFtpDaemon::JobTimeout => exception 
+      log_debug "job started_at[#{@started_at}] started_since[#{started_since}] "
+      return oops current_signal, exception
+
+    rescue Exception => exception
+      return oops current_signal, exception, :unexpected, true
+    
+    else
       # All done !
       transition_to_finished
       @task = nil
@@ -216,11 +224,6 @@ module RestFtpDaemon
     def finished_in
       return nil if @started_at.nil? || @finished_at.nil?
       (@finished_at - @started_at).round(2)
-    end
-
-    def oops_end what, exception
-      Rollbar.error exception, "oops_end [#{what}]: #{exception.class.name}: #{exception.message}"
-      oops :ended, exception, what
     end
 
     def targethost
@@ -316,21 +319,9 @@ module RestFtpDaemon
       error = object_to_name(exception) if error.nil?
 
 
-    def queued?
-      @status == STATUS_QUEUED
     end
-    def ready?
-      @status == STATUS_READY
     end
-    def running?
-      @status == STATUS_RUNNING
-    end
-    def finished?
-      @status == STATUS_FINISHED
-    end
-    def failed?
-      @status == STATUS_FAILED
-    end
+
     def transition_to_queued
       log_info "transition to queued"
       set_status STATUS_QUEUED
