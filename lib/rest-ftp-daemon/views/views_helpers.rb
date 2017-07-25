@@ -1,13 +1,17 @@
 module RestFtpDaemon
   module ViewsHelper
 
-    def dashboard_feature name, enabled, message_on = "enabled", message_of = "disabled"
+    def dashboard_debug
+      [true, 1, "on"].include? Conf.at(:dashboard, :debug)
+    end
+
+    def dashboard_feature name, enabled, message_on = "enabled", message_off = "disabled"
       # Build classes
       class_status = enabled ? 'enabled' : 'disabled'
       classes = "btn btn-default feature-#{class_status} disabled"
 
       # Build title
-      title_status = enabled ? message_on : message_of
+      title_status = enabled ? message_on : message_off
       title = "#{name}: #{title_status}"
 
       return sprintf(
@@ -49,19 +53,26 @@ module RestFtpDaemon
 
     def dashboard_job_class job
       pick_class_from job.status, {
-        Job::STATUS_READY     => :active,
-        Job::STATUS_RUNNING   => :info,
-        Job::STATUS_FINISHED  => :success,
-        Job::STATUS_FAILED    => :warning,
+        Job::STATUS_READY     => "simple",
+        Job::STATUS_RUNNING   => "info",
+        Job::STATUS_FINISHED  => "success",
+        Job::STATUS_FAILED    => "danger",
+      }
+    end
+    def dashboard_job_icon job
+      pick_class_from job.status, {
+        Job::STATUS_READY     => "time",
+        Job::STATUS_RUNNING   => "cog",
+        Job::STATUS_FINISHED  => "ok",
+        Job::STATUS_FAILED    => "remove",
       }
     end
 
     def dashboard_task_class task
       pick_class_from task.status, {
         Task::STATUS_READY    => "simple",
-        Task::STATUS_RUNNING  => "simple blink",
-        Task::STATUS_FINISHED => :success,
-        Task::STATUS_FAILED   => :danger,
+        Task::STATUS_FINISHED => "success",
+        Task::STATUS_FAILED   => "danger",
       }
     end
 
@@ -85,6 +96,23 @@ module RestFtpDaemon
       # Init
       out = []
       out << '<span class="label-group">'
+
+
+    # def job_status_flags job, out
+    #   %w(queued ready running finished failed).each do |flag|
+    #     out << job_status_flag(job, flag)
+    #   end
+    # end
+
+    # def job_status_flag job, flag
+    #   response = job.send("#{flag}?")
+    #   label_style = response ? "success" : "simple"
+    #   return sprintf(
+    #     '<span class="label label-xs label-%s">%s</span>',
+    #     label_style,
+    #     flag
+    #     )
+    # end
 
       # For each task
       job.tasks.each do |task|
