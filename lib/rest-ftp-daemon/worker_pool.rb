@@ -92,7 +92,7 @@ module RestFtpDaemon
           # FIXME: sleep for a small amount of time to allow correct sequence of logging
           sleep 0.1
         rescue StandardError => ex
-          log_error "#{klass.name} EXCEPTION: #{ex.message}"
+          log_error "EXCEPTION: #{ex.message}"
         end
       end
     end

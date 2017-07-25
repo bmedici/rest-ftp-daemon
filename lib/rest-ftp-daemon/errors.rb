@@ -33,10 +33,6 @@ module RestFtpDaemon
     s3_no_such_bucket:        Aws::S3::Errors::NoSuchBucket,
     s3_no_such_upload:        Aws::S3::Errors::NoSuchUpload,
     s3_error:                 Aws::S3::Errors::ServiceError,
-
-    transform_missing_binary: RestFtpDaemon::TransformMissingBinary,
-    transform_video_error:    RestFtpDaemon::TransformVideoError,
-    transform_ffmpeg_error:   FFMPEG::Error,
     }
 
 end
