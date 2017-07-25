@@ -134,6 +134,7 @@ module RestFtpDaemon
 
       # Reset tasks
       @tasks.map(&:reset)
+      @task         = nil
      
       # Update job status, send first notification
       log_info "job reset", {
@@ -156,48 +157,21 @@ module RestFtpDaemon
 
       # Notify we start working and remember when we started
       transition_to_running
+      current_signal = nil
 
       # Run tasks
       @tasks.each do |task|
-        begin
-          # Prepare task
-          task.input = stash
-          task.prepare
+        # Let's say current task is @task
+        @task = task
+        current_signal = task.name
 
-          # Run task
-          task.status = Task::Base::STATUS_RUNNING
-          task.process
-
-          # FIXME Sleep for a few seconds
-          sleep JOB_DELAY_TASKS
-
-        rescue StandardError => exception
-          # Keep the exception with us
-          task.error = exception
-          task.status = Task::Base::STATUS_FAILED
-
-          # Close ftp connexion if open
-          @remote.close unless @remote.nil? || !@remote.connected?
-
-          # Propagate error to Rollbar
-          Rollbar.error exception, "Job.start: error [#{error}]: #{exception.class.name}: #{exception.message}"
-
-          # FIXME: stop tasks from here
-          return oops(:task, exception)
-
-        else
-          task.status = Task::Base::STATUS_FAILED
-          stash = task.output          
-
-        ensure
-          # Always execute do_after
-          task.finalize
-
-        end
+        # And run it
+        stash = task.run(stash)
       end
 
       # All done !
       transition_to_finished
+      @task = nil
 
       # Identify temp files to be cleant up
       cleanup

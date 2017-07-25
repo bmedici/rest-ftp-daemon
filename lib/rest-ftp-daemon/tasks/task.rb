@@ -78,10 +78,20 @@ module RestFtpDaemon::Task
       transition_to_ready
     end
 
+    def run stash
       transition_to_running
+
+      # Import input from stash
+      @input = stash
+
+      # Some debug
       log_debug "task config", @config
       log_debug "task options", @options
       log_debug "task input", @input.collect(&:name)
+
+      # Execute task
+      prepare
+      process
 
     rescue Errno::ENOTCONN, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Errno::EHOSTDOWN, Errno::ECONNREFUSED => exception
       raise TransferConnexionFailed, exception
@@ -95,6 +105,25 @@ module RestFtpDaemon::Task
     rescue Net::FTPTempError => exception
       raise TransferPermissionError, exception
 
+    rescue Exception => exception
+      # Always finalize
+      finalize
+
+      # Re-raise this exception upwards
+      transition_to_failed exception
+      raise
+
+    else
+      # Always finalize
+      finalize
+
+      # This is our result
+      transition_to_finished
+      return @output
+
+    ensure
+      # Always finalize
+      sleep JOB_DELAY_TASKS
     end
 
     def process
