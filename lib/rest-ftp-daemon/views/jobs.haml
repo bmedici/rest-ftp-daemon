@@ -1,6 +1,6 @@
 -# coding: utf-8
-- jobs_by_status = RestFtpDaemon::JobQueue.instance.jobs_by_status
 - counts_all = RestFtpDaemon::JobQueue.instance.jobs_count
+- job_count_by_status = RestFtpDaemon::JobQueue.instance.job_count_by_status
 - jobs = @paginate.subset
 
 .btn-group.btn-group-xs.filters
@@ -9,10 +9,14 @@
     ALL (#{counts_all})
 
 .btn-group.btn-group-xs.filters
-  - jobs_by_status.each do |status, count|
+  - Job::STATUSES.each do |status|
+    - count = job_count_by_status[status.to_s]
     - klass = (status.to_s == @filter) ? "btn-info" : ""
     %a.btn.btn-default{href: dashboard_url(status), class: klass}
-      #{status} (#{count})
+      - if count.nil?
+        #{status}
+      - else
+        #{status} (#{count})
 
 .btn-group.btn-group-xs.paginator
   = @paginate.browser

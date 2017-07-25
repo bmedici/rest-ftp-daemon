@@ -27,6 +27,7 @@ module RestFtpDaemon
     STATUS_RUNNING   = "running"
     STATUS_FINISHED  = "finished"
     STATUS_FAILED    = "failed"
+    STATUSES = [STATUS_QUEUED, STATUS_READY, STATUS_RUNNING, STATUS_FINISHED, STATUS_FAILED]
 
     STATUS_TASK_PROCESSING   = "video/transform"
 

@@ -130,7 +130,7 @@ module RestFtpDaemon
     end
 
     # def job_status_flags job, out
-    #   %w(queued ready running finished failed).each do |flag|
+    #   Job::STATUSES.each do |flag|
     #     out << job_status_flag(job, flag)
     #   end
     # end
