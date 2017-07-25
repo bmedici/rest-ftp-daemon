@@ -105,6 +105,8 @@ module RestFtpDaemon::Task
       # @remote.close unless @remote.nil? || !@remote.connected?
     end
 
+    def name
+      object_to_name(self)
     end
   
     def log_context

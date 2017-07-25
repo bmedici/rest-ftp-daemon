@@ -338,6 +338,8 @@ module RestFtpDaemon
       }
     end
 
+      # Error code derived from exception name
+      error = object_to_name(exception) if error.nil?
 
 
     def queued?
@@ -433,9 +435,7 @@ module RestFtpDaemon
         error = JOB_ERRORS.key(exception.class)
       end
 
-      # Default error code derived from exception name
       if error.nil?
-        error = exception_to_error(exception)
         include_backtrace = true
       end
 
