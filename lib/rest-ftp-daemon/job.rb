@@ -23,11 +23,10 @@ module RestFtpDaemon
 
     # Statuses
     STATUS_QUEUED    = "queued"
-    STATUS_FAILED    = "failed"
-
-    STATUS_PREPARING = "preparing"
-    STATUS_PREPARED  = "prepared"
+    STATUS_READY     = "ready"
+    STATUS_RUNNING   = "running"
     STATUS_FINISHED  = "finished"
+    STATUS_FAILED    = "failed"
 
     STATUS_TASK_PROCESSING   = "video/transform"
 
@@ -122,11 +121,14 @@ module RestFtpDaemon
 
       raise RestFtpDaemon::JobAttributeMissing, "target" unless params[:target]
       @target_loc = Location.new(params[:target])
+
+      # Transition
+      transition_to_queued
     end
 
     def reset
       # Update job status
-      set_status STATUS_PREPARING
+      #transition_to_preparing
 
       # Increment run cours
       @tentatives  += 1
@@ -135,22 +137,21 @@ module RestFtpDaemon
       @finished_at  = nil
 
       # Job has been prepared, reset infos
-      set_status STATUS_PREPARED
       @infos = {}
 
       # Reset tasks
       @tasks.map(&:reset)
      
       # Update job status, send first notification
-      set_status STATUS_QUEUED
-      set_error nil
-      job_notify :queued
-      log_info "job reset: notify[queued]", {
+      log_info "job reset", {
         pool: @pool,
         source: @source_loc.to_s,
         target: @target_loc.to_s,
         tentative: @tentatives,
       }
+
+      # Now we're ready
+      transition_to_ready
     end
 
     # Process job
@@ -161,9 +162,7 @@ module RestFtpDaemon
       stash = []
 
       # Notify we start working and remember when we started
-      set_status Worker::STATUS_WORKING
-      job_notify :started
-      @started_at = Time.now
+      transition_to_running
 
       # Run tasks
       @tasks.each do |task|
@@ -205,9 +204,7 @@ module RestFtpDaemon
       end
 
       # All done !
-      set_status STATUS_FINISHED
-      # log_info "job_notify: ended"
-      job_notify :ended      
+      transition_to_finished
 
       # Identify temp files to be cleant up
       cleanup
@@ -261,21 +258,8 @@ module RestFtpDaemon
       @mutex.synchronize do
         @infos || {}
         @infos[name] = debug_value_utf8(value)
+        job_touch
       end
-      job_touch
-    end
-
-    def set_status value
-      @mutex.synchronize do
-        @status = value
-      end
-      job_touch
-    end
-
-    def job_touch
-      now = Time.now
-      @updated_at = now
-      Thread.current.thread_variable_set :updated_at, now
     end
 
     def job_notify signal, payload = {}
@@ -292,18 +276,24 @@ module RestFtpDaemon
       log_error "job_notify EXCEPTION: #{ex.inspect}"
     end
 
-    def set_error value
-      @mutex.synchronize do
-        @error = value
-      end
-      job_touch
+    def job_touch
+      now = Time.now
+      @updated_at = now
+      Thread.current.thread_variable_set :updated_at, now
     end
 
     def set_status value
       @mutex.synchronize do
         @status = value
+        job_touch
       end
-      job_touch
+    end
+
+    def set_error value
+      @mutex.synchronize do
+        @error = value
+        job_touch
+      end
     end
 
     def cleanup
@@ -342,6 +332,61 @@ module RestFtpDaemon
       }
     end
 
+
+
+    def queued?
+      @status == STATUS_QUEUED
+    end
+    def ready?
+      @status == STATUS_READY
+    end
+    def running?
+      @status == STATUS_RUNNING
+    end
+    def finished?
+      @status == STATUS_FINISHED
+    end
+    def failed?
+      @status == STATUS_FAILED
+    end
+    def transition_to_queued
+      log_info "transition to queued"
+      set_status STATUS_QUEUED
+
+      job_notify :queued
+    end
+
+    def transition_to_ready
+      log_info "transition to ready"
+      set_error nil
+      set_status STATUS_READY
+    end
+
+    def transition_to_finished
+      log_info "transition to finished"
+      set_error nil
+      set_status STATUS_FINISHED
+
+      @finished_at   = Time.now
+      job_notify :ended
+    end
+
+    def transition_to_running
+      log_info "transition to running"
+      set_error nil
+      set_status STATUS_RUNNING
+
+      @started_at = Time.now
+      job_notify :start
+    end
+
+    def transition_to_failed error
+      log_info "transition to failed"
+      set_error error
+      set_status STATUS_FAILED
+    end
+
+
   protected
 
     def dump title
@@ -375,10 +420,6 @@ module RestFtpDaemon
         return value
       end
     end
-
-    # def job_status value
-    #   set_status value
-    # end  
 
     # def transfer_flag_import options, name
     #   return unless @transfer.is_a?(Hash)
