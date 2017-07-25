@@ -16,7 +16,7 @@ require 'aws-sdk-resources'
 require 'active_support/core_ext/module'
 require "fileutils"
 require 'pluginator'
-
+require 'cgi'
 
 # Constants and base exceptions
 require_relative "rest-ftp-daemon/constants"

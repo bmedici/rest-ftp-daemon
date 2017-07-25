@@ -5,13 +5,16 @@ user: rftpd
 # host: "myhost"
 allow_reload: false
 
+dashboard:
+  debug: false
+
 pools:                      # number of workers decidated to each pool value
   default: 2
   urgent: 1
 
 reporter:                   # the subsytem in charge of reporting metrics, mainly to NewRelic
   debug: false
-  timer: 10                 # report every X seconds
+  timer: 30                 # report every X seconds
 
 conchita:
   debug: false
@@ -47,9 +50,9 @@ transfer:
     - conn_unreachable
     - conn_failed
     - conn_openssl_error
-  retry_max: 5              # maximum number of retries before giving up on that job
+  retry_max: 10             # maximum number of retries before giving up on that job
   retry_for: 1800           # maximum time window to retry failed jobs
-  retry_after: 10           # delay to wait before tries
+  retry_after: 30           # delay to wait before tries
 
 newrelic:
   debug: false
