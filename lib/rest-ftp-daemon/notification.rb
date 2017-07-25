@@ -45,6 +45,9 @@ module RestFtpDaemon
         return
       end
 
+      # Import job id if present
+      @jid = @params[:id]
+
       # Build body and extract job ID if provided
       flags = {
         id:       @params[:id].to_s,
@@ -52,17 +55,21 @@ module RestFtpDaemon
         error:    @params[:error],
         host:     Conf.host.to_s,
         }
-      flags[:status] = @params[:status] if @params[:status].is_a? Enumerable
-      flags[:message] = @params[:message].to_s unless @params[:message].nil?
-      @jid = @params[:id]
+      if @params[:status].is_a?(Hash) && @params[:status].any?
+        flags[:status] = @params[:status] 
+      end
+
+      unless @params[:message].nil?
+        flags[:message] = @params[:message].to_s
+      end
 
       # Spawn a dedicated thread
       Thread.new do
-        send flags
+        post_notification flags
       end # end Thread
     end
 
-    def send flags
+    def post_notification flags
       # Prepare query
       uri = URI @url
       # uri = URI(rule[:relay])
@@ -70,6 +77,7 @@ module RestFtpDaemon
 
       # Prepare request
       request = RestClient::Request.new url: uri.to_s,
+        timeout: NOTIFY_TIMEOUT,
         method: :post,
         payload: JSON.pretty_generate(flags),
         headers: {
@@ -78,8 +86,8 @@ module RestFtpDaemon
           user_agent: Conf.generate_user_agent,
           }
 
-      # Execure request
-      log_info "posting #{flags.to_json}"
+      # Execute request
+      log_debug "posting #{flags.to_json}"
       # response = http.post uri.path, data, headers
       response = request.execute
 
@@ -102,8 +110,17 @@ module RestFtpDaemon
       rescue Errno::ECONNREFUSED => e
         log_error "Errno::ECONNREFUSED: #{e.message}"
 
+      rescue Errno::ETIMEDOUT => e
+        log_error "Errno::ETIMEDOUT: #{e.message}"
+
+      rescue Errno::ECONNRESET => e
+        log_error "Errno::ECONNRESET: #{e.message}"
+
+      rescue RestClient::ResourceNotFound => e
+        log_error "ResourceNotFound: #{e.message}"
+
       rescue StandardError => e
-        log_error "UNHANDLED EXCEPTION: #{e.message}", e.backtrace
+        log_error "UNHANDLED EXCEPTION [#{e.class.to_s}] #{e.message}", e.backtrace
     end
 
     def log_context

@@ -71,7 +71,7 @@ MOUNT_CONFIG             = "/config"
 # Notifications
 NOTIFY_PREFIX           = "rftpd"
 NOTIFY_IDENTIFIER_LEN   = 4
-
+NOTIFY_TIMEOUT			= 30
 
 
 # Constants: logger
