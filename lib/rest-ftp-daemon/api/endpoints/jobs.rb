@@ -150,7 +150,7 @@ module RestFtpDaemon
       post "/" do
         # Add up the new job on the queue
         job = RestFtpDaemon::JobQueue.instance.create_job(params)
-
+       
         # Increment a counter
         RestFtpDaemon::Counters.instance.increment :jobs, :received
 

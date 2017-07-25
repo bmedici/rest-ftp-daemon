@@ -18,6 +18,9 @@ module RestFtpDaemon
         expose field
       end
 
+      # Transfer params
+      expose :transfer
+
       # Status and error
       expose :status, format_with: :utf8_filter
       expose :error, format_with: :utf8_filter
@@ -26,13 +29,10 @@ module RestFtpDaemon
       # Time stamps
       expose :created_at
       expose :created_since       #, safe: true
-
       expose :started_at
       expose :started_since
-
       expose :finished_at
       expose :finished_in
-
       expose :updated_at
 
       # Infos
@@ -41,6 +41,7 @@ module RestFtpDaemon
       # Source and target     #, :unless => Proc.new {|g| g.source_loc.nil?}
       expose :source_loc, using: Entities::Location#, as: :source
       expose :target_loc, using: Entities::Location#, as: :target
+
     end
   end
 end
