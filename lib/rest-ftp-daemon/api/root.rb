@@ -63,8 +63,12 @@ module RestFtpDaemon
       rescue_from RestFtpDaemon::LocationParseError do |exception|
         exception_error :location_parse_error, 422, exception, "Bad request: location parse error (#{exception.message})"
       end
+      rescue_from RestFtpDaemon::JobUnknownTransform do |exception|
+        exception_error :location_parse_error, 422, exception, "Bad request: unknow transform (#{exception.message})"
+      end
       rescue_from :all do |exception|
-        exception_error :api_error, 500, exception
+        # puts exception.backtrace.join("\n")
+        exception_error :api_error, 500, exception, exception.message
       end
 
 
