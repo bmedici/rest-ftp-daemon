@@ -25,14 +25,11 @@ module RestFtpDaemon
         end
 
         def exception_error error, http_code, exception, message = nil
-          # Extract message lines
-          lines = exception.message.lines
+          # Default to first line of exception backtrace
+          message ||= exception.backtrace.first if exception.backtrace.is_a?(Enumerable)
 
           # Log error to file
-          log_error "[#{error}] [#{http_code}] #{lines.shift} ", lines
-
-          # Default to exeption message if empty
-          message ||= exception.message
+          log_error "[#{error}] [#{http_code}] #{exception.message}", message
 
           # Send it to rollbar
           Rollbar.error exception, "api: #{exception.class.name}: #{exception.message}"
@@ -68,7 +65,7 @@ module RestFtpDaemon
       end
       rescue_from :all do |exception|
         # puts exception.backtrace.join("\n")
-        exception_error :api_error, 500, exception, exception.message
+        exception_error :api_error, 500, exception
       end
 
 
