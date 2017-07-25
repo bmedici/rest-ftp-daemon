@@ -40,7 +40,6 @@ require_relative "rest-ftp-daemon/tasks/task_export"
 require_relative "rest-ftp-daemon/tasks/task_transform"
 
 require_relative "rest-ftp-daemon/remotes/remote_ftp"
-require_relative "rest-ftp-daemon/remotes/remote_sftp"
 require_relative "rest-ftp-daemon/remotes/remote_s3"
 
 # Workers
