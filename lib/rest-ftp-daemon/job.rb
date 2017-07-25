@@ -359,6 +359,10 @@ module RestFtpDaemon
         message: "#{exception.class} | #{exception.message}"
     end
 
+    def failed?
+      @status == STATUS_FAILED
+    end
+
     def running_and_transferring?
       @status == STATUS_RUNNING && @task && [Task::Import::STATUS_DOWNLOADING, Task::Export::STATUS_UPLOADING].include?(@task.status)
     end
