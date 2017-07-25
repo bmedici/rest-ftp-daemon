@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email                      = "rftpd-project@bmconseil.com"
   spec.description                = "A pretty simple transfer daemon, controlled with a RESTful API"
   spec.summary                    = "RESTful transfer jobs daemon"
-  spec.homepage                   = "http://github.com/bmedici/rest-ftp-daemon"
+  spec.homepage                   = "http://github.com/bmedici/#{spec.name}"
   spec.licenses                   = ["MIT"]
   spec.date                       = Time.now.strftime("%Y-%m-%d")
 
