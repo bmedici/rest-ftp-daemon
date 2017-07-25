@@ -1,8 +1,7 @@
-# Instrumented WorkerBase
-
 module RestFtpDaemon
   class Worker < BmcDaemonLib::Worker
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
+    include CommonHelpers
 
     # NewRelic instrumentation
     add_transaction_tracer :worker_init,       category: :task

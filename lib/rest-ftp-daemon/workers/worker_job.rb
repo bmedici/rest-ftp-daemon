@@ -34,21 +34,13 @@ module RestFtpDaemon
       worker_status Worker::STATUS_WORKING
 
       # Work on this job
-      job_process job
-
-      # Handle the retry if needed
-      job_result job
-
-      # Detach worker information
-      working_on_job(job, false)
-    end
-
-    def job_process job
-      # Processs this job protected by a timeout
-      log_info "job_process: id[#{job.id}] timeout[#{@config[:timeout]}]"
+      log_info "worker_process: id[#{job.id}] timeout[#{@config[:timeout]}]"
       Timeout.timeout(@config[:timeout], RestFtpDaemon::JobTimeout) do
         job.start
       end
+
+      # Handle the retry if needed
+      job_result job
 
       # Increment total processed jobs count
       RestFtpDaemon::Counters.instance.increment :jobs, :processed
@@ -63,6 +55,8 @@ module RestFtpDaemon
     rescue RestFtpDaemon::AssertionFailed, RestFtpDaemon::JobAttributeMissing, StandardError => ex
       log_error "job_process error: CRASHED: ex[#{ex.class}] #{ex.message}", ex.backtrace
       worker_status Worker::STATUS_CRASHED
+      # Detach worker information
+      working_on_job(job, false)
 
       # Inform the job
       job.oops_end(:crashed, ex) unless job.nil?
@@ -95,6 +89,16 @@ module RestFtpDaemon
 
         # Now, requeue this job
         RestFtpDaemon::JobQueue.instance.requeue job
+      end
+    end
+
+    def working_on_job(job, working_on_it = false)
+      if working_on_it
+        job.wid = Thread.current.thread_variable_get :wid
+        Thread.current.thread_variable_set :jid, job.id
+      else
+        job.wid = nil
+        Thread.current.thread_variable_set :jid, nil
       end
     end
 
