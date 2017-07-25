@@ -105,7 +105,7 @@ module RestFtpDaemon
       @jobs.length
     end
 
-    def jobs_by_status
+    def job_count_by_status
       statuses = {}
       @jobs.group_by { |job| job.status }.map { |status, jobs| statuses[status] = jobs.size }
       statuses
@@ -253,7 +253,7 @@ module RestFtpDaemon
     add_transaction_tracer :pop,                  category: :task
     add_transaction_tracer :expire,               category: :task
     add_transaction_tracer :rate_by,              category: :task
-    add_transaction_tracer :jobs_by_status,       category: :task
+    add_transaction_tracer :job_count_by_status,       category: :task
 
   end
 end

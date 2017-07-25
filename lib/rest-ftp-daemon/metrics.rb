@@ -8,15 +8,15 @@ module RestFtpDaemon
       # Build final value
       return  {
         system: {
-          uptime:           (Time.now - Conf.app_started).round(1),
-          memory:           mem.bytes.to_i,
-          threads:          Thread.list.count,
+          uptime:             (Time.now - Conf.app_started).round(1),
+          memory:             mem.bytes.to_i,
+          threads:            Thread.list.count,
           },
-        jobs_by_status:     RestFtpDaemon::JobQueue.instance.jobs_by_status,
-        rate_by_pool:       RestFtpDaemon::JobQueue.instance.rate_by(:pool),
-        rate_by_targethost: RestFtpDaemon::JobQueue.instance.rate_by(:targethost),
-        queued_by_pool:     RestFtpDaemon::JobQueue.instance.queued_by_pool,
-        workers_by_status:  self.workers_count_by_status,
+        job_count_by_status:  RestFtpDaemon::JobQueue.instance.job_count_by_status,
+        rate_by_pool:         RestFtpDaemon::JobQueue.instance.rate_by(:pool),
+        rate_by_targethost:   RestFtpDaemon::JobQueue.instance.rate_by(:targethost),
+        queued_by_pool:       RestFtpDaemon::JobQueue.instance.queued_by_pool,
+        workers_by_status:    self.workers_count_by_status,
         }
     end
 
