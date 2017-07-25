@@ -43,8 +43,8 @@ JOB_METHOD_FILE          = "file"
 
 
 # Plugin types
-PLUGIN_TRANSFORM         = :transform
-PLUGIN_REMOTE            = :remote
+PLUGIN_TRANSFORM         = "transform"
+PLUGIN_REMOTE            = "remote"
 
 
 # API mountpoints

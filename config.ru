@@ -35,14 +35,6 @@ case Conf.app_env
   when "production"
 end
 
-# Load plugins
-require 'pluginator'
-plugins = Pluginator.find('rest-ftp-daemon')
-Conf.log :plugins, "types: #{plugins.types.inspect}"
-Conf.log :plugins, "#{PLUGIN_REMOTE}: #{plugins[PLUGIN_REMOTE].inspect}"
-Conf.log :plugins, "#{PLUGIN_TRANSFORM}: #{plugins[PLUGIN_TRANSFORM].inspect}"
-
 # Launch the API
 Conf.log :rackup, "start API::Root"
 run RestFtpDaemon::API::Root
-
