@@ -32,7 +32,6 @@ module RestFtpDaemon::Task
 
       # Some init
       @transfer_sent = 0
-      set_info INFO_SOURCE_PROCESSED, 0
 
       # Prepare remote object
       remote_class = case target_loc.uri
@@ -66,9 +65,6 @@ module RestFtpDaemon::Task
       # Reset counters
       @last_data = 0
       @last_time = Time.now
-
-      # Handle each source file matched, and start a transfer
-      @source_processed = 0
 
       # Do the transfer, for each file
       @input.each do |input|
@@ -150,11 +146,9 @@ module RestFtpDaemon::Task
         @remote.move destination, target
       end
 
-      # Add it to transferred target names
-      set_info INFO_TARGET_FILES, @output.collect(&:name)
-
       # Update counters
-      set_info INFO_SOURCE_PROCESSED, @source_processed += 1
+      @processed += 1
+      set_info INFO_TARGET_FILES, @output.collect(&:name)
       set_info INFO_CURRENT, nil
     end    
 
