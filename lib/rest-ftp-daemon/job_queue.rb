@@ -85,7 +85,7 @@ module RestFtpDaemon
         result[group] ||= nil
 
         # If job is not uploading, next !
-        next unless job.status == Task::Export::STATUS_UPLOADING
+        next unless job.status == Task::TaskExport::STATUS_UPLOADING
 
         # Extract current rate, next if not available
         rate = job.get_info INFO_TRANFER_BITRATE

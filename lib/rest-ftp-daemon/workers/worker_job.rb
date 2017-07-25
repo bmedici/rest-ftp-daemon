@@ -1,7 +1,7 @@
 # Worker used to process Jobs
 
-  class WorkerJob < Worker
 module RestFtpDaemon::Worker
+  class WorkerJob < WorkerBase
 
   protected
 
@@ -31,7 +31,7 @@ module RestFtpDaemon::Worker
 
       # Announce we are working on this job
       working_on_job(job, true)
-      worker_status Worker::STATUS_WORKING
+      worker_status WorkerBase::STATUS_WORKING
 
       # Work on this job
       log_info "worker_process: id[#{job.id}] timeout[#{@config[:timeout]}]"
@@ -57,7 +57,7 @@ module RestFtpDaemon::Worker
       if !job.error
         # Processing successful
         log_info "job_result: successful"
-        worker_status Worker::STATUS_FINISHED
+        worker_status WorkerBase::STATUS_FINISHED
 
       elsif error_not_eligible(job)
         log_error "job_result: not retrying [#{job.error}] retry_on not eligible"

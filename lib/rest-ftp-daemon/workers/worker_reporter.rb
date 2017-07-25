@@ -1,7 +1,7 @@
 # Worker used to report metrics to various services
 
-  class WorkerReporter < Worker
 module RestFtpDaemon::Worker
+  class WorkerReporter < WorkerBase
 
   protected
 
@@ -20,7 +20,7 @@ module RestFtpDaemon::Worker
 
     def worker_process
       # Announce we are working
-      worker_status Worker::STATUS_WORKING
+      worker_status WorkerBase::STATUS_WORKING
 
       # Report metrics
       do_metrics

@@ -1,7 +1,7 @@
 module RestFtpDaemon::Task
   class ImportError        < TaskError; end
 
-  class Import < Base
+  class TaskImport < TaskBase
 
     # Task attributes
     def task_icon
@@ -13,12 +13,12 @@ module RestFtpDaemon::Task
     STATUS_DOWNLOADING   = "import-download"
 
     def prepare
-      # raise Task::ImportError, "this is a fake task error from RestFtpDaemon::Task::Import"
+      # raise Task::TaskImportError, "this is a fake task error from RestFtpDaemon::Task::TaskImport"
     end
 
     # Task operations
     def process
-      set_status Task::Import::STATUS_LISTING
+      set_status Task::TaskImport::STATUS_LISTING
 
       # Check input conformity
       unless source_loc.is_a?(Location) && source_loc.uri_is?(URI::FILE)

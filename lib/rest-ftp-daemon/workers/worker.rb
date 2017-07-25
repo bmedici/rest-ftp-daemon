@@ -1,5 +1,5 @@
-  class Worker < BmcDaemonLib::Worker
 module RestFtpDaemon::Worker
+  class WorkerBase < BmcDaemonLib::WorkerBase
     include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
     include CommonHelpers
 

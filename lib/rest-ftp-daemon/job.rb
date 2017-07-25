@@ -1,5 +1,5 @@
 # FIXME: prepare files list ar prepare_common
-# FIXME: scope classes in submodules like Worker::Transfer, Job::Video
+# FIXME: scope classes in submodules like WorkerBase::Transfer, Job::Video
 # FIXME: restore HostKeyMismatch and other NEt::SFTP exceptions
 # FIXME: move progress from Job/infos/transfer to Job/progress
 
@@ -364,7 +364,7 @@ module RestFtpDaemon
     end
 
     def running_and_transferring?
-      @status == STATUS_RUNNING && @task && [Task::Import::STATUS_DOWNLOADING, Task::Export::STATUS_UPLOADING].include?(@task.status)
+      @status == STATUS_RUNNING && @task && [Task::TaskImport::STATUS_DOWNLOADING, Task::TaskExport::STATUS_UPLOADING].include?(@task.status)
     end
 
     def transition_to_queued
@@ -449,7 +449,7 @@ module RestFtpDaemon
       transfer_config = Conf.at(:transfer)
 
       # Register IMPORT
-      register_task Task::Import, transfer_config, @transfer
+      register_task Task::TaskImport, transfer_config, @transfer
       
       # Register TRANSFORMS if we have some
       @transforms.each do |options|
@@ -457,7 +457,7 @@ module RestFtpDaemon
       end if @transforms.is_a?(Array)
 
       # Register EXPORT
-      register_task Task::Export, transfer_config, @transfer
+      register_task Task::TaskExport, transfer_config, @transfer
     end
 
     def register_transform options
@@ -471,7 +471,7 @@ module RestFtpDaemon
         first_class(PLUGIN_TRANSFORM, processor)
 
       if plugin.nil?
-        avail = Transform::Base.available
+        avail = Transform::TaskTransform.available
         raise RestFtpDaemon::JobUnknownTransform,
           "available plugins: #{avail.join(', ')}"
       end

@@ -70,21 +70,21 @@ module RestFtpDaemon
 
     def dashboard_task_class task
       pick_class_from task.status, {
-        Task::STATUS_READY    => "simple",
-        Task::STATUS_FINISHED => "success",
-        Task::STATUS_FAILED   => "danger",
+        Task::TaskBase::STATUS_READY    => "simple",
+        Task::TaskBase::STATUS_FINISHED => "success",
+        Task::TaskBase::STATUS_FAILED   => "danger",
       }
     end
 
     def dashboard_worker_class status
       pick_class_from status, {
-        Worker::STATUS_READY    => nil,
-        Worker::STATUS_SLEEPING => nil,
-        Worker::STATUS_WORKING  => :info,
-        Worker::STATUS_FINISHED => :success,
-        Worker::STATUS_CRASHED  => :warning,
-        Worker::STATUS_TIMEOUT  => :warning,
-        Worker::STATUS_DOWN     => :danger,
+        WorkerBase::STATUS_READY    => nil,
+        WorkerBase::STATUS_SLEEPING => nil,
+        WorkerBase::STATUS_WORKING  => :info,
+        WorkerBase::STATUS_FINISHED => :success,
+        WorkerBase::STATUS_CRASHED  => :warning,
+        WorkerBase::STATUS_TIMEOUT  => :warning,
+        WorkerBase::STATUS_DOWN     => :danger,
       }
     end
 

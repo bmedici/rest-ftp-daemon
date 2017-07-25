@@ -26,7 +26,7 @@ module RestFtpDaemon::Task
   STATUS_FAILED    = "failed"
 
 
-  class Base
+  class TaskBase
     include BmcDaemonLib::LoggerHelper
     include CommonHelpers
     include TaskHelpers

@@ -5,7 +5,7 @@ module RestFtpDaemon::Transform
   class TransformMissingOutput    < TransformError; end
   class TransformMissingOptions   < TransformError; end
 
-  class Base < RestFtpDaemon::Task::Base
+  class TaskTransform < RestFtpDaemon::Task::TaskBase
 
     def self.available
       Pluginator.find(Conf.app_name, extends: %i[plugins_map]).

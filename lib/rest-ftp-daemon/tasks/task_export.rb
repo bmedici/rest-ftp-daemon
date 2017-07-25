@@ -1,7 +1,7 @@
 module RestFtpDaemon::Task
   class ExportError        < TaskError; end
 
-  class Export < Base
+  class TaskExport < TaskBase
 
     # Task attributes
     def task_icon

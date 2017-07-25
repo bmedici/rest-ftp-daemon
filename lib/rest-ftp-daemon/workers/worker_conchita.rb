@@ -1,7 +1,7 @@
 # Worker used to clean up the queue deleting expired jobs
 
-  class WorkerConchita < Worker
 module RestFtpDaemon::Worker
+  class WorkerConchita < WorkerBase
 
   protected
 
@@ -17,7 +17,7 @@ module RestFtpDaemon::Worker
 
     def worker_process
       # Announce we are working
-      worker_status Worker::STATUS_WORKING
+      worker_status WorkerBase::STATUS_WORKING
 
       # Cleanup queues according to configured max-age
       RestFtpDaemon::JobQueue.instance.expire Job::STATUS_FINISHED,  maxage(Job::STATUS_FINISHED),  @config[:debug]

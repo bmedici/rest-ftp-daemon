@@ -16,7 +16,7 @@
   %tbody
     - variables.each do |wid, vars|
       - status = vars[:status]
-      - status = Worker::STATUS_DOWN unless RestFtpDaemon::WorkerPool.instance.worker_alive?(wid)
+      - status = WorkerBase::STATUS_DOWN unless RestFtpDaemon::WorkerPool.instance.worker_alive?(wid)
 
       %tr{class: dashboard_worker_class(status)}
         %td= wid
