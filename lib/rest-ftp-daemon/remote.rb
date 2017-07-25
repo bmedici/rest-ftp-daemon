@@ -13,11 +13,26 @@ module RestFtpDaemon::Remote
       # Delegate set_info info to Job
       delegate :set_info, to: :job
 
-      def self.for location
-        Pluginator.find(Conf.app_name, extends: %i[plugins_map]).
-          plugins_map(PLUGIN_REMOTE).
-          keys.
-          map(&:downcase)
+      # Plugin detection class methods
+      def self.handles
+        []
+      end
+      def self.handles? location
+        self.handles.include?(location.uri.class)
+      end
+      # def self.handler_for location, *params
+      #   Pluginator.find(Conf.app_name, extends: %i[first_ask]).
+      #     first_ask(PLUGIN_REMOTE, "handles?", location)
+      # end     
+
+      # Refine Class.new to instantiate the right subclass
+      def self.build location, *params
+        plugin = Pluginator.
+          find(Conf.app_name, extends: %i[first_ask]).
+          first_ask(PLUGIN_REMOTE, "handles?", location)
+       
+        return nil if plugin.nil?
+        return plugin.new(location, *params)
       end     
 
       def initialize target, job, config
@@ -31,7 +46,7 @@ module RestFtpDaemon::Remote
       end
 
       def connect
-        log_debug "remote connect: #{@target.to_connection_string}"
+        log_debug "connect: #{@target.to_connection_string}"
       end
 
       def size_if_exists target

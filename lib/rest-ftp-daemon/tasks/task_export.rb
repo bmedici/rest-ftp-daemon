@@ -33,20 +33,12 @@ module RestFtpDaemon::Task
       # Some init
       @transfer_sent = 0
 
-      # Prepare remote object
-      remote_class = case target_loc.uri
-      when URI::FTP               then Remote::RemoteFTP
-      when URI::FTPES, URI::FTPS  then Remote::RemoteFTP
-      when URI::SFTP              then Remote::RemoteSFTP
-      when URI::S3                then Remote::RemoteS3
-      when URI::FILE              then Remote::RemoteFile
-      else
-        # log_error "prepare: method unknown: #{target_loc.uri.class.name}"
+      # Detect plugin for this location
+      @remote = Remote::RemoteBase.build(target_loc, @job, @config)
+      unless @remote.is_a? Remote::RemoteBase
         raise Task::TargetUnsupported, "unknown scheme [#{target_loc.scheme}] [#{target_loc.uri.class.name}]"
       end
-
-      # Create remote
-      @remote = remote_class.new target_loc, @job, @config
+      log_info "handling [#{target_loc.scheme}] with #{@remote.class}"
     end
 
     def process
