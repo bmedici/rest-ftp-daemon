@@ -1,4 +1,6 @@
 module RestFtpDaemon::Task
+  class ImportError        < TaskError; end
+
   class Import < Base
 
     # Task attributes
@@ -16,7 +18,7 @@ module RestFtpDaemon::Task
 
       # Check input conformity
       unless source_loc.is_a?(Location) && source_loc.uri_is?(URI::FILE)
-        raise RestFtpDaemon::SourceUnsupported, source_loc.scheme
+        raise Task::TargetUnsupported, "unknown scheme [#{source_loc.scheme}] [#{source_loc.uri.class.name}]"
       end
 
       # Scan local source files from disk
@@ -25,7 +27,7 @@ module RestFtpDaemon::Task
       set_info INFO_SOURCE_FILES, files.collect(&:name)
 
       # Check we matched at least one file
-      raise RestFtpDaemon::SourceNotFound if files.empty?
+      raise Task::SourceNotFound if files.empty?
 
       # Add file to output
       files.each do |file|

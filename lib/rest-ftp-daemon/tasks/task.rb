@@ -1,13 +1,23 @@
-module RestFtpDaemon
-  class SourceUnsupported         < BaseException; end
-  class SourceNotFound            < BaseException; end
-  class SourceShouldBeUnique      < BaseException; end
+module RestFtpDaemon::Task
+  class TaskError                 < StandardError; end
 
-  class TargetFileExists          < BaseException; end
-  class TargetDirectoryError      < BaseException; end
-  class TargetPermissionError     < BaseException; end
-  class TargetUnsupported         < BaseException; end
-  class TargetNameRequired        < BaseException; end
+  class SourceUnsupported         < TaskError; end
+  class SourceNotFound            < TaskError; end
+  class SourceShouldBeUnique      < TaskError; end
+
+  class TargetFileExists          < TaskError; end
+  class TargetDirectoryError      < TaskError; end
+  class TargetPermissionError     < TaskError; end
+  class TargetUnsupported         < TaskError; end
+  class TargetNameRequired        < TaskError; end
+
+  class TransferPermissionError   < TaskError; end
+  class TransferConnexionFailed    < TaskError; end
+  class TransferConnexionInterrupted    < TaskError; end
+  class TransferFtpError    < TaskError; end
+
+
+  class AssertionFailed           < TaskError; end
 
   # Statuses
   STATUS_READY     = "ready"
@@ -15,10 +25,7 @@ module RestFtpDaemon
   STATUS_FINISHED  = "finished"
   STATUS_FAILED    = "failed"
 
-  class TaskFailed                < BaseException; end
-end
 
-module RestFtpDaemon::Task
   class Base
     include BmcDaemonLib::LoggerHelper
     include CommonHelpers
@@ -30,16 +37,16 @@ module RestFtpDaemon::Task
     # Class options
     attr_reader   :job
     attr_reader   :name
-    attr_accessor :status
-    attr_accessor :error
     attr_accessor :input
     attr_reader   :output
 
     # attr_reader   :config
     attr_reader   :options
+    attr_accessor :status
+    attr_accessor :error
 
     # Method delegation to parent Job
-    delegate :job_notify, :set_status, :set_info, :job_touch,
+    delegate :job_notify, :set_info, :job_touch,
       :source_loc, :target_loc, :tempfile_for,
       to: :job
 
@@ -67,6 +74,19 @@ module RestFtpDaemon::Task
       log_debug "task config", @config
       log_debug "task options", @options
       log_debug "task input", @input.collect(&:name)
+
+    rescue Errno::ENOTCONN, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Errno::EHOSTDOWN, Errno::ECONNREFUSED => exception
+      raise TransferConnexionFailed, exception
+
+    rescue EOFError, Errno::EPIPE, Errno::ECONNRESET => exception
+      raise TransferConnexionInterrupted, exception
+
+    rescue Net::FTPConnectionError, Net::FTPPermError, Net::FTPReplyError, Net::FTPTempError, Net::FTPProtoError, Net::FTPError => exception
+      raise TransferFtpError, exception
+
+    rescue Net::FTPTempError => exception
+      raise TransferPermissionError, exception
+
     end
 
     def process
@@ -79,9 +99,11 @@ module RestFtpDaemon::Task
       @status       = nil
       @error        = nil
     end
-
+  
     def log_context
       @job.log_context
+    end
+
     end
 
   protected
@@ -144,12 +166,39 @@ module RestFtpDaemon::Task
     end
 
     def set_status value
-      @job.set_status value
+      @status = value
     end
 
     def add_output element
       @output << element
     end
+
+    def transition_to_ready
+      log_info "transition to ready"
+      @error = nil
+      set_status STATUS_READY
+    end
+    def transition_to_running
+      log_info "transition to running"
+      set_status STATUS_RUNNING
+      @started_at = Time.now
+    end
+
+    def transition_to_finished
+      log_info "transition to finished"
+      @error = nil
+      set_status STATUS_FINISHED
+
+      @finished_at = Time.now
+      set_status STATUS_FINISHED
+    end
+
+    def transition_to_failed error
+      log_info "transition to failed"
+      @error = error
+      set_status STATUS_FAILED
+    end
+
 
   end
 end

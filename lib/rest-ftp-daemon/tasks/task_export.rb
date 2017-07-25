@@ -1,4 +1,6 @@
 module RestFtpDaemon::Task
+  class ExportError        < TaskError; end
+
   class Export < Base
 
     # Task attributes
@@ -7,11 +9,11 @@ module RestFtpDaemon::Task
     end
 
     # Task statuses
-    STATUS_CONNECTING    = "export-connect"
-    STATUS_CHDIR         = "export-chdir"
-    STATUS_UPLOADING     = "export-upload"
-    STATUS_RENAMING      = "export-rename"
-    STATUS_DISCONNECTING = "export-disconnect"
+    STATUS_CONNECTING    = "connect"
+    STATUS_CHDIR         = "chdir"
+    STATUS_UPLOADING     = "upload"
+    STATUS_RENAMING      = "rename"
+    STATUS_DISCONNECTING = "disconnect"
 
     # Task operations
     def prepare      
@@ -25,7 +27,7 @@ module RestFtpDaemon::Task
 
       # Guess target file name, and fail if present while we matched multiple sources
       if target_loc.name && @input.count > 1
-        raise RestFtpDaemon::TargetDirectoryError, "prepare: target should be a directory when severeal files matched"
+        raise Task::TargetDirectoryError, "prepare: target should be a directory when severeal files matched"
       end
 
       # Some init
@@ -40,8 +42,8 @@ module RestFtpDaemon::Task
       when URI::S3                then Remote::RemoteS3
       when URI::FILE              then Remote::RemoteFile
       else
-        log_error "prepare: method unknown: #{target_loc.uri.class.name}"
-        raise RestFtpDaemon::TargetUnsupported, "unknown scheme [#{target_loc.scheme}]"
+        # log_error "prepare: method unknown: #{target_loc.uri.class.name}"
+        raise Task::TargetUnsupported, "unknown scheme [#{target_loc.scheme}] [#{target_loc.uri.class.name}]"
       end
 
       # Create remote
@@ -92,8 +94,8 @@ module RestFtpDaemon::Task
 
     def remote_upload source, tempfile = true, overwrite = false
       # Method assertions
-      raise RestFtpDaemon::AssertionFailed, "remote_upload/remote" if @remote.nil?
-      raise RestFtpDaemon::AssertionFailed, "remote_upload/source" if source.nil?
+      raise Task::AssertionFailed, "remote_upload/remote" if @remote.nil?
+      raise Task::AssertionFailed, "remote_upload/source" if source.nil?
 
       # Build target
       target = target_loc.named_like(source)
@@ -122,7 +124,7 @@ module RestFtpDaemon::Task
         @remote.remote_try_delete target
       elsif (size = @remote.size_if_exists(target))  # won't be triggered when NIL or 0 is returned
         log_debug "remote_upload: file exists (#{format_bytes size, 'B'})"
-        raise RestFtpDaemon::TargetFileExists
+        raise Task::TargetFileExists
       end
 
       # Start transfer

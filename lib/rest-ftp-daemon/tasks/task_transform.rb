@@ -1,9 +1,9 @@
 module RestFtpDaemon::Transform
-  class ErrorMissingBinary    < BaseException; end
-  class ErrorMissingOutput    < BaseException; end
-  class ErrorMissingOptions   < BaseException; end
-  class ErrorVideoNotFound    < BaseException; end
-  class ErrorVideoError       < BaseException; end
+  class TransformError            < RestFtpDaemon::Task::TaskError; end
+
+  class TransformMissingBinary    < TransformError; end
+  class TransformMissingOutput    < TransformError; end
+  class TransformMissingOptions   < TransformError; end
 
   class Base < RestFtpDaemon::Task::Base
 
@@ -28,12 +28,12 @@ module RestFtpDaemon::Transform
       super
 
       # Ensure options are present
-      raise RestFtpDaemon::Transform::ErrorMissingOptions unless @options.is_a? Hash
+      raise Transform::TransformMissingOptions unless @options.is_a? Hash
 
       # Check we have inputs
       # log_debug "input: #{@input.size} / #{@input.class}"
-      raise RestFtpDaemon::SourceNotFound unless @input.is_a?Array
-      raise RestFtpDaemon::SourceNotFound if @input.empty?
+      raise Task::SourceNotFound unless @input.is_a?Array
+      raise Task::SourceNotFound if @input.empty?
     end
 
   protected
