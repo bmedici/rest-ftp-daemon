@@ -35,12 +35,6 @@ module RestFtpDaemon
     # Other constats
     DEFAULT_POOL     = "default"
 
-    # PROCESSORS
-    PROCESSOR_COPY      = "copy"
-    PROCESSOR_FFMPEG    = "ffmpeg"
-    PROCESSOR_MP4SPLIT  = "mp4split"
-    PROCESSORS       = [PROCESSOR_COPY, PROCESSOR_FFMPEG, PROCESSOR_MP4SPLIT]
-
     # Fields to be imported from params
     IMPORTED = %w(priority pool label priority source target overwrite notify mkdir tempfile transfer transforms)
 
@@ -484,7 +478,7 @@ module RestFtpDaemon
     end
 
     def register_task klass, config, options
-      log_debug "register_task #{klass.to_s}"
+      log_info "register_task #{klass.to_s}"
       @tasks << klass.new(self, config, options)
     end
 
@@ -502,34 +496,34 @@ module RestFtpDaemon
 
       # Register EXPORT
       register_task Task::Export, transfer_config, @transfer
-
-      # Announce registered tasks
-     # log_debug "registered following tasks", @tasks.map(&:class)
     end
 
     def register_transform options
       # Check we have a correct config
       return unless options.is_a?(Hash)
 
-      # Raise if this processor does not exist
+      # Find plugin matching this processor name
       processor = options['processor']
-      unless PROCESSORS.include?(processor)
-        message = "unsupported processor: #{processor}"
-        log_error "initialize: #{message}"
-        raise RestFtpDaemon::JobUnknownTransform, message
+      plugin = Pluginator.
+        find(Conf.app_name, extends: %i[first_class]).
+        first_class(PLUGIN_TRANSFORM, processor)
+
+      if plugin.nil?
+        avail = Transform::Base.available
+        raise RestFtpDaemon::JobUnknownTransform,
+          "available plugins: #{avail.join(', ')}"
       end
+      log_debug "transform #{plugin} "
 
-      # Overwrite with config values
-      config = Conf.at(:transforms, processor)
-      options.delete('processor')
-      #transform_options.merge(task_config) if transform_config.is_a? Hash
+      # Extract config for this processor
+      myconfig = Conf.at(:transforms, processor)
 
-      # Build class name
-      # Task class
-      klass = Object.const_get("Transform::#{processor.to_s.capitalize}")
+      # Build options, cleaning processor
+      myoptions = options.clone
+      myoptions.delete('processor')
 
       # Ok to register this task
-      register_task klass, config, options
+      register_task plugin, myconfig, myoptions
     end
 
     def load_transform name

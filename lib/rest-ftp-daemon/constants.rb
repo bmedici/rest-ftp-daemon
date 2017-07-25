@@ -50,6 +50,10 @@ JOB_METHOD_SFTP          = "sftp"
 JOB_METHOD_FILE          = "file"
 
 
+# Plugin types
+PLUGIN_TRANSFORM         = :transform
+PLUGIN_REMOTE            = :remote
+
 
 # API mountpoints
 MOUNT_SWAGGER_JSON        = "/swagger.json"

@@ -62,8 +62,8 @@ module RestFtpDaemon
           }
 
         # _types: plugins.types,
-        # plugin_remotes: plugins[:remote],
-        # plugin_transforms: plugins[:transform],
+        # plugin_remotes: plugins[PLUGIN_REMOTE],
+        # plugin_transforms: plugins[PLUGIN_TRANSFORM],
       end
 
       desc "Show status: metrics", tags: ['status']

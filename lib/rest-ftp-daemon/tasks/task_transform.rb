@@ -9,13 +9,13 @@ module RestFtpDaemon::Transform
 
     def self.available
       Pluginator.find(Conf.app_name, extends: %i[plugins_map]).
-        plugins_map(:transform).
+        plugins_map(PLUGIN_TRANSFORM).
         keys.
         map(&:downcase)
     end
     # def self.find(name)
     #   plugins = Pluginator.find(Conf.app_name, extends: %i[first_class])
-    #   plugins.first_class(:transform, name)
+    #   plugins.first_class(PLUGIN_TRANSFORM, name)
     # end
 
     # Task attributes
