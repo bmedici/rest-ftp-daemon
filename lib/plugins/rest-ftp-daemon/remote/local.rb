@@ -8,7 +8,7 @@ end
 
 # Handle FTP and FTPES transfers for Remote class
 module RestFtpDaemon::Remote
-  class RemoteFile < Base
+  class Local < Base
 
       def size_if_exists target
         log_debug "size_if_exists [#{target.name}]"
