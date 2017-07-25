@@ -33,13 +33,13 @@
           %th label
           %th source
           %th target
-          %th.error tasks
-          %th{colspan: 2, "min-width" => 150} progress
-          %th.text-right size
-          %th.text-right{title: "updated every #{JOB_FTP_CHUNKMB} MB block"} rate
-          %th{title: "Worker ID"} W
-          %th{title: "Priority"} P
-          %th{title: "Tentatives count"} T
+          %th{colspan: 2} job status
+          %th.col_details  details
+          %th.col-rate{title: "updated every #{JOB_FTP_CHUNKMB} MB block"} rate
+          %th.col-size  size
+          %th.col-flag{title: "Worker ID"} W
+          %th.col-flag{title: "Priority"} P
+          %th.col-flag{title: "Tentatives count"} T
 
         - @jobs_queued.each do |pool, jobs|
           - unless jobs.empty?

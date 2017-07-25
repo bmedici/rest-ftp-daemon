@@ -5,12 +5,8 @@
   - transfer_total    = job.get_info(INFO_TRANSFER_TOTAL)
   - transfer_bitrate  = job.get_info(INFO_TRANFER_BITRATE)
   - work_sent         = job.get_info(INFO_TRANFER_SENT)
-
-  - source_count      = job.get_info(INFO_SOURCE_COUNT) || 0
-  - source_processed  = job.get_info(INFO_SOURCE_PROCESSED) || 0
   - current           = job.get_info(INFO_CURRENT)
 
-  - job_working       = [Task::Import::STATUS_DOWNLOADING, Task::Export::STATUS_UPLOADING, Job::STATUS_TASK_PROCESSING].include? job.status
 
   %tr{class: dashboard_job_class(job)}
 
@@ -30,52 +26,37 @@
 
     %td= location_label(job.target_loc)
 
-    %td
-      = job_task_status(job)
+    %td= job_status(job)
+
+    %td= tasks_status(job)
 
     %td
-      %span.push-status
-        = job.status
 
-      - if (job.status != Job::STATUS_FINISHED) && (source_processed < source_count)
-        = " (#{source_processed}/#{source_count})"
+      - if job.failed?
+        .error{title: error_message}= job.error
 
-    %td
-      - if job_working
-        .progress
-          .progress-bar{style:"width: #{work_progress}%;"}
-            = "#{work_progress}%"
-        %span.push-filename
-          %b= current unless current.nil?
-        - unless work_progress.nil?
-          %span.push-progress
-            = "#{work_progress}%"
+      - elsif job.running_and_transferring? || dashboard_debug
+        .col-details-percent= "#{work_progress}%"
+        .progress.col-details-progress
+          .progress-bar.progress-bar-striped.active{style:"width: #{work_progress}%;"}
+            = current.to_s
 
-      - else
-        .error{title: error_message}
-          = text_or_empty(job.error)
+    %td.nobr.col-size{title: "started since: #{job.started_since} s"}
+      = format_bytes(transfer_bitrate, "bps") if transfer_bitrate
 
-      -# %br
-      -# .progress
-      -#   .progress-bar{style:"width: 20%;"}
-      -#     = "progress %"
-
-    %td.nobr.text-right
+    %td.nobr.col-size
       = format_bytes(transfer_total, "B")
 
-    %td.nobr.text-right{title: "started since: #{job.started_since} s"}
-      - if transfer_bitrate
-        %span.push-bitrate
-          = format_bytes(transfer_bitrate, "bps")
-
-    %td
+    %td.col-flag
       - unless job.wid.nil?
         .label.label-warning.flag.worker-label= job.wid
 
-    %td
+    %td.col-flag
       - unless job.priority.nil?
         .label.label-default.flag.worker-label= job.priority
 
-    %td
+    %td.col-flag
       .label.flag.worker-label{class: job_tentatives_style(job.tentatives)}= job.tentatives
+
+
 

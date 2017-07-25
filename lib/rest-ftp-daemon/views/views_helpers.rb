@@ -92,11 +92,42 @@ module RestFtpDaemon
       return classes[key]
     end
 
-    def job_task_status job
+    def job_status job
       # Init
       out = []
-      out << '<span class="label-group">'
 
+      # Job status icon
+      out << job_status_icon(job)
+
+      # Return all that stuff
+      return out.join()
+    end
+
+    def tasks_status job
+      # Init
+      out = []
+
+      # For each task
+      out << '<span class="label-group">'
+      job_status_tasks job, out
+      out << '</span>'
+
+      # Return all that stuff
+      return out.join()
+    end
+
+    def job_status_icon job
+      # Choose icon and class
+      icon = dashboard_job_icon(job)
+      klass = dashboard_job_class(job)
+      return sprintf(
+          '<span class="task-status label label-xs label-%s" title="%s"><i class="glyphicon glyphicon-%s"></i> %s</span>',
+          klass,
+          job.status,
+          icon,
+          job.status
+          )
+    end
 
     # def job_status_flags job, out
     #   %w(queued ready running finished failed).each do |flag|
@@ -114,24 +145,31 @@ module RestFtpDaemon
     #     )
     # end
 
+    def job_status_tasks job, out
       # For each task
+      out << '<span class="label-group">'
       job.tasks.each do |task|
-        label_style = dashboard_task_class(task)
+        task_style = dashboard_task_class(task)
+        task_style ||= "info"
 
+        # Build icon title
+        title = []
+        title << task.name
+        title << task.error.to_s if task.error
 
         # '<span class="transfer-type label label-xs label-%s" title="%s">', 
         out << sprintf(
           '<span class="task-status label label-xs label-%s" title="%s">',
-          label_style,
-          task.error.to_s
+          task_style,
+          CGI.escapeHTML(title.join("\n"))
           )
-        out << sprintf('<i class="glyphicon glyphicon-%s"></i>', task.task_icon)
+        out << sprintf(
+          '<i class="glyphicon glyphicon-%s"></i> %s',
+          task.task_icon,
+          task.complete_status_if_working
+          )
         out << '</span>'
       end
-
-      out << '</span>'
-
-      return out.join()
     end
 
     def datetime_short datetime

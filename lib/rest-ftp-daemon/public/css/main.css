@@ -64,7 +64,13 @@ h2 {
 
 .progress {
   margin-bottom: 0;
+  /*background-color: transparent;*/
   /*min-width: 60px;*/
+  }
+.progress-bar {
+  padding: 0 4px;
+  text-align: left;
+  /*color: #888;*/
   }
 
 a.class {
@@ -98,6 +104,33 @@ a.class {
 
 table.table th {
   text-transform: uppercase;
+  }
+
+.col-details-percent {
+  display: inline-block;
+  width: 40px;
+  text-align: right;
+  float: left;
+  padding: 2px;
+  }
+
+.col-details-progress {
+  min-width: 100px;
+  }
+
+.col-rate {
+  width: 60px;
+  text-align: right;
+  }
+
+.col-size {
+  width: 60px;
+  text-align: right;
+  }
+
+.col-flag {
+  width: 25px;
+  text-align: center;
   }
 
 
