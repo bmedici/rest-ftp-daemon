@@ -1,7 +1,7 @@
 require "rest-ftp-daemon"
 
 module RestFtpDaemon::Transform
-  class Copy < Base
+  class TransformCopy < TaskTransform
 
     def process
       transform_each_input
