@@ -36,7 +36,7 @@
         .error{title: error_message}= job.error
 
       - elsif job.running_and_transferring? || dashboard_debug
-        .col-details-percent= "#{work_progress}%"
+        .col-details-percent= "#{work_progress}%" if work_progress
         .progress.col-details-progress
           .progress-bar.progress-bar-striped.active{style:"width: #{work_progress}%;"}
             = current.to_s

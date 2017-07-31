@@ -118,6 +118,7 @@ module RestFtpDaemon::Task
       # Start transfer
       transfer_started_at = Time.now
       @last_notify_at = transfer_started_at
+      progress_update destination.name, 0
 
       # Start the transfer, update job status after each block transfer
       set_status STATUS_UPLOADING
