@@ -140,8 +140,17 @@ module RestFtpDaemon::Remote
         end
 
       # conn_timed_out_1:         Timeout::Error,
-      # conn_timed_out_2:         Net::ReadTimeout,
+      # conn_timed_out_2:         ,
       # conn_timed_out_3:         Errno::ETIMEDOUT,
+      rescue Errno::ENOTCONN, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Errno::EHOSTDOWN, Errno::ECONNREFUSED, Net::FTPConnectionError => exception
+        raise TransferConnexionError, exception
+
+      rescue Net::FTPPermError, Net::FTPReplyError, Net::FTPTempError, Net::FTPProtoError, Net::FTPError, Net::FTPTempError => exception
+        raise TransferFtpError, exception
+
+      rescue EOFError, Errno::EPIPE, Errno::ECONNRESET, Net::ReadTimeout => exception
+        raise TransferInterrupted, exception
+
       rescue Exception => exception
         raise RemoteUploadError, "#{exception.class}: #{exception.message}"
       end

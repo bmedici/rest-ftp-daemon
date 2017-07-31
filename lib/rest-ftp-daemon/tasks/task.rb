@@ -11,14 +11,14 @@ module RestFtpDaemon::Task
   class TargetUnsupported         < TaskError; end
   class TargetNameRequired        < TaskError; end
 
-  class TransferPermissionError   < TaskError; end
-  class TransferConnexionFailed   < TaskError; end
-  class TransferConnexionInterrupted    < TaskError; end
   class TransferFtpError          < TaskError; end
-
+  class TransferInterrupted       < TaskError; end
+  class TransferConnexionError   < TaskError; end
+  class TransferPermissionError   < TaskError; end
+  
+  class TransferPushError          < TaskError; end
 
   class AssertionFailed           < TaskError; end
-
 
   class TaskBase
     include BmcDaemonLib::LoggerHelper
@@ -96,17 +96,13 @@ module RestFtpDaemon::Task
       prepare
       process
 
-    rescue Errno::ENOTCONN, Errno::EHOSTUNREACH, Errno::ENETUNREACH, Errno::EHOSTDOWN, Errno::ECONNREFUSED => exception
-      raise TransferConnexionFailed, exception
+    rescue Errno::ENOENT => exception
+      transition_to_failed exception
+      raise Transform::TransformFileNotFound, exception
 
-    rescue EOFError, Errno::EPIPE, Errno::ECONNRESET => exception
-      raise TransferConnexionInterrupted, exception
-
-    rescue Net::FTPConnectionError, Net::FTPPermError, Net::FTPReplyError, Net::FTPTempError, Net::FTPProtoError, Net::FTPError => exception
-      raise TransferFtpError, exception
-
-    rescue Net::FTPTempError => exception
-      raise TransferPermissionError, exception
+    rescue TransferConnexionError, TransferInterrupted, TransferError => exception
+      transition_to_failed exception
+      raise
 
     rescue Exception => exception
       # Always finalize
