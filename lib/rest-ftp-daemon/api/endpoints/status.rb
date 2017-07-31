@@ -14,7 +14,8 @@ module RestFtpDaemon
 
         # Identify plugins
         def get_plugins
-          plugins = Pluginator.find(Conf.app_name)
+          plugins = Pluginator.
+            find(Conf.app_name)
 
           pluginfo = {}
           plugins.types.each do |type, contents|
@@ -57,7 +58,6 @@ module RestFtpDaemon
           metrics: Metrics.sample,
           counters: get_counters,
           plugins: get_plugins,
-          transforms: Transform::Base.available,
           workers: RestFtpDaemon::WorkerPool.instance.worker_variables,
           }
 

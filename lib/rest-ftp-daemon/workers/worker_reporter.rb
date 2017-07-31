@@ -30,15 +30,15 @@ module RestFtpDaemon::Worker
 
     def do_metrics
       # Get common metrics and dump them to logs
-      log_debug "begin metrics sample"
+      # log_info "metrics sampling"
       metrics = Metrics.sample
 
       # Skip following if no valid metrics collected
       unless metrics.is_a? Hash
-        log_error "unable to collect metrics"
+        log_error "metrics: unable to collect metrics"
         return
       end
-      log_info "collected metrics (newrelic: #{@feature_newrelic.inspect})", metrics
+      log_debug "metrics collected", metrics
 
       # Transpose metrics to NewRelic metrics
       report_newrelic(metrics) if @feature_newrelic
@@ -56,7 +56,7 @@ module RestFtpDaemon::Worker
 
       # Don't dump metrics unless we're debugging
       newrelic_app_name = Conf.at(:newrelic, :app_name)
-      msg_newrelic = "reported metrics to NewRelic [#{newrelic_app_name}]"
+      msg_newrelic = "metrics reported to NewRelic [#{newrelic_app_name}]"
       if @config[:debug]
         log_debug msg_newrelic, metrics_newrelic
       else

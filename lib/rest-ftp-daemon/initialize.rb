@@ -10,10 +10,11 @@ rescue StandardError => exception
 end
 
 # Detect plugins
-plugins = Pluginator.find(Conf.app_name)
+plugins = Pluginator.
+	find(Conf.app_name)
 Conf.log :initialize, "detected remotes: #{plugins[PLUGIN_REMOTE].inspect}"
 Conf.log :initialize, "detected transforms: #{plugins[PLUGIN_TRANSFORM].inspect}"
 
 # Initialize workers
-Conf.log :initialize, "prepare workers"
+Conf.log :initialize, "start workers"
 RestFtpDaemon::WorkerPool.instance.start_em_all
