@@ -69,7 +69,7 @@ module RestFtpDaemon
       log_info "progress #{stack_string} \t#{name}"
 
       # Prepare and send notification
-      job_notify self.name, status: {
+      job_notify self.task_name, status: {
         progress: percent0,
         transfer_sent: @transfer_sent,
         transfer_total: @transfer_total,

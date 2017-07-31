@@ -12,18 +12,12 @@ module RestFtpDaemon::Task
   class TargetNameRequired        < TaskError; end
 
   class TransferPermissionError   < TaskError; end
-  class TransferConnexionFailed    < TaskError; end
+  class TransferConnexionFailed   < TaskError; end
   class TransferConnexionInterrupted    < TaskError; end
-  class TransferFtpError    < TaskError; end
+  class TransferFtpError          < TaskError; end
 
 
   class AssertionFailed           < TaskError; end
-
-  # Statuses
-  STATUS_READY     = "ready"
-  STATUS_RUNNING   = "running"
-  STATUS_FINISHED  = "finished"
-  STATUS_FAILED    = "failed"
 
 
   class TaskBase
@@ -31,8 +25,17 @@ module RestFtpDaemon::Task
     include CommonHelpers
     include TaskHelpers
 
-    # Task attributes
-    def task_icon; end
+    # Task statuses
+    STATUS_READY     = "ready"
+    STATUS_RUNNING   = "running"
+    STATUS_FINISHED  = "finished"
+    STATUS_FAILED    = "failed"
+
+    # Task info
+    def task_icon
+    end
+    def task_name
+    end
 
     # Class options
     attr_reader   :job
@@ -85,8 +88,8 @@ module RestFtpDaemon::Task
       @input = stash
 
       # Some debug
-      log_debug "task config", @config
-      log_debug "task options", @options
+      log_debug "task config #{@config.to_hash.inspect}"
+      log_debug "task options #{@options.to_hash.inspect}"
       log_debug "task input", @input.collect(&:name)
 
       # Execute task
@@ -108,6 +111,7 @@ module RestFtpDaemon::Task
     rescue Exception => exception
       # Always finalize
       finalize
+      # log_info "unknwon exception caught: #{exception.inspect}"
 
       # Re-raise this exception upwards
       transition_to_failed exception
@@ -134,10 +138,6 @@ module RestFtpDaemon::Task
       # @remote.close unless @remote.nil? || !@remote.connected?
     end
 
-    def name
-      object_to_name(self)
-    end
-  
     def log_context
       @job.log_context
     end
@@ -164,18 +164,18 @@ module RestFtpDaemon::Task
     end
 
     def transition_to_ready
-      log_info "transition to ready"
+      log_info "task [ready]"
       @error = nil
       set_status STATUS_READY
     end
     def transition_to_running
-      log_info "transition to running"
+      log_info "task [running]"
       set_status STATUS_RUNNING
       @started_at = Time.now
     end
 
     def transition_to_finished
-      log_info "transition to finished"
+      log_info "task [finished]"
       @error = nil
       set_status STATUS_FINISHED
 
@@ -184,7 +184,7 @@ module RestFtpDaemon::Task
     end
 
     def transition_to_failed error
-      log_info "transition to failed"
+      log_info "task [failed]"
       @error = error
       set_status STATUS_FAILED
     end

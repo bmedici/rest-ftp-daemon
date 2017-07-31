@@ -3,17 +3,20 @@ module RestFtpDaemon::Task
 
   class TaskExport < TaskBase
 
-    # Task attributes
-    def task_icon
-      "arrow-up"
-    end
-
     # Task statuses
     STATUS_CONNECTING    = "connect"
     STATUS_CHDIR         = "chdir"
     STATUS_UPLOADING     = "upload"
     STATUS_RENAMING      = "rename"
     STATUS_DISCONNECTING = "disconnect"
+
+    # Task info
+    def task_icon
+      "arrow-up"
+    end
+    def task_name
+      "export"
+    end
 
     # Task operations
     def prepare      

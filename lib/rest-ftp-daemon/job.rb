@@ -163,7 +163,7 @@ module RestFtpDaemon
       @tasks.each do |task|
         # Let's say current task is @task
         @task = task
-        current_signal = task.name
+        current_signal = task.task_name
 
         # And run it
         stash = task.run(stash)
@@ -187,19 +187,6 @@ module RestFtpDaemon
       # Update counters
       RestFtpDaemon::Counters.instance.increment :jobs, :finished
     end
-
-    # def task_status
-    #   elements = []
-
-    #   unless @task.nil?
-    #     elements << @task.name
-    #     elements << @task.status
-    #   else
-    #     elements << "no_task"
-    #   end
-
-    #   return elements.join(' > ')
-    # end
 
     def source_uri
       @source_loc.uri if @source_loc
@@ -353,7 +340,7 @@ module RestFtpDaemon
 
       # Prepare notification if signal given
       return unless task
-      job_notify task,
+      job_notify task.task_name,
         error: error,
         status: status,
         message: "#{exception.class} | #{exception.message}"
@@ -368,29 +355,29 @@ module RestFtpDaemon
     end
 
     def transition_to_queued
-      log_info "transition to queued"
+      log_info "job transition to queued"
       set_status STATUS_QUEUED
 
       job_notify :queued
     end
 
     def transition_to_ready
-      log_info "transition to ready"
+      log_info "job transition to ready"
       set_error nil
       set_status STATUS_READY
     end
 
     def transition_to_running
-      log_info "transition to running"
+      log_info "job transition to running"
       set_error nil
       set_status STATUS_RUNNING
 
       @started_at = Time.now
-      job_notify :start
+      job_notify :started
     end
 
     def transition_to_finished
-      log_info "transition to finished"
+      log_info "job transition to finished"
       set_error nil
       set_status STATUS_FINISHED
 
@@ -399,7 +386,7 @@ module RestFtpDaemon
     end
 
     def transition_to_failed error
-      log_info "transition to failed"
+      log_info "job transition to failed"
       set_error error
       set_status STATUS_FAILED
     end

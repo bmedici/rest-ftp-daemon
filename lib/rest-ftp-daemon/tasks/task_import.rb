@@ -3,14 +3,17 @@ module RestFtpDaemon::Task
 
   class TaskImport < TaskBase
 
-    # Task attributes
+    # Task statuses
+    STATUS_LISTING       = "import-list"
+    STATUS_DOWNLOADING   = "import-download"   
+
+    # Task info
     def task_icon
       "arrow-down"
     end
-
-    # Task statuses
-    STATUS_LISTING       = "import-list"
-    STATUS_DOWNLOADING   = "import-download"
+    def task_name
+      "import"
+    end
 
     def prepare
       # raise Task::TaskImportError, "this is a fake task error from RestFtpDaemon::Task::TaskImport"

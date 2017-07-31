@@ -6,21 +6,20 @@ module RestFtpDaemon::Transform
   class TransformMissingOptions   < TransformError; end
 
   class TaskTransform < RestFtpDaemon::Task::TaskBase
-
-    def self.available
-      Pluginator.find(Conf.app_name, extends: %i[plugins_map]).
-        plugins_map(PLUGIN_TRANSFORM).
-        keys.
-        map(&:downcase)
-    end
-    # def self.find(name)
-    #   plugins = Pluginator.find(Conf.app_name, extends: %i[first_class])
-    #   plugins.first_class(PLUGIN_TRANSFORM, name)
-    # end
-
-    # Task attributes
+    # Task info
     def task_icon
       "cog"
+    end
+    def task_name
+      "transform"
+    end
+
+    # Available plugins detection
+    def self.available
+      Pluginator.
+        find(Conf.app_name, extends: %i[plugins_map]).
+        plugins_map(PLUGIN_TRANSFORM).
+        keys
     end
  
     # Task operations

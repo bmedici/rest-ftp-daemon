@@ -38,10 +38,10 @@ module RestFtpDaemon
     def process
       # Check context
       if @url.nil?
-        log_error "skipping (missing url)", params
+        log_error "skipping (missing url)"
         return
       elsif @params[:signal].nil?
-        log_error "skipping (missing signal)", params
+        log_error "skipping (missing signal)"
         return
       end
 

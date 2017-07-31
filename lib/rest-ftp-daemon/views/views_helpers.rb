@@ -154,7 +154,7 @@ module RestFtpDaemon
 
         # Build icon title
         title = []
-        title << task.name
+        title << task.task_name
         title << task.error.to_s if task.error
 
         # '<span class="transfer-type label label-xs label-%s" title="%s">', 
