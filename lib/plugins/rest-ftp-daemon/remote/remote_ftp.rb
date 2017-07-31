@@ -14,7 +14,7 @@ end
 
 # Handle FTP and FTPES transfers for Remote class
 module RestFtpDaemon::Remote
-  class RemoteFTP < RemoteBase
+  class RemoteFtp < RemoteBase
 
       # Defaults
       FTP_CHUNK_MB         = 2*MB
