@@ -138,6 +138,12 @@ module RestFtpDaemon::Remote
           # Update job status after this block transfer
           yield data.bytesize
         end
+
+      # conn_timed_out_1:         Timeout::Error,
+      # conn_timed_out_2:         Net::ReadTimeout,
+      # conn_timed_out_3:         Errno::ETIMEDOUT,
+      rescue Exception => exception
+        raise RemoteUploadError, "#{exception.class}: #{exception.message}"
       end
 
       def move source, target

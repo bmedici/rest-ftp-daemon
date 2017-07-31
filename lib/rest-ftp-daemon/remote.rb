@@ -1,6 +1,7 @@
 module RestFtpDaemon::Remote
   class RemoteError                 < StandardError; end
-  class RemoteConnectError         < RemoteError; end
+  class RemoteConnectError          < RemoteError; end
+  class RemoteUploadError             < RemoteError; end
 
   class RemoteBase
       include BmcDaemonLib::LoggerHelper
