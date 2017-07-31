@@ -29,7 +29,7 @@ module RestFtpDaemon
       log_pipe :jobs
 
       # Handle the notification
-      log_info "initialized [#{@url}]"
+      # log_info "initialized [#{@url}]"
       process
     end
 
@@ -87,7 +87,7 @@ module RestFtpDaemon
           }
 
       # Execute request
-      log_debug "posting #{flags.to_json}"
+      log_info "notify #{flags.to_json} to #{uri.to_s}"
       # response = http.post uri.path, data, headers
       response = request.execute
 
@@ -101,26 +101,13 @@ module RestFtpDaemon
       end
 
       # Handle exceptions
-      rescue Net::OpenTimeout => e
-        log_error "Net::OpenTimeout: #{e.message}"
-
-      rescue SocketError => e
-        log_error "SocketError: #{e.message}"
-
-      rescue Errno::ECONNREFUSED => e
-        log_error "Errno::ECONNREFUSED: #{e.message}"
-
-      rescue Errno::ETIMEDOUT => e
-        log_error "Errno::ETIMEDOUT: #{e.message}"
-
-      rescue Errno::ECONNRESET => e
-        log_error "Errno::ECONNRESET: #{e.message}"
-
-      rescue RestClient::ResourceNotFound => e
-        log_error "ResourceNotFound: #{e.message}"
+      rescue Net::OpenTimeout, SocketError,
+        Errno::ECONNREFUSED, Errno::ETIMEDOUT, Errno::ECONNRESET,
+        RestClient::ResourceNotFound => e
+        log_error "FAILED [#{e.class}] #{e.message}"
 
       rescue StandardError => e
-        log_error "UNHANDLED EXCEPTION [#{e.class.to_s}] #{e.message}", e.backtrace
+        log_error "UNHANDLED ERROR [#{e.class.to_s}] #{e.message}", e.backtrace
     end
 
     def log_context
