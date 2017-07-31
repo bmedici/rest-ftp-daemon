@@ -27,10 +27,9 @@ require_relative "shared/patch_file"
 require_relative "rest-ftp-daemon/common_helpers"
 require_relative "rest-ftp-daemon/views/views_helpers"
 
-# Job, location, and remote
+# Job and location
 require_relative "rest-ftp-daemon/job"
 require_relative "rest-ftp-daemon/location"
-require_relative "rest-ftp-daemon/remote"
 
 # Tasks
 require_relative "rest-ftp-daemon/tasks/task_helpers"
@@ -38,6 +37,11 @@ require_relative "rest-ftp-daemon/tasks/task"
 require_relative "rest-ftp-daemon/tasks/task_import"
 require_relative "rest-ftp-daemon/tasks/task_export"
 require_relative "rest-ftp-daemon/tasks/task_transform"
+
+# Transform and remote bases
+require_relative "rest-ftp-daemon/transform"
+require_relative "rest-ftp-daemon/remote"
+
 
 # Workers
 require_relative "rest-ftp-daemon/workers/worker"
@@ -66,7 +70,6 @@ require_relative "rest-ftp-daemon/job_queue"
 require_relative "rest-ftp-daemon/counters"
 require_relative "rest-ftp-daemon/notification"
 require_relative "rest-ftp-daemon/uri"
-require_relative "rest-ftp-daemon/errors"
 
 
 # Init
