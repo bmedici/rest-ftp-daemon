@@ -1,7 +1,7 @@
 module RestFtpDaemon
   module TaskHelpers
 
-    def progress_update transferred, name = ""
+    def progress_update name, transferred
       # Update counters
       @transfer_sent += transferred
       set_info INFO_TRANFER_SENT, @transfer_sent
@@ -11,31 +11,37 @@ module RestFtpDaemon
       set_info INFO_TRANFER_PROGRESS, percent0
 
       # Update bitrates
-      if transferred
-        @current_bitrate = progress_running_bitrate @transfer_sent
-        set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
-      end
+      bitrate = progress_running_bitrate(@transfer_sent)
+      set_info INFO_TRANFER_BITRATE, bitrate.round(0)
 
       # Notify if requested
-      progress_notify percent0, name
+      progress_notify name, percent0, bitrate
 
       # Touch my worker status
       job_touch
     end
 
-    def debug_vars var
-      items = instance_variable_get("@#{var}")
+    def progress_finished name, transfer_lasted
+      # Update counters
+      set_info INFO_TRANFER_SENT, @transfer_total
 
-      if items.is_a? Array
-        log_debug "#{var}  \t #{items.object_id}", items.map(&:path)
-      else
-        log_error "#{var}  \t NOT AN ARRAY" 
-      end
+      # Update job info
+      set_info INFO_TRANFER_PROGRESS, 100
+
+      # Update bitrates
+      bitrate = progress_bitrate_delta(@transfer_total, transfer_lasted)
+      set_info INFO_TRANFER_BITRATE, bitrate.round(0)
+
+      # Notify if requested
+      progress_notify name, 100, bitrate, true
+
+      # Touch my worker status
+      job_touch
     end
 
   private
 
-    def progress_notify percent0, name, force_notify = false
+    def progress_notify name, percent0, bitrate, force_notify = false
       # No delay provided ?
       return if @config[:notify_after].nil?
 
@@ -47,10 +53,10 @@ module RestFtpDaemon
       return unless force_notify || (how_long_ago > @config[:notify_after])
 
       # # Update bitrates
-      if @current_bitrate.nil?
+      if bitrate.nil?
         current_bitrate_rounded = nil
       else
-        current_bitrate_rounded = @current_bitrate.round(0)
+        current_bitrate_rounded = bitrate.round(0)
       end
 
       # Log progress
@@ -94,6 +100,17 @@ module RestFtpDaemon
 
       # Return bitrate
       progress_bitrate_delta delta_data, delta_time
+    end
+
+
+    def debug_vars var
+      items = instance_variable_get("@#{var}")
+
+      if items.is_a? Array
+        log_debug "#{var}  \t #{items.object_id}", items.map(&:path)
+      else
+        log_error "#{var}  \t NOT AN ARRAY" 
+      end
     end
 
   end

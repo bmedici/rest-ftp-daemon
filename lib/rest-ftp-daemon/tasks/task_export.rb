@@ -121,16 +121,16 @@ module RestFtpDaemon::Task
 
       # Start the transfer, update job status after each block transfer
       set_status STATUS_UPLOADING
-      @remote.push source, destination do |transferred, name|
-        progress_update transferred, name
+      @remote.upload source, destination do |transferred|
+        progress_update destination.name, transferred
       end
 
-      # Explicitely send a 100% notification
-      progress_notify 100, destination.name, true
+      # Transfer finished
+      transfer_finished_at = Time.now
+      transfer_lasted = transfer_finished_at - transfer_started_at
 
-      # Compute final bitrate
-      global_transfer_bitrate = progress_bitrate_delta @transfer_total, (Time.now - transfer_started_at)
-      set_info INFO_TRANFER_BITRATE, global_transfer_bitrate.round(0)
+      # Explicitely send a 100% notification
+      progress_finished destination.name, transfer_lasted
 
       # Rename file to target name
       if tempfile
