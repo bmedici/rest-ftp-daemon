@@ -26,7 +26,7 @@ module RestFtpDaemon
 
         def exception_error error, http_code, exception, message = nil
           # Default to first line of exception backtrace
-          message ||= exception.backtrace.first if exception.backtrace.is_a?(Enumerable)
+          message ||= exception.backtrace[0..2] if exception.backtrace.is_a?(Enumerable)
 
           # Log error to file
           log_error "[#{error}] [#{http_code}] #{exception.message}", message
