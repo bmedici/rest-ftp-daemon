@@ -56,7 +56,7 @@ module RestFtpDaemon::Remote
 
       end
 
-      def push source, target, &callback
+      def upload source, target, &callback
         # Do the transfer
         copy source, target
       end

@@ -124,7 +124,7 @@ module RestFtpDaemon::Remote
 
       end
 
-      def push source, target, &callback
+      def upload source, target, &callback
         # Push init
         raise RestFtpDaemon::AssertionFailed, "push/ftp" if @ftp.nil?
 
@@ -136,7 +136,7 @@ module RestFtpDaemon::Remote
         log_debug "putbinaryfile abs[#{source.path_abs}] [#{target.name}]"
         @ftp.putbinaryfile source.path_abs, target.name, FTP_CHUNK_MB do |data|
           # Update job status after this block transfer
-          yield data.bytesize, target.name
+          yield data.bytesize
         end
       end
 
