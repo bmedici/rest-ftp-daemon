@@ -2,6 +2,14 @@ module RestFtpDaemon
   module TaskHelpers
 
     def progress_update name, transferred
+      if @transfer_total.nil?
+        log_error "progress_update: transfer_total is null" 
+        return
+      elsif @transfer_total.to_i.zero?
+        log_error "progress_update: transfer_total is zero" 
+        return
+      end
+
       # Update counters
       @transfer_sent += transferred
       set_info INFO_TRANFER_SENT, @transfer_sent
