@@ -44,6 +44,10 @@ module RestFtpDaemon::Task
 
   protected
 
+    def init_config
+      @config = Conf.at(:transfer)
+    end
+
     def process_unit unit
     end
 

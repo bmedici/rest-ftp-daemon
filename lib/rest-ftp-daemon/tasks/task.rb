@@ -52,19 +52,23 @@ module RestFtpDaemon::Task
       to: :job
 
 
-    def initialize job, config, options
+    def initialize job, options, plugin = {}
       # Init context
       @job          = job
-      # @name         = name
-      @config       = config
       @options      = options
-
-      # Ensure hashes
-      @config       = {} unless @config.is_a? Hash
-      @options      = {} unless @options.is_a? Hash
+      @plugin       = plugin
 
       # Enable logging
       log_pipe      :jobs
+     
+      # Import options
+      @options      = {} unless @options.is_a? Hash
+      log_debug "task options #{@options.to_hash.inspect}"
+
+      # Init config
+      init_config
+      @config ||= {empty: true}
+      log_debug "task config #{@config.to_hash.inspect}"
 
       reset
     end

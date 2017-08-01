@@ -425,18 +425,14 @@ module RestFtpDaemon
         return value
       end
     end
-
-    def register_task klass, config, options
+    def register_task klass, options, processor = nil
       log_info "register_task #{klass.to_s}"
-      @tasks << klass.new(self, config, options)
+      @tasks << klass.new(self, options, processor)
     end
 
     def register_tasks
-      # Read transfer config
-      transfer_config = Conf.at(:transfer)
-
       # Register IMPORT
-      register_task Task::TaskImport, transfer_config, @transfer
+      register_task Task::TaskImport, @transfer
       
       # Register TRANSFORMS if we have some
       @transforms.each do |options|
@@ -444,35 +440,32 @@ module RestFtpDaemon
       end if @transforms.is_a?(Array)
 
       # Register EXPORT
-      register_task Task::TaskExport, transfer_config, @transfer
+      register_task Task::TaskExport, @transfer
     end
 
     def register_transform options
       # Check we have a correct config
       return unless options.is_a?(Hash)
 
+      # Build plugin name parts
+      plugin = options['processor'].to_s.split('/')
+      plugin.unshift "transform"
+
       # Find plugin matching this processor name
-      processor = options['processor']
-      plugin = Pluginator.
-        find(Conf.app_name, extends: %i[first_class]).
-        first_class(PLUGIN_TRANSFORM, processor)
+      klass = Transform::TransformBase.for_plugin plugin
 
-      if plugin.nil?
-        avail = Transform::TaskTransform.available
-        raise RestFtpDaemon::JobUnknownTransform,
-          "available plugins: #{avail.join(', ')}"
+      if klass.nil?
+        avail = Transform::TransformBase.list_available_transforms()
+        raise RestFtpDaemon::JobUnknownTransform, "for processor [#{processor}] in #{avail.join(', ')}"
       end
-      log_debug "transform #{plugin} "
-
-      # Extract config for this processor
-      myconfig = Conf.at(:transforms, processor)
+      log_debug "found transform [#{plugin.join('/')}] #{klass.to_s}"
 
       # Build options, cleaning processor
       myoptions = options.clone
       myoptions.delete('processor')
 
       # Ok to register this task
-      register_task plugin, myconfig, myoptions
+      register_task klass, myoptions, plugin
     end
 
     def load_transform name

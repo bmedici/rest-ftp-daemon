@@ -31,6 +31,12 @@ module RestFtpDaemon::Transform
 
   protected
 
+    def init_config
+      return unless @plugin.is_a? Array
+      _transform, processor, _subprocessor = @plugin
+      @config = Conf.at(:transform, processor)
+    end
+
     def transform_each_input stash
       stash.each do |name, loc|
         # Generate temp target from current location

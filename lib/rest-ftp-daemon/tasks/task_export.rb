@@ -85,6 +85,10 @@ module RestFtpDaemon::Task
   private
 
     def remote_upload source, tempfile = true, overwrite = false
+    def init_config
+      @config = Conf.at(:transfer)
+    end
+
       # Method assertions
       raise Task::AssertionFailed, "remote_upload/remote" if @remote.nil?
       raise Task::AssertionFailed, "remote_upload/source" if source.nil?
