@@ -1,21 +1,12 @@
-module RestFtpDaemon::Transform
+module RestFtpDaemon::Task
+  class TaskTransform < TaskBase
 
-
-  class TaskTransform < RestFtpDaemon::Task::TaskBase
     # Task info
     def task_icon
       "cog"
     end
     def task_name
       "transform"
-    end
-
-    # Available plugins detection
-    def self.available
-      Pluginator.
-        find(Conf.app_name, extends: %i[plugins_map]).
-        plugins_map(PLUGIN_TRANSFORM).
-        keys
     end
  
     # Task operations

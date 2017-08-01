@@ -7,6 +7,14 @@ module RestFtpDaemon::Transform
 
   class TransformBase < Task::TaskTransform
 
+    # Available plugins detection
+    def self.list_available_transforms
+      Pluginator.
+        find(Conf.app_name, extends: %i[plugins_map]).
+        plugins_map(PLUGIN_TRANSFORM).
+        keys
+    end
+
     def self.for_plugin plugin
       Pluginator.
         find(Conf.app_name, extends: %i[first_class]).
