@@ -14,6 +14,10 @@ module RestFtpDaemon::Task
       # Ensure options are present
       raise Transform::TransformMissingOptions unless @options.is_a? Hash
 
+      # Dump file options
+      @modifiers = @options["modifiers"]
+      log_debug "modifiers", @modifiers
+
       # Check we have inputs
       # log_debug "input: #{@input.size} / #{@input.class}"
       raise Task::SourceNotFound unless stash.is_a? Hash
