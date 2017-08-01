@@ -79,7 +79,7 @@ module RestFtpDaemon
         optional :notify,
           type: String,
           desc: "URL to get POST'ed notifications back",
-          allow_blank: false
+          allow_blank: true
         optional :pool,
           type: String,
           desc: "Pool of worker to be used",
@@ -112,9 +112,9 @@ module RestFtpDaemon
             values: Job::PROCESSORS
             # values: {value: TaskTransform::TYPES, message: "should be one of: #{TaskTransform::TYPES.join(', ')}"}
 
-          given processor: ->(val) { val == PROCESSOR_COPY } do
-            optional :really
-          end
+          # given processor: ->(val) { val == PROCESSOR_COPY } do
+          #   optional :really
+          # end
 
           # given processor: ->(val) { val == PROCESSOR_FFMPEG } do
           #   optional :audio_codec,             type: String,  desc: "ffmpeg: audio codec (ex: copy, libfaac, ibfdk_aac)"

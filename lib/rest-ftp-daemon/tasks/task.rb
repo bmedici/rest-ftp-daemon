@@ -11,12 +11,11 @@ module RestFtpDaemon::Task
   class TargetUnsupported         < TaskError; end
   class TargetNameRequired        < TaskError; end
 
-  class TransferFtpError          < TaskError; end
-  class TransferInterrupted       < TaskError; end
-  class TransferConnexionError   < TaskError; end
-  class TransferPermissionError   < TaskError; end
-  
   class TransferPushError          < TaskError; end
+  class TransferFtpError          < TransferError; end
+  class TransferInterrupted       < TransferError; end
+  class TransferConnexionError    < TransferError; end
+  class TransferPermissionError   < TransferError; end
 
   class AssertionFailed           < TaskError; end
 
@@ -70,14 +69,15 @@ module RestFtpDaemon::Task
       @config ||= {empty: true}
       log_debug "task config #{@config.to_hash.inspect}"
 
+      # Reset data
       reset
     end
 
     def reset
-      @started_at   = nil
-      @finished_at  = nil
       @processed    = 0
       # @output       = []
+      @started_at         = nil
+      @finished_at        = nil
 
       transition_to_ready
     end
@@ -90,14 +90,14 @@ module RestFtpDaemon::Task
       @stash_size = stash.size
 
       # Some debug
-      log_debug "task config #{@config.to_hash.inspect}"
-      log_debug "task options #{@options.to_hash.inspect}"
       log_debug "stash input", stash.keys
 
-      # Execute task
+      # Prepare task
       prepare(stash)
 
+      # Process task
       process(stash)
+
     rescue Errno::ENOENT => exception
       transition_to_failed exception
       raise Transform::TransformFileNotFound, exception

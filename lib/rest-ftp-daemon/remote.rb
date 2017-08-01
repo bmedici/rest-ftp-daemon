@@ -26,7 +26,7 @@ module RestFtpDaemon::Remote
       #     first_ask(PLUGIN_REMOTE, "handles?", location)
       # end     
 
-      # Refine Class.new to instantiate the right subclass
+      # Instantiate the right subclass
       def self.build location, *params
         plugin = Pluginator.
           find(Conf.app_name, extends: %i[first_ask]).

@@ -33,7 +33,7 @@ module RestFtpDaemon::Task
         raise Task::TargetDirectoryError, "prepare: target should be a directory when severeal files matched"
       end
 
-      # Some init
+      # Compute total files size
       @transfer_sent = 0
 
       # Detect plugin for this location
@@ -64,6 +64,8 @@ module RestFtpDaemon::Task
       # Do the transfer, for each file
         remote_upload input, get_flag(:tempfile), get_flag(:overwrite)
       stash.each do |name, input|
+        set_info INFO_CURRENT, name
+        set_info INFO_CURRENT, nil
         @stash_processed += 1
       end
     end

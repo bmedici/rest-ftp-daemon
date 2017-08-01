@@ -157,13 +157,13 @@ module RestFtpDaemon
 
       # Notify we start working and remember when we started
       transition_to_running
-      current_signal = nil
+      task_name = nil
 
       # Run tasks
       @tasks.each do |task|
         # Let's say current task is @task
         @task = task
-        current_signal = task.task_name
+        task_name = task.task_name
 
         # And run it
         task.run(stash)
@@ -171,10 +171,10 @@ module RestFtpDaemon
 
     rescue Remote::RemoteError, Task::TaskError, RestFtpDaemon::JobTimeout => exception 
       log_debug "job started_at[#{@started_at}] started_since[#{started_since}] "
-      return oops current_signal, exception
+      return oops task_name, exception
 
     rescue Exception => exception
-      return oops current_signal, exception, :unexpected, true
+      return oops task_name, exception, :unexpected, true
     
     else
       # All done !
@@ -302,13 +302,13 @@ module RestFtpDaemon
       }
     end
 
-    def oops task, exception, error = nil, include_backtrace = false
+    def oops task_name, exception, error = nil, include_backtrace = false
       # Error code derived from exception name
       error = object_to_name(exception) if error.nil?
 
       # Log message and backtrace ?
       log_error "oops: #{exception.class}", {
-        task: task,
+        task_name: task_name,
         exception: exception.class.to_s,
         error: error,
         message: exception.message,
@@ -339,8 +339,8 @@ module RestFtpDaemon
       RestFtpDaemon::Counters.instance.increment :jobs, :failed
 
       # Prepare notification if signal given
-      return unless task
-      job_notify task.task_name,
+      return unless task_name
+      job_notify task_name,
         error: error,
         status: status,
         message: "#{exception.class} | #{exception.message}"

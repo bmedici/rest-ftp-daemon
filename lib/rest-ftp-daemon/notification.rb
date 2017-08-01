@@ -37,7 +37,7 @@ module RestFtpDaemon
 
     def process
       # Check context
-      if @url.nil?
+      if @url.nil? || @url.to_s.empty?
         log_error "skipping (missing url)"
         return
       elsif @params[:signal].nil?
