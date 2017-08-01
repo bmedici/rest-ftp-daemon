@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+# Try to load external libs, helpers and constants
+begin
+  require "rubygems"
+  require "optparse"
+  require "fileutils"
+rescue LoadError => e
+  raise "EXITING: some basic libs were not found (#{e.message})"
+end
+
+begin
+  output = nil
+  # Parse options and check compliance
+  parser = OptionParser.new do |opts|
+    opts.banner = "Usage: #{File.basename $PROGRAM_NAME} [options] start|stop"
+    opts.on("-o", "--output FILE")                                  { |value| output = value.strip.to_s}
+
+    opts.separator ""
+    opts.on_tail("-h", "--help", "Show this message")  do
+      puts opts
+      exit(0)
+    end
+
+  end
+  parser.order!(ARGV)
+rescue StandardError => e
+  abort "EXITING: StandardError: #{e.message}"
+end
+
+# Extract command line
+input = ARGV.shift
+
+puts "################### FAKE #######################"
+puts "## input: #{input}"
+puts "## output: #{output}"
+puts "## ARGV: #{ARGV}"
+
+begin
+  FileUtils.mkdir_p File.dirname(output)
+  FileUtils.copy_file input, output
+  puts "## COPY DONE: #{File.size(output)} bytes"
+rescue Errno::ENOENT => e
+   puts "## COPY FAILED: #{e.message}"
+else
+end
+puts "################################################"
