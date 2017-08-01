@@ -19,7 +19,7 @@ module RestFtpDaemon::Task
     end
 
     # Task operations
-    def prepare      
+    def prepare stash
       # Check output target
       log_debug "prepare", {
         target_loc:     target_loc.to_s,
@@ -29,7 +29,7 @@ module RestFtpDaemon::Task
         }
 
       # Guess target file name, and fail if present while we matched multiple sources
-      if target_loc.name && @input.count > 1
+      if target_loc.name && stash.count > 1
         raise Task::TargetDirectoryError, "prepare: target should be a directory when severeal files matched"
       end
 
@@ -44,7 +44,7 @@ module RestFtpDaemon::Task
       log_info "handling [#{target_loc.scheme}] with #{@remote.class}"
     end
 
-    def process
+    def process stash
       # Connect to remote server and login
       set_status STATUS_CONNECTING
       @remote.connect
@@ -62,8 +62,9 @@ module RestFtpDaemon::Task
       @last_time = Time.now
 
       # Do the transfer, for each file
-      @input.each do |input|
         remote_upload input, get_flag(:tempfile), get_flag(:overwrite)
+      stash.each do |name, input|
+        @stash_processed += 1
       end
     end
 
@@ -143,7 +144,6 @@ module RestFtpDaemon::Task
       end
 
       # Update counters
-      @processed += 1
       set_info INFO_TARGET_FILES, @output.collect(&:name)
       set_info INFO_CURRENT, nil
     end    

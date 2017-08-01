@@ -153,7 +153,7 @@ module RestFtpDaemon
       # Check prerequisites and init
       raise RestFtpDaemon::AssertionFailed, "run/source_loc" unless @source_loc
       raise RestFtpDaemon::AssertionFailed, "run/target_loc" unless @target_loc
-      stash = []
+      stash = {}
 
       # Notify we start working and remember when we started
       transition_to_running
@@ -166,7 +166,7 @@ module RestFtpDaemon
         current_signal = task.task_name
 
         # And run it
-        stash = task.run(stash)
+        task.run(stash)
       end
 
     rescue Remote::RemoteError, Task::TaskError, RestFtpDaemon::JobTimeout => exception 

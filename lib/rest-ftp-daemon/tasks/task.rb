@@ -42,9 +42,6 @@ module RestFtpDaemon::Task
     attr_reader   :name
     attr_reader   :options
 
-    attr_accessor :input
-    attr_reader   :output
-
     attr_accessor :status
     attr_accessor :error
     # attr_accessor :message
@@ -73,10 +70,10 @@ module RestFtpDaemon::Task
     end
 
     def reset
-      @output       = []
       @started_at   = nil
       @finished_at  = nil
       @processed    = 0
+      # @output       = []
 
       transition_to_ready
     end
@@ -85,17 +82,18 @@ module RestFtpDaemon::Task
       transition_to_running
 
       # Import input from stash
-      @input = stash
+      # @input = stash
+      @stash_size = stash.size
 
       # Some debug
       log_debug "task config #{@config.to_hash.inspect}"
       log_debug "task options #{@options.to_hash.inspect}"
-      log_debug "task input", @input.collect(&:name)
+      log_debug "stash input", stash.keys
 
       # Execute task
-      prepare
-      process
+      prepare(stash)
 
+      process(stash)
     rescue Errno::ENOENT => exception
       transition_to_failed exception
       raise Transform::TransformFileNotFound, exception
@@ -119,7 +117,7 @@ module RestFtpDaemon::Task
 
       # This is our result
       transition_to_finished
-      return @output
+      #return @output
 
     ensure
       # Always finalize
@@ -155,9 +153,9 @@ module RestFtpDaemon::Task
       @status = value
     end
 
-    def add_output element
-      @output << element
-    end
+    # def add_output element
+    #   @output << element
+    # end
 
     def transition_to_ready
       log_info "task [ready]"

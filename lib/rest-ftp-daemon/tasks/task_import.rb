@@ -15,12 +15,12 @@ module RestFtpDaemon::Task
       "import"
     end
 
-    def prepare
+    def prepare stash
       # raise Task::TaskImportError, "this is a fake task error from RestFtpDaemon::Task::TaskImport"
     end
 
     # Task operations
-    def process
+    def process stash
       set_status Task::TaskImport::STATUS_LISTING
 
       # Check input conformity
@@ -38,7 +38,7 @@ module RestFtpDaemon::Task
       # Add file to output
       files.each do |file|
         log_info "matched: #{file.path_rel}"
-        add_output file
+        stash[file.name] = file
       end
     end
 
