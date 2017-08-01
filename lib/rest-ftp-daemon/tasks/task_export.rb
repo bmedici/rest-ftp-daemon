@@ -98,10 +98,12 @@ module RestFtpDaemon::Task
 
       # Set target name
       set_info INFO_CURRENT, target.name
+      target = target_loc.cloned_with_fallback_name(name)
+      log_debug "remote_upload target: #{target.path_rel}"
 
       # Build temp target if necessary
       if tempfile
-        destination = target_loc.named_like(source, true)
+        destination = target_loc.cloned_with_fallback_name(name, true)
         log_debug "remote_upload: use tempfile", {
           source: source.name,
           destination: destination.name,

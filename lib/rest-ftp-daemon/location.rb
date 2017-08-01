@@ -136,10 +136,10 @@ module RestFtpDaemon
       File.delete path_abs 
     end
 
-    def named_like loc, temp=false
+    def cloned_with_fallback_name name, temp=false
       # Inherit source_loc's name if no target name specified
       result = self.clone
-      result.name = loc.name if result.name.blank?
+      result.name = name if result.name.blank?
 
       # Add a temp suffix if requested
       if temp
