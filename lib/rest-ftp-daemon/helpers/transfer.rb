@@ -90,13 +90,13 @@ module RestFtpDaemon
       # set_info INFO_TRANFER_BITRATE,  @current_bitrate.round(0)
 
       # Log progress
-      stack = [
+      fields = [
         "#{percent0} %",
-        format_bytes(@transfer_sent, "B"),
-        format_bytes(@current_bitrate.round(0), "bps")
+        format_bytes(@transfer_sent.to_i, "B"),
+        format_bytes(@current_bitrate.to_f.round(0), "bps")
         ]
-      stack2 = stack.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
-      log_info "progress #{stack2} \t#{name}"
+      stack = fields.map { |txt| ("%#{LOG_PIPE_LEN.to_i}s" % txt) }.join("\t")
+      log_info "progress #{stack} \t#{name}"
 
       # Prepare and send notification
       client_notify :progress, status: {
