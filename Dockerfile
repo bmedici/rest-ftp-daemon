@@ -20,7 +20,7 @@ RUN gem install bundler --no-rdoc --no-ri
 # Change to INSTALL_PATH and install base packages
 RUN mkdir -p                        $INSTALL_PATH
 WORKDIR                             $INSTALL_PATH
-ADD Gemfile Gemfile.lock            $INSTALL_PATH
+ADD Gemfile                         $INSTALL_PATH
 ADD rest-ftp-daemon.gemspec 	    	$INSTALL_PATH
 RUN bundle install --system --without="development test" -j4
 
