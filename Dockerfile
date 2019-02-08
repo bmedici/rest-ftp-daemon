@@ -20,8 +20,8 @@ RUN gem install bundler --no-rdoc --no-ri
 # Change to INSTALL_PATH and install base packages
 RUN mkdir -p                        $INSTALL_PATH
 WORKDIR                             $INSTALL_PATH
-ADD Gemfile                         $INSTALL_PATH
-ADD rest-ftp-daemon.gemspec 		$INSTALL_PATH
+ADD Gemfile Gemfile.lock            $INSTALL_PATH
+ADD rest-ftp-daemon.gemspec 	    	$INSTALL_PATH
 RUN bundle install --system --without="development test" -j4
 
 
@@ -34,4 +34,4 @@ ADD . $INSTALL_PATH
 
 # App run
 EXPOSE 3000
-CMD ["bin/rest-ftp-daemon", "-e", "docker", "-c", "/etc/rftpd.yml", "-f", "start"]
+CMD ["bundle", "exec", "bin/rest-ftp-daemon", "-e", "docker", "-c", "/config.yml", "-f", "start"]
