@@ -1,0 +1,58 @@
+variables:
+  PROJECT_BASE:     registry.gitlab.com/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME
+  PORTNR_DEVELOP:   https://ddec.cloudapp.net:9443/api/webhooks/306ab87c-cf6c-4adf-b289-7a99129022b7
+
+stages:
+- build
+- release
+
+.withdocker: &withdocker
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - export IMAGE_BUILD="$PROJECT_BASE/builds:$CI_COMMIT_SHA"
+
+.alias: &alias
+  <<: *withdocker
+  stage: release
+  script:
+    - docker pull $IMAGE_BUILD
+    - docker tag $IMAGE_BUILD $IMAGE_TO
+    - docker push $IMAGE_TO
+
+build-docker:
+  <<: *withdocker
+  stage: build
+  script:
+    - docker build --pull -t $IMAGE_BUILD .
+    - docker push $IMAGE_BUILD
+
+release-tag:
+  variables:
+    IMAGE_TO: $PROJECT_BASE/tag:$CI_COMMIT_REF_NAME
+  <<: *alias
+  only:
+    - tags  
+
+release-branch:
+  variables:
+    IMAGE_TO: $PROJECT_BASE/branch:$CI_COMMIT_REF_SLUG
+  <<: *alias
+  only:
+    - branches  
+
+release-develop:
+  variables:
+    IMAGE_TO: $PROJECT_BASE:develop
+  <<: *alias
+  only:
+    - develop
+
+release-master:
+  variables:
+    IMAGE_TO: $PROJECT_BASE:latest
+  <<: *alias
+  only:
+    - master
