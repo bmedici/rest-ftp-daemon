@@ -7,6 +7,7 @@ variables:
   PORTNR_DEVELOP:   https://ddec.cloudapp.net:9443/api/webhooks/306ab87c-cf6c-4adf-b289-7a99129022b7
 
 stages:
+- preflight
 - build
 - release
 
@@ -37,6 +38,14 @@ stages:
 ###############################################################################################################
 ### STAGE: PREFLIGHT
 ###############################################################################################################
+
+check-info:
+  image: alpine
+  stage: preflight
+  script:
+    - echo "CI_COMMIT_REF_NAME  | $CI_COMMIT_REF_NAME"
+    - echo "CI_COMMIT_REF_SLUG  | $CI_COMMIT_REF_SLUG"
+    - echo "PROJECT_BASE        | $PROJECT_BASE"
 
 
 
