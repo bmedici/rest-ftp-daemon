@@ -27,9 +27,11 @@ stages:
   <<: *withdocker
   stage: release
   script:
+    - export IMAGE_TARGET="${PROJECT_BASE}${IMAGE_TO}"
+    - echo "ALIASING [$IMAGE_BUILD] > [$IMAGE_TARGET]"
     - docker pull $IMAGE_BUILD
-    - docker tag $IMAGE_BUILD $IMAGE_TO
-    - docker push $IMAGE_TO
+    - docker tag $IMAGE_BUILD $IMAGE_TARGET
+    - docker push $IMAGE_TARGET
 
 
 ###############################################################################################################
@@ -46,7 +48,8 @@ build-docker:
   <<: *withdocker
   stage: build
   script:
-    - docker build --pull -t $IMAGE_BUILD .
+    - docker pull $IMAGE_BUILD ||
+    - docker build --pull --cache-from $IMAGE_BUILD -t $IMAGE_BUILD .
     - docker push $IMAGE_BUILD
 
 
