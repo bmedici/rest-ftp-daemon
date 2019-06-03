@@ -10,6 +10,7 @@ stages:
 - preflight
 - build
 - release
+- deploy
 
 
 ###############################################################################################################
@@ -74,31 +75,47 @@ build-docker:
 
 release-tag:
   variables:
-    IMAGE_TO: $PROJECT_BASE/tag:$CI_COMMIT_REF_NAME
+    IMAGE_TO: /tag:$CI_COMMIT_REF_NAME
   <<: *alias
   only:
-    - tags  
+    - tags
 
 release-branch:
   variables:
-    IMAGE_TO: $PROJECT_BASE/branch:$CI_COMMIT_REF_SLUG
+    IMAGE_TO: /branch:$CI_COMMIT_REF_SLUG
   <<: *alias
   only:
-    - branches  
+    - branches
 
 release-develop:
   variables:
-    IMAGE_TO: $PROJECT_BASE:develop
+    IMAGE_TO: ":develop"
   <<: *alias
   only:
     - develop
 
 release-master:
   variables:
-    IMAGE_TO: $PROJECT_BASE:latest
+    IMAGE_TO: ":latest"
   <<: *alias
   only:
     - master
+
+
+
+###############################################################################################################
+### STAGE: DEPLOY
+###############################################################################################################
+
+deploy-develop:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - apk add --update curl && rm -rf /var/cache/apk/*
+    - curl --insecure -X POST "${PORTNR_DEVELOP}"
+  only:
+    - develop
+    - demo
 
 
 
