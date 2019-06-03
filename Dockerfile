@@ -1,7 +1,6 @@
 # Docker headers
-FROM ruby:2.3.0-slim
-MAINTAINER Bruno MEDICI <rest-ftp-daemon@bmconseil.com>
-
+FROM ruby:2.6.2-alpine3.9
+MAINTAINER Bruno MEDICI <opensource@bmconseil.com>
 
 # Environment
 ENV LANG=C.UTF-8
@@ -9,28 +8,30 @@ ENV INSTALL_PATH /app/
 ENV app /app/
 
 
-# Install base packages
-RUN apt-get update && apt-get install -y --fix-missing --no-install-recommends build-essential git && apt-get clean
+# Dependencies
+RUN \
+  # update packages
+  apk update && \
+  apk upgrade && \
+  apk --no-cache add make g++ && \
+  apk --no-cache add ruby ruby-dev ruby-bundler ruby-json ruby-rake ruby-bigdecimal && \
+  apk --no-cache add git && \
+  apk --no-cache add libressl-dev && \
 
-
-# Prepare bundler
-RUN gem install bundler --no-rdoc --no-ri
-
+  # clear after installation
+  rm -rf /var/cache/apk/*
 
 # Change to INSTALL_PATH and install base packages
 RUN mkdir -p                        $INSTALL_PATH
 WORKDIR                             $INSTALL_PATH
 ADD Gemfile                         $INSTALL_PATH
 ADD rest-ftp-daemon.gemspec 	    	$INSTALL_PATH
-RUN bundle install --system --without="development test" -j4
 
+# Prepare bundler
+RUN gem install bundler && bundle config git.allow_insecure true && bundle install --system --without="development test" -j4
 
 # Install app code
-# ADD $CODE_ARCHIVE					/tmp/$CODE_ARCHIVE
-# RUN ls -lah
-# RUN tar xf /tmp/$CODE_ARCHIVE
 ADD . $INSTALL_PATH
-
 
 # App run
 EXPOSE 3000
