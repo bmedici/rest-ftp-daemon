@@ -38,7 +38,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     "thin", "~> 1.7"
   spec.add_runtime_dependency     "activesupport", "4.2.7.1"
 
-  spec.add_runtime_dependency     "grape", "0.19.1"
+  # spec.add_runtime_dependency     "grape", "0.19.1"
+  spec.add_runtime_dependency     "grape", ">= 1.1.0"
   spec.add_runtime_dependency     "grape-entity", "0.6.0"
   spec.add_runtime_dependency     "grape-swagger", "0.26.0"
   spec.add_runtime_dependency     "grape-swagger-entity", "0.1.5"
