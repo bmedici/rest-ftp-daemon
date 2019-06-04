@@ -132,7 +132,7 @@ If the daemon appears to exit quickly when launched, it may be caused by logfile
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
-'{"source":"~/file.iso","target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
+'{"source":"/tmp/file.iso","target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
 ```
 
 #### Start a job using endpoint tokens
@@ -154,7 +154,7 @@ Those tokens will be expanded when the job is run:
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
-'{"source":"~/file.dmg","priority":"3","target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
+'{"source":"/tmp/file.iso","priority":"3","target":"ftp://anonymous@localhost/incoming/dest4.dmg","notify":"http://requestb.in/1321axg1"}' "http://localhost:3000/jobs"
 ```
 
 
@@ -164,7 +164,7 @@ The daemon spawns groups of workers (worker pools) to work on groups of jobs (jo
 
 ```
 curl -H "Content-Type: application/json" -X POST -D /dev/stdout -d \
-'{"pool": "maxxxxx",source":"~/file.iso",target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
+'{"pool": "maxxxxx",source":"/tmp/file.iso",target":"ftp://anonymous@localhost/incoming/dest2.iso"}' "http://localhost:3000/jobs"
 ```
 This job will be handled by the "maxxxxx" workers only, or by the ```"default"``` worker is this pool is not declared.
 
